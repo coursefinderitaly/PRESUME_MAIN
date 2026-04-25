@@ -1,8 +1,8 @@
 import { lazy, Suspense, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
 // ── Eager-load only the above-the-fold components ──────────────────────────
 import { Header }     from './components/Header';
@@ -17,39 +17,16 @@ const Testimonials     = lazy(() => import('./components/Testimonials').then(m =
 const RegistrationForm = lazy(() => import('./components/RegistrationForm').then(m => ({ default: m.RegistrationForm })));
 const Footer           = lazy(() => import('./components/Footer').then(m => ({ default: m.Footer })));
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // ── Minimal section-level loading skeleton ─────────────────────────────────
 const SectionFallback = () => (
   <div className="w-full h-[100svh] bg-[#0a0d18] animate-pulse" />
 );
 
-// ── Stagger variants (triggers only once on first load) ────────────────────
-const pageVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.05 },
-  },
-};
-
-const sectionVariants = {
-  hidden:  { opacity: 0, y: 22 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { mass: 1, stiffness: 90, damping: 20, type: 'spring' },
-  },
-};
-
-// ── Wrapped lazy section with stagger slot ─────────────────────────────────
-const AnimSection = ({ children }) => (
-  <motion.div variants={sectionVariants}>
-    {children}
-  </motion.div>
-);
-
 function App() {
   const lenisRef = useRef(null);
+  const containerRef = useRef(null);
 
   // Stable RAF callback so gsap.ticker doesn't re-bind on re-renders
   const rafCallback = useCallback((time) => {
@@ -79,47 +56,60 @@ function App() {
     };
   }, [rafCallback]);
 
+  // ── Global Page-Load Timeline using GSAP ─────────────────────────────────
+  useGSAP(() => {
+    const sections = gsap.utils.toArray('.gsap-stagger-section');
+    
+    gsap.fromTo(
+      sections,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        stagger: 0.15,
+        ease: 'power3.out',
+        delay: 0.1, // brief delay to ensure DOM is ready
+      }
+    );
+  }, { scope: containerRef });
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#0a0d18] font-sans">
+    <div ref={containerRef} className="min-h-screen flex flex-col bg-[#0a0d18] font-sans">
       {/* Header is eager — no animation delay */}
       <Header />
 
-      {/* Page-level stagger container — runs only once on mount */}
-      <motion.main
-        variants={pageVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      <main>
         {/* Hero is eager — first visual, must appear instantly */}
-        <motion.div variants={sectionVariants}>
+        <div className="gsap-stagger-section">
           <Hero />
-        </motion.div>
+        </div>
 
         {/* All below-the-fold sections are lazy + animated */}
         <Suspense fallback={<SectionFallback />}>
-          <AnimSection><WhyChooseUs /></AnimSection>
+          <div className="gsap-stagger-section"><WhyChooseUs /></div>
         </Suspense>
 
         <Suspense fallback={<SectionFallback />}>
-          <AnimSection><Universities /></AnimSection>
+          <div className="gsap-stagger-section"><Universities /></div>
         </Suspense>
 
         <Suspense fallback={<SectionFallback />}>
-          <AnimSection><TopCountries /></AnimSection>
+          <div className="gsap-stagger-section"><TopCountries /></div>
         </Suspense>
 
         <Suspense fallback={<SectionFallback />}>
-          <AnimSection><ProcessTimeline /></AnimSection>
+          <div className="gsap-stagger-section"><ProcessTimeline /></div>
         </Suspense>
 
         <Suspense fallback={<SectionFallback />}>
-          <AnimSection><Testimonials /></AnimSection>
+          <div className="gsap-stagger-section"><Testimonials /></div>
         </Suspense>
 
         <Suspense fallback={<SectionFallback />}>
-          <AnimSection><RegistrationForm /></AnimSection>
+          <div className="gsap-stagger-section"><RegistrationForm /></div>
         </Suspense>
-      </motion.main>
+      </main>
 
       <Suspense fallback={null}>
         <Footer />
