@@ -49,12 +49,14 @@ const VideoCard = ({ vid, index }) => {
               <img 
                 src={thumbnailSrc} 
                 alt={vid.title} 
+                loading="lazy"
+                decoding="async"
                 onError={() => {
                   if (thumbnailSrc !== vid.fallbackThumbnail) {
                     setThumbnailSrc(vid.fallbackThumbnail);
                   }
                 }}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform transform-gpu" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
               
@@ -116,11 +118,17 @@ const VideoCard = ({ vid, index }) => {
 
 export const Testimonials = () => {
   return (
-    <section className="section-safe relative h-[100svh] min-h-[600px] overflow-hidden bg-[#0a0d18] flex flex-col justify-center">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-primary-blue/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-accent-gold/5 rounded-full blur-[120px]" />
+    <section className="section-safe relative h-[100svh] min-h-[600px] overflow-hidden flex flex-col justify-center">
+      {/* Base gradient background */}
+      <div className="absolute inset-0 testimonials-section-bg" />
+
+      {/* Animated aurora orbs */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+        <div className="absolute top-[-5%] left-[-8%] w-[560px] h-[560px] rounded-full testimonials-orb-1" />
+        <div className="absolute bottom-[-5%] right-[-8%] w-[500px] h-[500px] rounded-full testimonials-orb-2" />
+        <div className="absolute top-[35%] right-[25%] w-[380px] h-[380px] rounded-full testimonials-orb-3" />
+        {/* Conic shimmer */}
+        <div className="absolute inset-0 testimonials-section-shimmer" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full h-full flex flex-col pt-[calc(var(--section-header-offset)+16px)] pb-8">

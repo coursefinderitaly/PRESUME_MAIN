@@ -27,10 +27,10 @@ const advantages = [
 ];
 
 const ThreeBackground = () => (
-  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-[#020617]">
+  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-transparent">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(15,23,42,0.6)_0%,rgba(2,6,23,1)_100%)] z-10 pointer-events-none" />
-    <Canvas camera={{ position: [0, 0, 12], fov: 45 }} dpr={[1, 2]}>
-      <color attach="background" args={["#020617"]} />
+    <Canvas camera={{ position: [0, 0, 12], fov: 45 }} dpr={[1, 1.5]} performance={{ min: 0.5 }}>
+      <color attach="background" args={["transparent"]} />
       <ambientLight intensity={0.3} />
       <directionalLight position={[10, 10, 5]} intensity={1.5} />
       <directionalLight position={[-10, -10, -5]} intensity={1} color="#06b6d4" />
@@ -126,15 +126,15 @@ export const WhyChooseUs = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-[#020617]"
+      className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-transparent"
     >
       <ThreeBackground />
       
       {/* Animated Gradient Wave Background */}
-      <div className="absolute inset-0 z-[5] opacity-30 pointer-events-none">
+      <div className="absolute inset-0 z-[5] opacity-30 pointer-events-none transform-gpu">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-        <div className="absolute top-1/4 -left-1/4 w-full h-full bg-cyan-500/10 blur-[120px] animate-advantage-wave-drift" />
-        <div className="absolute bottom-1/4 -right-1/4 w-full h-full bg-purple-500/10 blur-[120px] animate-advantage-wave-drift [animation-delay:4s]" />
+        <div className="absolute top-1/4 -left-1/4 w-full h-full bg-cyan-500/10 blur-[120px] animate-advantage-wave-drift will-change-transform transform-gpu" />
+        <div className="absolute bottom-1/4 -right-1/4 w-full h-full bg-purple-500/10 blur-[120px] animate-advantage-wave-drift [animation-delay:4s] will-change-transform transform-gpu" />
       </div>
 
       <div className="max-w-[85rem] mx-auto w-full relative z-20 px-4 sm:px-6 lg:px-8">

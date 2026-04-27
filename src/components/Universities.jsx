@@ -53,10 +53,9 @@ const VerticalMarquee = ({ images, align, direction = -1, speed = 30 }) => {
         transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
       >
         {loopImages.map((uni, idx) => (
-          <div key={idx} className="relative flex-shrink-0 w-full h-[85px] sm:h-[100px] lg:h-[125px] rounded-[20px] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.4)] border border-white/[0.08] backdrop-blur-md">
-            <img src={uni.image} alt={uni.name} className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 w-full p-2.5 sm:p-3">
+          <div key={idx} className="relative flex-shrink-0 w-full h-[85px] sm:h-[100px] lg:h-[125px] rounded-[20px] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.4)] border border-white/[0.08] backdrop-blur-md transform-gpu">
+            <img src={uni.image} alt={uni.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover will-change-transform transform-gpu" />
+            <div className="absolute bottom-0 left-0 w-full p-2.5 sm:p-3 z-10 bg-black/40 backdrop-blur-md border-t border-white/10 will-change-[backdrop-filter]">
               <h3 className="text-[9px] sm:text-[10px] lg:text-xs font-black text-white leading-tight drop-shadow-md">
                 {uni.name}
               </h3>
@@ -83,7 +82,7 @@ export const Universities = () => {
   return (
     <section
       onMouseMove={handleMouseMove}
-      className="section-safe relative isolate bg-[#0a0d18] overflow-hidden"
+      className="section-safe relative isolate bg-transparent overflow-hidden"
       style={{ height: '100svh', minHeight: 'min(760px, 100svh)', display: 'flex', flexDirection: 'column' }}
     >
       <motion.div

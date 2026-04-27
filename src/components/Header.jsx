@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Menu, X, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import AuthModal from './AuthModal';
 
 import logo from '../assets/logo.png';
 
@@ -9,55 +11,27 @@ export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(null);
 
-  const [theme, setTheme] = useState('light');
+  // Site is fully dark-themed — header is always dark/glassmorphic
+  const isDarkHeader = true;
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-      
-      const sections = document.querySelectorAll('section');
-      let isDarkSection = false;
-      
-      sections.forEach(section => {
-        const rect = section.getBoundingClientRect();
-        // Check if the header area (top 50px) is within this section
-        if (rect.top <= 50 && rect.bottom >= 50) {
-          const cName = section.className || '';
-          if (
-            cName.includes('bg-primary-blue') || 
-            cName.includes('bg-[#') || 
-            cName.includes('bg-gray-900') ||
-            cName.includes('bg-black')
-          ) {
-            isDarkSection = true;
-          }
-        }
-      });
-      
-      setTheme(isDarkSection ? 'dark' : 'light');
-    };
-    
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    setTimeout(handleScroll, 100);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const isDarkHeader = !isScrolled || theme === 'dark';
 
   return (
     <>
       <header
         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          isScrolled 
-            ? isDarkHeader 
-              ? 'bg-black/10 backdrop-blur-[32px] shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-2 border-b border-white/10' 
-              : 'bg-white/90 backdrop-blur-xl shadow-lg py-2 border-b border-gray-100' 
+          isScrolled
+            ? 'bg-black/10 backdrop-blur-[32px] shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-2'
             : 'bg-transparent py-6'
         }`}
       >
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Presume Overseas" className={`transition-all duration-500 ${isScrolled && !isDarkHeader ? 'h-10 brightness-0 drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]' : 'h-14 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]'}`} />
+            <img src={logo} alt="Presume Overseas" className={`transition-all duration-500 ${isScrolled ? 'h-10' : 'h-14'} drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]`} />
           </div>
 
           {/* Desktop Nav */}
@@ -180,8 +154,18 @@ export const Header = () => {
             </div>
 
             <div className="mt-auto pt-10 grid grid-cols-1 gap-4">
-              <button className="py-5 font-black tracking-widest text-primary-blue border-2 border-gray-200 hover:border-accent-gold transition-colors rounded-2xl">LOGIN</button>
-              <button className="py-5 font-black tracking-widest text-white bg-primary-blue rounded-2xl shadow-xl shadow-primary-blue/20">SIGN UP</button>
+              <button 
+                onClick={() => { setModalOpen('login'); setMobileMenuOpen(false); }}
+                className="py-5 font-black tracking-widest text-primary-blue border-2 border-gray-200 hover:border-accent-gold transition-colors rounded-2xl"
+              >
+                LOGIN
+              </button>
+              <button 
+                onClick={() => { setModalOpen('signup'); setMobileMenuOpen(false); }}
+                className="py-5 font-black tracking-widest text-white bg-primary-blue rounded-2xl shadow-xl shadow-primary-blue/20"
+              >
+                SIGN UP
+              </button>
             </div>
           </motion.div>
         )}
@@ -214,7 +198,14 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader }) => {
       
       {/* Main Dropdown */}
       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-68 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,transform,visibility] duration-250 ease-out translate-y-2 group-hover:translate-y-0 z-50 will-change-[transform,opacity] transform-gpu">
-        <div className="relative bg-white rounded-2xl shadow-xl p-2 border border-gray-100 overflow-hidden">
+        <div className="relative rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_0_1px_rgba(168,85,247,0.4)] p-2 overflow-hidden"
+          style={{ background: 'linear-gradient(145deg, #2d1b5e 0%, #251550 50%, #2e1a60 100%)' }}
+        >
+          {/* Gradient accent orbs */}
+          <div className="pointer-events-none absolute -top-10 -left-6 w-32 h-32 rounded-full bg-violet-400/25 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-6 -right-4 w-24 h-24 rounded-full bg-fuchsia-400/20 blur-2xl" />
+          {/* Top gradient border line */}
+          <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-violet-300/60 to-transparent" />
           <div className="relative z-10">
             {items.map((item, idx) => (
               <div
@@ -222,17 +213,17 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader }) => {
                 className="relative"
                 onMouseEnter={() => setActiveSubMenu(item.subItems ? idx : null)}
               >
-                <div className={`flex items-center justify-between px-4 py-3 hover:bg-gray-50 rounded-xl transition-all duration-200 cursor-pointer ${activeSubMenu === idx ? 'bg-gray-50' : ''}`}>
+                <div className={`flex items-center justify-between px-4 py-3 hover:bg-violet-500/10 rounded-xl transition-all duration-200 cursor-pointer ${activeSubMenu === idx ? 'bg-violet-500/10' : ''}`}>
                   <div className="flex flex-col gap-0.5">
-                    <p className={`text-[15px] font-bold tracking-tight transition-colors ${activeSubMenu === idx ? 'text-primary-blue' : 'text-gray-900 hover:text-primary-blue'}`}>{item.label}</p>
-                    <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wider">{item.desc}</p>
+                    <p className={`text-[15px] font-bold tracking-tight transition-colors ${activeSubMenu === idx ? 'text-violet-300' : 'text-white hover:text-violet-300'}`}>{item.label}</p>
+                    <p className="text-[11px] font-medium text-white/50 uppercase tracking-wider">{item.desc}</p>
                   </div>
                   {item.subItems ? (
                     <div className="flex items-center gap-1.5">
-                      <ArrowRight size={14} className={`text-primary-blue transition-all duration-300 ${activeSubMenu === idx ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0'}`} />
+                      <ArrowRight size={14} className={`text-violet-400 transition-all duration-300 ${activeSubMenu === idx ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0'}`} />
                     </div>
                   ) : (
-                    <ArrowRight size={14} className="text-gray-400 opacity-0 hover:opacity-100 -translate-x-1 hover:translate-x-0 transition-all" />
+                    <ArrowRight size={14} className="text-white/40 opacity-0 hover:opacity-100 -translate-x-1 hover:translate-x-0 transition-all" />
                   )}
                 </div>
               </div>
@@ -250,21 +241,27 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader }) => {
               exit={{ opacity: 0, x: 8, scale: 0.96 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
               onMouseEnter={() => setActiveSubMenu(activeSubMenu)}
-              className="absolute top-0 left-[calc(100%+0.4rem)] w-[24rem] bg-white rounded-2xl shadow-xl border border-gray-100 p-3 z-[60] overflow-hidden transform-gpu max-h-[calc(100vh-100px)]"
+              className="absolute top-0 left-[calc(100%+0.4rem)] w-[24rem] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_0_1px_rgba(168,85,247,0.35)] p-3 z-[60] overflow-hidden transform-gpu max-h-[calc(100vh-100px)]"
+              style={{ background: 'linear-gradient(145deg, #311a6a 0%, #281460 50%, #2e1868 100%)' }}
             >
+              {/* Gradient accent orbs */}
+              <div className="pointer-events-none absolute -top-8 right-0 w-28 h-28 rounded-full bg-violet-400/25 blur-2xl" />
+              <div className="pointer-events-none absolute bottom-0 left-0 w-20 h-20 rounded-full bg-fuchsia-400/20 blur-2xl" />
+              {/* Top gradient border line */}
+              <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-violet-300/60 to-transparent" />
               <div className="relative z-10">
-                <div className="px-3 py-2 border-b border-gray-100 mb-2">
-                  <span className="text-[10px] font-bold text-gray-400 tracking-[0.2em] uppercase">Select Destination</span>
+                <div className="px-3 py-2 border-b border-white/10 mb-2">
+                  <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Select Destination</span>
                 </div>
                 {/* 2-column grid so 8 countries stay compact */}
                 <div className="grid grid-cols-2 gap-1">
                   {items[activeSubMenu].subItems.map((sub, sIdx) => (
-                    <div key={sIdx} className="group/sub flex items-center gap-2 px-3 py-3 hover:bg-gray-50 rounded-xl transition-all cursor-pointer">
+                    <div key={sIdx} className="group/sub flex items-center gap-2 px-3 py-3 hover:bg-white/10 rounded-xl transition-all cursor-pointer">
                       <div className="flex flex-col min-w-0">
-                        <p className="text-[14px] font-bold text-gray-900 group-hover/sub:text-primary-blue truncate pr-1 transition-colors">
+                        <p className="text-[14px] font-bold text-white group-hover/sub:text-cyan-400 truncate pr-1 transition-colors">
                           {sub.label}
                         </p>
-                        <p className="text-[10px] font-medium text-gray-500 truncate transition-colors">
+                        <p className="text-[10px] font-medium text-white/50 truncate transition-colors">
                           {sub.desc}
                         </p>
                       </div>
@@ -280,49 +277,6 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader }) => {
   );
 };
 
-const AuthModal = ({ type, onClose }) => {
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <motion.div 
-        initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-        className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md p-10 relative overflow-hidden"
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-accent-green via-white to-accent-red"></div>
-        <button onClick={onClose} className="absolute top-6 right-6 text-gray-400 hover:text-primary-blue transition-colors">
-          <X size={24} />
-        </button>
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-black text-primary-blue tracking-tight">{type === 'login' ? 'Welcome Back' : 'Get Started'}</h2>
-          <p className="text-gray-500 font-medium mt-2">{type === 'login' ? 'Sign in to access your platform.' : 'Join the free education movement.'}</p>
-        </div>
-        <form className="space-y-5">
-          {type === 'signup' && (
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-primary-blue ml-1">FULL NAME</label>
-              <input type="text" className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-accent-gold/20 focus:bg-white focus:border-accent-gold outline-none transition-all font-semibold" placeholder="Enter your name" />
-            </div>
-          )}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-primary-blue ml-1">EMAIL ADDRESS</label>
-            <input type="email" className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-accent-gold/20 focus:bg-white focus:border-accent-gold outline-none transition-all font-semibold" placeholder="name@example.com" />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-primary-blue ml-1">PASSWORD</label>
-            <input type="password" className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-accent-gold/20 focus:bg-white focus:border-accent-gold outline-none transition-all font-semibold" placeholder="••••••••" />
-          </div>
-          <button type="button" className="w-full bg-primary-blue text-white py-4 rounded-2xl font-bold hover:bg-opacity-95 transition-all mt-4 shadow-xl shadow-primary-blue/20">
-            {type === 'login' ? 'Sign In' : 'Create Account'}
-          </button>
-        </form>
-      </motion.div>
-    </motion.div>
-  );
-};
 
 const MobileNavItem = ({ section }) => {
   const [isOpen, setIsOpen] = useState(false);

@@ -43,7 +43,7 @@ const PathCard = ({ item, type }) => {
       viewport={{ once: true, margin: '-20px' }}
       whileHover={{ y: -3 }}
       transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-      className="relative flex flex-col p-5 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-sm group w-full transition-all duration-300"
+      className="relative flex flex-col p-5 rounded-2xl bg-black/30 border border-white/10 backdrop-blur-xl shadow-lg group w-full transition-all duration-300"
     >
       <div className="flex items-center gap-4 mb-4">
         <div 
@@ -82,10 +82,17 @@ const PathCard = ({ item, type }) => {
 
 export const ProcessTimeline = () => {
   return (
-    <section className="pt-16 pb-12 bg-[#0a0d18] relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/3 left-0 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[120px]" />
+    <section className="pt-16 pb-12 relative overflow-hidden">
+      {/* Base gradient background */}
+      <div className="absolute inset-0 process-section-bg" />
+
+      {/* Animated aurora orbs */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-10%] left-[10%] w-[600px] h-[600px] rounded-full process-orb-1" />
+        <div className="absolute bottom-[-10%] right-[5%] w-[500px] h-[500px] rounded-full process-orb-2" />
+        <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-[700px] h-[300px] rounded-full process-orb-3" />
+        {/* Subtle noise mesh */}
+        <div className="absolute inset-0 process-section-mesh" />
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -103,7 +110,21 @@ export const ProcessTimeline = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4">
             Streamlined <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Process</span>
           </h2>
-          <div className="w-12 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto rounded-full" />
+          <div className="w-12 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto rounded-full mb-8" />
+          
+          {/* Path Labels for Desktop */}
+          <div className="hidden md:flex justify-between items-center max-w-[90%] mx-auto px-4 mt-8">
+             <div className="text-center w-[calc(50%-2rem)]">
+               <span className="inline-block px-5 py-2 rounded-full bg-[#06b6d4]/10 border border-[#06b6d4]/30 text-[#06b6d4] text-xs sm:text-sm font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(6,182,212,0.15)] backdrop-blur-md">
+                 Study Path
+               </span>
+             </div>
+             <div className="text-center w-[calc(50%-2rem)]">
+               <span className="inline-block px-5 py-2 rounded-full bg-[#818cf8]/10 border border-[#818cf8]/30 text-[#818cf8] text-xs sm:text-sm font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(129,140,248,0.15)] backdrop-blur-md">
+                 Work Path
+               </span>
+             </div>
+          </div>
         </div>
 
         {/* Timeline */}

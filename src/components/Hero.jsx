@@ -106,13 +106,13 @@ export const Hero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, staggerChildren: 0.2 }}
-            className="flex flex-col items-start py-8"
+            className="flex flex-col items-start pt-10 pb-4"
           >
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-gold/10 text-accent-gold border border-accent-gold/20 mb-6 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-gold/10 text-accent-gold border border-accent-gold/20 mb-4 backdrop-blur-sm"
             >
               <Zap size={12} className="fill-current" />
               <span className="text-[10px] font-black tracking-[0.2em] uppercase">Elite Italian Education</span>
@@ -122,10 +122,18 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.95] tracking-tighter uppercase mb-8 flex flex-col items-start drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
+              className="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.95] tracking-tighter uppercase mb-5 flex flex-col items-start drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
             >
-              <span className="block">Free Study in</span>
-              <div className="relative h-[1.1em] w-full overflow-hidden mt-1">
+              <span className="block tracking-tight leading-none">
+                <motion.span 
+                  className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(52,211,153,0.45)] inline-block"
+                  style={{ fontFamily: "'Playfair Display', serif", fontStyle: 'italic', fontSize: '1.2em', letterSpacing: '-0.01em', fontWeight: 900 }}
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >Free</motion.span>
+                <span className="text-white/70"> Study in</span>
+              </span>
+              <div className="relative w-full mt-1 text-[1.35em]" style={{ height: '1.5em' }}>
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={currentIndex}
@@ -137,6 +145,7 @@ export const Hero = () => {
                       ease: [0.16, 1, 0.3, 1]
                     }}
                     className="hero-university-gradient absolute left-0 top-0 block whitespace-nowrap pr-4 font-black"
+                    style={{ lineHeight: '1.4', paddingBottom: '0.15em' }}
                   >
                     {universities[currentIndex].name}
                   </motion.span>
@@ -148,7 +157,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-base md:text-lg text-blue-50/80 mb-8 max-w-lg leading-relaxed font-medium text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+              className="text-base md:text-lg text-blue-50/80 mb-5 max-w-lg leading-relaxed font-medium text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
             >
               Join 10,000+ students in world-class public universities with <span className="text-accent-gold font-black">€5,200 annual grants</span> guaranteed.
             </motion.p>
@@ -157,7 +166,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="grid grid-cols-2 gap-x-8 gap-y-4 mb-10 w-full max-w-sm"
+              className="grid grid-cols-2 gap-x-8 gap-y-3 mb-7 w-full max-w-sm"
             >
               <FeatureItem Icon={School} title="Public Universities" />
               <FeatureItem Icon={Star} title="Zero Tuition" />

@@ -112,7 +112,7 @@ const workCountries = [
     code: 'DEU',
     color: '#b7791f',
     accent: '#0f766e',
-    image: '/germany.jpg',
+    image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=900&q=80',
     city: 'Berlin, Hamburg',
     metric: 'Skilled worker',
   },
@@ -132,7 +132,7 @@ const workCountries = [
     code: 'CZE',
     color: '#dc2626',
     accent: '#2563eb',
-    image: '/czech-republic.jpg',
+    image: 'https://images.unsplash.com/photo-1519677100203-a0e668c92439?auto=format&fit=crop&w=900&q=80',
     city: 'Prague, Brno',
     metric: 'Industrial roles',
   },
@@ -145,7 +145,7 @@ const DestinationCard = ({ country, index }) => (
     whileHover={{ y: -5 }}
     viewport={{ once: true }}
     transition={{ duration: 0.35, delay: index * 0.04, type: 'spring', stiffness: 280, damping: 24 }}
-    className="destination-card group relative flex h-full min-h-0 cursor-pointer flex-col justify-end overflow-hidden rounded-xl border border-white/70 bg-white/[0.88] shadow-[0_16px_36px_rgba(10,37,64,0.08)] backdrop-blur transition-all duration-300 hover:border-white hover:shadow-[0_24px_52px_rgba(10,37,64,0.14)]"
+    className="destination-card group relative flex h-full min-h-0 cursor-pointer flex-col justify-end overflow-hidden rounded-xl border border-white/20 bg-black/40 shadow-[0_16px_36px_rgba(10,37,64,0.08)] backdrop-blur transition-all duration-300 hover:border-white/40 hover:shadow-[0_24px_52px_rgba(0,0,0,0.4)]"
     style={{
       '--destination-primary': country.color,
       '--destination-accent': country.accent,
@@ -164,7 +164,7 @@ const DestinationCard = ({ country, index }) => (
       </span>
     </div>
 
-    <div className="destination-card-copy relative z-10 p-3 text-white sm:p-4 lg:p-5">
+    <div className="destination-card-copy relative z-10 p-3 sm:p-4 lg:p-5 mt-auto bg-black/40 backdrop-blur-md border-t border-white/10">
       <div className="flex min-w-0 items-end justify-between gap-2">
         <div className="min-w-0">
           <h3 className="destination-card-title truncate text-base font-black tracking-normal sm:text-lg lg:text-2xl">{country.name}</h3>
@@ -204,15 +204,19 @@ export const TopCountries = () => {
     <section
       onPointerMove={handlePointerMove}
       onPointerLeave={() => setCursor({ x: 52, y: 38 })}
-      className="section-safe top-destinations-shell relative h-[100svh] overflow-hidden bg-[#0a0d18] text-white"
+      className="section-safe top-destinations-shell relative h-[100svh] overflow-hidden bg-transparent text-white"
     >
       <div className="absolute inset-0 pointer-events-none top-destinations-gradient" />
       <div className="absolute inset-0 pointer-events-none top-destinations-aurora" />
       <div className="absolute inset-0 pointer-events-none top-destinations-flow" />
       <motion.div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute pointer-events-none w-[1200px] h-[1200px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(15,118,110,0.20) 0%, rgba(37,99,235,0.1) 25%, rgba(245,158,11,0.06) 45%, transparent 65%)'
+        }}
         animate={{
-          background: `radial-gradient(circle at ${cursor.x}% ${cursor.y}%, rgba(15,118,110,0.24) 0%, rgba(37,99,235,0.13) 18%, rgba(245,158,11,0.08) 30%, transparent 48%)`,
+          left: `${cursor.x}%`,
+          top: `${cursor.y}%`,
         }}
         transition={{ type: 'spring', stiffness: 42, damping: 24, mass: 0.7 }}
       />
