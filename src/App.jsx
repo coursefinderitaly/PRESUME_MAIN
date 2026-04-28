@@ -5,6 +5,7 @@ import Dashboard from './Dashboard';
 import AdminPortal from './components/AdminPortal';
 import IdleTimeout from './components/IdleTimeout';
 import StrictSessionManager from './components/StrictSessionManager';
+import ItalyStudyPage from './components/ItalyStudyPage';
 import { ThemeProvider } from './ThemeContext';
 import './index.css';
 
@@ -25,6 +26,7 @@ function App() {
                 <AdminPortal />
               </StrictSessionManager>
             } />
+            <Route path="/study-in-italy" element={<ItalyStudyPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </IdleTimeout>

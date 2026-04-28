@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Menu, X, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import AuthModal from './AuthModal';
 
 import logo from '../assets/logo.png';
 
-export const Header = () => {
+export const Header = ({ compact = false }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(null);
@@ -30,22 +30,23 @@ export const Header = () => {
         }`}
       >
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="Presume Overseas" className={`transition-all duration-500 ${isScrolled ? 'h-10' : 'h-14'} drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]`} />
-          </div>
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logo} alt="Presume Overseas" className={`transition-all duration-500 ${isScrolled ? (compact ? 'h-6' : 'h-10') : (compact ? 'h-8' : 'h-14')} drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]`} />
+          </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className={`hidden md:flex items-center ${compact ? 'gap-4' : 'gap-8'}`}>
             <NavItem 
               isScrolled={isScrolled}
               isDarkHeader={isDarkHeader}
+              compact={compact}
               title="SERVICES" 
               items={[
                 { 
                   label: 'Student Visa', 
                   desc: 'Study in top global destinations',
                   subItems: [
-                    { label: 'Italy', desc: 'Free education & €5,200 grants' },
+                    { label: 'Italy', desc: 'Free education & €5,200 grants', path: '/study-in-italy' },
                     { label: 'Australia', desc: 'High-quality education system' },
                     { label: 'Canada', desc: 'Post-study work opportunities' },
                     { label: 'France', desc: 'Rich cultural & academic heritage' },
@@ -71,6 +72,7 @@ export const Header = () => {
             <NavItem 
               isScrolled={isScrolled}
               isDarkHeader={isDarkHeader}
+              compact={compact}
               title="PROGRAMS" 
               items={[
                 { label: 'Apple Academy', desc: 'Premium coding & design programs' }
@@ -79,9 +81,10 @@ export const Header = () => {
             <NavItem 
               isScrolled={isScrolled}
               isDarkHeader={isDarkHeader}
+              compact={compact}
               title="RESOURCES" 
               items={[
-                { label: 'Course Finder', desc: 'Find your perfect degree' },
+                { label: 'Course Finder', desc: 'Find your perfect degree', url: 'https://coursefinderitaly.com/' },
                 { label: 'Scholarship Guide', desc: 'Maximize your funding' },
                 { label: 'Pre-Assessment', desc: 'Free profile evaluation' },
                 { label: 'Expert Consultation', desc: '1-on-1 career mapping' }
@@ -90,6 +93,7 @@ export const Header = () => {
             <NavItem 
               isScrolled={isScrolled}
               isDarkHeader={isDarkHeader}
+              compact={compact}
               title="COMPANY" 
               items={[
                 { label: 'Our Story', desc: 'Mission to democratize education' },
@@ -132,11 +136,13 @@ export const Header = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[60] bg-white p-8 flex flex-col h-screen overflow-y-auto"
+            className="fixed inset-0 z-[60] bg-[#0a0d18]/95 backdrop-blur-3xl p-8 flex flex-col h-screen overflow-y-auto"
           >
             <div className="flex justify-between items-center mb-12">
-              <img src={logo} alt="Presume Overseas" className="h-10 w-auto object-contain" />
-              <button className="p-2 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full" onClick={() => setMobileMenuOpen(false)}><X size={24} className="text-primary-blue" /></button>
+              <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                <img src={logo} alt="Presume Overseas" className="h-10 w-auto object-contain brightness-0 invert" />
+              </Link>
+              <button className="p-3 bg-white/5 hover:bg-white/10 transition-colors rounded-full border border-white/10" onClick={() => setMobileMenuOpen(false)}><X size={24} className="text-white" /></button>
             </div>
             
             <div className="space-y-6">
@@ -156,13 +162,13 @@ export const Header = () => {
             <div className="mt-auto pt-10 grid grid-cols-1 gap-4">
               <button 
                 onClick={() => { setModalOpen('login'); setMobileMenuOpen(false); }}
-                className="py-5 font-black tracking-widest text-primary-blue border-2 border-gray-200 hover:border-accent-gold transition-colors rounded-2xl"
+                className="py-5 font-black tracking-widest text-white border-2 border-white/10 hover:border-accent-gold transition-colors rounded-2xl bg-white/5"
               >
                 LOGIN
               </button>
               <button 
                 onClick={() => { setModalOpen('signup'); setMobileMenuOpen(false); }}
-                className="py-5 font-black tracking-widest text-white bg-primary-blue rounded-2xl shadow-xl shadow-primary-blue/20"
+                className="py-5 font-black tracking-widest text-primary-blue bg-accent-gold rounded-2xl shadow-xl"
               >
                 SIGN UP
               </button>
@@ -181,15 +187,16 @@ export const Header = () => {
   );
 };
 
-const NavItem = ({ title, items, isScrolled, isDarkHeader }) => {
+const NavItem = ({ title, items, isScrolled, isDarkHeader, compact }) => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
+  const navigate = useNavigate();
 
   return (
     <div 
-      className={`relative group transition-all duration-500 ${isScrolled ? 'py-3' : 'py-6'}`}
+      className={`relative group transition-all duration-500 ${isScrolled ? (compact ? 'py-2' : 'py-3') : (compact ? 'py-3' : 'py-6')}`}
       onMouseLeave={() => setActiveSubMenu(null)}
     >
-      <div className={`flex items-center gap-1.5 text-[12px] font-black tracking-[0.2em] transition-all duration-300 cursor-pointer ${
+      <div className={`flex items-center gap-1.5 ${compact ? 'text-[10px]' : 'text-[12px]'} font-black tracking-[0.2em] transition-all duration-300 cursor-pointer ${
         !isDarkHeader ? 'text-primary-blue/90' : 'text-white/90'
       } group-hover:text-accent-gold uppercase`}>
         {title} 
@@ -197,30 +204,33 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader }) => {
       </div>
       
       {/* Main Dropdown */}
-      <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-68 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,transform,visibility] duration-250 ease-out translate-y-2 group-hover:translate-y-0 z-50 will-change-[transform,opacity] transform-gpu">
-        <div className="relative rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_0_1px_rgba(168,85,247,0.4)] p-2 overflow-hidden"
-          style={{ background: 'linear-gradient(145deg, #2d1b5e 0%, #251550 50%, #2e1a60 100%)' }}
-        >
-          {/* Gradient accent orbs */}
-          <div className="pointer-events-none absolute -top-10 -left-6 w-32 h-32 rounded-full bg-violet-400/25 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-6 -right-4 w-24 h-24 rounded-full bg-fuchsia-400/20 blur-2xl" />
+      <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,transform,visibility] duration-250 ease-out translate-y-2 group-hover:translate-y-0 z-50 will-change-[transform,opacity] transform-gpu">
+        <div className="relative rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.8)] p-3 overflow-hidden border border-white/20 bg-[#0a0d18]/95 backdrop-blur-3xl">
+          {/* Subtle accent orbs */}
+          <div className="pointer-events-none absolute -top-10 -left-6 w-32 h-32 rounded-full bg-accent-gold/15 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-6 -right-4 w-24 h-24 rounded-full bg-blue-400/10 blur-3xl" />
           {/* Top gradient border line */}
-          <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-violet-300/60 to-transparent" />
+          <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          
           <div className="relative z-10">
             {items.map((item, idx) => (
               <div
                 key={idx}
                 className="relative"
                 onMouseEnter={() => setActiveSubMenu(item.subItems ? idx : null)}
+                onClick={() => {
+                  if (item.url) window.open(item.url, '_blank', 'noopener,noreferrer');
+                  else if (item.path) navigate(item.path);
+                }}
               >
-                <div className={`flex items-center justify-between px-4 py-3 hover:bg-violet-500/10 rounded-xl transition-all duration-200 cursor-pointer ${activeSubMenu === idx ? 'bg-violet-500/10' : ''}`}>
-                  <div className="flex flex-col gap-0.5">
-                    <p className={`text-[15px] font-bold tracking-tight transition-colors ${activeSubMenu === idx ? 'text-violet-300' : 'text-white hover:text-violet-300'}`}>{item.label}</p>
-                    <p className="text-[11px] font-medium text-white/50 uppercase tracking-wider">{item.desc}</p>
+                <div className={`flex items-center justify-between px-4 py-3 hover:bg-white/10 rounded-xl transition-all duration-300 cursor-pointer ${activeSubMenu === idx ? 'bg-white/10 shadow-inner' : ''}`}>
+                  <div className="flex flex-col gap-1">
+                    <p className={`text-[15px] font-bold tracking-tight transition-colors ${activeSubMenu === idx ? 'text-accent-gold' : 'text-white hover:text-accent-gold'}`}>{item.label}</p>
+                    <p className="text-[11px] font-medium text-gray-300">{item.desc}</p>
                   </div>
                   {item.subItems ? (
                     <div className="flex items-center gap-1.5">
-                      <ArrowRight size={14} className={`text-violet-400 transition-all duration-300 ${activeSubMenu === idx ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0'}`} />
+                      <ArrowRight size={14} className={`text-accent-gold transition-all duration-300 ${activeSubMenu === idx ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0'}`} />
                     </div>
                   ) : (
                     <ArrowRight size={14} className="text-white/40 opacity-0 hover:opacity-100 -translate-x-1 hover:translate-x-0 transition-all" />
@@ -241,27 +251,32 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader }) => {
               exit={{ opacity: 0, x: 8, scale: 0.96 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
               onMouseEnter={() => setActiveSubMenu(activeSubMenu)}
-              className="absolute top-0 left-[calc(100%+0.4rem)] w-[24rem] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_0_1px_rgba(168,85,247,0.35)] p-3 z-[60] overflow-hidden transform-gpu max-h-[calc(100vh-100px)]"
-              style={{ background: 'linear-gradient(145deg, #311a6a 0%, #281460 50%, #2e1868 100%)' }}
+              className="absolute top-0 left-[calc(100%+0.4rem)] w-[26rem] rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.8)] p-3 z-[60] overflow-hidden transform-gpu max-h-[calc(100vh-100px)] border border-white/20 bg-[#0a0d18]/95 backdrop-blur-3xl"
             >
-              {/* Gradient accent orbs */}
-              <div className="pointer-events-none absolute -top-8 right-0 w-28 h-28 rounded-full bg-violet-400/25 blur-2xl" />
-              <div className="pointer-events-none absolute bottom-0 left-0 w-20 h-20 rounded-full bg-fuchsia-400/20 blur-2xl" />
+              {/* Subtle accent orbs */}
+              <div className="pointer-events-none absolute -top-8 right-0 w-28 h-28 rounded-full bg-blue-500/15 blur-3xl" />
+              <div className="pointer-events-none absolute bottom-0 left-0 w-20 h-20 rounded-full bg-accent-gold/15 blur-3xl" />
               {/* Top gradient border line */}
-              <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-violet-300/60 to-transparent" />
+              <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+              
               <div className="relative z-10">
-                <div className="px-3 py-2 border-b border-white/10 mb-2">
-                  <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Select Destination</span>
+                <div className="px-4 py-3 border-b border-white/10 mb-3 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent-gold"></div>
+                  <span className="text-[11px] font-bold text-gray-300 tracking-[0.2em] uppercase">Select Destination</span>
                 </div>
                 {/* 2-column grid so 8 countries stay compact */}
-                <div className="grid grid-cols-2 gap-1">
+                <div className="grid grid-cols-2 gap-2">
                   {items[activeSubMenu].subItems.map((sub, sIdx) => (
-                    <div key={sIdx} className="group/sub flex items-center gap-2 px-3 py-3 hover:bg-white/10 rounded-xl transition-all cursor-pointer">
+                    <div 
+                      key={sIdx} 
+                      onClick={() => { if(sub.path) { navigate(sub.path); setActiveSubMenu(null); } }} 
+                      className="group/sub flex items-center gap-3 px-3 py-3 hover:bg-white/10 border border-transparent hover:border-white/10 rounded-xl transition-all cursor-pointer"
+                    >
                       <div className="flex flex-col min-w-0">
-                        <p className="text-[14px] font-bold text-white group-hover/sub:text-cyan-400 truncate pr-1 transition-colors">
+                        <p className="text-[14px] font-bold text-gray-100 group-hover/sub:text-accent-gold truncate pr-1 transition-colors">
                           {sub.label}
                         </p>
-                        <p className="text-[10px] font-medium text-white/50 truncate transition-colors">
+                        <p className="text-[11px] font-medium text-gray-400 truncate transition-colors">
                           {sub.desc}
                         </p>
                       </div>
@@ -287,7 +302,7 @@ const MobileNavItem = ({ section }) => {
         onClick={() => setIsOpen(!isOpen)}
         className="text-3xl font-black tracking-tighter flex items-center justify-between w-full uppercase group transition-colors"
       >
-        <span className={isOpen ? 'text-accent-gold' : 'text-primary-blue'}>{section.title}</span>
+        <span className={isOpen ? 'text-accent-gold' : 'text-white'}>{section.title}</span>
         <ChevronDown size={28} className={`text-accent-gold transition-transform duration-500 ${isOpen ? 'rotate-180 scale-110' : ''}`} />
       </button>
       
@@ -320,18 +335,31 @@ const MobileNavItem = ({ section }) => {
 
 const MobileSubItem = ({ item }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-4">
       <button 
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (item.url) {
+            window.open(item.url, '_blank', 'noopener,noreferrer');
+          } else if (item.subItems) {
+            setIsOpen(!isOpen);
+          } else if (item.path) {
+            navigate(item.path);
+          }
+        }}
         className="text-xl font-black flex items-center justify-between w-full group transition-colors"
       >
-        <span className={isOpen ? 'text-accent-gold' : 'text-primary-blue'}>{item.label}</span>
-        <ArrowRight size={20} className={`text-accent-gold transition-all duration-300 ${isOpen ? 'rotate-90 scale-125' : 'opacity-40 group-hover:opacity-100'}`} />
+        <span className={isOpen ? 'text-accent-gold' : 'text-white'}>{item.label}</span>
+        {item.subItems ? (
+          <ArrowRight size={20} className={`text-accent-gold transition-all duration-300 ${isOpen ? 'rotate-90 scale-125' : 'opacity-40 group-hover:opacity-100'}`} />
+        ) : (
+          <ArrowRight size={20} className="text-white/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+        )}
       </button>
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && item.subItems && (
           <motion.div 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -339,7 +367,11 @@ const MobileSubItem = ({ item }) => {
             className="grid grid-cols-1 gap-3 pl-4 overflow-hidden"
           >
             {item.subItems.map((sub, idx) => (
-              <div key={idx} className="flex items-center justify-between text-gray-500 text-base font-black bg-gray-50 px-5 py-4 rounded-2xl border border-gray-100 hover:border-accent-gold/40 hover:text-primary-blue transition-all">
+              <div 
+                key={idx} 
+                onClick={() => { if(sub === 'Italy') navigate('/study-in-italy'); }} 
+                className="flex items-center justify-between text-gray-400 text-base font-bold bg-white/5 px-5 py-4 rounded-2xl border border-white/5 hover:border-accent-gold/40 hover:text-white transition-all cursor-pointer"
+              >
                 {sub}
                 <ArrowRight size={14} className="text-accent-gold opacity-50" />
               </div>

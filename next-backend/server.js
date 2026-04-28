@@ -1,4 +1,4 @@
-require('dns').setServers(['8.8.8.8']);
+// require('dns').setServers(['8.8.8.8']);
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
@@ -113,7 +113,10 @@ nextApp.prepare().then(async () => {
   }
 
   try {
-    await mongoose.connect(process.env.MONGO_URI || '', { serverSelectionTimeoutMS: 5000 });
+    await mongoose.connect(process.env.MONGO_URI || '', { 
+      serverSelectionTimeoutMS: 5000,
+      family: 4
+    });
     console.log('Connected to database');
     
     // Auto-seed Initial Admin User
