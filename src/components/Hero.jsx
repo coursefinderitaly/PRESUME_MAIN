@@ -168,7 +168,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8 w-full"
+              className="flex flex-wrap items-center gap-3 mb-10 w-full"
             >
               <FeatureItem Icon={School} title="Public Universities" />
               <FeatureItem Icon={Star} title="Zero Tuition" />
@@ -265,10 +265,10 @@ export const Hero = () => {
 };
 
 const FeatureItem = ({ Icon, title }) => (
-  <div className="flex items-center gap-2 group text-shadow">
-    <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
-      <Icon className="text-accent-gold" size={14} />
+  <div className="flex items-center gap-3 group px-4 py-2.5 rounded-2xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-accent-gold/40 hover:shadow-[0_0_20px_rgba(197,168,128,0.15)] transition-all duration-500 cursor-default">
+    <div className="w-9 h-9 rounded-xl bg-accent-gold/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 transition-colors">
+      <Icon className="text-accent-gold drop-shadow-[0_0_8px_rgba(197,168,128,0.4)]" size={18} />
     </div>
-    <h4 className="text-white font-black text-[10px] uppercase tracking-[0.1em] leading-tight whitespace-nowrap">{title}</h4>
+    <span className="text-white/90 font-bold text-[13px] tracking-wide whitespace-nowrap">{title}</span>
   </div>
 );
