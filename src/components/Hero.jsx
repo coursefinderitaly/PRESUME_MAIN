@@ -168,12 +168,12 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="grid grid-cols-2 gap-x-8 gap-y-3 mb-6 w-full max-w-sm"
+              className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8 w-full"
             >
               <FeatureItem Icon={School} title="Public Universities" />
-              <div className="translate-x-8"><FeatureItem Icon={Star} title="Zero Tuition" /></div>
+              <FeatureItem Icon={Star} title="Zero Tuition" />
               <FeatureItem Icon={Globe} title="100% Scholarship" />
-              <div className="translate-x-8"><FeatureItem Icon={GraduationCap} title="Expert Mentors" /></div>
+              <FeatureItem Icon={GraduationCap} title="Expert Mentors" />
             </motion.div>
 
             <div className="flex flex-col sm:flex-row items-center gap-6 mt-2">
@@ -265,10 +265,10 @@ export const Hero = () => {
 };
 
 const FeatureItem = ({ Icon, title }) => (
-  <div className="flex items-center gap-4 group text-shadow">
-    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
-      <Icon className="text-accent-gold" size={20} />
+  <div className="flex items-center gap-2 group text-shadow">
+    <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
+      <Icon className="text-accent-gold" size={14} />
     </div>
-    <h4 className="text-white font-black text-lg tracking-tight leading-tight">{title}</h4>
+    <h4 className="text-white font-black text-[10px] uppercase tracking-[0.1em] leading-tight whitespace-nowrap">{title}</h4>
   </div>
 );
