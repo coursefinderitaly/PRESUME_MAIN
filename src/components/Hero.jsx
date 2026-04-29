@@ -106,7 +106,7 @@ export const Hero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, staggerChildren: 0.2 }}
-            className="flex flex-col items-start pt-6 pb-6"
+            className="flex flex-col items-start pt-12 pb-6"
           >
 
 
