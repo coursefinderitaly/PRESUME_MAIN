@@ -5,6 +5,22 @@ import { useState, useEffect } from 'react';
 export const RegistrationForm = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isClient, setIsClient] = useState(false);
+  const [formData, setFormData] = useState({
+    fname: '', lname: '', email: '', phone: '+91 ', interest: '', message: ''
+  });
+
+  const handlePhoneChange = (e) => {
+    let { name, value } = e.target;
+    const prefix = '+91 ';
+    const digits = value.replace(prefix, '').replace(/[^\d]/g, '');
+    const truncated = digits.slice(0, 10);
+    setFormData(prev => ({ ...prev, [name]: prefix + truncated }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -170,14 +186,14 @@ export const RegistrationForm = () => {
                     initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
                     className="relative group"
                   >
-                    <input type="text" id="fname" className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent" placeholder="First Name" />
+                    <input type="text" id="fname" name="fname" value={formData.fname} onChange={handleChange} className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent" placeholder="First Name" />
                     <label htmlFor="fname" className="absolute left-4 top-2 text-white/40 text-[10px] transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-cyan-400 font-medium pointer-events-none">First Name</label>
                   </motion.div>
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.2 }}
                     className="relative group"
                   >
-                    <input type="text" id="lname" className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent" placeholder="Last Name" />
+                    <input type="text" id="lname" name="lname" value={formData.lname} onChange={handleChange} className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent" placeholder="Last Name" />
                     <label htmlFor="lname" className="absolute left-4 top-2 text-white/40 text-[10px] transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-cyan-400 font-medium pointer-events-none">Last Name</label>
                   </motion.div>
                 </div>
@@ -187,7 +203,7 @@ export const RegistrationForm = () => {
                     initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.3 }}
                     className="relative group"
                   >
-                    <input type="email" id="email" className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent" placeholder="Email Address" />
+                    <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent" placeholder="Email Address" />
                     <label htmlFor="email" className="absolute left-4 top-2 text-white/40 text-[10px] transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-cyan-400 font-medium pointer-events-none">Email Address</label>
                   </motion.div>
 
@@ -195,7 +211,7 @@ export const RegistrationForm = () => {
                     initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.4 }}
                     className="relative group"
                   >
-                    <input type="tel" id="phone" className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent" placeholder="Phone Number" />
+                    <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handlePhoneChange} className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent" placeholder="+91 9876543210" />
                     <label htmlFor="phone" className="absolute left-4 top-2 text-white/40 text-[10px] transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-cyan-400 font-medium pointer-events-none">Phone Number</label>
                   </motion.div>
                 </div>

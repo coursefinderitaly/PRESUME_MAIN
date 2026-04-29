@@ -189,6 +189,10 @@ router.post('/email-zip', auth, upload.array('documents'), async (req, res) => {
                             // Reset the cart now that applications are finalized
                             studentUser.savedUniversitiesCart = [];
 
+                            // Save the latest uploaded document zip filename
+                            const zipName = `${(candidateName || 'Candidate').replace(/\s+/g, '_')}_${Date.now()}_Documents.zip`;
+                            studentUser.documentZip = zipName;
+
                             await studentUser.save();
                             console.log(`[Upload] Successfully saved ${incomingValid.length} applied universities to database for student ID ${data.studentId}`);
                         } else {
@@ -208,7 +212,20 @@ router.post('/email-zip', auth, upload.array('documents'), async (req, res) => {
         }
 
         // --- 1. SET UP IN-MEMORY ZIP AND R2 STREAMING ---
-        const zipFilename = `${(candidateName || 'Candidate').replace(/\s+/g, '_')}_${Date.now()}_Documents.zip`;
+        let zipFilename;
+        if (summaryData) {
+            try {
+                const data = JSON.parse(summaryData);
+                const studentUser = await User.findById(data.studentId);
+                if (studentUser && studentUser.documentZip) {
+                    zipFilename = studentUser.documentZip;
+                }
+            } catch (err) {}
+        }
+        if (!zipFilename) {
+            zipFilename = `${(candidateName || 'Candidate').replace(/\s+/g, '_')}_${Date.now()}_Documents.zip`;
+        }
+
         const passThroughStream = new PassThrough();
         const archive = archiver('zip', {
             zlib: { level: 1 } // Fastest compression (Better for PDFs/Images)
@@ -357,21 +374,29 @@ router.post('/email-excel', auth, upload.single('excelFile'), async (req, res) =
     }
 });
 
-module.exports = router;
-
-// Endpoint for downloading documents stored locally
-router.get('/download/:filename', async (req, res) => {
+// Endpoint to download the generated zip file
+// Endpoint to download the generated zip file
+router.get('/download/:key', auth, async (req, res) => {
     try {
-        const fileName = req.params.filename;
-        const filePath = getLocalFilePath(fileName);
-
-        if (fs.existsSync(filePath)) {
-            res.download(filePath);
-        } else {
-            res.status(404).send('File not found.');
+        const { key } = req.params;
+        const filePath = getLocalFilePath(key);
+        
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: 'File not found on server' });
         }
+        
+        res.download(filePath, key, (err) => {
+            if (err) {
+                console.error("Download error:", err);
+                if (!res.headersSent) {
+                    res.status(500).send("Error downloading file");
+                }
+            }
+        });
     } catch (err) {
-        console.error('Download error:', err);
-        res.status(500).send('Internal server error during download.');
+        console.error("Download route error:", err);
+        res.status(500).json({ error: "Server error" });
     }
 });
+
+module.exports = router;

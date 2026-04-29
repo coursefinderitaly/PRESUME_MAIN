@@ -9,6 +9,20 @@ import sapienza from '../uni/sapienza.jpg';
 import milano from '../uni/milano.jpg';
 import florence from '../uni/florence.jpg';
 import padua from '../uni/padua.jpg';
+import roma from '../uni/roma.jpg';
+import progetto from '../uni/progetto.jpg';
+import italyada from '../uni/italyada.jpg';
+import eth from '../uni/eth.jpg';
+import harvard from '../uni/harvard.jpg';
+import melbourne from '../uni/melbourne.jpg';
+import pisa from '../uni/pisa.jpg';
+import sapienza_research from '../uni/sapienza_research.jpg';
+import ucla from '../uni/ucla.jpg';
+import campus1 from '../uni/campus1.jpg';
+import campus2 from '../uni/campus2.jpg';
+import campus3 from '../uni/campus3.jpg';
+import campus4 from '../uni/campus4.jpg';
+import campus5 from '../uni/campus5.jpg';
 
 const universities = [
   { id: 1, name: 'Sapienza University of Rome', image: sapienza },
@@ -16,6 +30,11 @@ const universities = [
   { id: 3, name: 'University of Milan', image: milano },
   { id: 4, name: 'University of Padua', image: padua },
   { id: 5, name: 'University of Florence', image: florence },
+  { id: 6, name: 'University of Rome Tor Vergata', image: roma },
+  { id: 7, name: 'University of Pisa', image: pisa },
+  { id: 8, name: 'Politecnico di Milano', image: campus1 },
+  { id: 9, name: 'University of Naples Federico II', image: campus2 },
+  { id: 10, name: 'University of Turin', image: campus3 },
 ];
 
 const DOME_IMAGES = [
@@ -24,17 +43,20 @@ const DOME_IMAGES = [
   { src: milano, alt: 'University of Milan' },
   { src: padua, alt: 'University of Padua' },
   { src: florence, alt: 'University of Florence' },
-  { src: sapienza, alt: 'Historic Campus' },
-  { src: bologna, alt: 'Rome Campus' },
-  { src: milano, alt: 'Florence Architecture' },
-  { src: padua, alt: 'Pisa University Area' },
-  { src: florence, alt: 'Venice Academic Life' },
-  { src: sapienza, alt: 'European Campus' },
-  { src: bologna, alt: 'Milan Skyline' },
-  { src: milano, alt: 'Vatican Area' },
-  { src: padua, alt: 'University Library' },
-  { src: florence, alt: 'Italian campus courtyard' },
-  { src: sapienza, alt: 'Italy landscape' },
+  { src: roma, alt: 'Rome Campus View' },
+  { src: pisa, alt: 'Pisa Academic Square' },
+  { src: eth, alt: 'ETH Zurich Partnership' },
+  { src: harvard, alt: 'Global Exchange Program' },
+  { src: melbourne, alt: 'International Studies' },
+  { src: ucla, alt: 'Research Collaborations' },
+  { src: sapienza_research, alt: 'Advanced Research Lab' },
+  { src: progetto, alt: 'Modern Campus Project' },
+  { src: italyada, alt: 'Student Life in Italy' },
+  { src: campus1, alt: 'Historic Courtyard' },
+  { src: campus2, alt: 'University Library' },
+  { src: campus3, alt: 'Lecture Halls' },
+  { src: campus4, alt: 'Student Hub' },
+  { src: campus5, alt: 'Science Department' },
 ];
 
 const VerticalMarquee = ({ images, align, direction = -1, speed = 30 }) => {

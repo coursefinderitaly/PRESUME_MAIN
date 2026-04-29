@@ -1307,6 +1307,25 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
         </div>
         <div style={{ display: activeTab === 'documents' ? 'block' : 'none' }}>
           <div style={{ animation: 'fadeIn 0.3s ease' }}>
+            {isPartnerView && student.documentZip && (
+              <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', padding: '20px', borderRadius: '12px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h3 style={{ margin: '0 0 5px 0', color: '#10b981', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Download size={18} /> Student Documents Available
+                  </h3>
+                  <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)' }}>You can download the latest zipped bundle of this student's uploaded documents.</p>
+                </div>
+                <a 
+                  href={`${API_BASE_URL}/upload/download/${student.documentZip}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn-save" 
+                  style={{ background: '#10b981', color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold' }}
+                >
+                  <Download size={16} /> Download ZIP
+                </a>
+              </div>
+            )}
             <DocumentUpload profile={formData} setMessage={setMessage} ref={documentUploadRef} />
             {/* Actions */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px' }}>

@@ -81,14 +81,9 @@ const RegisterStudent = ({ profile, setMessage }) => {
   const enforcePhonePrefix = (e) => {
     let { name, value } = e.target;
     const prefix = '+91 ';
-    value = value.replace(/[^\d+ ]/g, ''); // shred alpha characters
-
-    if (!value.startsWith(prefix)) {
-      setFormData(prev => ({ ...prev, [name]: prefix }));
-    } else {
-      const truncated = value.slice(0, prefix.length + 10);
-      setFormData(prev => ({ ...prev, [name]: truncated }));
-    }
+    const digits = value.replace(prefix, '').replace(/[^\d]/g, '');
+    const truncated = digits.slice(0, 10);
+    setFormData(prev => ({ ...prev, [name]: prefix + truncated }));
   };
 
   const handleRegister = async (e) => {

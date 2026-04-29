@@ -130,6 +130,10 @@ const UserSchema = new mongoose.Schema({
     intake: String,
     rawSheetData: mongoose.Schema.Types.Mixed
   }, { _id: false })],
+  
+  // Latest uploaded document zip
+  documentZip: { type: String },
+  
   // New Field for Tracking
   offerStatus: { type: String, enum: ['Pending', 'Received'], default: 'Pending' },
   studentStatus: { type: String, enum: ['Active', 'Backout', 'On Hold'], default: 'Active' },

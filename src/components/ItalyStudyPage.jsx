@@ -7,10 +7,11 @@ const ItalyStudyPage = () => {
     // State for interactive document checklist
     const [checkedDocs, setCheckedDocs] = useState({});
 
-    const toggleDoc = (index) => {
+    const toggleDoc = (category, index) => {
+        const key = `${category}-${index}`;
         setCheckedDocs(prev => ({
             ...prev,
-            [index]: !prev[index]
+            [key]: !prev[key]
         }));
     };
 
@@ -71,15 +72,93 @@ const ItalyStudyPage = () => {
         }
     ];
 
-    const requiredDocs = [
-        "10th & 12th Mark Sheets (original + photocopies)",
+    const mbbsDocs = [
+        "10th & 12th Mark Sheets",
         "Valid Passport",
-        "Passport-size photographs (white background)",
-        "Birth Certificate (in English or translated)",
+        "Passport-size photographs",
+        "Birth Certificate",
         "Medical Fitness Certificate",
         "Police Clearance Certificate",
-        "COVID‑19 Vaccination Certificate",
-        "Admission Letter & Visa (provided post-application)"
+        "Admission Letter & Visa"
+    ];
+
+    const bachelorsDocs = [
+        "10th & 12th Mark Sheets",
+        "Valid Passport",
+        "Passport-size photographs",
+        "MOI Certificate",
+        "Motivation Letter / SOP",
+        "Europass CV"
+    ];
+
+    const mastersDocs = [
+        "Bachelor's Transcripts",
+        "10th & 12th Mark Sheets",
+        "Valid Passport",
+        "MOI Certificate",
+        "Motivation Letter / SOP",
+        "2 LORs",
+        "Europass CV"
+    ];
+
+    const studyLevels = [
+        {
+            id: "mbbs",
+            title: "MBBS in Italy",
+            icon: <Stethoscope className="w-8 h-8 text-accent-gold" />,
+            themeColor: "text-accent-gold",
+            bgGlow: "bg-accent-gold/10",
+            bgBox: "bg-accent-gold/5",
+            borderBox: "border-accent-gold/20",
+            checkedBg: "bg-accent-gold/10",
+            checkedBorder: "border-accent-gold/40",
+            checkedInput: "checked:bg-accent-gold checked:border-accent-gold",
+            eligibility: [
+                "10+2 with Science (PCB).",
+                "Minimum 60% aggregate.",
+                "Age 17+ by Dec 2025."
+            ],
+            exam: "Must clear the IMAT (mandatory for public medical universities).",
+            docs: mbbsDocs
+        },
+        {
+            id: "bachelors",
+            title: "Bachelors",
+            icon: <GraduationCap className="w-8 h-8 text-blue-400" />,
+            themeColor: "text-blue-400",
+            bgGlow: "bg-blue-500/10",
+            bgBox: "bg-blue-500/5",
+            borderBox: "border-blue-500/20",
+            checkedBg: "bg-blue-500/10",
+            checkedBorder: "border-blue-500/40",
+            checkedInput: "checked:bg-blue-500 checked:border-blue-500",
+            eligibility: [
+                "12 years of formal education.",
+                "Minimum 60% aggregate.",
+                "IELTS waived if MOI was English."
+            ],
+            exam: "Many programs require the TOLC exam for Engineering, Economics, etc.",
+            docs: bachelorsDocs
+        },
+        {
+            id: "masters",
+            title: "Masters",
+            icon: <BookOpen className="w-8 h-8 text-emerald-400" />,
+            themeColor: "text-emerald-400",
+            bgGlow: "bg-emerald-500/10",
+            bgBox: "bg-emerald-500/5",
+            borderBox: "border-emerald-500/20",
+            checkedBg: "bg-emerald-500/10",
+            checkedBorder: "border-emerald-500/40",
+            checkedInput: "checked:bg-emerald-500 checked:border-emerald-500",
+            eligibility: [
+                "Bachelor's degree (3 or 4 yrs).",
+                "Minimum CGPA of 6.5+.",
+                "IELTS waived if degree in English."
+            ],
+            exam: "Based on academic profile, SOP, and LORs. Interview may be required.",
+            docs: mastersDocs
+        }
     ];
 
     return (
@@ -169,7 +248,7 @@ const ItalyStudyPage = () => {
 
                             {/* Interactive Floating Stack */}
                             <div className="relative w-full h-full flex items-center justify-center transform-style-3d">
-                                {/* Main Hero Card (Visa) - Central Focal Point */}
+                                {/* Main Hero Card (Stipend) - Central Focal Point */}
                                 <motion.div
                                     animate={{ 
                                         y: [-12, 12, -12],
@@ -177,14 +256,14 @@ const ItalyStudyPage = () => {
                                         rotateY: [0, -5, 0]
                                     }}
                                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute p-10 rounded-[40px] bg-gradient-to-br from-[#0a0d18]/95 to-blue-900/40 backdrop-blur-[60px] border border-blue-500/30 shadow-[0_40px_100px_rgba(0,0,0,0.6)] flex items-center gap-8 z-50 transform translate-z-20"
+                                    className="absolute p-10 rounded-[40px] bg-gradient-to-br from-[#0a0d18]/95 to-yellow-900/40 backdrop-blur-[60px] border border-accent-gold/30 shadow-[0_40px_100px_rgba(0,0,0,0.6)] flex items-center gap-8 z-50 transform translate-z-20"
                                 >
-                                    <div className="w-20 h-20 rounded-[24px] bg-blue-500/20 flex items-center justify-center border border-blue-400/30 shadow-[0_0_30px_rgba(59,130,246,0.2)]">
-                                        <Briefcase className="text-blue-400 w-10 h-10" />
+                                    <div className="w-20 h-20 rounded-[24px] bg-accent-gold/20 flex items-center justify-center border border-accent-gold/30 shadow-[0_0_30px_rgba(197,168,128,0.2)]">
+                                        <Euro className="text-accent-gold w-10 h-10" />
                                     </div>
                                     <div>
-                                        <div className="text-5xl font-black text-white tracking-tighter mb-1">12 Months</div>
-                                        <div className="text-xs uppercase tracking-[0.3em] text-blue-400 font-bold">Post-Study Visa</div>
+                                        <div className="text-5xl font-black text-white tracking-tighter mb-1">€5,200</div>
+                                        <div className="text-xs uppercase tracking-[0.3em] text-accent-gold font-bold">Annual Stipend</div>
                                     </div>
                                 </motion.div>
 
@@ -221,7 +300,7 @@ const ItalyStudyPage = () => {
                                     </div>
                                 </motion.div>
 
-                                {/* Bottom Left: Stipend */}
+                                {/* Bottom Left: Visa */}
                                 <motion.div
                                     animate={{ 
                                         y: [-20, 15, -20],
@@ -229,14 +308,14 @@ const ItalyStudyPage = () => {
                                         rotateY: [-10, 10, -10]
                                     }}
                                     transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                                    className="absolute bottom-[12%] left-[2%] p-7 rounded-[35px] bg-white/5 backdrop-blur-[40px] border border-accent-gold/20 shadow-2xl flex items-center gap-6 z-40"
+                                    className="absolute bottom-[12%] left-[2%] p-7 rounded-[35px] bg-white/5 backdrop-blur-[40px] border border-blue-500/20 shadow-2xl flex items-center gap-6 z-40"
                                 >
-                                    <div className="w-14 h-14 rounded-full bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center">
-                                        <Euro className="text-accent-gold w-7 h-7" />
+                                    <div className="w-14 h-14 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
+                                        <Briefcase className="text-blue-400 w-7 h-7" />
                                     </div>
                                     <div>
-                                        <div className="text-3xl font-black text-white tracking-tighter">€5,200</div>
-                                        <div className="text-[11px] uppercase tracking-widest text-accent-gold font-bold mt-1">Annual Stipend</div>
+                                        <div className="text-3xl font-black text-white tracking-tighter">12 Months</div>
+                                        <div className="text-[11px] uppercase tracking-widest text-blue-400 font-bold mt-1">Post-Study Visa</div>
                                     </div>
                                 </motion.div>
 
@@ -323,95 +402,85 @@ const ItalyStudyPage = () => {
                         </div>
                     </div>
 
-                    {/* MBBS in Italy 2025 (With Checkboxes) */}
-                    <div className="mb-32 relative">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-5xl bg-blue-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+                    {/* Compact Study Levels Grid (MBBS, Bachelors, Masters) */}
+                    <div className="mb-32 relative z-20">
+                        <div className="text-center mb-16">
+                            <h2 className="text-4xl md:text-5xl font-black mb-4 text-white tracking-tight">Study Levels in Italy</h2>
+                            <p className="text-gray-400 text-lg font-medium max-w-2xl mx-auto">Find the right path for your academic journey and prepare your documents.</p>
+                        </div>
 
-                        <div className="p-10 md:p-14 rounded-[48px] bg-white/[0.02] border border-white/10 backdrop-blur-[50px] shadow-2xl relative z-10 overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-accent-gold/10 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none"></div>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full max-w-5xl bg-blue-500/5 rounded-full blur-[150px] pointer-events-none"></div>
 
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 border-b border-white/10 pb-10">
-                                <div>
-                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-gold/10 border border-accent-gold/20 mb-4">
-                                        <span className="text-[10px] font-bold tracking-[0.2em] text-accent-gold uppercase">Exclusive Guide</span>
+                            {studyLevels.map(level => (
+                                <div key={level.id} className={`p-6 md:p-8 rounded-[32px] bg-white/[0.02] border border-white/10 backdrop-blur-[30px] shadow-2xl relative overflow-hidden flex flex-col hover:border-white/20 transition-all`}>
+                                    <div className={`absolute top-0 right-0 w-32 h-32 ${level.bgGlow} rounded-full blur-[50px] -mr-10 -mt-10 pointer-events-none`}></div>
+                                    
+                                    <div className="flex items-center gap-4 mb-6 border-b border-white/10 pb-4 relative z-10">
+                                        {level.icon}
+                                        <h3 className="text-2xl font-black text-white tracking-tight">{level.title}</h3>
                                     </div>
-                                    <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight flex items-center gap-4">
-                                        MBBS in Italy 2025
-                                    </h2>
-                                </div>
-                                <Stethoscope className="w-16 h-16 text-accent-gold/40" />
-                            </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                                {/* Left Col: Eligibility */}
-                                <div className="space-y-8">
-                                    <div>
-                                        <h3 className="text-xl font-black text-white mb-6 flex items-center gap-3">
-                                            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 text-xs text-accent-gold">01</span>
-                                            Basic Eligibility
-                                        </h3>
-                                        <div className="space-y-3 pl-11">
-                                            {[
-                                                "Completed 10+2 with Science (PCB) from a recognized board.",
-                                                "Minimum 60% aggregate marks in PCB.",
-                                                "Age must be 17 years or above by 31st December 2025."
-                                            ].map((item, i) => (
-                                                <div key={i} className="flex items-start gap-3 bg-white/5 p-4 rounded-2xl border border-white/5">
-                                                    <CheckCircle2 className="w-5 h-5 text-accent-gold shrink-0 mt-0.5" />
-                                                    <span className="text-sm text-gray-300 font-medium leading-relaxed">{item}</span>
-                                                </div>
-                                            ))}
+                                    <div className="space-y-6 flex-1 relative z-10">
+                                        {/* Eligibility */}
+                                        <div>
+                                            <h4 className={`text-xs font-bold ${level.themeColor} mb-2.5 uppercase tracking-wider`}>Eligibility</h4>
+                                            <ul className="space-y-1.5">
+                                                {level.eligibility.map((item, i) => (
+                                                    <li key={i} className="flex items-start gap-2 text-xs text-gray-300">
+                                                        <CheckCircle2 className={`w-3.5 h-3.5 ${level.themeColor} shrink-0 mt-0.5`} />
+                                                        <span className="leading-snug">{item}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
-                                    </div>
 
-                                    <div>
-                                        <h3 className="text-xl font-black text-white mb-6 flex items-center gap-3">
-                                            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 text-xs text-accent-gold">02</span>
-                                            Entrance Exam
-                                        </h3>
-                                        <div className="pl-11">
-                                            <div className="bg-gradient-to-r from-blue-500/10 to-transparent p-6 rounded-2xl border border-blue-500/20">
-                                                <p className="text-sm text-gray-300 font-medium leading-relaxed">
-                                                    Must clear the <strong className="text-white">IMAT (International Medical Admission Test)</strong>. It is mandatory for all public Italian medical universities.
-                                                </p>
+                                        {/* Exam */}
+                                        <div>
+                                            <h4 className={`text-xs font-bold ${level.themeColor} mb-2.5 uppercase tracking-wider`}>Admissions / Exam</h4>
+                                            <div className={`${level.bgBox} border ${level.borderBox} p-3 rounded-xl text-xs text-gray-300 leading-relaxed font-medium`}>
+                                                {level.exam}
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
 
-                                {/* Right Col: Interactive Checklist */}
-                                <div className="bg-[#0a0d18]/50 p-8 rounded-[32px] border border-white/5">
-                                    <h3 className="text-xl font-black text-white mb-2 flex items-center gap-3">
-                                        <FileText className="text-accent-gold w-6 h-6" /> Required Documents
-                                    </h3>
-                                    <p className="text-xs text-gray-400 mb-8 font-medium">Use this checklist to track your preparation.</p>
+                                        {/* Docs Checklist */}
+                                        <div>
+                                            <h4 className={`text-xs font-bold ${level.themeColor} mb-2.5 uppercase tracking-wider flex items-center gap-1.5`}>
+                                                <FileText className="w-3.5 h-3.5" /> Required Docs
+                                            </h4>
+                                            <div className="space-y-2 mb-6 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                                                {level.docs.map((doc, i) => {
+                                                    const isChecked = !!checkedDocs[`${level.id}-${i}`];
+                                                    return (
+                                                        <label key={i} className={`flex items-start gap-3 p-2.5 rounded-xl border cursor-pointer transition-all ${isChecked ? `${level.checkedBg} ${level.checkedBorder}` : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
+                                                            <div className="relative flex items-center justify-center shrink-0 mt-0.5">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={isChecked}
+                                                                    onChange={() => toggleDoc(level.id, i)}
+                                                                    className={`peer appearance-none w-4 h-4 border-2 border-gray-500 rounded bg-transparent ${level.checkedInput} cursor-pointer transition-colors`}
+                                                                />
+                                                                <CheckCircle2 className="absolute text-[#0a0d18] w-3 h-3 opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" strokeWidth={4} />
+                                                            </div>
+                                                            <span className={`text-[11px] leading-tight transition-colors ${isChecked ? 'text-white font-medium' : 'text-gray-400'}`}>
+                                                                {doc}
+                                                            </span>
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
 
-                                    <div className="space-y-3">
-                                        {requiredDocs.map((doc, i) => (
-                                            <label
-                                                key={i}
-                                                className={`flex items-start gap-4 p-4 rounded-2xl border cursor-pointer transition-all duration-300 ${checkedDocs[i]
-                                                    ? 'bg-accent-gold/10 border-accent-gold/30'
-                                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
-                                                    }`}
-                                            >
-                                                <div className="relative flex items-center justify-center shrink-0 mt-0.5">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={!!checkedDocs[i]}
-                                                        onChange={() => toggleDoc(i)}
-                                                        className="peer appearance-none w-5 h-5 border-2 border-gray-500 rounded bg-transparent checked:bg-accent-gold checked:border-accent-gold transition-colors cursor-pointer"
-                                                    />
-                                                    <CheckCircle2 className="absolute text-[#0a0d18] w-3.5 h-3.5 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
-                                                </div>
-                                                <span className={`text-sm font-medium transition-colors ${checkedDocs[i] ? 'text-white' : 'text-gray-400'}`}>
-                                                    {doc}
+                                            {/* Check Eligibility Button */}
+                                            <button className={`w-full py-4 rounded-2xl bg-white/5 border ${level.borderBox} hover:${level.checkedBg} transition-all duration-300 group/btn`}>
+                                                <span className={`text-[10px] font-black tracking-[0.2em] ${level.themeColor} flex items-center justify-center gap-2 uppercase`}>
+                                                    Check Eligibility 
+                                                    <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                                                 </span>
-                                            </label>
-                                        ))}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
 

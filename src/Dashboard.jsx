@@ -54,6 +54,7 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('home'); // which sidebar section is open
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+  const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [message, setMessage] = useState({ text: '', type: '' });
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -225,6 +226,39 @@ const Dashboard = () => {
         setEditMode(false);
       } else {
         setMessage({ text: data.error || 'Failed to update.', type: 'error' });
+      }
+    } catch (err) {
+      setMessage({ text: 'Server unreachable.', type: 'error' });
+    }
+  };
+
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setMessage({ text: 'New passwords do not match.', type: 'error' });
+      return;
+    }
+    setMessage({ text: 'Updating password...', type: 'info' });
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+        credentials: 'include',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-csrf-protected': '1'
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMessage({ text: 'Password updated successfully.', type: 'success' });
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        setMessage({ text: data.error || 'Failed to update password.', type: 'error' });
       }
     } catch (err) {
       setMessage({ text: 'Server unreachable.', type: 'error' });
@@ -424,7 +458,7 @@ const Dashboard = () => {
               {!editMode ? (
                 <button className="btn-edit" onClick={() => setEditMode(true)}><Edit2 size={16} /> Edit Profile</button>
               ) : (
-                <button className="btn-cancel" onClick={() => { setEditMode(false); setFormData(profile); setMessage({ text: '', type: '' }); }}><X size={16} /> Cancel</button>
+                <button className="btn-cancel" onClick={() => { setEditMode(false); setFormData(profile); setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); setMessage({ text: '', type: '' }); }}><X size={16} /> Cancel</button>
               )}
             </header>
           )}
@@ -718,6 +752,32 @@ const Dashboard = () => {
 
                       <div className="edit-actions">
                         <button type="submit" className="btn-save"><Save size={16} /> Save Changes</button>
+                      </div>
+                    </div>
+                  </form>
+                  
+                  <form onSubmit={handlePasswordUpdate} className="edit-form-grid" style={{ marginTop: '20px' }}>
+                    <div className="profile-card full-width edit-card">
+                      <h3 style={{ gridColumn: '1 / -1', marginBottom: '15px' }}><KeyRound size={18} style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Security Settings</h3>
+                      
+                      <div className="dash-input-group" style={{ gridColumn: '1 / -1' }}>
+                        <label>Current Password</label>
+                        <input type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} required className="dash-input" />
+                      </div>
+
+                      <div className="dash-input-group">
+                        <label>New Password</label>
+                        <input type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} required className="dash-input" />
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Must be 8+ chars, with upper, lower, number & special char.</span>
+                      </div>
+
+                      <div className="dash-input-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} required className="dash-input" />
+                      </div>
+
+                      <div className="edit-actions" style={{ gridColumn: '1 / -1', marginTop: '15px' }}>
+                        <button type="submit" className="btn-save" style={{ background: '#ef4444' }}><Save size={16} /> Update Password</button>
                       </div>
                     </div>
                   </form>

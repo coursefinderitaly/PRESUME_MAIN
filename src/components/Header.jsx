@@ -47,13 +47,13 @@ export const Header = ({ compact = false }) => {
                   desc: 'Study in top global destinations',
                   subItems: [
                     { label: 'Italy', desc: 'Free education & €5,200 grants', path: '/study-in-italy' },
-                    { label: 'Australia', desc: 'High-quality education system' },
-                    { label: 'Canada', desc: 'Post-study work opportunities' },
-                    { label: 'France', desc: 'Rich cultural & academic heritage' },
-                    { label: 'Germany', desc: 'Zero tuition public universities' },
-                    { label: 'Ireland', desc: 'Fast-growing tech & research hub' },
-                    { label: 'United Kingdom', desc: 'World-class academic excellence' },
-                    { label: 'United States', desc: 'Global leader in higher education' }
+                    { label: 'Australia', desc: 'High-quality education system', path: '/study-in-australia' },
+                    { label: 'Canada', desc: 'Post-study work opportunities', path: '/study-in-canada' },
+                    { label: 'France', desc: 'Rich cultural & academic heritage', path: '/study-in-france' },
+                    { label: 'Germany', desc: 'Zero tuition public universities', path: '/study-in-germany' },
+                    { label: 'Ireland', desc: 'Fast-growing tech & research hub', path: '/study-in-ireland' },
+                    { label: 'United Kingdom', desc: 'World-class academic excellence', path: '/study-in-uk' },
+                    { label: 'United States', desc: 'Global leader in higher education', path: '/study-in-usa' }
                   ]
                 },
                 { 
@@ -88,6 +88,16 @@ export const Header = ({ compact = false }) => {
                 { label: 'Scholarship Guide', desc: 'Maximize your funding' },
                 { label: 'Pre-Assessment', desc: 'Free profile evaluation' },
                 { label: 'Expert Consultation', desc: '1-on-1 career mapping' }
+              ]} 
+            />
+            <NavItem 
+              isScrolled={isScrolled}
+              isDarkHeader={isDarkHeader}
+              compact={compact}
+              title="FORMS" 
+              items={[
+                { label: 'Business Partner Registration', desc: 'Become an official partner', path: '/partner-registration' },
+                { label: 'Book an Appointment', desc: 'Schedule a free consultation', path: '/book-appointment' }
               ]} 
             />
             <NavItem 
@@ -153,6 +163,10 @@ export const Header = ({ compact = false }) => {
                 ]},
                 { title: 'PROGRAMS', items: ['Apple Academy'] },
                 { title: 'RESOURCES', items: ['Course Finder', 'Scholarship Guide', 'Pre-Assessment', 'Expert Consultation'] },
+                { title: 'FORMS', items: [
+                  { label: 'Business Partner Registration', path: '/partner-registration' },
+                  { label: 'Book an Appointment', path: '/book-appointment' }
+                ]},
                 { title: 'COMPANY', items: ['Our Story', 'Careers', 'Contact Us'] }
               ].map((section) => (
                 <MobileNavItem key={section.title} section={section} />
@@ -269,7 +283,13 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader, compact }) => {
                   {items[activeSubMenu].subItems.map((sub, sIdx) => (
                     <div 
                       key={sIdx} 
-                      onClick={() => { if(sub.path) { navigate(sub.path); setActiveSubMenu(null); } }} 
+                      onClick={(e) => { 
+                        e.stopPropagation();
+                        if(sub.path) { 
+                          navigate(sub.path); 
+                          setActiveSubMenu(null); 
+                        } 
+                      }} 
                       className="group/sub flex items-center gap-3 px-3 py-3 hover:bg-white/10 border border-transparent hover:border-white/10 rounded-xl transition-all cursor-pointer"
                     >
                       <div className="flex flex-col min-w-0">
@@ -369,7 +389,23 @@ const MobileSubItem = ({ item }) => {
             {item.subItems.map((sub, idx) => (
               <div 
                 key={idx} 
-                onClick={() => { if(sub === 'Italy') navigate('/study-in-italy'); }} 
+                onClick={(e) => { 
+                  e.stopPropagation();
+                  const countryPathMap = {
+                    'Italy': '/study-in-italy',
+                    'Australia': '/study-in-australia',
+                    'Canada': '/study-in-canada',
+                    'France': '/study-in-france',
+                    'Germany': '/study-in-germany',
+                    'Ireland': '/study-in-ireland',
+                    'United Kingdom': '/study-in-uk',
+                    'United States': '/study-in-usa'
+                  };
+                  if(countryPathMap[sub]) {
+                    navigate(countryPathMap[sub]);
+                    setMobileMenuOpen(false);
+                  }
+                }} 
                 className="flex items-center justify-between text-gray-400 text-base font-bold bg-white/5 px-5 py-4 rounded-2xl border border-white/5 hover:border-accent-gold/40 hover:text-white transition-all cursor-pointer"
               >
                 {sub}

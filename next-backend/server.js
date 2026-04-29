@@ -65,6 +65,11 @@ nextApp.prepare().then(async () => {
     },
   }));
 
+  // Extra Security Headers
+  app.use(helmet.hidePoweredBy()); // Hide Express
+  app.use(helmet.xssFilter()); // Prevent XSS
+  app.use(helmet.noSniff()); // Prevent MIME-type sniffing
+
   app.use(express.json({ limit: '50mb' }));
   app.use(cookieParser());
 
@@ -79,24 +84,26 @@ nextApp.prepare().then(async () => {
     next();
   });
 
-  // Custom NoSQL Injection Prevention Middleware
+  // Custom NoSQL Injection Prevention (Express 5 Compatible)
   app.use((req, res, next) => {
     const sanitize = (obj) => {
-      if (obj instanceof Object) {
-        for (let key in obj) {
-          if (/^\$/.test(key)) {
+      if (obj && typeof obj === 'object') {
+        Object.keys(obj).forEach(key => {
+          if (key.startsWith('$')) {
             delete obj[key];
-          } else {
+          } else if (obj[key] && typeof obj[key] === 'object') {
             sanitize(obj[key]);
           }
-        }
+        });
       }
     };
     if (req.body) sanitize(req.body);
     if (req.params) sanitize(req.params);
-    if (req.headers) sanitize(req.headers);
+    if (req.query) sanitize(req.query);
     next();
   });
+
+
 
   // Rate Limiting for auth routes
   const authLimiter = rateLimit({

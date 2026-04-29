@@ -16,6 +16,7 @@ import PartnerDirectoryBrowser from './PartnerDirectoryBrowser';
 import SearchableSelect from './SearchableSelect';
 import ApplicationTracking from './ApplicationTracking';
 import { AIPetMascot } from './AIPetMascot';
+import UniversityDataManagement from './UniversityDataManagement';
 
 const AdminPortal = () => {
   const [users, setUsers] = useState([]);
@@ -577,6 +578,13 @@ const AdminPortal = () => {
             )}
           </button>
           
+          <button 
+            className={`nav-item ${activeTab === 'data_management' ? 'active' : ''}`} 
+            onClick={() => { setActiveTab('data_management'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}
+          >
+            <Database size={18} /> Manage University Data
+          </button>
+          
           <button className="nav-item logout-btn" onClick={handleLogout} style={{ color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', width: '100%', justifyContent: 'center', marginTop: '2.5rem' }}>
             <LogOut size={18} /> Secure Disconnect
           </button>
@@ -679,6 +687,8 @@ const AdminPortal = () => {
               <PartnerDirectoryBrowser users={users} onStudentClick={(u) => setViewingStudentProfile(u)} />
             ) : activeTab === 'overview' ? (
               <SystemHierarchy users={users} onStudentClick={(u) => setViewingStudentProfile(u)} />
+            ) : activeTab === 'data_management' ? (
+              <UniversityDataManagement />
             ) : (
             <div className="data-table-wrapper" style={{ background: 'var(--card-bg-solid)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflowX: 'auto', boxShadow: 'var(--shadow-lg)' }}>
               <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>

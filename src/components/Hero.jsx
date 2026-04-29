@@ -109,10 +109,10 @@ export const Hero = () => {
             className="flex flex-col items-start pt-10 pb-4"
           >
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 20 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-gold/10 text-accent-gold border border-accent-gold/20 mb-4 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-gold/10 text-accent-gold border border-accent-gold/20 mb-4 backdrop-blur-sm relative z-20"
             >
               <Zap size={12} className="fill-current" />
               <span className="text-[10px] font-black tracking-[0.2em] uppercase">Elite Italian Education</span>
@@ -166,15 +166,15 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="grid grid-cols-2 gap-x-8 gap-y-3 mb-7 w-full max-w-sm"
+              className="grid grid-cols-2 gap-x-8 gap-y-3 mb-4 w-full max-w-sm"
             >
               <FeatureItem Icon={School} title="Public Universities" />
-              <FeatureItem Icon={Star} title="Zero Tuition" />
+              <div className="translate-x-8"><FeatureItem Icon={Star} title="Zero Tuition" /></div>
               <FeatureItem Icon={Globe} title="100% Scholarship" />
-              <FeatureItem Icon={GraduationCap} title="Expert Mentors" />
+              <div className="translate-x-8"><FeatureItem Icon={GraduationCap} title="Expert Mentors" /></div>
             </motion.div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center gap-6 -mt-2">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -263,10 +263,10 @@ export const Hero = () => {
 };
 
 const FeatureItem = ({ Icon, title }) => (
-  <div className="flex items-center gap-4 group text-shadow">
-    <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
-      <Icon className="text-accent-gold" size={20} />
+  <div className="flex items-center gap-6 group text-shadow">
+    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
+      <Icon className="text-accent-gold" size={32} />
     </div>
-    <h4 className="text-white font-bold text-sm tracking-tight">{title}</h4>
+    <h4 className="text-white font-black text-2xl tracking-tight leading-tight">{title}</h4>
   </div>
 );

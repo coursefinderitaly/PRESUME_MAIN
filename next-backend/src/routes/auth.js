@@ -185,6 +185,43 @@ router.put('/update', auth, async (req, res) => {
   }
 });
 
+// 4.5 CHANGE PASSWORD ROUTE
+router.put('/change-password', auth, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: "Please provide both current and new passwords" });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Incorrect current password" });
+    }
+
+    // Enforce Strict Password Complexity
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({ 
+        error: "New password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character." 
+      });
+    }
+
+    // Hash and save new password
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error changing password" });
+  }
+});
+
 // 5. PARTNER REGISTRATION REQUEST ROUTE
 router.post('/partner-request', async (req, res) => {
   try {

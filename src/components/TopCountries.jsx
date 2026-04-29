@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Briefcase, ArrowRight, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const studyCountries = [
   {
     name: 'Italy',
     note: 'Public universities',
     code: 'ITA',
+    path: '/study-in-italy',
     color: '#0f766e',
     accent: '#f4b66d',
     image: 'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=900&q=80',
@@ -17,6 +19,7 @@ const studyCountries = [
     name: 'Australia',
     note: 'Career-ready degrees',
     code: 'AUS',
+    path: '/study-in-australia',
     color: '#2563eb',
     accent: '#f59e0b',
     image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=900&q=80',
@@ -27,6 +30,7 @@ const studyCountries = [
     name: 'Canada',
     note: 'Study and settle',
     code: 'CAN',
+    path: '/study-in-canada',
     color: '#dc2626',
     accent: '#22c55e',
     image: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?auto=format&fit=crop&w=900&q=80',
@@ -37,6 +41,7 @@ const studyCountries = [
     name: 'France',
     note: 'Culture and research',
     code: 'FRA',
+    path: '/study-in-france',
     color: '#315c91',
     accent: '#f97316',
     image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=80',
@@ -47,6 +52,7 @@ const studyCountries = [
     name: 'Germany',
     note: 'Low-cost excellence',
     code: 'DEU',
+    path: '/study-in-germany',
     color: '#b7791f',
     accent: '#0f766e',
     image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=900&q=80',
@@ -57,6 +63,7 @@ const studyCountries = [
     name: 'Ireland',
     note: 'Tech-led pathways',
     code: 'IRL',
+    path: '/study-in-ireland',
     color: '#0c8f67',
     accent: '#60a5fa',
     image: 'https://images.unsplash.com/photo-1549918864-48ac978761a4?auto=format&fit=crop&w=900&q=80',
@@ -67,6 +74,7 @@ const studyCountries = [
     name: 'UK',
     note: 'Global credentials',
     code: 'GBR',
+    path: '/study-in-uk',
     color: '#0A2540',
     accent: '#dc2626',
     image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=900&q=80',
@@ -77,6 +85,7 @@ const studyCountries = [
     name: 'US',
     note: 'Flexible programs',
     code: 'USA',
+    path: '/study-in-usa',
     color: '#7c3aed',
     accent: '#38bdf8',
     image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=900&q=80',
@@ -138,8 +147,15 @@ const workCountries = [
   },
 ];
 
-const DestinationCard = ({ country, index }) => (
+const DestinationCard = ({ country, index }) => {
+  const navigate = useNavigate();
+  return (
   <motion.article
+    onClick={() => {
+      if (country.path) {
+        navigate(country.path);
+      }
+    }}
     initial={{ opacity: 0, y: 16 }}
     whileInView={{ opacity: 1, y: 0 }}
     whileHover={{ y: -5 }}
@@ -181,7 +197,8 @@ const DestinationCard = ({ country, index }) => (
 
     <div className="absolute bottom-0 left-0 h-1 w-10 transition-all duration-500 group-hover:w-full destination-card-line" />
   </motion.article>
-);
+  );
+};
 
 export const TopCountries = () => {
   const [activeTab, setActiveTab] = useState('study');
