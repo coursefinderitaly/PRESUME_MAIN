@@ -544,7 +544,7 @@ const AdminPortal = () => {
           </div>
         </div>
 
-        <nav className="sidebar-nav" style={{ flex: 1, overflowY: 'auto', paddingBottom: '40px' }}>
+        <nav className="sidebar-nav" style={{ padding: '1rem 0' }}>
           <button className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => { setActiveTab('overview'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <Database size={18} /> Global Overview
           </button>
@@ -585,17 +585,52 @@ const AdminPortal = () => {
             <Database size={18} /> Manage University Data
           </button>
         </nav>
-        
-        <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px', marginTop: '10px' }}>
-          <button className="nav-item logout-btn" onClick={handleLogout} style={{ color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', width: '100%', justifyContent: 'center' }}>
-            <LogOut size={18} /> Secure Disconnect
-          </button>
-        </div>
-
       </aside>
 
       {/* MAIN CONTENT PANEL */}
-      <main className="dash-main" style={{ padding: '1.5rem 2rem', flex: 1, overflowY: activeTab === 'overview' ? 'hidden' : 'auto' }}>
+      <main className="dash-main" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+        
+        {/* GLOBAL ADMIN HEADER */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 2rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--glass-border)', zIndex: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <button 
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            >
+              <Monitor size={24} />
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            {/* Theme Toggle Group */}
+            <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
+              <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="Light Mode"><Sun size={14} /></button>
+              <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="Dark Mode"><Moon size={14} /></button>
+              <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="System Sync"><Monitor size={14} /></button>
+            </div>
+
+            <button 
+              onClick={handleLogout}
+              style={{ 
+                background: 'rgba(239, 68, 68, 0.1)', 
+                color: '#ef4444', 
+                border: '1px solid rgba(239, 68, 68, 0.2)', 
+                padding: '6px 15px', 
+                borderRadius: '8px', 
+                cursor: 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px',
+                fontSize: '0.85rem',
+                fontWeight: '600'
+              }}
+            >
+              <LogOut size={16} /> Secure Logout
+            </button>
+          </div>
+        </div>
+
+        <div style={{ padding: '1.5rem 2rem', flex: 1, overflowY: 'auto' }}>
 
         {viewingStudentProfile ? (
           <div className="animate-fade-in" style={{ background: 'var(--card-bg-solid)', padding: '20px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-lg)' }}>
@@ -635,18 +670,12 @@ const AdminPortal = () => {
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <button 
-                  onClick={() => setIsSidebarOpen(true)} 
-                  style={{ display: window.innerWidth <= 768 ? 'flex' : 'none', background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer', alignItems: 'center', padding: '5px' }}
+                  onClick={fetchUsers} 
+                  style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}
                 >
-                  <Monitor size={24} />
+                  <Server size={14} /> Refresh Ledger
                 </button>
-
-                {/* Theme Toggle Group */}
-                <div style={{ display: 'flex', background: 'var(--bg-secondary)', padding: '4px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
-                  <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="Light Mode"><Sun size={14} /></button>
-                  <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="Dark Mode"><Moon size={14} /></button>
-                  <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="System Sync"><Monitor size={14} /></button>
-                </div>
+              </div>
 
                 <button className="btn-save" onClick={() => setShowCreationTypePopup(true)} style={{ background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', fontWeight: 600, border: 'none', cursor: 'pointer', color: '#fff' }}>
                   <Plus size={18} /> Create Account
@@ -1526,6 +1555,7 @@ const AdminPortal = () => {
           </div>
         )}
         </>)}
+        </div>
       </main>
 
       {/* PARTNER STUDENTS POPUP */}

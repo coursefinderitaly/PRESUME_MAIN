@@ -343,7 +343,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          <nav className="sidebar-nav" style={{ flex: 1, overflowY: 'auto', paddingRight: '4px', marginBottom: '15px' }}>
+          <nav className="sidebar-nav" style={{ padding: '1rem 0' }}>
             <NavButton id="home" icon={Home} label="Dashboard" />
 
             {/* Student specific tabs */}
@@ -410,19 +410,14 @@ const Dashboard = () => {
 
           </nav>
 
-          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px', marginTop: 'auto', background: 'rgba(0,0,0,0.1)' }}>
-            <div className="sidebar-user" style={{ opacity: !isSidebarOpen ? 0 : 1, overflow: 'hidden', whiteSpace: 'nowrap', transition: 'opacity 0.2s', padding: !isSidebarOpen ? 0 : '0 1rem 1rem 1rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px', marginTop: 'auto' }}>
+            <div className="sidebar-user" style={{ opacity: !isSidebarOpen ? 0 : 1, overflow: 'hidden', whiteSpace: 'nowrap', transition: 'opacity 0.2s', padding: !isSidebarOpen ? 0 : '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div className="avatar" style={{ minWidth: '32px', width: '32px', height: '32px', fontSize: '1rem' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
               <div className="user-info">
                 <span className="name" style={{ fontSize: '0.85rem' }}>{profile.firstName} {profile.lastName || ''}</span>
                 <span className="role" style={{ fontSize: '0.7rem' }}>{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : 'Student'}</span>
               </div>
             </div>
-
-            <button className={`nav-item logout-btn ${!isSidebarOpen ? 'icon-only' : ''}`} onClick={handleLogout} style={{ justifyContent: !isSidebarOpen && window.innerWidth > 768 ? 'center' : 'flex-start', width: '100%', color: '#ef4444', borderRadius: 0, padding: '12px 1.5rem' }} title={!isSidebarOpen ? 'Logout' : ''}>
-              <LogOut size={18} style={{ minWidth: '18px' }} />
-              <span className="nav-label" style={{ opacity: !isSidebarOpen ? 0 : 1, width: !isSidebarOpen ? 0 : 'auto', transition: 'opacity 0.2s', marginLeft: !isSidebarOpen ? '0' : '10px' }}>Logout</span>
-            </button>
           </div>
           <DesignerTag isSidebarOpen={isSidebarOpen} />
         </aside>
@@ -446,11 +441,32 @@ const Dashboard = () => {
               <Menu size={24} />
             </button>
 
-            {/* THEME TOGGLE (Relocated) */}
-            <div style={{ display: 'flex', background: 'var(--table-header-bg)', padding: '5px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
-              <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Light Mode"><Sun size={14} /></button>
-              <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Dark Mode"><Moon size={14} /></button>
-              <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              {/* THEME TOGGLE (Relocated) */}
+              <div style={{ display: 'flex', background: 'var(--table-header-bg)', padding: '5px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Light Mode"><Sun size={14} /></button>
+                <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Dark Mode"><Moon size={14} /></button>
+                <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>
+              </div>
+
+              <button 
+                onClick={handleLogout}
+                style={{ 
+                  background: 'rgba(239, 68, 68, 0.1)', 
+                  color: '#ef4444', 
+                  border: '1px solid rgba(239, 68, 68, 0.2)', 
+                  padding: '6px 12px', 
+                  borderRadius: '8px', 
+                  cursor: 'pointer', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px',
+                  fontSize: '0.85rem',
+                  fontWeight: '600'
+                }}
+              >
+                <LogOut size={16} /> Logout
+              </button>
             </div>
           </div>
 
