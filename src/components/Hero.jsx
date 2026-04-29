@@ -265,10 +265,10 @@ export const Hero = () => {
 };
 
 const FeatureItem = ({ Icon, title }) => (
-  <div className="flex items-center gap-6 group text-shadow">
-    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
-      <Icon className="text-accent-gold" size={32} />
+  <div className="flex items-center gap-4 group text-shadow">
+    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
+      <Icon className="text-accent-gold" size={20} />
     </div>
-    <h4 className="text-white font-black text-2xl tracking-tight leading-tight">{title}</h4>
+    <h4 className="text-white font-black text-lg tracking-tight leading-tight">{title}</h4>
   </div>
 );
