@@ -639,3 +639,29 @@ html.lenis, html.lenis body {
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }
+
+/* ── GPU Orbit Animations (used by WhyChooseUs orbiting cards) ─────────────
+   These run on the compositor thread only — zero JS, zero layout/paint cost.
+   orbit-cw:  clockwise  full revolution
+   orbit-ccw: counter-clockwise (keeps cards upright)
+*/
+@keyframes orbit-cw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes orbit-ccw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+/* ── Global GPU Acceleration Helpers ─────────────────────────────── */
+/* Force GPU layer on any element that has ongoing CSS animations    */
+.top-destinations-aurora,
+.top-destinations-flow,
+.footer-cosmos-flow,
+.footer-clean-aurora,
+.footer-clean-wave,
+.presume-advantage-blur-bg {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}

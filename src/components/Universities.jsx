@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { MousePointerClick } from 'lucide-react';
 import DomeGallery from './DomeGallery';
 
@@ -91,15 +91,29 @@ const VerticalMarquee = ({ images, align, direction = -1, speed = 30 }) => {
 };
 
 export const Universities = () => {
-  const [cursor, setCursor] = useState({ x: 50, y: 42 });
+  const [marqueeSpeed, setMarqueeSpeed] = useState(40);
+  const [domeSpeed, setDomeSpeed] = useState(0.04);
 
-  const handleMouseMove = (event) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    setCursor({
-      x: ((event.clientX - bounds.left) / bounds.width) * 100,
-      y: ((event.clientY - bounds.top) / bounds.height) * 100,
+  // RAF-throttled cursor tracking — writes directly to DOM, zero React re-renders
+  const gradientRef = useRef(null);
+  const rafPendingRef = useRef(false);
+  const cursorRef = useRef({ x: 50, y: 42 });
+
+  const handleMouseMove = useCallback((event) => {
+    if (rafPendingRef.current) return;
+    rafPendingRef.current = true;
+    requestAnimationFrame(() => {
+      rafPendingRef.current = false;
+      const bounds = event.currentTarget?.getBoundingClientRect();
+      if (!bounds || !gradientRef.current) return;
+      const x = ((event.clientX - bounds.left) / bounds.width) * 100;
+      const y = ((event.clientY - bounds.top) / bounds.height) * 100;
+      cursorRef.current = { x, y };
+      gradientRef.current.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(197,168,128,0.34) 0%, rgba(56,189,248,0.18) 18%, rgba(10,13,24,0) 42%),
+        radial-gradient(circle at ${100 - x}% ${Math.max(8, y - 18)}%, rgba(0,140,69,0.18) 0%, rgba(10,13,24,0) 34%),
+        linear-gradient(135deg, #0a0d18 0%, #101827 46%, #060914 100%)`;
     });
-  };
+  }, []);
 
   return (
     <section
@@ -107,16 +121,25 @@ export const Universities = () => {
       className="section-safe relative isolate bg-transparent overflow-hidden"
       style={{ height: '100svh', minHeight: 'min(760px, 100svh)', display: 'flex', flexDirection: 'column' }}
     >
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-0"
-        animate={{
-          background: `radial-gradient(circle at ${cursor.x}% ${cursor.y}%, rgba(197,168,128,0.34) 0%, rgba(56,189,248,0.18) 18%, rgba(10,13,24,0) 42%),
-            radial-gradient(circle at ${100 - cursor.x}% ${Math.max(8, cursor.y - 18)}%, rgba(0,140,69,0.18) 0%, rgba(10,13,24,0) 34%),
-            linear-gradient(135deg, #0a0d18 0%, #101827 46%, #060914 100%)`
+      {/* RAF-driven gradient bg — direct DOM, no React re-renders on mousemove */}
+      <div
+        ref={gradientRef}
+        className="pointer-events-none absolute inset-0 z-0 transition-[background] duration-700"
+        style={{
+          background: `radial-gradient(circle at 50% 42%, rgba(197,168,128,0.34) 0%, rgba(56,189,248,0.18) 18%, rgba(10,13,24,0) 42%),
+            radial-gradient(circle at 50% 24%, rgba(0,140,69,0.18) 0%, rgba(10,13,24,0) 34%),
+            linear-gradient(135deg, #0a0d18 0%, #101827 46%, #060914 100%)`,
+          contain: 'layout style'
         }}
-        transition={{ type: 'spring', stiffness: 70, damping: 24, mass: 0.7 }}
       />
-      <div className="pointer-events-none absolute inset-0 z-0 backdrop-blur-[42px] opacity-80" />
+      {/* Subtle depth overlay (replaces expensive full-viewport backdrop-blur-[42px]) */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 opacity-60"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(10,13,24,0.3) 0%, rgba(6,9,20,0.7) 100%)',
+          contain: 'layout style'
+        }}
+      />
       <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.08] [background-image:linear-gradient(#ffffff_1px,transparent_1px),linear-gradient(90deg,#ffffff_1px,transparent_1px)] [background-size:48px_48px]" />
       <div
         className="pointer-events-none absolute inset-x-3 sm:inset-x-8 top-4 bottom-4 sm:bottom-6 z-[1] rounded-[28px] border border-white/[0.12]"
@@ -153,8 +176,8 @@ export const Universities = () => {
 
       {/* ── DOME GALLERY ── */}
       <div className="relative flex-1 z-10 w-full" style={{ minHeight: 'min(390px, calc(100svh - 200px))' }}>
-        <VerticalMarquee images={universities} align="left" direction={-1} speed={30} />
-        <VerticalMarquee images={universities} align="right" direction={1} speed={30} />
+        <VerticalMarquee images={universities} align="left" direction={-1} speed={marqueeSpeed} />
+        <VerticalMarquee images={universities} align="right" direction={1} speed={marqueeSpeed} />
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -165,6 +188,67 @@ export const Universities = () => {
           <MousePointerClick size={16} className="text-[#f8d991]" />
           Drag to explore · Click to enlarge
         </motion.div>
+
+        {/* Speed Controls - High-end Glassmorphism UI */}
+        <div className="absolute bottom-6 right-6 z-40 flex flex-col gap-3 scale-90 sm:scale-100 origin-bottom-right">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-[#0a0d18]/80 backdrop-blur-2xl border border-white/10 rounded-[24px] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col gap-5 min-w-[240px]"
+          >
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-2 h-2 rounded-full bg-[#f8d991] animate-pulse" />
+              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/90">Motion Controls</span>
+            </div>
+
+            <div className="flex flex-col gap-2.5">
+              <div className="flex justify-between items-center">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold text-white/50 uppercase tracking-wider">Side Flow</span>
+                  <span className="text-xs font-black text-white uppercase tracking-tight">Marquee Speed</span>
+                </div>
+                <span className="px-2 py-1 rounded-md bg-white/5 text-[10px] font-mono text-[#f8d991] border border-white/5">
+                  {Math.round((60 - marqueeSpeed + 10) / 0.5)}%
+                </span>
+              </div>
+              <input 
+                type="range" 
+                min="10" 
+                max="100" 
+                value={60 - marqueeSpeed + 10} 
+                onChange={(e) => setMarqueeSpeed(60 - parseInt(e.target.value) + 10)}
+                className="w-full h-1.5 bg-white/5 rounded-full appearance-none cursor-pointer accent-[#f8d991] hover:accent-white transition-all"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2.5">
+              <div className="flex justify-between items-center">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold text-white/50 uppercase tracking-wider">Gallery</span>
+                  <span className="text-xs font-black text-white uppercase tracking-tight">Auto Rotation</span>
+                </div>
+                <span className="px-2 py-1 rounded-md bg-white/5 text-[10px] font-mono text-[#8fd3c2] border border-white/5">
+                  {Math.round(domeSpeed * 2000)}%
+                </span>
+              </div>
+              <input 
+                type="range" 
+                min="0" 
+                max="20" 
+                step="1"
+                value={domeSpeed * 100} 
+                onChange={(e) => setDomeSpeed(parseFloat(e.target.value) / 100)}
+                className="w-full h-1.5 bg-white/5 rounded-full appearance-none cursor-pointer accent-[#8fd3c2] hover:accent-white transition-all"
+              />
+            </div>
+
+            <div className="mt-1 pt-4 border-t border-white/5">
+              <p className="text-[9px] text-white/30 font-medium italic text-center">
+                * Adjust speeds for optimal visual comfort
+              </p>
+            </div>
+          </motion.div>
+        </div>
 
         {/* Frosted glass / blur background card so the dome looks like a floating 3D object */}
         <div
@@ -190,6 +274,7 @@ export const Universities = () => {
             openedImageWidth="340px"
             openedImageHeight="340px"
             segments={28}
+            autoRotateSpeed={domeSpeed}
           />
         </div>
       </div>

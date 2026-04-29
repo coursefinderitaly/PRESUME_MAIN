@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, GraduationCap, CheckCircle2, Star, Zap, Globe, MapPin, School } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 // Import images from local src/uni folder
 import bologna from '../uni/bologna.jpg';
@@ -49,19 +49,37 @@ const universities = [
 
 export const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [imagesLoaded, setImagesLoaded] = useState({});
 
-  const handleMouseMove = (e) => {
-    const card = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - card.left;
-    const y = e.clientY - card.top;
-    const centerX = card.width / 2;
-    const centerY = card.height / 2;
-    const rotateX = (y - centerY) / 25;
-    const rotateY = (centerX - x) / 25;
-    setRotate({ x: rotateX, y: rotateY });
-  };
+  // RAF-throttled rotation: avoids 60fps React state re-renders on mousemove
+  const rotateRef = useRef({ x: 0, y: 0 });
+  const rotateStyleRef = useRef(null); // direct DOM ref for the card
+  const rafPendingRef = useRef(false);
+
+  const handleMouseMove = useCallback((e) => {
+    if (rafPendingRef.current) return;
+    rafPendingRef.current = true;
+    requestAnimationFrame(() => {
+      rafPendingRef.current = false;
+      const card = e.currentTarget?.getBoundingClientRect();
+      if (!card) return;
+      const x = e.clientX - card.left;
+      const y = e.clientY - card.top;
+      const rX = (y - card.height / 2) / 25;
+      const rY = (card.width / 2 - x) / 25;
+      rotateRef.current = { x: rX, y: rY };
+      if (rotateStyleRef.current) {
+        rotateStyleRef.current.style.transform = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg)`;
+      }
+    });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    rotateRef.current = { x: 0, y: 0 };
+    if (rotateStyleRef.current) {
+      rotateStyleRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    }
+  }, []);
 
   // Preloader with better state management
   useEffect(() => {
@@ -87,12 +105,17 @@ export const Hero = () => {
         <AnimatePresence>
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0, scale: 1.2, filter: 'blur(20px)' }}
-            animate={{ opacity: 0.3, scale: 1, filter: 'blur(4px)' }}
-            exit={{ opacity: 0, scale: 0.9, filter: 'blur(20px)' }}
+            initial={{ opacity: 0, scale: 1.2 }}
+            animate={{ opacity: 0.3, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-            style={{ backgroundImage: `url(${universities[currentIndex].img})` }}
-            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${universities[currentIndex].img})`,
+              filter: 'blur(4px)',
+              willChange: 'transform, opacity',
+              contain: 'layout style'
+            }}
+            className="absolute inset-0 bg-cover bg-center transform-gpu"
           />
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-[#020817]/60 via-[#020817]/20 to-[#020817]"></div>
@@ -197,14 +220,17 @@ export const Hero = () => {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute -inset-8 border-2 border-dashed border-accent-gold/20 rounded-full"
+              style={{ willChange: 'transform' }}
+              className="absolute -inset-8 border-2 border-dashed border-accent-gold/20 rounded-full transform-gpu"
             />
 
-            <motion.div
+            {/* Direct-DOM rotation via ref — no React re-renders on mousemove */}
+            <div
+              ref={rotateStyleRef}
               onMouseMove={handleMouseMove}
-              onMouseLeave={() => setRotate({ x: 0, y: 0 })}
-              style={{ rotateX: rotate.x, rotateY: rotate.y }}
-              className="relative z-10 w-[500px] h-[500px] rounded-full p-3 bg-white/5 backdrop-blur-md border border-white/20 shadow-[0_0_100px_-20px_rgba(197,168,128,0.2)] overflow-hidden cursor-pointer group"
+              onMouseLeave={handleMouseLeave}
+              style={{ transition: 'transform 0.1s ease-out', willChange: 'transform' }}
+              className="relative z-10 w-[500px] h-[500px] rounded-full p-3 bg-white/5 backdrop-blur-md border border-white/20 shadow-[0_0_100px_-20px_rgba(197,168,128,0.2)] overflow-hidden cursor-pointer group transform-gpu"
             >
               <div className="relative h-full w-full rounded-full overflow-hidden bg-[#020817]">
                 <AnimatePresence>
@@ -253,7 +279,7 @@ export const Hero = () => {
                   </motion.div>
                 </AnimatePresence>
               </div>
-            </motion.div>
+            </div>
 
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-accent-gold rounded-full shadow-[0_0_20px_#C5A880] animate-pulse"></div>
           </motion.div>

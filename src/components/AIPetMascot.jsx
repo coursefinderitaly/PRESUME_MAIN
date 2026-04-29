@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { Send, X, MessageSquare } from 'lucide-react';
 
@@ -114,9 +114,16 @@ export const AIPetMascot = ({ position = 'landing' }) => {
     return () => clearTimeout(activityTimer);
   }, []); // Run only once
 
-  // Eye tracking logic
+  // Eye tracking logic — RAF throttled to avoid 60fps JS work on every pixel
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    let rafId = null;
+    let lastEvent = null;
+
+    const processMouseMove = () => {
+      rafId = null;
+      const e = lastEvent;
+      if (!e) return;
+
       // If sleeping, wake up!
       if (activity === 'sleep') {
         setActivity('wake');
@@ -149,8 +156,17 @@ export const AIPetMascot = ({ position = 'landing' }) => {
       eyeY.set(Math.sin(angle) * maxEyeMove * moveRatio);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    const handleMouseMove = (e) => {
+      lastEvent = e;
+      if (rafId) return; // skip if a frame is already queued
+      rafId = requestAnimationFrame(processMouseMove);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [eyeX, eyeY, activity]);
 
   const handleSendMessage = async (e) => {

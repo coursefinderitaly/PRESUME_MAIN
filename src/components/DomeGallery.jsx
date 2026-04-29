@@ -126,10 +126,24 @@ export default function DomeGallery({
   const lastDragEndAt = useRef(0);
   const autoRotateRAF = useRef(null);
 
+  const visibleRef = useRef(true);
+
+  // Pause auto-rotate when not in viewport \u2014 eliminates off-screen GPU draw calls
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { visibleRef.current = entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   useEffect(() => {
     if (autoRotateSpeed === 0) return;
     const rotateStep = () => {
-      if (!draggingRef.current && !inertiaRAF.current && !openingRef.current) {
+      if (visibleRef.current && !draggingRef.current && !inertiaRAF.current && !openingRef.current) {
         const nextY = wrapAngleSigned(rotationRef.current.y + autoRotateSpeed);
         rotationRef.current.y = nextY;
         applyTransform(rotationRef.current.x, nextY);

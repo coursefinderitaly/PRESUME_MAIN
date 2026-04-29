@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Sphere, Environment, Sparkles } from '@react-three/drei';
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate, AnimatePresence } from 'framer-motion';
@@ -29,47 +29,52 @@ const advantages = [
 const ThreeBackground = () => (
   <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-transparent">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(15,23,42,0.6)_0%,rgba(2,6,23,1)_100%)] z-10 pointer-events-none" />
-    <Canvas camera={{ position: [0, 0, 12], fov: 45 }} dpr={[1, 1.5]} performance={{ min: 0.5 }}>
+    <Canvas camera={{ position: [0, 0, 12], fov: 45 }} dpr={[1, 1.5]} performance={{ min: 0.5 }} gl={{ powerPreference: 'high-performance', antialias: false }}>
       <color attach="background" args={["transparent"]} />
       <ambientLight intensity={0.3} />
       <directionalLight position={[10, 10, 5]} intensity={1.5} />
       <directionalLight position={[-10, -10, -5]} intensity={1} color="#06b6d4" />
       
       <Float speed={2} rotationIntensity={1} floatIntensity={1}>
-        <Sphere args={[2, 64, 64]} position={[-6, 3, -4]}>
+        <Sphere args={[2, 32, 32]} position={[-6, 3, -4]}>
           <MeshDistortMaterial color="#06b6d4" distort={0.5} speed={2} roughness={0.1} metalness={0.8} opacity={0.2} transparent />
         </Sphere>
       </Float>
       
       <Float speed={2.5} rotationIntensity={1} floatIntensity={1}>
-        <Sphere args={[2.5, 64, 64]} position={[6, -3, -5]}>
+        <Sphere args={[2.5, 32, 32]} position={[6, -3, -5]}>
           <MeshDistortMaterial color="#818cf8" distort={0.4} speed={1.5} roughness={0.1} metalness={0.8} opacity={0.15} transparent />
         </Sphere>
       </Float>
 
       <Float speed={1.5} rotationIntensity={1} floatIntensity={1}>
-        <Sphere args={[1.5, 64, 64]} position={[0, -5, -2]}>
+        <Sphere args={[1.5, 32, 32]} position={[0, -5, -2]}>
           <MeshDistortMaterial color="#34d399" distort={0.6} speed={2.5} roughness={0.1} metalness={0.7} opacity={0.1} transparent />
         </Sphere>
       </Float>
 
-      <Sparkles count={200} scale={20} size={2} speed={0.5} opacity={0.3} color="#fff" />
+      <Sparkles count={80} scale={20} size={2} speed={0.3} opacity={0.25} color="#fff" />
     </Canvas>
   </div>
 );
 
+// Pure CSS orbit — runs on GPU compositor, zero JS animation overhead
 function OrbitingCard({ stat, index, total, radius }) {
   const angle = (index / total) * 360;
+  const duration = 50; // seconds, same as before
 
   return (
     <div 
       className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
       style={{ width: radius * 2, height: radius * 2 }}
     >
-      <motion.div
-        animate={{ rotate: [0, 360] }}
-        transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+      {/* CSS-driven orbit ring — identical visual, pure GPU */}
+      <div
         className="w-full h-full relative"
+        style={{
+          animation: `orbit-cw ${duration}s linear infinite`,
+          willChange: 'transform',
+        }}
       >
         <div 
           className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-auto"
@@ -78,10 +83,12 @@ function OrbitingCard({ stat, index, total, radius }) {
             transformOrigin: `center ${radius}px`,
           }}
         >
-          <motion.div
-            animate={{ rotate: [-angle, -360 - angle] }}
-            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-            className="flex items-center justify-center"
+          {/* Counter-rotate the card so it stays upright */}
+          <div
+            style={{
+              animation: `orbit-ccw ${duration}s linear infinite`,
+              willChange: 'transform',
+            }}
           >
             <motion.div 
               whileHover={{ scale: 1.1, zIndex: 100 }}
@@ -98,9 +105,9 @@ function OrbitingCard({ stat, index, total, radius }) {
                 style={{ borderColor: `${stat.accent}20` }}
               />
             </motion.div>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

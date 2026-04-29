@@ -39,15 +39,43 @@ const GLOBAL_BG_BLUR = 'blur-[20px]';
 
 // ── Global Moving Loop Background (Below Hero) ───────────────────────────
 const GlobalMovingBackground = () => (
-  <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#050814] transform-gpu">
-    {/* Animated fluid mesh background (blurred based on setting above) */}
-    <div className={`absolute inset-0 ${GLOBAL_BG_BLUR} will-change-[filter,transform] transform-gpu`}>
-      <div className="absolute top-1/4 left-1/4 w-[60vw] h-[60vw] bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.25)_0%,transparent_60%)] animate-[spin_20s_linear_infinite] origin-[100%_100%] scale-[2.5] will-change-transform transform-gpu" />
-      <div className="absolute top-1/3 right-1/4 w-[50vw] h-[50vw] bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.25)_0%,transparent_60%)] animate-[spin_30s_linear_infinite_reverse] origin-[0%_100%] scale-[2] will-change-transform transform-gpu" />
-      <div className="absolute bottom-1/4 left-1/3 w-[70vw] h-[70vw] bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.2)_0%,transparent_60%)] animate-[spin_40s_linear_infinite] origin-[50%_0%] scale-[2] will-change-transform transform-gpu" />
+  <div
+    className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#050814] transform-gpu"
+    style={{ contain: 'strict', willChange: 'auto' }}
+  >
+    {/* Animated fluid mesh background — GPU-only transforms, no blur filter on blobs */}
+    <div className="absolute inset-0 transform-gpu">
+      <div
+        className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] rounded-full will-change-transform transform-gpu"
+        style={{
+          background: 'radial-gradient(circle at center, rgba(6,182,212,0.22) 0%, transparent 70%)',
+          animation: 'orbit-cw 20s linear infinite',
+          transformOrigin: '100% 100%',
+          scale: '2',
+        }}
+      />
+      <div
+        className="absolute top-1/3 right-1/4 w-[35vw] h-[35vw] rounded-full will-change-transform transform-gpu"
+        style={{
+          background: 'radial-gradient(circle at center, rgba(99,102,241,0.22) 0%, transparent 70%)',
+          animation: 'orbit-ccw 30s linear infinite',
+          transformOrigin: '0% 100%',
+          scale: '1.8',
+        }}
+      />
+      <div
+        className="absolute bottom-1/4 left-1/3 w-[45vw] h-[45vw] rounded-full will-change-transform transform-gpu"
+        style={{
+          background: 'radial-gradient(circle at center, rgba(16,185,129,0.18) 0%, transparent 70%)',
+          animation: 'orbit-cw 40s linear infinite',
+          transformOrigin: '50% 0%',
+          scale: '1.7',
+        }}
+      />
     </div>
-
-    {/* Subtle texture overlay (placed outside the blur so it stays crisp) */}
+    {/* A single blur layer on top of all blobs — one GPU layer vs three */}
+    <div className={`absolute inset-0 ${GLOBAL_BG_BLUR} pointer-events-none`} style={{ contain: 'layout style' }} />
+    {/* Subtle texture overlay */}
     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
   </div>
 );
