@@ -410,19 +410,19 @@ const Dashboard = () => {
 
           </nav>
 
-          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px', marginTop: 'auto' }}>
-            <button className={`nav-item logout-btn ${!isSidebarOpen ? 'icon-only' : ''}`} onClick={handleLogout} style={{ justifyContent: !isSidebarOpen && window.innerWidth > 768 ? 'center' : 'flex-start', width: '100%', color: '#ef4444' }} title={!isSidebarOpen ? 'Logout' : ''}>
+          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px', marginTop: 'auto', background: 'rgba(0,0,0,0.1)' }}>
+            <div className="sidebar-user" style={{ opacity: !isSidebarOpen ? 0 : 1, overflow: 'hidden', whiteSpace: 'nowrap', transition: 'opacity 0.2s', padding: !isSidebarOpen ? 0 : '0 1rem 1rem 1rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div className="avatar" style={{ minWidth: '32px', width: '32px', height: '32px', fontSize: '1rem' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
+              <div className="user-info">
+                <span className="name" style={{ fontSize: '0.85rem' }}>{profile.firstName} {profile.lastName || ''}</span>
+                <span className="role" style={{ fontSize: '0.7rem' }}>{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : 'Student'}</span>
+              </div>
+            </div>
+
+            <button className={`nav-item logout-btn ${!isSidebarOpen ? 'icon-only' : ''}`} onClick={handleLogout} style={{ justifyContent: !isSidebarOpen && window.innerWidth > 768 ? 'center' : 'flex-start', width: '100%', color: '#ef4444', borderRadius: 0, padding: '12px 1.5rem' }} title={!isSidebarOpen ? 'Logout' : ''}>
               <LogOut size={18} style={{ minWidth: '18px' }} />
               <span className="nav-label" style={{ opacity: !isSidebarOpen ? 0 : 1, width: !isSidebarOpen ? 0 : 'auto', transition: 'opacity 0.2s', marginLeft: !isSidebarOpen ? '0' : '10px' }}>Logout</span>
             </button>
-          </div>
-
-          <div className="sidebar-user" style={{ opacity: !isSidebarOpen ? 0 : 1, overflow: 'hidden', whiteSpace: 'nowrap', transition: 'opacity 0.2s', padding: !isSidebarOpen ? 0 : '1.5rem', height: !isSidebarOpen ? 0 : 'auto' }}>
-            <div className="avatar" style={{ minWidth: '40px' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
-            <div className="user-info">
-              <span className="name">{profile.firstName} {profile.lastName || ''}</span>
-              <span className="role">{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : 'Student'}</span>
-            </div>
           </div>
           <DesignerTag isSidebarOpen={isSidebarOpen} />
         </aside>

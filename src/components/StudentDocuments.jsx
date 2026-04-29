@@ -82,7 +82,8 @@ const StudentDocuments = () => {
           <select
             value={selectedCounselorId}
             onChange={(e) => setSelectedCounselorId(e.target.value)}
-            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'var(--card-bg)', color: 'var(--text-main)', outline: 'none', cursor: 'pointer' }}
+            className="dash-input"
+            style={{ width: '100%', cursor: 'pointer' }}
           >
             <option value="all">All Counselors</option>
             {counselors.map(c => (
