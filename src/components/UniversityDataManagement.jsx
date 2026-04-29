@@ -55,81 +55,73 @@ const UniversityDataManagement = () => {
     };
 
     return (
-        <div style={{ padding: '20px', animation: 'fadeIn 0.4s ease-out' }}>
-            {/* Header Section */}
-            <header className="dash-header" style={{ marginBottom: '30px', background: 'transparent', border: 'none', padding: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <div style={{ background: 'var(--accent-primary)', padding: '12px', borderRadius: '12px', color: 'white', display: 'flex', boxShadow: '0 0 20px rgba(0, 71, 171, 0.4)' }}>
-                        <Database size={24} />
+        <div style={{ padding: '10px 20px', animation: 'fadeIn 0.4s ease-out', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            {/* Header Section - Compact */}
+            <header className="dash-header" style={{ marginBottom: '15px', background: 'transparent', border: 'none', padding: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ background: 'var(--accent-primary)', padding: '10px', borderRadius: '10px', color: 'white', display: 'flex', boxShadow: '0 0 15px rgba(0, 71, 171, 0.3)' }}>
+                        <Database size={20} />
                     </div>
                     <div>
-                        <h1 style={{ margin: 0, fontSize: '1.8rem', letterSpacing: '-1px' }}>Global University Intelligence</h1>
-                        <p style={{ color: 'var(--text-muted)', margin: '4px 0 0 0' }}>Synchronize and update the master university database (courses.xlsx).</p>
+                        <h1 style={{ margin: 0, fontSize: '1.4rem', letterSpacing: '-0.5px' }}>University Intelligence</h1>
+                        <p style={{ color: 'var(--text-muted)', margin: 0, fontSize: '0.85rem' }}>Update master database (courses.xlsx).</p>
                     </div>
                 </div>
             </header>
 
-            {/* Status Message */}
+            {/* Status Message - Floating and Compact */}
             {message && (
                 <div style={{ 
-                    padding: '15px 20px', 
-                    borderRadius: '12px', 
-                    marginBottom: '25px', 
+                    padding: '10px 15px', 
+                    borderRadius: '8px', 
+                    marginBottom: '15px', 
                     display: 'flex', 
                     alignItems: 'center', 
-                    gap: '12px',
+                    gap: '10px',
                     background: message.type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                     border: `1px solid ${message.type === 'success' ? '#10b981' : '#ef4444'}`,
                     color: message.type === 'success' ? '#34d399' : '#f87171',
-                    animation: 'modalSlideUp 0.3s ease-out'
+                    animation: 'modalSlideUp 0.3s ease-out',
+                    fontSize: '0.9rem'
                 }}>
-                    {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
+                    {message.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
                     <span style={{ fontWeight: 500 }}>{message.text}</span>
                 </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '25px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '15px', flex: 1 }}>
                 
-                {/* Download Card */}
-                <div className="profile-card" style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                        <div>
-                            <h3 style={{ margin: '0 0 10px 0', fontSize: '1.2rem', color: 'var(--accent-secondary)' }}>Extraction Center</h3>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.6' }}>
-                                Download the current production-grade database to your local workstation for auditing or manual modification.
-                            </p>
+                {/* Download Card - Compact */}
+                <div className="profile-card" style={{ display: 'flex', flexDirection: 'column', padding: '15px', gap: '12px', background: 'rgba(255,255,255,0.02)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ background: 'rgba(0, 210, 255, 0.1)', padding: '8px', borderRadius: '8px', color: 'var(--accent-secondary)' }}>
+                            <FileSpreadsheet size={18} />
                         </div>
-                        <div style={{ background: 'rgba(0, 210, 255, 0.1)', padding: '10px', borderRadius: '10px', color: 'var(--accent-secondary)' }}>
-                            <FileSpreadsheet size={22} />
-                        </div>
+                        <h3 style={{ margin: 0, fontSize: '1rem', color: 'var(--accent-secondary)' }}>Extraction</h3>
                     </div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', lineHeight: '1.4', margin: 0 }}>
+                        Download the current database for auditing or modification.
+                    </p>
                     
-                    <div style={{ marginTop: 'auto' }}>
-                        <button 
-                            onClick={handleDownload}
-                            className="btn-save"
-                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '14px', background: 'var(--glass-highlight)', border: '1px solid var(--glass-border)' }}
-                        >
-                            <Download size={18} /> Download Master Sheet
-                        </button>
-                    </div>
+                    <button 
+                        onClick={handleDownload}
+                        className="btn-save"
+                        style={{ marginTop: 'auto', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px', background: 'var(--glass-highlight)', border: '1px solid var(--glass-border)', fontSize: '0.85rem' }}
+                    >
+                        <Download size={16} /> Download courses.xlsx
+                    </button>
                 </div>
 
-                {/* Upload Card */}
-                <div className="profile-card" style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '20px', border: '1px solid var(--accent-secondary)' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                        <div>
-                            <h3 style={{ margin: '0 0 10px 0', fontSize: '1.2rem', color: '#10b981' }}>Injection Terminal</h3>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.6' }}>
-                                Upload a new .xlsx file to instantly overwrite the production database. This action is irreversible and goes live immediately.
-                            </p>
+                {/* Upload Card - Compact */}
+                <div className="profile-card" style={{ display: 'flex', flexDirection: 'column', padding: '15px', gap: '12px', border: '1px solid var(--accent-secondary)', background: 'rgba(16, 185, 129, 0.02)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '8px', borderRadius: '8px', color: '#10b981' }}>
+                            <Upload size={18} />
                         </div>
-                        <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '10px', borderRadius: '10px', color: '#10b981' }}>
-                            <Upload size={22} />
-                        </div>
+                        <h3 style={{ margin: 0, fontSize: '1rem', color: '#10b981' }}>Injection</h3>
                     </div>
 
-                    <div style={{ background: 'rgba(0,0,0,0.2)', border: '1px dashed var(--glass-border)', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.2)', border: '1px dashed var(--glass-border)', borderRadius: '10px', padding: '12px', textAlign: 'center' }}>
                         <input 
                             type="file" 
                             id="excel-upload"
@@ -137,12 +129,12 @@ const UniversityDataManagement = () => {
                             onChange={handleFileChange}
                             style={{ display: 'none' }}
                         />
-                        <label htmlFor="excel-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                        <label htmlFor="excel-upload" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                             <div style={{ color: file ? '#10b981' : 'var(--text-muted)' }}>
-                                {file ? <CheckCircle2 size={30} /> : <FileSpreadsheet size={30} />}
+                                {file ? <CheckCircle2 size={20} /> : <FileSpreadsheet size={20} />}
                             </div>
-                            <span style={{ fontSize: '0.9rem', color: file ? 'white' : 'var(--text-muted)' }}>
-                                {file ? file.name : "Click to select or drag courses.xlsx"}
+                            <span style={{ fontSize: '0.8rem', color: file ? 'white' : 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>
+                                {file ? file.name : "Select courses.xlsx"}
                             </span>
                         </label>
                     </div>
@@ -156,51 +148,43 @@ const UniversityDataManagement = () => {
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center', 
-                            gap: '10px', 
-                            padding: '14px', 
+                            gap: '8px', 
+                            padding: '10px', 
                             background: uploading || !file ? 'var(--glass-border)' : 'linear-gradient(135deg, #10b981, #059669)',
                             color: uploading || !file ? 'var(--text-muted)' : 'white',
-                            opacity: uploading || !file ? 0.6 : 1
+                            opacity: uploading || !file ? 0.6 : 1,
+                            fontSize: '0.85rem'
                         }}
                     >
-                        {uploading ? <Server size={18} className="animate-pulse" /> : <ShieldCheck size={18} />}
-                        {uploading ? "Broadcasting to Hostinger..." : "Execute Live Update"}
+                        {uploading ? <Server size={16} className="animate-pulse" /> : <ShieldCheck size={16} />}
+                        {uploading ? "Updating..." : "Execute Live Update"}
                     </button>
                 </div>
 
             </div>
 
-            {/* Insight / Info Section */}
+            {/* Insight / Info Section - Horizontal and Ultra-Compact */}
             <div style={{ 
-                marginTop: '30px', 
-                background: 'rgba(0, 71, 171, 0.05)', 
-                border: '1px solid rgba(0, 71, 171, 0.15)', 
-                borderRadius: '16px', 
-                padding: '25px',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                marginTop: '15px', 
+                background: 'rgba(0, 71, 171, 0.03)', 
+                border: '1px solid rgba(0, 71, 171, 0.1)', 
+                borderRadius: '12px', 
+                padding: '12px 20px',
+                display: 'flex',
+                justifyContent: 'space-between',
                 gap: '20px'
             }}>
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <div style={{ color: 'var(--accent-secondary)' }}><Globe size={24} /></div>
-                    <div>
-                        <h4 style={{ margin: '0 0 5px 0', fontSize: '0.95rem', color: 'white' }}>Live Synchronization</h4>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>Updates propagate across the entire application ecosystem instantly upon upload completion.</p>
-                    </div>
+                <div style={{ display: 'flex', itemsCenter: 'center', gap: '10px' }}>
+                    <Globe size={16} style={{ color: 'var(--accent-secondary)' }} />
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Live Propagation</span>
                 </div>
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <div style={{ color: '#10b981' }}><History size={24} /></div>
-                    <div>
-                        <h4 style={{ margin: '0 0 5px 0', fontSize: '0.95rem', color: 'white' }}>Automated Overwrite</h4>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>The server handles file replacement automatically. No manual Hostinger FTP access required.</p>
-                    </div>
+                <div style={{ display: 'flex', itemsCenter: 'center', gap: '10px' }}>
+                    <History size={16} style={{ color: '#10b981' }} />
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Auto Overwrite</span>
                 </div>
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <div style={{ color: 'var(--accent-primary)' }}><ShieldCheck size={24} /></div>
-                    <div>
-                        <h4 style={{ margin: '0 0 5px 0', fontSize: '0.95rem', color: 'white' }}>Data Integrity</h4>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>Please ensure the column headers remain identical to the downloaded extraction file.</p>
-                    </div>
+                <div style={{ display: 'flex', itemsCenter: 'center', gap: '10px' }}>
+                    <ShieldCheck size={16} style={{ color: 'var(--accent-primary)' }} />
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Header Integrity</span>
                 </div>
             </div>
         </div>
