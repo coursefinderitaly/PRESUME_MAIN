@@ -425,7 +425,7 @@ const Dashboard = () => {
         {/* ================================== */}
         {/* MAIN CONTENT AREA                  */}
         {/* ================================== */}
-        <main className="dash-main">
+        <main className="dash-main" data-lenis-prevent>
 
           {/* TOP HEADER WITH HAMBURGER & THEME TOGGLE */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 1.5rem', background: 'var(--card-bg-solid)', borderBottom: '1px solid var(--glass-border)', position: 'sticky', top: 0, zIndex: 11 }}>

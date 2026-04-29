@@ -630,7 +630,7 @@ const AdminPortal = () => {
           </div>
         </div>
 
-        <div style={{ padding: '1.5rem 2rem', flex: 1, overflowY: 'auto' }}>
+        <div data-lenis-prevent style={{ padding: '1.5rem 2rem', flex: 1, overflowY: 'auto' }}>
 
         {viewingStudentProfile ? (
           <div className="animate-fade-in" style={{ background: 'var(--card-bg-solid)', padding: '20px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-lg)' }}>
