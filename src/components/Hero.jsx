@@ -106,7 +106,7 @@ export const Hero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, staggerChildren: 0.2 }}
-            className="flex flex-col items-start pt-0 pb-6"
+            className="flex flex-col items-start pt-6 pb-6"
           >
 
 
@@ -168,7 +168,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="flex flex-wrap items-center gap-3 mb-10 w-full"
+              className="grid grid-cols-2 gap-x-12 gap-y-5 mb-10 w-full max-w-lg"
             >
               <FeatureItem Icon={School} title="Public Universities" />
               <FeatureItem Icon={Star} title="Zero Tuition" />
@@ -265,10 +265,10 @@ export const Hero = () => {
 };
 
 const FeatureItem = ({ Icon, title }) => (
-  <div className="flex items-center gap-3 group px-4 py-2.5 rounded-2xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-accent-gold/40 hover:shadow-[0_0_20px_rgba(197,168,128,0.15)] transition-all duration-500 cursor-default">
-    <div className="w-9 h-9 rounded-xl bg-accent-gold/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 transition-colors">
-      <Icon className="text-accent-gold drop-shadow-[0_0_8px_rgba(197,168,128,0.4)]" size={18} />
+  <div className="flex items-center gap-4 group text-shadow">
+    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
+      <Icon className="text-accent-gold" size={20} />
     </div>
-    <span className="text-white/90 font-bold text-[13px] tracking-wide whitespace-nowrap">{title}</span>
+    <h4 className="text-white font-black text-sm uppercase tracking-widest leading-tight whitespace-nowrap">{title}</h4>
   </div>
 );
