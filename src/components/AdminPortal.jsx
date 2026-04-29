@@ -675,7 +675,6 @@ const AdminPortal = () => {
                 >
                   <Server size={14} /> Refresh Ledger
                 </button>
-              </div>
 
                 <button className="btn-save" onClick={() => setShowCreationTypePopup(true)} style={{ background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', fontWeight: 600, border: 'none', cursor: 'pointer', color: '#fff' }}>
                   <Plus size={18} /> Create Account
