@@ -584,11 +584,13 @@ const AdminPortal = () => {
           >
             <Database size={18} /> Manage University Data
           </button>
-          
-          <button className="nav-item logout-btn" onClick={handleLogout} style={{ color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', width: '100%', justifyContent: 'center', marginTop: '2.5rem' }}>
+        </nav>
+        
+        <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px', marginTop: '10px' }}>
+          <button className="nav-item logout-btn" onClick={handleLogout} style={{ color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', width: '100%', justifyContent: 'center' }}>
             <LogOut size={18} /> Secure Disconnect
           </button>
-        </nav>
+        </div>
 
       </aside>
 

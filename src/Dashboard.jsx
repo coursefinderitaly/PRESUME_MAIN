@@ -19,6 +19,7 @@ import DocumentUpload from './components/DocumentUpload';
 import StudentDetails from './components/StudentDetails';
 import AppliedUniversities from './components/AppliedUniversities';
 import PartnerApplications from './components/PartnerApplications';
+import StudentDocuments from './components/StudentDocuments';
 import { API_BASE_URL } from './config';
 import { AIPetMascot } from './components/AIPetMascot';
 
@@ -342,7 +343,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          <nav className="sidebar-nav" style={{ paddingBottom: '80px' }}>
+          <nav className="sidebar-nav" style={{ flex: 1, overflowY: 'auto', paddingRight: '4px', marginBottom: '15px' }}>
             <NavButton id="home" icon={Home} label="Dashboard" />
 
             {/* Student specific tabs */}
@@ -385,6 +386,7 @@ const Dashboard = () => {
                 <NavButton id="students-list" icon={Users} label="Students List" />
                 <NavButton id="course-finder" icon={Search} label="Search Program" />
                 <NavButton id="partner-applications" icon={FileText} label="Applied Applications" />
+                <NavButton id="student-documents" icon={UploadCloud} label="Student Documents" />
                 <NavButton id="learning" icon={MonitorPlay} label="Learning Resource" />
                 <NavButton id="notifications" icon={Bell} label="Notifications" />
                 <NavButton id="counselors" icon={Briefcase} label="Manage Counselors" />
@@ -399,17 +401,21 @@ const Dashboard = () => {
                 <NavButton id="students-list" icon={Users} label="My Students" />
                 <NavButton id="course-finder" icon={Search} label="Search Program" />
                 <NavButton id="partner-applications" icon={FileText} label="Applied Applications" />
+                <NavButton id="student-documents" icon={UploadCloud} label="Student Documents" />
                 <NavButton id="profile" icon={User} label="My Account" />
               </>
             )}
 
             <div className="nav-divider"></div>
 
-            <button className={`nav-item logout-btn ${!isSidebarOpen ? 'icon-only' : ''}`} onClick={handleLogout} style={{ justifyContent: !isSidebarOpen && window.innerWidth > 768 ? 'center' : 'flex-start' }} title={!isSidebarOpen ? 'Logout' : ''}>
+          </nav>
+
+          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px', marginTop: 'auto' }}>
+            <button className={`nav-item logout-btn ${!isSidebarOpen ? 'icon-only' : ''}`} onClick={handleLogout} style={{ justifyContent: !isSidebarOpen && window.innerWidth > 768 ? 'center' : 'flex-start', width: '100%', color: '#ef4444' }} title={!isSidebarOpen ? 'Logout' : ''}>
               <LogOut size={18} style={{ minWidth: '18px' }} />
               <span className="nav-label" style={{ opacity: !isSidebarOpen ? 0 : 1, width: !isSidebarOpen ? 0 : 'auto', transition: 'opacity 0.2s', marginLeft: !isSidebarOpen ? '0' : '10px' }}>Logout</span>
             </button>
-          </nav>
+          </div>
 
           <div className="sidebar-user" style={{ opacity: !isSidebarOpen ? 0 : 1, overflow: 'hidden', whiteSpace: 'nowrap', transition: 'opacity 0.2s', padding: !isSidebarOpen ? 0 : '1.5rem', height: !isSidebarOpen ? 0 : 'auto' }}>
             <div className="avatar" style={{ minWidth: '40px' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
@@ -531,6 +537,13 @@ const Dashboard = () => {
             {/* ================================== */}
             {activeTab === 'partner-applications' && (isPartner || isCounselor) && (
               <PartnerApplications profile={profile} setMessage={setMessage} />
+            )}
+
+            {/* ================================== */}
+            {/* VIEW: STUDENT DOCUMENTS            */}
+            {/* ================================== */}
+            {activeTab === 'student-documents' && (isPartner || isCounselor) && (
+              <StudentDocuments />
             )}
 
             {/* ================================== */}
