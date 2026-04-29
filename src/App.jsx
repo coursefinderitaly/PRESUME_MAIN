@@ -10,6 +10,7 @@ import GenericCountryPage from './components/GenericCountryPage';
 import BusinessPartnerForm from './components/BusinessPartnerForm';
 import AppointmentForm from './components/AppointmentForm';
 import ScrollToTop from './components/ScrollToTop';
+import SmoothScroll from './components/SmoothScroll';
 import { ThemeProvider } from './ThemeContext';
 import './index.css';
 
@@ -17,8 +18,9 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
-        <ScrollToTop />
-        <IdleTimeout>
+        <SmoothScroll>
+          <ScrollToTop />
+          <IdleTimeout>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/dashboard" element={
@@ -44,6 +46,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </IdleTimeout>
+        </SmoothScroll>
       </Router>
     </ThemeProvider>
   );
