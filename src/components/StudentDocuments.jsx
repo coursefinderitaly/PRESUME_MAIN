@@ -4,12 +4,29 @@ import { API_BASE_URL } from '../config';
 
 const StudentDocuments = () => {
   const [students, setStudents] = useState([]);
+  const [counselors, setCounselors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCounselorId, setSelectedCounselorId] = useState('all');
 
   useEffect(() => {
     fetchStudents();
+    fetchCounselors();
   }, []);
+
+  const fetchCounselors = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/erp/counselors`, {
+        credentials: 'include',
+        headers: { 'x-csrf-protected': '1' }
+      });
+      if (response.ok) {
+        setCounselors(await response.json());
+      }
+    } catch (err) {
+      console.error("Failed to fetch counselors", err);
+    }
+  };
 
   const fetchStudents = async () => {
     try {
@@ -30,10 +47,15 @@ const StudentDocuments = () => {
     }
   };
 
-  const filteredStudents = students.filter(student => 
-    `${student.firstName} ${student.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students.filter(student => {
+    const matchesSearch = `${student.firstName} ${student.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCounselor = selectedCounselorId === 'all' || 
+      (student.assignedCounselor && (student.assignedCounselor._id === selectedCounselorId || student.assignedCounselor === selectedCounselorId));
+
+    return matchesSearch && matchesCounselor;
+  });
 
   return (
     <div style={{ padding: '20px', animation: 'fadeIn 0.3s ease' }}>
@@ -44,15 +66,32 @@ const StudentDocuments = () => {
         </div>
       </header>
 
-      <div className="search-bar" style={{ marginBottom: '20px', position: 'relative' }}>
-        <Search size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-        <input
-          type="text"
-          placeholder="Search students by name or email..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ width: '100%', padding: '12px 12px 12px 45px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'var(--card-bg)', color: 'var(--text-main)', outline: 'none' }}
-        />
+      <div className="filters-row" style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
+        <div className="search-bar" style={{ flex: 1, minWidth: '250px', position: 'relative' }}>
+          <Search size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <input
+            type="text"
+            placeholder="Search students by name or email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ width: '100%', padding: '12px 12px 12px 45px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'var(--card-bg)', color: 'var(--text-main)', outline: 'none' }}
+          />
+        </div>
+
+        <div className="counselor-filter" style={{ minWidth: '200px' }}>
+          <select
+            value={selectedCounselorId}
+            onChange={(e) => setSelectedCounselorId(e.target.value)}
+            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'var(--card-bg)', color: 'var(--text-main)', outline: 'none', cursor: 'pointer' }}
+          >
+            <option value="all">All Counselors</option>
+            {counselors.map(c => (
+              <option key={c._id} value={c._id}>
+                Filter by: {c.firstName} {c.lastName}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {loading ? (
