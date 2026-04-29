@@ -676,6 +676,7 @@ const Dashboard = () => {
                     )}
                   </div>
                 ) : (
+                  <>
                   <form onSubmit={handleUpdate} className="edit-form-grid">
                     <div className="profile-card full-width edit-card">
                       <div className="dash-input-group">
@@ -781,6 +782,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </form>
+                  </>
                 )}
               </>
             )}
