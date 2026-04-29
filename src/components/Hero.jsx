@@ -106,23 +106,15 @@ export const Hero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, staggerChildren: 0.2 }}
-            className="flex flex-col items-start -mt-16 pb-2"
+            className="flex flex-col items-start pt-0 pb-6"
           >
-            <motion.div 
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-gold/10 text-accent-gold border border-accent-gold/20 mb-4 backdrop-blur-sm relative z-20"
-            >
-              <Zap size={12} className="fill-current" />
-              <span className="text-[10px] font-black tracking-[0.2em] uppercase">Elite Italian Education</span>
-            </motion.div>
+
 
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.95] tracking-tighter uppercase mb-3 flex flex-col items-start drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
+              className="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.95] tracking-tighter uppercase mb-2 flex flex-col items-start drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
             >
               <span className="block tracking-tight leading-none">
                 <motion.span 
@@ -153,11 +145,21 @@ export const Hero = () => {
               </div>
             </motion.h1>
 
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-gold/10 text-accent-gold border border-accent-gold/20 mb-5 backdrop-blur-sm relative z-20"
+            >
+              <Zap size={12} className="fill-current" />
+              <span className="text-[10px] font-black tracking-[0.2em] uppercase">Elite Italian Education</span>
+            </motion.div>
+
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-base md:text-lg text-blue-50/80 mb-3 max-w-lg leading-relaxed font-medium text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+              className="text-base md:text-lg text-blue-50/80 mb-4 max-w-lg leading-relaxed font-medium text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
             >
               Join 10,000+ students in world-class public universities with <span className="text-accent-gold font-black">€5,200 annual grants</span> guaranteed.
             </motion.p>
@@ -166,7 +168,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="grid grid-cols-2 gap-x-8 gap-y-2 mb-4 w-full max-w-sm"
+              className="grid grid-cols-2 gap-x-8 gap-y-3 mb-6 w-full max-w-sm"
             >
               <FeatureItem Icon={School} title="Public Universities" />
               <div className="translate-x-8"><FeatureItem Icon={Star} title="Zero Tuition" /></div>
@@ -263,10 +265,10 @@ export const Hero = () => {
 };
 
 const FeatureItem = ({ Icon, title }) => (
-  <div className="flex items-center gap-4 group text-shadow">
-    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
-      <Icon className="text-accent-gold" size={24} />
+  <div className="flex items-center gap-6 group text-shadow">
+    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-accent-gold/20 group-hover:border-accent-gold/40 transition-all">
+      <Icon className="text-accent-gold" size={32} />
     </div>
-    <h4 className="text-white font-black text-xl tracking-tight leading-tight">{title}</h4>
+    <h4 className="text-white font-black text-2xl tracking-tight leading-tight">{title}</h4>
   </div>
 );
