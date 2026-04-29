@@ -544,11 +544,11 @@ const AdminPortal = () => {
           </div>
         </div>
 
-        <nav className="sidebar-nav" style={{ padding: '1rem 0' }}>
+        <nav className="sidebar-nav" style={{ padding: '0.5rem 0', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '2px' }}>
           <button className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => { setActiveTab('overview'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <Database size={18} /> Global Overview
           </button>
-          <div className="nav-divider" style={{ background: 'var(--glass-border)', margin: '15px 0' }}></div>
+          <div className="nav-divider" style={{ background: 'var(--glass-border)', margin: '8px 0' }}></div>
           <button className={`nav-item ${activeTab === 'direct_students' ? 'active' : ''}`} onClick={() => { setActiveTab('direct_students'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <GraduationCap size={18} /> Direct Students
           </button>
@@ -558,7 +558,7 @@ const AdminPortal = () => {
           <button className={`nav-item ${activeTab === 'partners' ? 'active' : ''}`} onClick={() => { setActiveTab('partners'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <Briefcase size={18} /> Business Partners
           </button>
-          <div className="nav-divider" style={{ background: 'var(--glass-border)', margin: '15px 0' }}></div>
+          <div className="nav-divider" style={{ background: 'var(--glass-border)', margin: '8px 0' }}></div>
           <button className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`} onClick={() => { setActiveTab('applications'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <FileText size={18} /> Applied Applications
           </button>
