@@ -4,13 +4,15 @@ const dbConnect = require('../../../../../../lib/db');
 const User = require('../../../../../../models/User');
 const { withRoles } = require('../../../../../../lib/authMiddleware');
 
-// POST /api/admin/users/[id]/unlock
-const POST = withRoles(['admin'], async function (request, { params }) {
+export const dynamic = 'force-dynamic';
+
+// POST /api/admin/users/[userId]/unlock
+export const POST = withRoles(['admin'], async function (request, { params }) {
   try {
     await dbConnect();
-    const { id } = await params;
+    const { userId } = await params;
 
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -24,9 +26,8 @@ const POST = withRoles(['admin'], async function (request, { params }) {
       user: { email: user.email, loginAttempts: 0 },
     });
   } catch (err) {
-    console.error('[POST /api/admin/users/:id/unlock]', err);
+    console.error('[POST /api/admin/users/:userId/unlock]', err);
     return NextResponse.json({ error: 'Server error unlocking user' }, { status: 500 });
   }
 });
 
-module.exports = { POST };
