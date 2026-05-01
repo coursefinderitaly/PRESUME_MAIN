@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Minimalist icons for the expanded UI
 const CloseIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18"></line>
     <line x1="6" y1="6" x2="18" y2="18"></line>
   </svg>
 );
 
 const ExpandIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="15 3 21 3 21 9"></polyline>
     <polyline points="9 21 3 21 3 15"></polyline>
     <line x1="21" y1="3" x2="14" y2="10"></line>
@@ -18,153 +17,153 @@ const ExpandIcon = () => (
   </svg>
 );
 
-const DUMMY_IMAGES = [
-  { id: 1, url: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80', title: 'Milan Architecture', subtitle: 'Experience cutting-edge design and engineering in the heart of Italy.' },
-  { id: 2, url: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80', title: 'Student Community', subtitle: 'Join a vibrant, international network of ambitious scholars.' },
-  { id: 3, url: 'https://images.unsplash.com/photo-1514890547357-a9ee288728e0?w=1200&q=80', title: 'Venice Programs', subtitle: 'Immerse yourself in history while floating on the iconic canals.' },
-  { id: 4, url: 'https://images.unsplash.com/photo-1516483638261-f40af5baacce?w=1200&q=80', title: 'Florence Arts', subtitle: 'Study where the Renaissance began, surrounded by timeless art.' },
-  { id: 5, url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&q=80', title: 'Rome Traditions', subtitle: 'Walk the ancient streets while pursuing modern academic excellence.' },
-];
+interface GalleryItem {
+  id: number;
+  url: string;
+  title: string;
+  city: string;
+  subtitle?: string;
+}
 
-const InteractiveAccordionGallery: React.FC = () => {
+interface InteractiveAccordionGalleryProps {
+  items?: GalleryItem[];
+}
+
+const InteractiveAccordionGallery: React.FC<InteractiveAccordionGalleryProps> = ({ items = [] }) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
-  const selectedItem = DUMMY_IMAGES.find((item) => item.id === selectedId);
+  const selectedItem = items.find((item) => item.id === selectedId);
 
   return (
-    <div className="relative w-full max-w-[700px] h-[300px] md:h-[400px] mx-auto flex items-center justify-center pointer-events-auto">
-      
-      {/* ── COMPACT FAN GALLERY STATE ── */}
-      <div className="relative flex items-center justify-center w-full h-full">
-        {DUMMY_IMAGES.map((item, index) => {
-          const isHovered = hoveredId === item.id;
-          const isSelected = selectedId === item.id;
-          
-          // Math for the fanned out cards (5 items, index 2 is center)
-          const offset = index - 2; 
+    <div className="relative w-full h-[320px] md:h-[400px] flex items-center justify-center px-4 z-[2000] pointer-events-auto">
+      <div className="flex items-stretch justify-center w-full h-full max-w-2xl md:max-w-3xl mx-auto gap-2 md:gap-3 py-4">
+        {items.map((item, idx) => {
+          const shiftDirection = idx % 2 === 0 ? 1 : -1;
           
           return (
             <motion.div
               key={item.id}
-              layoutId={`card-wrapper-${item.id}`}
               onClick={() => setSelectedId(item.id)}
-              onHoverStart={() => setHoveredId(item.id)}
-              onHoverEnd={() => setHoveredId(null)}
-              animate={{
-                rotate: isSelected ? 0 : isHovered ? 0 : offset * 12,
-                x: isSelected ? 0 : isHovered ? offset * 40 : offset * 60,
-                y: isSelected ? 0 : isHovered ? -40 : Math.abs(offset) * 15,
-                zIndex: isSelected ? 100 : isHovered ? 50 : 10 - Math.abs(offset),
-                scale: isSelected ? 1 : isHovered ? 1.05 : 1,
-                opacity: selectedId && !isSelected ? 0 : 1
+              whileHover="hover"
+              initial="initial"
+              variants={{
+                initial: { flex: 1, scale: 1, zIndex: 10 },
+                hover: { flex: 5, scale: 1.05, zIndex: 100 }
               }}
               transition={{ type: 'spring', damping: 20, stiffness: 150 }}
-              className={`absolute w-[180px] md:w-[220px] h-[260px] md:h-[320px] rounded-2xl overflow-hidden shadow-2xl border-[3px] border-white/10 bg-[#0a0d18] origin-bottom ${selectedId === item.id ? 'pointer-events-none' : 'pointer-events-auto cursor-pointer'}`}
+              className="relative min-w-[30px] md:min-w-[45px] rounded-[20px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-2 border-white/20 bg-slate-900 cursor-pointer origin-center group pointer-events-auto"
             >
+              {/* Image with zoom and shift */}
               <motion.img 
-                layoutId={`card-image-${item.id}`} 
                 src={item.url} 
                 alt={item.title}
-                className="w-full h-full object-cover" 
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                variants={{
+                  initial: { scale: 1.1, x: '0%' },
+                  hover: { scale: 1.3, x: `${shiftDirection * 8}%` }
+                }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               />
               
-              <motion.div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none opacity-90" />
 
-              {/* Interactive Expand Icon on Hover */}
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: isHovered && !isSelected ? 1 : 0, scale: isHovered && !isSelected ? 1 : 0.8 }}
-                className="absolute top-3 right-3 w-8 h-8 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 shadow-lg"
+              {/* Vertical Title (Collapsed) */}
+              <motion.div
+                variants={{
+                  initial: { opacity: 0.7 },
+                  hover: { opacity: 0 }
+                }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none"
               >
-                <ExpandIcon />
+                <p className="text-white font-black text-[9px] md:text-[11px] uppercase tracking-[0.4em] rotate-180 [writing-mode:vertical-lr] whitespace-nowrap drop-shadow-lg">
+                  {item.title}
+                </p>
               </motion.div>
 
-              {/* Fan Card Title */}
-              <motion.div className="absolute bottom-4 left-0 w-full px-4 text-center">
-                <motion.h3 
-                  layoutId={`card-title-${item.id}`}
-                  className="text-white font-black tracking-tight text-sm md:text-base drop-shadow-md"
-                >
-                  {item.title}
-                </motion.h3>
+              {/* Hover Content */}
+              <motion.div 
+                className="absolute inset-0 p-5 md:p-8 flex flex-col justify-end pointer-events-none"
+                variants={{
+                  initial: { opacity: 0, y: 20 },
+                  hover: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+              >
+                <div className="relative z-10">
+                  <p className="text-[#f8d991] text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] mb-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {item.city}
+                  </p>
+                  <h3 className="text-white font-black text-xl md:text-2xl tracking-tight leading-tight mb-2 drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+                    {item.title}
+                  </h3>
+                  <p className="text-white/80 text-[10px] md:text-xs font-medium line-clamp-2 max-w-[240px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {item.subtitle}
+                  </p>
+                  <div className="mt-4 flex items-center gap-2 text-[#f8d991] font-black text-[9px] uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    EXPLORE <ExpandIcon />
+                  </div>
+                </div>
               </motion.div>
+
+              {/* Shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             </motion.div>
           );
         })}
       </div>
 
-      {/* ── EXPANDED MODAL LIGHTBOX ── */}
       <AnimatePresence>
         {selectedItem && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(16px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 md:p-8 pointer-events-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/95 backdrop-blur-2xl p-4 md:p-8 pointer-events-auto"
             onClick={() => setSelectedId(null)}
           >
-            {/* The actual Expanded Card */}
             <motion.div
-              layoutId={`card-wrapper-${selectedItem.id}`}
-              className="relative w-full max-w-[1000px] h-[85vh] max-h-[700px] bg-[#0a0d18] rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-[0_40px_100px_rgba(0,0,0,0.8)] border border-white/10"
-              onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside
+              initial={{ scale: 0.8, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 50 }}
+              className="relative w-full max-w-[1100px] h-[80vh] max-h-[750px] bg-[#0a0d18] rounded-[40px] overflow-hidden flex flex-col md:flex-row shadow-[0_50px_150px_rgba(0,0,0,1)] border border-white/10"
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* Left Side Image */}
-              <div className="relative w-full md:w-[55%] h-[40%] md:h-full overflow-hidden">
-                <motion.img 
-                  layoutId={`card-image-${selectedItem.id}`} 
+              <div className="relative w-full md:w-[60%] h-[40%] md:h-full overflow-hidden">
+                <img 
                   src={selectedItem.url} 
                   alt={selectedItem.title}
-                  className="w-full h-full object-cover" 
+                  className="w-full h-full object-cover"
                 />
-                {/* Seamless fade to the black background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0d18] opacity-0 md:opacity-100" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d18] to-transparent opacity-100 md:opacity-0" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#0a0d18] hidden md:block" />
               </div>
 
-              {/* Right Side Content details */}
-              <div className="relative w-full md:w-[45%] p-6 md:p-12 flex flex-col justify-center bg-[#0a0d18]">
-                <div className="w-12 h-1.5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mb-6 shadow-[0_0_15px_#22d3ee]" />
-                
-                <motion.h3 
-                  layoutId={`card-title-${selectedItem.id}`}
-                  className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight"
-                >
+              <div className="relative w-full md:w-[40%] p-10 md:p-16 flex flex-col justify-center bg-[#0a0d18]">
+                <div className="flex items-center gap-3 text-[#f8d991] font-black text-xs tracking-widest uppercase mb-6">
+                  <span className="w-10 h-px bg-[#f8d991]/40" />
+                  {selectedItem.city}
+                </div>
+                <h3 className="text-4xl md:text-6xl font-black text-white mb-8 leading-tight tracking-tighter">
                   {selectedItem.title}
-                </motion.h3>
-                
-                <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.4 }}
-                  className="text-white/60 text-base md:text-lg mb-8 leading-relaxed"
-                >
+                </h3>
+                <p className="text-white/60 text-lg md:text-xl mb-12 leading-relaxed">
                   {selectedItem.subtitle}
-                </motion.p>
-                
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.4 }}
-                >
-                  <button className="px-8 py-4 bg-white/5 hover:bg-white/10 text-white rounded-full font-bold transition-colors border border-white/10 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
-                    Explore Details
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button className="px-10 py-5 bg-[#f8d991] text-[#0a0d18] rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white transition-all shadow-[0_20px_40px_rgba(248,217,145,0.2)] active:scale-95">
+                    Apply Now
                   </button>
-                </motion.div>
+                  <button className="px-10 py-5 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-black text-sm uppercase tracking-widest border border-white/10 transition-all active:scale-95">
+                    Brochure
+                  </button>
+                </div>
               </div>
 
-              {/* Close Modal Button */}
-              <motion.button 
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
+              <button 
                 onClick={() => setSelectedId(null)} 
-                className="absolute top-4 right-4 md:top-6 md:right-6 p-3 bg-black/40 backdrop-blur-xl border border-white/20 rounded-full text-white hover:bg-red-500 hover:text-white hover:border-red-500 transition-all shadow-xl z-10"
+                className="absolute top-8 right-8 w-14 h-14 bg-white/5 hover:bg-red-500 transition-all rounded-full flex items-center justify-center text-white z-50 shadow-2xl border border-white/10 active:scale-90"
               >
                 <CloseIcon />
-              </motion.button>
+              </button>
             </motion.div>
           </motion.div>
         )}

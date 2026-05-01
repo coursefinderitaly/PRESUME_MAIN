@@ -113,7 +113,7 @@ export const Hero = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[1.1] mb-2 tracking-tight text-left drop-shadow-[0_4px_12px_rgba(0,0,0,1)] relative z-20"
               >
-                Free Study In <br />
+                <span className="animate-gradient-text">FREE</span> Study In <br />
                 <div className="relative h-[1.3em] overflow-visible inline-block min-w-[300px]">
                   <AnimatePresence mode="wait">
                     <motion.div

@@ -105,7 +105,7 @@ export const Universities = () => {
   return (
     <section
       ref={sectionRef}
-      className="section-safe relative isolate bg-transparent overflow-hidden"
+      className="section-safe relative bg-transparent overflow-hidden"
       style={{ height: '100svh', minHeight: 'min(760px, 100svh)', display: 'flex', flexDirection: 'column' }}
     >
       {/* Elegant static gradient bg */}
@@ -154,29 +154,36 @@ export const Universities = () => {
           <p className="text-white/65 text-sm sm:text-base md:text-lg font-semibold">
             100% Scholarships · No Tuition Fees · World-class Education
           </p>
-          <p className="text-white/25 text-[10px] sm:text-xs tracking-widest uppercase">
-
-          </p>
         </motion.div>
       </div>
 
       {/* ── DOME GALLERY ── */}
-      <div className="relative flex-1 z-10 w-full" style={{ minHeight: 'min(390px, calc(100svh - 200px))' }}>
+      <div className="relative flex-1 w-full flex items-center justify-center" style={{ minHeight: 'min(500px, calc(100svh - 200px))' }}>
         <VerticalMarquee images={universities} align="left" direction={-1} speed={MARQUEE_SPEED} isVisible={isVisible} />
         <VerticalMarquee images={universities} align="right" direction={1} speed={MARQUEE_SPEED} isVisible={isVisible} />
 
         <div
-          className="absolute inset-x-3 sm:inset-x-8 inset-y-2 z-0 rounded-[24px]"
+          className="absolute inset-x-3 sm:inset-x-8 inset-y-2 z-0 rounded-[24px] pointer-events-none"
           style={{
-            background: 'radial-gradient(ellipse at 50% 60%, rgba(197,168,128,0.16) 0%, rgba(30,58,138,0.16) 42%, rgba(10,13,24,0.0) 74%)',
+            background: 'radial-gradient(ellipse at 50% 60%, rgba(197,168,128,0.1) 0%, rgba(30,58,138,0.1) 42%, rgba(10,13,24,0.0) 74%)',
           }}
         />
 
         {/* User Provided Interactive Accordion Gallery */}
-        <div className="absolute inset-0 flex flex-col justify-center items-center pointer-events-auto z-40">
-          <div className="w-full h-full max-h-[85vh] flex items-center justify-center">
-            <InteractiveAccordionGallery />
-          </div>
+        <div className="relative z-[1000] w-full max-w-5xl mx-auto flex items-center justify-center pointer-events-auto">
+          <InteractiveAccordionGallery 
+            items={universities.slice(0, 5).map(uni => ({
+              id: uni.id,
+              url: uni.image,
+              title: uni.name,
+              city: uni.name.includes('Milan') ? 'Milan, Italy' : 
+                    uni.name.includes('Rome') ? 'Rome, Italy' :
+                    uni.name.includes('Bologna') ? 'Bologna, Italy' :
+                    uni.name.includes('Padua') ? 'Padua, Italy' :
+                    uni.name.includes('Florence') ? 'Florence, Italy' : 'Italy',
+              subtitle: 'World-class education with 100% scholarship opportunities.'
+            }))}
+          />
         </div>
       </div>
     </section>

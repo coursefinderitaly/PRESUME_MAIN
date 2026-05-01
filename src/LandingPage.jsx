@@ -64,7 +64,7 @@ function LandingPage() {
           <SectionDivider />
 
           <Suspense fallback={<SectionFallback />}>
-            <div className="gsap-stagger-section"><Universities /></div>
+            <div className="relative"><Universities /></div>
           </Suspense>
           <SectionDivider />
 

@@ -114,6 +114,32 @@
   text-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
 }
 
+.animate-gradient-text {
+  background: linear-gradient(
+    to right,
+    #C5A880 20%,
+    #ffffff 40%,
+    #C5A880 60%,
+    #ffffff 80%,
+    #C5A880 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: gradient-text-flow 3s linear infinite;
+  display: inline-block;
+}
+
+@keyframes gradient-text-flow {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
 @keyframes text-gradient-flow {
   0% {
     background-position: 0% center;
