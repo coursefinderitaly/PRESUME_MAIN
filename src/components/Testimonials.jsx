@@ -65,7 +65,7 @@ const VideoCard = ({ vid, index }) => {
                 <motion.div
                   whileHover={{ scale: 1.15 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-20 h-20 bg-accent-gold/90 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 shadow-[0_0_30px_rgba(197,168,128,0.5)]"
+                  className="w-20 h-20 bg-accent-gold/90  rounded-full flex items-center justify-center border border-white/30 shadow-[0_0_30px_rgba(197,168,128,0.5)]"
                 >
                   <Play className="text-primary-blue ml-1 w-8 h-8 fill-current" />
                 </motion.div>
@@ -76,7 +76,7 @@ const VideoCard = ({ vid, index }) => {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl"
+                  className="bg-white/10  border border-white/20 p-4 rounded-2xl"
                 >
                   <h3 className="text-white font-bold text-lg leading-tight group-hover:text-accent-gold transition-colors">
                     {vid.title}
@@ -104,7 +104,7 @@ const VideoCard = ({ vid, index }) => {
               ></iframe>
               <button
                 onClick={() => setIsPlaying(false)}
-                className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white backdrop-blur-sm border border-white/20 transition-all z-10"
+                className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white  border border-white/20 transition-all z-10"
               >
                 <X size={20} />
               </button>

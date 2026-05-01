@@ -74,14 +74,14 @@ const BusinessPartnerForm = () => {
                         <p className="text-gray-400 text-lg max-w-2xl mx-auto">Join our global network of elite educational consultants and scale your business with Presume Overseas.</p>
                     </div>
 
-                    <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-[32px] p-8 md:p-12 shadow-2xl relative">
+                    <div className="bg-white/5 border border-white/10  rounded-[32px] p-8 md:p-12 shadow-2xl relative">
                         <AnimatePresence>
                             {isSubmitted && (
                                 <motion.div 
                                     initial={{ opacity: 0, y: -20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
-                                    className="absolute inset-0 bg-[#0a0d18]/90 backdrop-blur-md rounded-[32px] z-50 flex flex-col items-center justify-center text-center p-8 border border-accent-gold/30"
+                                    className="absolute inset-0 bg-[#0a0d18]/90  rounded-[32px] z-50 flex flex-col items-center justify-center text-center p-8 border border-accent-gold/30"
                                 >
                                     <CheckCircle2 className="w-20 h-20 text-accent-gold mb-6" />
                                     <h3 className="text-3xl font-black text-white mb-2">Request Received!</h3>

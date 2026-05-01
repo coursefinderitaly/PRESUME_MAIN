@@ -216,7 +216,7 @@ export default function DomeGallery({
       const viewerPad = Math.max(8, Math.round(minDim * padFactor));
       root.style.setProperty('--radius', `${lockedRadiusRef.current}px`);
       root.style.setProperty('--viewer-pad', `${viewerPad}px`);
-      root.style.setProperty('--overlay-blur-color', overlayBlurColor);
+      root.style.setProperty('--overlay-color', overlayBlurColor);
       root.style.setProperty('--tile-radius', imageBorderRadius);
       root.style.setProperty('--enlarge-radius', openedImageBorderRadius);
       root.style.setProperty('--image-filter', grayscale ? 'grayscale(1)' : 'none');
@@ -743,7 +743,7 @@ export default function DomeGallery({
           {
             ['--segments-x']: segments,
             ['--segments-y']: segments,
-            ['--overlay-blur-color']: overlayBlurColor,
+            ['--overlay-color']: overlayBlurColor,
             ['--tile-radius']: imageBorderRadius,
             ['--enlarge-radius']: openedImageBorderRadius,
             ['--image-filter']: grayscale ? 'grayscale(1)' : 'none'
@@ -828,15 +828,15 @@ export default function DomeGallery({
           <div
             className="absolute inset-0 m-auto z-[3] pointer-events-none"
             style={{
-              backgroundImage: `radial-gradient(rgba(235, 235, 235, 0) 65%, var(--overlay-blur-color, ${overlayBlurColor}) 100%)`
+              backgroundImage: `radial-gradient(rgba(235, 235, 235, 0) 65%, var(--overlay-color, ${overlayBlurColor}) 100%)`
             }}
           />
 
           <div
             className="absolute inset-0 m-auto z-[3] pointer-events-none"
             style={{
-              WebkitMaskImage: `radial-gradient(rgba(235, 235, 235, 0) 70%, var(--overlay-blur-color, ${overlayBlurColor}) 90%)`,
-              maskImage: `radial-gradient(rgba(235, 235, 235, 0) 70%, var(--overlay-blur-color, ${overlayBlurColor}) 90%)`,
+              WebkitMaskImage: `radial-gradient(rgba(235, 235, 235, 0) 70%, var(--overlay-color, ${overlayBlurColor}) 90%)`,
+              maskImage: `radial-gradient(rgba(235, 235, 235, 0) 70%, var(--overlay-color, ${overlayBlurColor}) 90%)`,
               backdropFilter: 'blur(3px)'
             }}
           />
@@ -844,13 +844,13 @@ export default function DomeGallery({
           <div
             className="absolute left-0 right-0 top-0 h-[120px] z-[5] pointer-events-none rotate-180"
             style={{
-              background: `linear-gradient(to bottom, transparent, var(--overlay-blur-color, ${overlayBlurColor}))`
+              background: `linear-gradient(to bottom, transparent, var(--overlay-color, ${overlayBlurColor}))`
             }}
           />
           <div
             className="absolute left-0 right-0 bottom-0 h-[120px] z-[5] pointer-events-none"
             style={{
-              background: `linear-gradient(to bottom, transparent, var(--overlay-blur-color, ${overlayBlurColor}))`
+              background: `linear-gradient(to bottom, transparent, var(--overlay-color, ${overlayBlurColor}))`
             }}
           />
 

@@ -281,6 +281,13 @@ const AuthModal = ({ type: initialType, onClose }) => {
         style={{ background: 'rgba(5,8,20,0.72)', backdropFilter: 'blur(24px)', WebkitBackdropFilter:'blur(24px)', position:'relative', zIndex:2 }}
         onClick={e => e.stopPropagation()}
       >
+        <button 
+          type="button"
+          onClick={onClose} 
+          className="absolute top-6 right-6 z-[70] text-white/40 hover:text-white hover:rotate-90 transition-all duration-300 p-2 rounded-full hover:bg-white/10"
+        >
+          <X size={24} />
+        </button>
         {/* === Sidebar glow orbs === */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[2.5rem]">
           <div style={{
@@ -345,9 +352,6 @@ const AuthModal = ({ type: initialType, onClose }) => {
 
         {/* Content Section */}
         <div className="flex-1 p-8 md:p-14 flex flex-col relative z-10 bg-black/20 overflow-y-auto">
-          <button onClick={onClose} className="absolute top-8 right-8 text-white/20 hover:text-white hover:rotate-90 transition-all duration-300">
-            <X size={24} />
-          </button>
 
           <div className="max-w-xl mx-auto w-full">
             <div className="mb-10 text-center md:text-left">

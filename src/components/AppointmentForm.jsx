@@ -72,7 +72,7 @@ const AppointmentForm = () => {
                         <p className="text-gray-400 text-lg max-w-lg mx-auto">Schedule a free 1-on-1 consultation with our expert advisors to map your international career.</p>
                     </div>
 
-                    <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-[32px] p-8 shadow-2xl relative overflow-hidden">
+                    <div className="bg-white/5 border border-white/10  rounded-[32px] p-8 shadow-2xl relative overflow-hidden">
                         
                         {/* Success Message Overlay */}
                         <AnimatePresence>
@@ -81,7 +81,7 @@ const AppointmentForm = () => {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    className="absolute inset-0 bg-[#0a0d18]/95 backdrop-blur-xl z-50 flex flex-col items-center justify-center text-center p-8 border border-green-500/30 rounded-[32px]"
+                                    className="absolute inset-0 bg-[#0a0d18]/95  z-50 flex flex-col items-center justify-center text-center p-8 border border-green-500/30 rounded-[32px]"
                                 >
                                     <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-6">
                                         <ShieldCheck className="w-10 h-10 text-green-400" />
@@ -160,7 +160,7 @@ const AppointmentForm = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 "
                     >
                         <motion.div 
                             initial={{ scale: 0.95, y: 20 }}

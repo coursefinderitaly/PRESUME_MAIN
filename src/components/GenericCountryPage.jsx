@@ -76,7 +76,7 @@ const GenericCountryPage = ({ countryId }) => {
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-accent-gold">{data.heroHighlight}</span>
                             </h1>
 
-                            <p className="text-sm md:text-lg lg:text-xl text-gray-300 font-medium leading-relaxed mb-8 max-w-xl border-l-2 border-white/20 pl-6 backdrop-blur-sm">
+                            <p className="text-sm md:text-lg lg:text-xl text-gray-300 font-medium leading-relaxed mb-8 max-w-xl border-l-2 border-white/20 pl-6 ">
                                 {data.heroDesc}
                             </p>
 
@@ -322,7 +322,7 @@ const GenericCountryPage = ({ countryId }) => {
                                         className={`flex flex-col md:flex-row gap-6 md:gap-12 items-start md:items-center ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
                                     >
                                         <div className="flex-1 w-full md:text-right">
-                                            <div className={`p-8 rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors ${idx % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
+                                            <div className={`p-8 rounded-[32px] bg-white/5 border border-white/10  hover:bg-white/10 transition-colors ${idx % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
                                                 <h3 className="text-xl font-black text-white mb-2">{item.title}</h3>
                                                 <p className="text-sm text-gray-400 leading-relaxed font-medium">{item.desc}</p>
                                             </div>

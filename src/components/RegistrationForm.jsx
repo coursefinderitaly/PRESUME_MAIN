@@ -77,7 +77,7 @@ export const RegistrationForm = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="bg-white/[0.03] rounded-[24px] shadow-2xl border border-white/10 overflow-hidden backdrop-blur-xl flex flex-col"
+          className="bg-white/[0.03] rounded-[24px] shadow-2xl border border-white/10 overflow-hidden  flex flex-col"
         >
           <div className="flex flex-col lg:flex-row flex-1 min-h-0">
             

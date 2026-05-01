@@ -10,15 +10,18 @@ import GenericCountryPage from './components/GenericCountryPage';
 import BusinessPartnerForm from './components/BusinessPartnerForm';
 import AppointmentForm from './components/AppointmentForm';
 import ScrollToTop from './components/ScrollToTop';
-import SmoothScroll from './components/SmoothScroll';
+import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
+import FPSCounter from './components/FPSCounter';
+import NotFound from './components/NotFound';
 import './index.css';
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
-        <SmoothScroll>
+        <SmoothScrollLayout>
+          <FPSCounter />
           <ScrollToTop />
           <IdleTimeout>
           <Routes>
@@ -43,10 +46,10 @@ function App() {
             <Route path="/study-in-usa" element={<GenericCountryPage countryId="usa" />} />
             <Route path="/partner-registration" element={<BusinessPartnerForm />} />
             <Route path="/book-appointment" element={<AppointmentForm />} />
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </IdleTimeout>
-        </SmoothScroll>
+        </SmoothScrollLayout>
       </Router>
     </ThemeProvider>
   );

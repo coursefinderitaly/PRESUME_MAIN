@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlaneTakeoff, GraduationCap, Coins, BookOpen, MapPin, Landmark, ArrowRight, ShieldCheck, ChevronDown, Euro, Briefcase, HeartHandshake, Building2, Stethoscope, FileText, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
 import { Header } from './Header';
+import AuthModal from './AuthModal';
 
 const ItalyStudyPage = () => {
     // State for interactive document checklist
     const [checkedDocs, setCheckedDocs] = useState({});
+    const [modalOpen, setModalOpen] = useState(null);
 
     const toggleDoc = (category, index) => {
         const key = `${category}-${index}`;
@@ -16,7 +18,7 @@ const ItalyStudyPage = () => {
     };
 
     const opportunities = [
-        { title: "Regional Scholarships (DSU)", desc: "Need-based scholarships from regional governments covering tuition, accommodation, and offering a monthly €5,200 stipend.", icon: <Euro className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
+        { title: "Regional Scholarships (DSU)", desc: "Need-based scholarships from regional governments covering tuition, accommodation, and offering a monthly €8,000 stipend.", icon: <Euro className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
         { title: "Post-Study Work Visa", desc: "Non-EU graduates can apply for a 12-month 'Permesso di attesa occupazione'.", icon: <Briefcase className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
         { title: "Cultural Immersion", desc: "Live in an 'outdoor classroom' surrounded by thousands of years of history and art.", icon: <HeartHandshake className="w-6 h-6 text-rose-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
         { title: "Top-Tier Universities", desc: "Access to prestigious, globally-ranked institutions with very low tuition fees.", icon: <Building2 className="w-6 h-6 text-indigo-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
@@ -103,25 +105,6 @@ const ItalyStudyPage = () => {
 
     const studyLevels = [
         {
-            id: "mbbs",
-            title: "MBBS in Italy",
-            icon: <Stethoscope className="w-8 h-8 text-accent-gold" />,
-            themeColor: "text-accent-gold",
-            bgGlow: "bg-accent-gold/10",
-            bgBox: "bg-accent-gold/5",
-            borderBox: "border-accent-gold/20",
-            checkedBg: "bg-accent-gold/10",
-            checkedBorder: "border-accent-gold/40",
-            checkedInput: "checked:bg-accent-gold checked:border-accent-gold",
-            eligibility: [
-                "10+2 with Science (PCB).",
-                "Minimum 60% aggregate.",
-                "Age 17+ by Dec 2025."
-            ],
-            exam: "Must clear the IMAT (mandatory for public medical universities).",
-            docs: mbbsDocs
-        },
-        {
             id: "bachelors",
             title: "Bachelors",
             icon: <GraduationCap className="w-8 h-8 text-blue-400" />,
@@ -158,6 +141,25 @@ const ItalyStudyPage = () => {
             ],
             exam: "Based on academic profile, SOP, and LORs. Interview may be required.",
             docs: mastersDocs
+        },
+        {
+            id: "mbbs",
+            title: "MBBS in Italy",
+            icon: <Stethoscope className="w-8 h-8 text-accent-gold" />,
+            themeColor: "text-accent-gold",
+            bgGlow: "bg-accent-gold/10",
+            bgBox: "bg-accent-gold/5",
+            borderBox: "border-accent-gold/20",
+            checkedBg: "bg-accent-gold/10",
+            checkedBorder: "border-accent-gold/40",
+            checkedInput: "checked:bg-accent-gold checked:border-accent-gold",
+            eligibility: [
+                "10+2 with Science (PCB).",
+                "Minimum 60% aggregate.",
+                "Age 17+ by Dec 2025."
+            ],
+            exam: "Must clear the IMAT (mandatory for public medical universities).",
+            docs: mbbsDocs
         }
     ];
 
@@ -171,7 +173,7 @@ const ItalyStudyPage = () => {
                         loop
                         muted
                         playsInline
-                        className="w-full h-full object-cover blur-[4px] opacity-40 scale-105"
+                        className="w-full h-full object-cover blur-[4px] opacity-40 scale-105 will-change-[transform,filter] transform-gpu"
                     >
                         <source src="/italy.mp4" type="video/mp4" />
                     </video>
@@ -207,18 +209,21 @@ const ItalyStudyPage = () => {
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-accent-gold">ITALY.</span>
                             </h1>
 
-                            <p className="text-sm md:text-lg lg:text-xl text-gray-300 font-medium leading-relaxed mb-8 max-w-xl border-l-2 border-white/20 pl-6 backdrop-blur-sm">
-                                Secure <strong className="text-white">100% scholarships</strong> and <strong className="text-white">€5,200 annual grants</strong> in Europe's most historic public universities.
+                            <p className="text-sm md:text-lg lg:text-xl text-gray-300 font-medium leading-relaxed mb-8 max-w-xl border-l-2 border-white/20 pl-6 ">
+                                Secure <strong className="text-white">100% scholarships</strong> and <strong className="text-white">€8,000 annual grants</strong> in Europe's most historic public universities.
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto md:mt-0">
-                                <button className="w-full sm:w-auto group relative px-8 py-4 md:px-10 md:py-5 bg-white text-[#0a0d18] rounded-full font-black tracking-widest text-[11px] md:text-[13px] overflow-hidden shadow-[0_20px_50px_-10px_rgba(255,255,255,0.2)]">
+                                <button 
+                                    onClick={() => setModalOpen('signup')}
+                                    className="w-full sm:w-auto group relative px-8 py-4 md:px-10 md:py-5 bg-white text-[#0a0d18] rounded-full font-black tracking-widest text-[11px] md:text-[13px] overflow-hidden shadow-[0_20px_50px_-10px_rgba(255,255,255,0.2)]"
+                                >
                                     <div className="absolute inset-0 bg-accent-gold translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
                                     <span className="relative flex items-center justify-center gap-3 group-hover:text-[#0a0d18] transition-colors duration-500">
                                         START APPLICATION <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                                     </span>
                                 </button>
-                                <button className="w-full sm:w-auto px-8 py-4 md:px-10 md:py-5 bg-transparent border border-white/20 text-white rounded-full font-black tracking-widest text-[11px] md:text-[13px] hover:bg-white/10 transition-all backdrop-blur-xl">
+                                <button className="w-full sm:w-auto px-8 py-4 md:px-10 md:py-5 bg-transparent border border-white/20 text-white rounded-full font-black tracking-widest text-[11px] md:text-[13px] hover:bg-white/10 transition-all ">
                                     BROWSE COURSES
                                 </button>
                             </div>
@@ -232,7 +237,7 @@ const ItalyStudyPage = () => {
                             className="hidden lg:flex relative w-full max-w-[600px] h-full items-center justify-center pointer-events-none select-none perspective-[1200px]"
                         >
                             {/* Background glow */}
-                            <div className="absolute w-[45vh] h-[45vh] bg-accent-gold/10 rounded-full blur-[100px] animate-pulse"></div>
+                            <div className="absolute w-[45vh] h-[45vh] bg-accent-gold/10 rounded-full blur-[100px] animate-pulse will-change-[transform,filter] transform-gpu"></div>
 
                             {/* Outer Rings */}
                             <motion.div
@@ -250,46 +255,46 @@ const ItalyStudyPage = () => {
                             <div className="relative w-full h-full flex items-center justify-center transform-style-3d">
                                 {/* Main Hero Card (Stipend) - Central Focal Point */}
                                 <motion.div
-                                    animate={{ 
+                                    animate={{
                                         y: [-12, 12, -12],
                                         rotateX: [0, 5, 0],
                                         rotateY: [0, -5, 0]
                                     }}
                                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute p-10 rounded-[40px] bg-gradient-to-br from-[#0a0d18]/95 to-yellow-900/40 backdrop-blur-[60px] border border-accent-gold/30 shadow-[0_40px_100px_rgba(0,0,0,0.6)] flex items-center gap-8 z-50 transform translate-z-20"
+                                    className="absolute p-10 rounded-[40px] bg-gradient-to-br from-[#0a0d18]/95 to-yellow-900/40 backdrop-blur-[60px] border border-accent-gold/30 shadow-[0_40px_100px_rgba(0,0,0,0.6)] flex items-center gap-8 z-50 transform translate-z-20 will-change-[transform,filter] transform-gpu"
                                 >
                                     <div className="w-20 h-20 rounded-[24px] bg-accent-gold/20 flex items-center justify-center border border-accent-gold/30 shadow-[0_0_30px_rgba(197,168,128,0.2)]">
                                         <Euro className="text-accent-gold w-10 h-10" />
                                     </div>
                                     <div>
-                                        <div className="text-5xl font-black text-white tracking-tighter mb-1">€5,200</div>
+                                        <div className="text-5xl font-black text-white tracking-tighter mb-1">€8,000</div>
                                         <div className="text-xs uppercase tracking-[0.3em] text-accent-gold font-bold">Annual Stipend</div>
                                     </div>
                                 </motion.div>
 
                                 {/* Top Left: No IELTS */}
                                 <motion.div
-                                    animate={{ 
+                                    animate={{
                                         y: [-15, 10, -15],
                                         x: [-10, 5, -10],
                                         rotateZ: [-3, 3, -3]
                                     }}
                                     transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute top-[10%] left-[0%] px-6 py-4 rounded-full bg-red-500/10 backdrop-blur-[40px] border border-red-500/30 shadow-2xl flex items-center gap-3 z-30"
+                                    className="absolute top-[10%] left-[0%] px-6 py-4 rounded-full bg-red-500/10 backdrop-blur-[40px] border border-red-500/30 shadow-2xl flex items-center gap-3 z-30 will-change-[transform,filter] transform-gpu"
                                 >
                                     <PlaneTakeoff className="text-red-400 w-4 h-4" />
-                                    <div className="text-xs font-black text-white uppercase tracking-widest">No IELTS Needed</div>
+                                    <div className="text-xs font-black text-white uppercase tracking-widest">With or without IELTS</div>
                                 </motion.div>
 
                                 {/* Top Right: English Programs */}
                                 <motion.div
-                                    animate={{ 
+                                    animate={{
                                         y: [15, -10, 15],
                                         x: [10, -5, 10],
                                         rotateZ: [3, -3, 3]
                                     }}
                                     transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                                    className="absolute top-[18%] right-[0%] px-7 py-5 rounded-[30px] bg-white/5 backdrop-blur-[40px] border border-white/10 shadow-2xl flex items-center gap-4 z-40"
+                                    className="absolute top-[18%] right-[0%] px-7 py-5 rounded-[30px] bg-white/5 backdrop-blur-[40px] border border-white/10 shadow-2xl flex items-center gap-4 z-40 will-change-[transform,filter] transform-gpu"
                                 >
                                     <div className="w-10 h-10 rounded-full bg-accent-gold/20 flex items-center justify-center">
                                         <ShieldCheck className="text-accent-gold w-5 h-5" />
@@ -302,7 +307,7 @@ const ItalyStudyPage = () => {
 
                                 {/* Bottom Left: Visa */}
                                 <motion.div
-                                    animate={{ 
+                                    animate={{
                                         y: [-20, 15, -20],
                                         x: [-5, 10, -5],
                                         rotateY: [-10, 10, -10]
@@ -321,7 +326,7 @@ const ItalyStudyPage = () => {
 
                                 {/* Bottom Right: Public Unis */}
                                 <motion.div
-                                    animate={{ 
+                                    animate={{
                                         y: [20, -15, 20],
                                         x: [10, -5, 10],
                                         rotateX: [10, -10, 10]
@@ -410,12 +415,12 @@ const ItalyStudyPage = () => {
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full max-w-5xl bg-blue-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full max-w-5xl bg-blue-500/5 rounded-full blur-[150px] pointer-events-none will-change-[transform,filter] transform-gpu"></div>
 
                             {studyLevels.map(level => (
-                                <div key={level.id} className={`p-6 md:p-8 rounded-[32px] bg-white/[0.02] border border-white/10 backdrop-blur-[30px] shadow-2xl relative overflow-hidden flex flex-col hover:border-white/20 transition-all`}>
-                                    <div className={`absolute top-0 right-0 w-32 h-32 ${level.bgGlow} rounded-full blur-[50px] -mr-10 -mt-10 pointer-events-none`}></div>
-                                    
+                                <div key={level.id} className={`p-6 md:p-8 rounded-[32px] bg-white/[0.02] border border-white/10 backdrop-blur-[30px] shadow-2xl relative overflow-hidden flex flex-col hover:border-white/20 transition-all will-change-[transform,filter] transform-gpu`}>
+                                    <div className={`absolute top-0 right-0 w-32 h-32 ${level.bgGlow} rounded-full blur-[50px] -mr-10 -mt-10 pointer-events-none will-change-[transform,filter] transform-gpu`}></div>
+
                                     <div className="flex items-center gap-4 mb-6 border-b border-white/10 pb-4 relative z-10">
                                         {level.icon}
                                         <h3 className="text-2xl font-black text-white tracking-tight">{level.title}</h3>
@@ -448,7 +453,7 @@ const ItalyStudyPage = () => {
                                             <h4 className={`text-xs font-bold ${level.themeColor} mb-2.5 uppercase tracking-wider flex items-center gap-1.5`}>
                                                 <FileText className="w-3.5 h-3.5" /> Required Docs
                                             </h4>
-                                            <div className="space-y-2 mb-6 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                                            <div className="space-y-2 mb-6 pr-2">
                                                 {level.docs.map((doc, i) => {
                                                     const isChecked = !!checkedDocs[`${level.id}-${i}`];
                                                     return (
@@ -473,7 +478,7 @@ const ItalyStudyPage = () => {
                                             {/* Check Eligibility Button */}
                                             <button className={`w-full py-4 rounded-2xl bg-white/5 border ${level.borderBox} hover:${level.checkedBg} transition-all duration-300 group/btn`}>
                                                 <span className={`text-[10px] font-black tracking-[0.2em] ${level.themeColor} flex items-center justify-center gap-2 uppercase`}>
-                                                    Check Eligibility 
+                                                    Check Eligibility
                                                     <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                                                 </span>
                                             </button>
@@ -523,7 +528,7 @@ const ItalyStudyPage = () => {
                     </div>
 
                     {/* Vertical Journey Timeline */}
-                    <div className="relative py-24 rounded-[48px] bg-white/[0.02] border border-white/10 backdrop-blur-[40px] px-6 md:px-20 shadow-2xl z-20">
+                    <div className="relative py-24 rounded-[48px] bg-white/[0.02] border border-white/10 backdrop-blur-[40px] px-6 md:px-20 shadow-2xl z-20 will-change-[transform,filter] transform-gpu">
                         <div className="text-center mb-20 relative z-10">
                             <h2 className="text-4xl md:text-5xl font-black mb-6 text-white tracking-tight">Your Road to Italy</h2>
                             <p className="text-gray-400 text-lg font-medium max-w-2xl mx-auto">From application to arrival, we guide you every step of the way.</p>
@@ -544,7 +549,7 @@ const ItalyStudyPage = () => {
                                     >
                                         <div className="flex-1 w-full md:text-right">
                                             {/* Content shifts side based on index on desktop */}
-                                            <div className={`p-8 rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors ${idx % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
+                                            <div className={`p-8 rounded-[32px] bg-white/5 border border-white/10  hover:bg-white/10 transition-colors ${idx % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
                                                 <h3 className="text-xl font-black text-white mb-2">{item.title}</h3>
                                                 <p className="text-sm text-gray-400 leading-relaxed font-medium">{item.desc}</p>
                                             </div>
@@ -563,6 +568,13 @@ const ItalyStudyPage = () => {
                     </div>
                 </div>
             </main>
+
+            {/* Auth Modal */}
+            <AnimatePresence>
+                {modalOpen && (
+                    <AuthModal type={modalOpen} onClose={() => setModalOpen(null)} />
+                )}
+            </AnimatePresence>
         </div>
     );
 };

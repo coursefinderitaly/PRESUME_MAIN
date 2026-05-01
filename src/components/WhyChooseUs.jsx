@@ -1,6 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere, Environment, Sparkles } from '@react-three/drei';
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate, AnimatePresence } from 'framer-motion';
 import { Globe2, Target, Users, Award, Shield, Zap, Clock, Star, CheckCircle2, ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
@@ -26,35 +24,11 @@ const advantages = [
   { title: 'Scholarship Assistance', desc: 'Maximum financial aid and tuition waivers for eligible students.' },
 ];
 
-const ThreeBackground = () => (
-  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-transparent">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(15,23,42,0.6)_0%,rgba(2,6,23,1)_100%)] z-10 pointer-events-none" />
-    <Canvas camera={{ position: [0, 0, 12], fov: 45 }} dpr={[1, 1.5]} performance={{ min: 0.5 }} gl={{ powerPreference: 'high-performance', antialias: false }}>
-      <color attach="background" args={["transparent"]} />
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[10, 10, 5]} intensity={1.5} />
-      <directionalLight position={[-10, -10, -5]} intensity={1} color="#06b6d4" />
-      
-      <Float speed={2} rotationIntensity={1} floatIntensity={1}>
-        <Sphere args={[2, 32, 32]} position={[-6, 3, -4]}>
-          <MeshDistortMaterial color="#06b6d4" distort={0.5} speed={2} roughness={0.1} metalness={0.8} opacity={0.2} transparent />
-        </Sphere>
-      </Float>
-      
-      <Float speed={2.5} rotationIntensity={1} floatIntensity={1}>
-        <Sphere args={[2.5, 32, 32]} position={[6, -3, -5]}>
-          <MeshDistortMaterial color="#818cf8" distort={0.4} speed={1.5} roughness={0.1} metalness={0.8} opacity={0.15} transparent />
-        </Sphere>
-      </Float>
-
-      <Float speed={1.5} rotationIntensity={1} floatIntensity={1}>
-        <Sphere args={[1.5, 32, 32]} position={[0, -5, -2]}>
-          <MeshDistortMaterial color="#34d399" distort={0.6} speed={2.5} roughness={0.1} metalness={0.7} opacity={0.1} transparent />
-        </Sphere>
-      </Float>
-
-      <Sparkles count={80} scale={20} size={2} speed={0.3} opacity={0.25} color="#fff" />
-    </Canvas>
+// Static fallback background for performance
+const ElegantBackground = () => (
+  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-[#020617]">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1)_0%,rgba(2,6,23,1)_100%)] z-10 pointer-events-none" />
+    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-[1]" />
   </div>
 );
 
@@ -64,7 +38,11 @@ function OrbitingCard({ stat, index, total, radius }) {
   const duration = 50; // seconds, same as before
 
   return (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.5 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.05, duration: 0.5, ease: "easeOut" }}
       className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
       style={{ width: radius * 2, height: radius * 2 }}
     >
@@ -83,38 +61,38 @@ function OrbitingCard({ stat, index, total, radius }) {
             transformOrigin: `center ${radius}px`,
           }}
         >
-          {/* Counter-rotate the card so it stays upright */}
-          <div
-            style={{
-              animation: `orbit-ccw ${duration}s linear infinite`,
-              willChange: 'transform',
-            }}
-          >
-            <motion.div 
-              whileHover={{ scale: 1.1, zIndex: 100 }}
-              className="w-20 h-20 lg:w-[110px] lg:h-[110px] rounded-full bg-white/[0.03] border-2 border-white/10 backdrop-blur-xl flex flex-col items-center justify-center text-center p-2 shadow-2xl relative overflow-hidden group"
-              style={{ borderColor: `${stat.accent}40` }}
+          {/* Counter-rotate the initial angle so it starts upright */}
+          <div style={{ transform: `rotate(-${angle}deg)` }}>
+            {/* Counter-rotate the animation so it stays upright */}
+            <div
+              style={{
+                animation: `orbit-ccw ${duration}s linear infinite`,
+                willChange: 'transform',
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.1] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <stat.icon className="w-4 h-4 lg:w-6 lg:h-6 mb-1" style={{ color: stat.accent }} />
-              <p className="text-sm lg:text-lg font-black text-white leading-none mb-0.5">{stat.value}</p>
-              <p className="text-[8px] lg:text-[10px] font-bold uppercase tracking-tight text-white/40">{stat.name}</p>
-              
-              <div 
-                className="absolute inset-0 rounded-full border border-white/5 animate-pulse" 
-                style={{ borderColor: `${stat.accent}20` }}
-              />
-            </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.1, zIndex: 100 }}
+                className="w-20 h-20 lg:w-[110px] lg:h-[110px] rounded-full bg-slate-900/80 backdrop-blur-[20px] border-2 border-white/20 flex flex-col items-center justify-center text-center p-2 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(255,255,255,0.05)] relative overflow-hidden group"
+                style={{ borderColor: `${stat.accent}60` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.1] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <stat.icon className="w-4 h-4 lg:w-6 lg:h-6 mb-1 drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" style={{ color: stat.accent }} />
+                <p className="text-sm lg:text-lg font-black text-white leading-none mb-0.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{stat.value}</p>
+                <p className="text-[8px] lg:text-[10px] font-bold uppercase tracking-tight text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">{stat.name}</p>
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 export const WhyChooseUs = () => {
   const sectionRef = useRef(null);
   const [radius, setRadius] = useState(120);
+
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -127,7 +105,24 @@ export const WhyChooseUs = () => {
     };
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -135,35 +130,35 @@ export const WhyChooseUs = () => {
       ref={sectionRef}
       className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-transparent"
     >
-      <ThreeBackground />
+      <ElegantBackground />
       
-      {/* Animated Gradient Wave Background */}
+      {/* Background Texture */}
       <div className="absolute inset-0 z-[5] opacity-30 pointer-events-none transform-gpu">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-        <div className="absolute top-1/4 -left-1/4 w-full h-full bg-cyan-500/10 blur-[120px] animate-advantage-wave-drift will-change-transform transform-gpu" />
-        <div className="absolute bottom-1/4 -right-1/4 w-full h-full bg-purple-500/10 blur-[120px] animate-advantage-wave-drift [animation-delay:4s] will-change-transform transform-gpu" />
       </div>
 
       <div className="max-w-[85rem] mx-auto w-full relative z-20 px-4 sm:px-6 lg:px-8">
-        <div className="presume-advantage-blur-bg rounded-[2.5rem] border border-white/10 shadow-[0_0_80px_rgba(6,182,212,0.12)] p-6 lg:p-10 overflow-hidden relative group">
+        <div className="presume-advantage-bg rounded-[2.5rem] border border-white/10 shadow-[0_0_80px_rgba(6,182,212,0.12)] p-6 lg:p-10 overflow-hidden relative group">
           <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center relative z-10">
             
             {/* Left: Orbital Visualization */}
             <div className="lg:col-span-7 relative flex items-center justify-center h-[380px] lg:h-[520px]">
-              {/* Central Glassmorphic Core */}
-              <div className="absolute w-[260px] h-[260px] lg:w-[340px] lg:h-[340px] rounded-full bg-cyan-500/5 border border-white/10 backdrop-blur-[60px] shadow-[0_0_50px_rgba(6,182,212,0.2)] z-0 animate-pulse" />
-              
+              {/* Central Core — rich glassmorphic ring */}
+              <div className="absolute w-[260px] h-[260px] lg:w-[340px] lg:h-[340px] rounded-full bg-slate-900/70 backdrop-blur-[24px] border-2 border-cyan-400/30 shadow-[0_0_60px_rgba(6,182,212,0.25),inset_0_0_40px_rgba(6,182,212,0.08)] z-0" />
+
+              {/* Title area */}
               <div className="relative z-20 flex flex-col items-center text-center pointer-events-none">
-                <motion.h2 
+                <motion.h2
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  className="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-tight pb-2 drop-shadow-2xl"
+                  className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter leading-tight"
                 >
-                  PRESUME <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600">
+                  <span className="text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">PRESUME</span>
+                  <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(6,182,212,0.6)]">
                     ADVANTAGE
                   </span>
                 </motion.h2>
@@ -184,10 +179,16 @@ export const WhyChooseUs = () => {
 
             {/* Right: Detailed List of Advantages */}
             <div className="lg:col-span-5 flex flex-col gap-3 lg:gap-4 relative z-10">
-              <div className="flex flex-col gap-0.5 mb-1.5">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="flex flex-col gap-0.5 mb-1.5"
+              >
                 <span className="text-cyan-400 text-[8px] lg:text-[10px] font-black uppercase tracking-[0.4em] drop-shadow-lg">The Core Benefits</span>
                 <h3 className="text-white text-xl lg:text-2xl font-black tracking-tight leading-tight drop-shadow-xl">Expert Guidance for Your Global Career</h3>
-              </div>
+              </motion.div>
 
               <div className="flex flex-col gap-2.5">
                 {advantages.map((adv, i) => (
@@ -197,7 +198,7 @@ export const WhyChooseUs = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1, duration: 0.5 }}
-                    className="flex gap-4 p-4 rounded-xl border border-white/[0.06] bg-black/20 hover:bg-white/[0.08] backdrop-blur-md transition-all duration-300 group/item shadow-lg"
+                    className="flex gap-4 p-4 rounded-xl border border-white/[0.1] bg-white/[0.03] backdrop-blur-md hover:bg-white/[0.08] transition-all duration-300 group/item shadow-lg"
                   >
                     <div className="shrink-0 mt-0.5 w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
                       <CheckCircle2 size={13} className="text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]" />

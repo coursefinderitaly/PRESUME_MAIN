@@ -94,7 +94,7 @@ export const Footer = () => {
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             >
               <motion.div 
-                className="absolute inset-0 rounded-full bg-cyan-400/20 blur-md transition-opacity duration-300 group-hover:opacity-100"
+                className="absolute inset-0 rounded-full bg-cyan-400/20  transition-opacity duration-300 group-hover:opacity-100"
                 animate={{ opacity: [0, 0.3, 0], scale: [0.9, 1.1, 0.9] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />

@@ -161,7 +161,7 @@ const DestinationCard = ({ country, index }) => {
     whileHover={{ y: -5 }}
     viewport={{ once: true }}
     transition={{ duration: 0.35, delay: index * 0.04, type: 'spring', stiffness: 280, damping: 24 }}
-    className="destination-card group relative flex h-full min-h-0 cursor-pointer flex-col justify-end overflow-hidden rounded-xl border border-white/20 bg-black/40 shadow-[0_16px_36px_rgba(10,37,64,0.08)] backdrop-blur transition-all duration-300 hover:border-white/40 hover:shadow-[0_24px_52px_rgba(0,0,0,0.4)]"
+    className="destination-card group relative flex h-full min-h-0 cursor-pointer flex-col justify-end overflow-hidden rounded-xl border border-white/20 bg-black/60 shadow-lg transition-all duration-300 hover:border-white/40 hover:shadow-[0_24px_52px_rgba(0,0,0,0.5)] transform-gpu"
     style={{
       '--destination-primary': country.color,
       '--destination-accent': country.accent,
@@ -175,12 +175,12 @@ const DestinationCard = ({ country, index }) => {
       <span className="rounded-md border border-white/30 bg-white/90 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.16em] text-[#0A2540] shadow-sm sm:px-2.5 sm:py-1 sm:text-[10px]">
         {country.code}
       </span>
-      <span className="hidden rounded-full border border-white/25 bg-black/25 px-2 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white backdrop-blur lg:inline-flex">
+      <span className="hidden rounded-full border border-white/25 bg-black/40 px-2 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white lg:inline-flex">
         {country.metric}
       </span>
     </div>
 
-    <div className="destination-card-copy relative z-10 p-3 sm:p-4 lg:p-5 mt-auto bg-black/40 backdrop-blur-md border-t border-white/10">
+    <div className="destination-card-copy relative z-10 p-3 sm:p-4 lg:p-5 mt-auto bg-black/40  border-t border-white/10">
       <div className="flex min-w-0 items-end justify-between gap-2">
         <div className="min-w-0">
           <h3 className="destination-card-title truncate text-base font-black tracking-normal sm:text-lg lg:text-2xl">{country.name}</h3>
@@ -189,7 +189,7 @@ const DestinationCard = ({ country, index }) => {
             {country.city}
           </p>
         </div>
-        <span className="grid h-7 w-7 flex-none place-items-center rounded-lg border border-white/20 bg-white/15 backdrop-blur transition-transform duration-300 group-hover:translate-x-1 sm:h-8 sm:w-8">
+        <span className="grid h-7 w-7 flex-none place-items-center rounded-lg border border-white/20 bg-white/15 transition-transform duration-300 group-hover:translate-x-1 sm:h-8 sm:w-8">
           <ArrowRight size={15} />
         </span>
       </div>
@@ -202,40 +202,22 @@ const DestinationCard = ({ country, index }) => {
 
 export const TopCountries = () => {
   const [activeTab, setActiveTab] = useState('study');
-  const [cursor, setCursor] = useState({ x: 52, y: 38 });
   const countries = activeTab === 'study' ? studyCountries : workCountries;
   const gridClass =
     activeTab === 'study'
       ? 'grid-cols-2 grid-rows-4 sm:grid-cols-4 sm:grid-rows-2'
       : 'grid-cols-1 grid-rows-5 sm:grid-cols-5 sm:grid-rows-1';
 
-  const handlePointerMove = (event) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    setCursor({
-      x: ((event.clientX - bounds.left) / bounds.width) * 100,
-      y: ((event.clientY - bounds.top) / bounds.height) * 100,
-    });
-  };
-
   return (
     <section
-      onPointerMove={handlePointerMove}
-      onPointerLeave={() => setCursor({ x: 52, y: 38 })}
       className="section-safe top-destinations-shell relative h-[100svh] overflow-hidden bg-transparent text-white"
     >
       <div className="absolute inset-0 pointer-events-none top-destinations-gradient" />
-      <div className="absolute inset-0 pointer-events-none top-destinations-aurora" />
-      <div className="absolute inset-0 pointer-events-none top-destinations-flow" />
-      <motion.div
-        className="absolute pointer-events-none w-[1200px] h-[1200px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+      <div
+        className="absolute pointer-events-none w-[1200px] h-[1200px] left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60"
         style={{
-          background: 'radial-gradient(circle, rgba(15,118,110,0.20) 0%, rgba(37,99,235,0.1) 25%, rgba(245,158,11,0.06) 45%, transparent 65%)'
+          background: 'radial-gradient(circle, rgba(15,118,110,0.15) 0%, rgba(37,99,235,0.08) 25%, rgba(245,158,11,0.04) 45%, transparent 65%)'
         }}
-        animate={{
-          left: `${cursor.x}%`,
-          top: `${cursor.y}%`,
-        }}
-        transition={{ type: 'spring', stiffness: 42, damping: 24, mass: 0.7 }}
       />
 
       <div className="relative z-10 mx-auto flex h-full max-w-screen-2xl flex-col px-3 pb-3 pt-[calc(var(--section-header-offset)+8px)] sm:px-5 sm:pb-5 lg:px-10">
@@ -247,7 +229,7 @@ export const TopCountries = () => {
           className="flex flex-none flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
         >
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)] backdrop-blur-md sm:text-[10px]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]  sm:text-[10px]">
               <Sparkles size={13} />
               Global destinations
             </span>
@@ -262,7 +244,7 @@ export const TopCountries = () => {
             </p>
           </div>
 
-          <div className="relative grid w-full max-w-md grid-cols-2 rounded-xl border border-white/10 bg-white/[0.03] p-1 shadow-[0_18px_45px_rgba(0,0,0,0.2)] backdrop-blur-md lg:mb-1">
+          <div className="relative grid w-full max-w-md grid-cols-2 rounded-xl border border-white/10 bg-white/[0.03] p-1 shadow-[0_18px_45px_rgba(0,0,0,0.2)]  lg:mb-1">
             <motion.div
               className="absolute bottom-1 top-1 rounded-lg bg-white/10 shadow-[0_12px_28px_rgba(0,0,0,0.2)] border border-white/10"
               animate={{ left: activeTab === 'study' ? 4 : '50%', right: activeTab === 'study' ? '50%' : 4 }}

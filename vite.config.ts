@@ -9,13 +9,10 @@ export default defineConfig({
     target: 'es2020',
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Split heavy 3D/WebGL libraries into their own chunk — only loads with WhyChooseUs
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
-          // Animation libraries
-          'animation-vendor': ['framer-motion', 'gsap', 'lenis'],
-          // React core
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+        manualChunks(id) {
+          if (id.includes('three') || id.includes('@react-three')) return 'three-vendor';
+          if (id.includes('framer-motion') || id.includes('gsap') || id.includes('lenis')) return 'animation-vendor';
+          if (id.includes('react')) return 'react-vendor';
         },
       },
     },

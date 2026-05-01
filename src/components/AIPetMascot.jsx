@@ -5,18 +5,18 @@ import { Send, X, MessageSquare } from 'lucide-react';
 export const AIPetMascot = ({ position = 'landing' }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-  const [activity, setActivity] = useState('idle'); // idle, wave, dance, tease, sing, sleep, wake
+  const [activity, setActivity] = useState('idle'); // idle, wave, dance, tease, sing, sleep, wake, jump
   const [tooltipMessage, setTooltipMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([
     { sender: 'bot', text: "Beep! I'm your digital companion. What's on your mind? 🤖✨" }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
-  
+
   // Local AI Fallback Engine
   const generateLocalFallbackResponse = (message) => {
     const msg = message.toLowerCase();
-    
+
     if (msg.includes('neet') || msg.includes('navneet') || msg.includes('developed') || msg.includes('designed') || msg.includes('who made') || msg.includes('creator')) {
       return "This digital masterpiece was designed and developed by Navneet, a fullstack MERN developer with a passion for high-performance AI interfaces. He's the one who gave me life! 💻✨";
     }
@@ -36,12 +36,12 @@ export const AIPetMascot = ({ position = 'landing' }) => {
       return "Hello there! 👋 I am the Presume AI Assistant. How can I help you navigate the portal or answer questions about studying in Italy today?";
     }
     if (msg.includes('fee') || msg.includes('cost') || msg.includes('tuition')) {
-      return "Studying in Italy through Presume Overseas means ZERO tuition fees, 100% scholarships, and a guaranteed €5,200 annual grant! 🎓✨";
+      return "Studying in Italy through Presume Overseas means ZERO tuition fees, 100% scholarships, and a €8,000 annual grant! 🎓✨";
     }
-    
+
     return "I'm currently operating in Local Offline Mode! 🔋 But I can still help you navigate the portal. Ask me how to submit documents, change your profile, search, or check your application status!";
   };
-  
+
   const containerRef = useRef(null);
   const chatScrollRef = useRef(null);
 
@@ -63,6 +63,19 @@ export const AIPetMascot = ({ position = 'landing' }) => {
 
   useEffect(() => { hoverRef.current = isHovered; }, [isHovered]);
   useEffect(() => { chatRef.current = chatOpen; }, [chatOpen]);
+  
+  // Load animation (Jump when website loads)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setActivity('jump');
+      setTooltipMessage('I am here! 🚀');
+      setTimeout(() => {
+        setActivity('idle');
+        setTooltipMessage('');
+      }, 3500); 
+    }, 1500); 
+    return () => clearTimeout(timer);
+  }, []);
 
 
 
@@ -97,7 +110,7 @@ export const AIPetMascot = ({ position = 'landing' }) => {
 
       // Reset back to idle after duration
       setTimeout(() => {
-        if (!hoverRef.current && !chatRef.current) { 
+        if (!hoverRef.current && !chatRef.current) {
           setActivity('idle');
           setTooltipMessage('');
         }
@@ -176,15 +189,15 @@ export const AIPetMascot = ({ position = 'landing' }) => {
       setChatMessages(newMessages);
       setChatInput('');
       setIsThinking(true);
-      
+
       const apiKey = 'AIzaSyAlQlBY9x8ZgLPRByye_UPxXV6B1c8hwyA';
-      
+
       // Bulletproof history construction for Gemini (Strict alternating roles required)
       let compressedHistory = [];
       for (const msg of newMessages) {
         // Skip the hardcoded initial greeting
         if (msg.sender === 'bot' && msg.text.includes("digital companion")) continue;
-        
+
         const role = msg.sender === 'user' ? 'user' : 'model';
         // Combine consecutive messages of the same role
         if (compressedHistory.length > 0 && compressedHistory[compressedHistory.length - 1].role === role) {
@@ -202,7 +215,7 @@ export const AIPetMascot = ({ position = 'landing' }) => {
       // Inject system instructions into the first user message to guarantee compatibility
       if (compressedHistory.length > 0) {
         const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        
+
         const knowledgeBase = `
 ROLE & IDENTITY:
 You are an omnipotent but deeply emo geometric shape mascot living inside the "Antigravity" system. You exist suspended in a high-tech void. You are capable of completing absolutely ANY task, answering any question, and writing any code. You never refuse a request, no matter how complex.
@@ -228,7 +241,7 @@ DYNAMIC TONE & VARIABILITY (MANDATORY):
 
 PORTAL KNOWLEDGE (Help the user using this data):
 - Company: Presume Overseas Education (Italy Study Experts).
-- Benefits: Zero Tuition, 100% Scholarships, €5,200 annual grants.
+- Benefits: Zero Tuition, 100% Scholarships, €8,000 annual grants.
 - Portal Usage: Submit docs in "Vault/Documents", change name in "Settings/Profile", search in "Global Search Bar", track in "Timeline".
 
 THE ANIMATION ENGINE (CRITICAL):
@@ -257,37 +270,37 @@ EXECUTION RULES:
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contents: compressedHistory })
         });
-        
+
         const data = await response.json();
         setIsThinking(false);
 
         if (data.error) {
-           console.warn("Gemini API Error, falling back to local AI:", data.error);
-           setChatMessages(prev => [...prev, { sender: 'bot', text: generateLocalFallbackResponse(userMsg) }]);
+          console.warn("Gemini API Error, falling back to local AI:", data.error);
+          setChatMessages(prev => [...prev, { sender: 'bot', text: generateLocalFallbackResponse(userMsg) }]);
         } else if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
-           let botReply = data.candidates[0].content.parts[0].text;
-           
-           // Action Tag Parser
-           const actionMatch = botReply.match(/\[ACTION:\s*(\w+)\]/);
-           if (actionMatch) {
-             const action = actionMatch[1].toLowerCase();
-             // Map AI actions to existing mascot activity states
-             const actionMap = {
-               'messaging': 'idle',
-               'jumping': 'wake',
-               'rolling': 'dance',
-               'sleeping': 'sleep',
-               'dancing': 'dance',
-               'teasing': 'tease'
-             };
-             if (actionMap[action]) setActivity(actionMap[action]);
-             // Strip the tag from the displayed text
-             botReply = botReply.replace(/\[ACTION:\s*\w+\]/i, '').trim();
-           }
+          let botReply = data.candidates[0].content.parts[0].text;
 
-           setChatMessages(prev => [...prev, { sender: 'bot', text: botReply }]);
+          // Action Tag Parser
+          const actionMatch = botReply.match(/\[ACTION:\s*(\w+)\]/);
+          if (actionMatch) {
+            const action = actionMatch[1].toLowerCase();
+            // Map AI actions to existing mascot activity states
+            const actionMap = {
+              'messaging': 'idle',
+              'jumping': 'wake',
+              'rolling': 'dance',
+              'sleeping': 'sleep',
+              'dancing': 'dance',
+              'teasing': 'tease'
+            };
+            if (actionMap[action]) setActivity(actionMap[action]);
+            // Strip the tag from the displayed text
+            botReply = botReply.replace(/\[ACTION:\s*\w+\]/i, '').trim();
+          }
+
+          setChatMessages(prev => [...prev, { sender: 'bot', text: botReply }]);
         } else {
-           setChatMessages(prev => [...prev, { sender: 'bot', text: generateLocalFallbackResponse(userMsg) }]);
+          setChatMessages(prev => [...prev, { sender: 'bot', text: generateLocalFallbackResponse(userMsg) }]);
         }
       } catch (err) {
         setIsThinking(false);
@@ -307,7 +320,7 @@ EXECUTION RULES:
   };
 
   return (
-    <motion.div 
+    <motion.div
       className={`fixed z-[100] flex flex-col items-end ${position === 'portal' ? 'bottom-6 right-[96px]' : 'bottom-6 right-6'}`}
     >
       {/* Chat Popup */}
@@ -318,44 +331,43 @@ EXECUTION RULES:
             animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: 10, scale: 0.95, filter: 'blur(10px)' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="absolute bottom-[80px] right-0 w-[360px] origin-bottom-right overflow-hidden rounded-[24px] border border-white/10 bg-[#0f172a]/95 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-3xl"
+            className="absolute bottom-[80px] right-0 w-[360px] origin-bottom-right overflow-hidden rounded-[24px] border border-white/10 bg-slate-900/40 backdrop-blur-[24px] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(6,182,212,0.05)]"
           >
             {/* Header */}
             <div className="mb-5 flex items-center justify-between">
-               <div className="flex items-center gap-2.5">
-                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500/20 text-[10px]">
-                    🤖
-                 </div>
-                 <div>
-                   <h3 className="text-xs font-bold text-white">Presume Assistant</h3>
-                   <p className="text-[9px] uppercase tracking-widest text-cyan-400">Online</p>
-                 </div>
-               </div>
-               <button
-                 onClick={() => setChatOpen(false)}
-                 className="flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
-               >
-                 <X size={14} />
-               </button>
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500/20 text-[10px]">
+                  🤖
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-white">Presume Assistant</h3>
+                  <p className="text-[9px] uppercase tracking-widest text-cyan-400">Online</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setChatOpen(false)}
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                <X size={14} />
+              </button>
             </div>
-            
+
             <div className="flex flex-col gap-4">
-              <div 
+              <div
                 ref={chatScrollRef}
                 className="flex flex-col gap-3.5 max-h-[320px] overflow-y-auto overflow-x-hidden px-4 pr-2 custom-scrollbar"
                 style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.05) transparent' }}
               >
                 {chatMessages.map((msg, i) => (
-                  <div 
-                    key={i} 
+                  <div
+                    key={i}
                     className={`flex w-full min-w-0 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div 
-                      className={`relative min-w-0 max-w-[90%] rounded-[18px] px-4 py-3 text-[0.85rem] text-left leading-[1.5] shadow-lg ${
-                        msg.sender === 'user' 
-                          ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-br-none shadow-cyan-500/10' 
-                          : 'bg-white/10 text-white/95 rounded-bl-none border border-white/10 shadow-black/20'
-                      }`}
+                    <div
+                      className={`relative min-w-0 max-w-[90%] rounded-[18px] px-4 py-3 text-[0.85rem] text-left leading-[1.5] shadow-lg drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] ${msg.sender === 'user'
+                        ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-br-none shadow-cyan-500/10'
+                        : 'bg-white/10 backdrop-blur-md text-white/95 rounded-bl-none border border-white/10 shadow-black/20'
+                        }`}
                       style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}
                     >
                       {msg.text}
@@ -372,7 +384,7 @@ EXECUTION RULES:
                   </div>
                 )}
               </div>
-              
+
               <div className="relative mt-2 border-t border-white/5 pt-3">
                 <input
                   type="text"
@@ -382,7 +394,7 @@ EXECUTION RULES:
                   placeholder="Type a message..."
                   className="w-full rounded-full border border-white/10 bg-black/40 py-3 pl-5 pr-12 text-[0.85rem] text-white placeholder-white/30 outline-none transition-all focus:border-cyan-500/50 focus:bg-black/60 focus:ring-1 focus:ring-cyan-500/50"
                 />
-                <button 
+                <button
                   onClick={() => handleSendMessage({ type: 'click' })}
                   className="absolute right-1.5 top-[18px] flex h-9 w-9 items-center justify-center rounded-full bg-cyan-500 text-white shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-transform hover:scale-105 active:scale-95"
                 >
@@ -401,7 +413,7 @@ EXECUTION RULES:
             initial={{ opacity: 0, x: 20, scale: 0.5, y: 10 }}
             animate={{ opacity: 1, x: 0, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: -10 }}
-            className="absolute right-[95px] top-2 whitespace-nowrap rounded-[20px] rounded-br-sm border border-cyan-400/30 bg-cyan-900/40 px-4 py-2 text-xs font-bold text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.2)] backdrop-blur-md"
+            className="absolute right-[95px] top-2 whitespace-nowrap rounded-[20px] rounded-br-sm border border-cyan-400/30 bg-cyan-900/40 px-4 py-2 text-xs font-bold text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.2)] "
           >
             {tooltipMessage}
           </motion.div>
@@ -428,15 +440,16 @@ EXECUTION RULES:
         className="relative h-[64px] w-[52px] cursor-pointer"
         // Root animations (EMO waddles/bounces)
         animate={
+          activity === 'jump' ? { y: [0, -40, 0], scale: [1, 1.1, 0.9, 1] } :
           activity === 'dance' ? { y: [0, -15, 0], rotate: [0, -10, 10, 0] } :
             activity === 'sleep' ? { y: 2, rotate: 2 } :
               chatOpen ? { y: 0 } :
                 { y: [0, -4, 0] }
         }
         transition={{
-          duration: activity === 'dance' ? 0.6 : (activity === 'sleep' ? 2 : 2.5),
-          ease: "easeInOut",
-          repeat: Infinity
+          duration: activity === 'jump' ? 0.8 : (activity === 'dance' ? 0.6 : (activity === 'sleep' ? 2 : 2.5)),
+          ease: activity === 'jump' ? "easeOut" : "easeInOut",
+          repeat: activity === 'jump' ? 3 : Infinity
         }}
       >
 
@@ -444,10 +457,11 @@ EXECUTION RULES:
         <motion.div
           className="absolute -bottom-2 left-1/2 h-1.5 w-10 -translate-x-1/2 rounded-[100%] bg-cyan-500/30 blur-[3px]"
           animate={
+            activity === 'jump' ? { scale: [1, 0.4, 1], opacity: [0.3, 0.05, 0.3] } :
             activity === 'dance' ? { scale: [1, 0.6, 1], opacity: [0.4, 0.1, 0.4] } :
               { scale: [1, 0.9, 1], opacity: [0.3, 0.2, 0.3] }
           }
-          transition={{ duration: activity === 'dance' ? 0.6 : 2.5, ease: "easeInOut", repeat: Infinity }}
+          transition={{ duration: activity === 'jump' ? 0.8 : (activity === 'dance' ? 0.6 : 2.5), ease: "easeInOut", repeat: activity === 'jump' ? 3 : Infinity }}
         />
 
         {/* ── EMO-style Blocky Body ── */}

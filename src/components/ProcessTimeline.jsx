@@ -43,11 +43,11 @@ const PathCard = ({ item, type }) => {
       viewport={{ once: true, margin: '-20px' }}
       whileHover={{ y: -3 }}
       transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-      className="relative flex flex-col p-5 rounded-2xl bg-black/30 border border-white/10 backdrop-blur-xl shadow-lg group w-full transition-all duration-300"
+      className="relative flex flex-col p-5 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.3)] group w-full transition-all duration-300 transform-gpu"
     >
       <div className="flex items-center gap-4 mb-4">
         <div 
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/40 border border-white/10 group-hover:scale-110 transition-transform duration-500"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.03] backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-500"
           style={{ boxShadow: `0 4px 20px ${item.color}15` }}
         >
           <Icon size={18} style={{ color: item.color }} />
@@ -115,12 +115,12 @@ export const ProcessTimeline = () => {
           {/* Path Labels for Desktop */}
           <div className="hidden md:flex justify-between items-center max-w-[90%] mx-auto px-4 mt-8">
              <div className="text-center w-[calc(50%-2rem)]">
-               <span className="inline-block px-5 py-2 rounded-full bg-[#06b6d4]/10 border border-[#06b6d4]/30 text-[#06b6d4] text-xs sm:text-sm font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(6,182,212,0.15)] backdrop-blur-md">
+               <span className="inline-block px-5 py-2 rounded-full bg-[#06b6d4]/10 border border-[#06b6d4]/30 text-[#06b6d4] text-xs sm:text-sm font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(6,182,212,0.15)] ">
                  Study Path
                </span>
              </div>
              <div className="text-center w-[calc(50%-2rem)]">
-               <span className="inline-block px-5 py-2 rounded-full bg-[#818cf8]/10 border border-[#818cf8]/30 text-[#818cf8] text-xs sm:text-sm font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(129,140,248,0.15)] backdrop-blur-md">
+               <span className="inline-block px-5 py-2 rounded-full bg-[#818cf8]/10 border border-[#818cf8]/30 text-[#818cf8] text-xs sm:text-sm font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(129,140,248,0.15)] ">
                  Work Path
                </span>
              </div>

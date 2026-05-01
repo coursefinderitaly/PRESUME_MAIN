@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Menu, X, ArrowRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -7,128 +7,214 @@ import AuthModal from './AuthModal';
 import logo from '../assets/logo.png';
 
 export const Header = ({ compact = false }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(null);
+  
+  // Use refs for scroll state to prevent React re-renders on scroll
+  const headerRef = useRef(null);
+  const logoRef = useRef(null);
+  const navRef = useRef(null);
+  const isScrolledRef = useRef(false);
 
   // Site is fully dark-themed — header is always dark/glassmorphic
   const isDarkHeader = true;
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    let ticking = false;
+
+    const updateHeader = () => {
+      const shouldBeScrolled = window.scrollY > 20;
+      
+      if (shouldBeScrolled !== isScrolledRef.current) {
+        isScrolledRef.current = shouldBeScrolled;
+        
+        if (headerRef.current) {
+          if (shouldBeScrolled) {
+            headerRef.current.classList.add('bg-black/10', 'backdrop-blur-[32px]', 'shadow-[0_10px_40px_rgba(0,0,0,0.4)]', 'py-2');
+            headerRef.current.classList.remove('bg-transparent', 'py-6');
+          } else {
+            headerRef.current.classList.add('bg-transparent', 'py-6');
+            headerRef.current.classList.remove('bg-black/10', 'backdrop-blur-[32px]', 'shadow-[0_10px_40px_rgba(0,0,0,0.4)]', 'py-2');
+          }
+        }
+        
+        if (logoRef.current) {
+          if (shouldBeScrolled) {
+            logoRef.current.classList.add(compact ? 'h-6' : 'h-10');
+            logoRef.current.classList.remove(compact ? 'h-8' : 'h-14');
+          } else {
+            logoRef.current.classList.add(compact ? 'h-8' : 'h-14');
+            logoRef.current.classList.remove(compact ? 'h-6' : 'h-10');
+          }
+        }
+        
+        if (navRef.current) {
+          const navItems = navRef.current.querySelectorAll('.nav-item-container');
+          navItems.forEach(item => {
+            if (shouldBeScrolled) {
+              item.classList.add(compact ? 'py-2' : 'py-3');
+              item.classList.remove(compact ? 'py-3' : 'py-6');
+            } else {
+              item.classList.add(compact ? 'py-3' : 'py-6');
+              item.classList.remove(compact ? 'py-2' : 'py-3');
+            }
+          });
+        }
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateHeader);
+        ticking = true;
+      }
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Initial check
+    updateHeader();
+    
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [compact]);
 
   return (
     <>
       <header
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          isScrolled
-            ? 'bg-black/10 backdrop-blur-[32px] shadow-[0_10px_40px_rgba(0,0,0,0.4)] py-2'
-            : 'bg-transparent py-6'
-        }`}
+        ref={headerRef}
+        className="fixed top-0 w-full z-50 transition-all duration-500 bg-transparent py-6 transform-gpu"
       >
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="Presume Overseas" className={`transition-all duration-500 ${isScrolled ? (compact ? 'h-6' : 'h-10') : (compact ? 'h-8' : 'h-14')} drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]`} />
-          </Link>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <Link to="/" className="flex items-center gap-2">
+              <img ref={logoRef} src={logo} alt="Presume Overseas" className={`transition-all duration-500 ${compact ? 'h-8' : 'h-14'} drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] transform-gpu`} />
+            </Link>
+          </motion.div>
 
           {/* Desktop Nav */}
-          <nav className={`hidden md:flex items-center ${compact ? 'gap-4' : 'gap-8'}`}>
-            <NavItem 
-              isScrolled={isScrolled}
-              isDarkHeader={isDarkHeader}
-              compact={compact}
-              title="SERVICES" 
-              items={[
-                { 
-                  label: 'Student Visa', 
-                  desc: 'Study in top global destinations',
-                  subItems: [
-                    { label: 'Italy', desc: 'Free education & €5,200 grants', path: '/study-in-italy' },
-                    { label: 'Australia', desc: 'High-quality education system', path: '/study-in-australia' },
-                    { label: 'Canada', desc: 'Post-study work opportunities', path: '/study-in-canada' },
-                    { label: 'France', desc: 'Rich cultural & academic heritage', path: '/study-in-france' },
-                    { label: 'Germany', desc: 'Zero tuition public universities', path: '/study-in-germany' },
-                    { label: 'Ireland', desc: 'Fast-growing tech & research hub', path: '/study-in-ireland' },
-                    { label: 'United Kingdom', desc: 'World-class academic excellence', path: '/study-in-uk' },
-                    { label: 'United States', desc: 'Global leader in higher education', path: '/study-in-usa' }
-                  ]
-                },
-                { 
-                  label: 'Work Visa', 
-                  desc: 'Build your career in Europe',
-                  subItems: [
-                    { label: 'Bulgaria', desc: 'Fast-track work permits' },
-                    { label: 'Croatia', desc: 'Modern European workforce' },
-                    { label: 'Czech Republic', desc: 'Strong industrial & tech base' },
-                    { label: 'Germany', desc: 'Skilled worker migration' },
-                    { label: 'Serbia', desc: 'Emerging tech & business hub' }
-                  ]
-                }
-              ]} 
-            />
-            <NavItem 
-              isScrolled={isScrolled}
-              isDarkHeader={isDarkHeader}
-              compact={compact}
-              title="PROGRAMS" 
-              items={[
-                { label: 'Apple Academy', desc: 'Premium coding & design programs' }
-              ]} 
-            />
-            <NavItem 
-              isScrolled={isScrolled}
-              isDarkHeader={isDarkHeader}
-              compact={compact}
-              title="RESOURCES" 
-              items={[
-                { label: 'Course Finder', desc: 'Find your perfect degree', url: 'https://coursefinderitaly.com/' },
-                { label: 'Scholarship Guide', desc: 'Maximize your funding' },
-                { label: 'Pre-Assessment', desc: 'Free profile evaluation' },
-                { label: 'Expert Consultation', desc: '1-on-1 career mapping' }
-              ]} 
-            />
-            <NavItem 
-              isScrolled={isScrolled}
-              isDarkHeader={isDarkHeader}
-              compact={compact}
-              title="FORMS" 
-              items={[
-                { label: 'Business Partner Registration', desc: 'Become an official partner', path: '/partner-registration' },
-                { label: 'Book an Appointment', desc: 'Schedule a free consultation', path: '/book-appointment' }
-              ]} 
-            />
-            <NavItem 
-              isScrolled={isScrolled}
-              isDarkHeader={isDarkHeader}
-              compact={compact}
-              title="COMPANY" 
-              items={[
-                { label: 'Our Story', desc: 'Mission to democratize education' },
-                { label: 'Careers', desc: 'Join our growing team' },
-                { label: 'Contact Us', desc: 'Get in touch today' }
-              ]} 
-            />
+          <nav ref={navRef} className={`hidden md:flex items-center ${compact ? 'gap-4' : 'gap-8'}`}>
+            {[
+              <NavItem
+                key="services"
+                isDarkHeader={isDarkHeader}
+                compact={compact}
+                title="SERVICES"
+                items={[
+                  {
+                    label: 'Student Visa',
+                    desc: 'Study in top global destinations',
+                    subItems: [
+                      { label: 'Italy', desc: 'Free education & €8,000 grants', path: '/study-in-italy' },
+                      { label: 'Australia', desc: 'High-quality education system', path: '/study-in-australia' },
+                      { label: 'Canada', desc: 'Post-study work opportunities', path: '/study-in-canada' },
+                      { label: 'France', desc: 'Rich cultural & academic heritage', path: '/study-in-france' },
+                      { label: 'Germany', desc: 'Zero tuition public universities', path: '/study-in-germany' },
+                      { label: 'Ireland', desc: 'Fast-growing tech & research hub', path: '/study-in-ireland' },
+                      { label: 'United Kingdom', desc: 'World-class academic excellence', path: '/study-in-uk' },
+                      { label: 'United States', desc: 'Global leader in higher education', path: '/study-in-usa' }
+                    ]
+                  },
+                  {
+                    label: 'Work Visa',
+                    desc: 'Build your career in Europe',
+                    subItems: [
+                      { label: 'Bulgaria', desc: 'Fast-track work permits' },
+                      { label: 'Croatia', desc: 'Modern European workforce' },
+                      { label: 'Czech Republic', desc: 'Strong industrial & tech base' },
+                      { label: 'Germany', desc: 'Skilled worker migration' },
+                      { label: 'Serbia', desc: 'Emerging tech & business hub' }
+                    ]
+                  }
+                ]}
+              />,
+              <NavItem
+                key="programs"
+                isDarkHeader={isDarkHeader}
+                compact={compact}
+                title="PROGRAMS"
+                items={[
+                  { label: 'Apple Academy', desc: 'Premium coding & design programs' }
+                ]}
+              />,
+              <NavItem
+                key="resources"
+                isDarkHeader={isDarkHeader}
+                compact={compact}
+                title="RESOURCES"
+                items={[
+                  { label: 'Course Finder', desc: 'Find your perfect degree', url: 'https://coursefinderitaly.com/' },
+                  { label: 'Scholarship Guide', desc: 'Maximize your funding' },
+                  { label: 'Pre-Assessment', desc: 'Free profile evaluation' },
+                  { label: 'Expert Consultation', desc: '1-on-1 career mapping' }
+                ]}
+              />,
+              <NavItem
+                key="forms"
+                isDarkHeader={isDarkHeader}
+                compact={compact}
+                title="FORMS"
+                items={[
+                  { label: 'Business Partner Registration', desc: 'Become an official partner', path: '/partner-registration' },
+                  { label: 'Book an Appointment', desc: 'Schedule a free consultation', path: '/book-appointment' }
+                ]}
+              />,
+              <NavItem
+                key="company"
+                isDarkHeader={isDarkHeader}
+                compact={compact}
+                title="COMPANY"
+                items={[
+                  { label: 'Our Story', desc: 'Mission to democratize education' },
+                  { label: 'Careers', desc: 'Join our growing team' },
+                  { label: 'Contact Us', desc: 'Get in touch today' }
+                ]}
+              />
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
+              >
+                {item}
+              </motion.div>
+            ))}
           </nav>
 
           {/* Actions */}
           <div className="hidden md:flex items-center gap-6">
-            <button 
-              onClick={() => setModalOpen('login')}
-              className={`font-black text-[13px] tracking-widest hover:text-accent-gold transition-colors ${!isDarkHeader ? 'text-primary-blue' : 'text-white'}`}
-            >
-              LOGIN
-            </button>
-            <motion.button 
-              whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -5px rgba(197,168,128,0.4)" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setModalOpen('signup')}
-              className="bg-accent-gold text-primary-blue px-7 py-3 rounded-full font-black text-[12px] tracking-wider hover:bg-yellow-500 transition-all shadow-lg"
-            >
-              SIGN UP
-            </motion.button>
+            {[
+              <button
+                key="login"
+                onClick={() => setModalOpen('login')}
+                className={`font-black text-[13px] tracking-widest hover:text-accent-gold transition-colors ${!isDarkHeader ? 'text-primary-blue' : 'text-white'}`}
+              >
+                LOGIN
+              </button>,
+              <motion.button
+                key="signup"
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -5px rgba(197,168,128,0.4)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setModalOpen('signup')}
+                className="bg-accent-gold text-primary-blue px-7 py-3 rounded-full font-black text-[12px] tracking-wider hover:bg-yellow-500 transition-all shadow-lg"
+              >
+                SIGN UP
+              </motion.button>
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 + i * 0.1 }}
+              >
+                {item}
+              </motion.div>
+            ))}
           </div>
 
           {/* Mobile Toggle */}
@@ -141,12 +227,12 @@ export const Header = ({ compact = false }) => {
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[60] bg-[#0a0d18]/95 backdrop-blur-3xl p-8 flex flex-col h-screen overflow-y-auto"
+            className="fixed inset-0 z-[60] bg-[#0a0d18] p-8 flex flex-col h-screen overflow-y-auto"
           >
             <div className="flex justify-between items-center mb-12">
               <Link to="/" onClick={() => setMobileMenuOpen(false)}>
@@ -154,19 +240,23 @@ export const Header = ({ compact = false }) => {
               </Link>
               <button className="p-3 bg-white/5 hover:bg-white/10 transition-colors rounded-full border border-white/10" onClick={() => setMobileMenuOpen(false)}><X size={24} className="text-white" /></button>
             </div>
-            
+
             <div className="space-y-6">
               {[
-                { title: 'SERVICES', items: [
-                  { label: 'Student Visa', subItems: ['Italy', 'Australia', 'Canada', 'France', 'Germany', 'Ireland', 'United Kingdom', 'United States'] },
-                  { label: 'Work Visa', subItems: ['Bulgaria', 'Croatia', 'Czech Republic', 'Germany', 'Serbia'] }
-                ]},
+                {
+                  title: 'SERVICES', items: [
+                    { label: 'Student Visa', subItems: ['Italy', 'Australia', 'Canada', 'France', 'Germany', 'Ireland', 'United Kingdom', 'United States'] },
+                    { label: 'Work Visa', subItems: ['Bulgaria', 'Croatia', 'Czech Republic', 'Germany', 'Serbia'] }
+                  ]
+                },
                 { title: 'PROGRAMS', items: ['Apple Academy'] },
                 { title: 'RESOURCES', items: ['Course Finder', 'Scholarship Guide', 'Pre-Assessment', 'Expert Consultation'] },
-                { title: 'FORMS', items: [
-                  { label: 'Business Partner Registration', path: '/partner-registration' },
-                  { label: 'Book an Appointment', path: '/book-appointment' }
-                ]},
+                {
+                  title: 'FORMS', items: [
+                    { label: 'Business Partner Registration', path: '/partner-registration' },
+                    { label: 'Book an Appointment', path: '/book-appointment' }
+                  ]
+                },
                 { title: 'COMPANY', items: ['Our Story', 'Careers', 'Contact Us'] }
               ].map((section) => (
                 <MobileNavItem key={section.title} section={section} />
@@ -174,13 +264,20 @@ export const Header = ({ compact = false }) => {
             </div>
 
             <div className="mt-auto pt-10 grid grid-cols-1 gap-4">
-              <button 
+              <Link
+                to="/test"
+                target="_blank"
+                className="py-5 font-black tracking-widest text-white border-2 border-white/10 hover:border-cyan-400 transition-colors rounded-2xl bg-white/5 flex items-center justify-center"
+              >
+                VIEW ANIMATION
+              </Link>
+              <button
                 onClick={() => { setModalOpen('login'); setMobileMenuOpen(false); }}
                 className="py-5 font-black tracking-widest text-white border-2 border-white/10 hover:border-accent-gold transition-colors rounded-2xl bg-white/5"
               >
                 LOGIN
               </button>
-              <button 
+              <button
                 onClick={() => { setModalOpen('signup'); setMobileMenuOpen(false); }}
                 className="py-5 font-black tracking-widest text-primary-blue bg-accent-gold rounded-2xl shadow-xl"
               >
@@ -201,31 +298,28 @@ export const Header = ({ compact = false }) => {
   );
 };
 
-const NavItem = ({ title, items, isScrolled, isDarkHeader, compact }) => {
+const NavItem = ({ title, items, isDarkHeader, compact }) => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const navigate = useNavigate();
 
   return (
-    <div 
-      className={`relative group transition-all duration-500 ${isScrolled ? (compact ? 'py-2' : 'py-3') : (compact ? 'py-3' : 'py-6')}`}
+    <div
+      className={`nav-item-container relative group transition-all duration-500 ${compact ? 'py-3' : 'py-6'}`}
       onMouseLeave={() => setActiveSubMenu(null)}
     >
-      <div className={`flex items-center gap-1.5 ${compact ? 'text-[10px]' : 'text-[12px]'} font-black tracking-[0.2em] transition-all duration-300 cursor-pointer ${
-        !isDarkHeader ? 'text-primary-blue/90' : 'text-white/90'
-      } group-hover:text-accent-gold uppercase`}>
-        {title} 
+      <div className={`flex items-center gap-1.5 ${compact ? 'text-[10px]' : 'text-[12px]'} font-black tracking-[0.2em] transition-all duration-300 cursor-pointer ${!isDarkHeader ? 'text-primary-blue/90' : 'text-white/90'
+        } group-hover:text-accent-gold uppercase`}>
+        {title}
         <ChevronDown size={12} className="group-hover:rotate-180 transition-transform duration-500 ease-out" />
       </div>
-      
+
       {/* Main Dropdown */}
       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,transform,visibility] duration-250 ease-out translate-y-2 group-hover:translate-y-0 z-50 will-change-[transform,opacity] transform-gpu">
-        <div className="relative rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.8)] p-3 overflow-hidden border border-white/20 bg-[#0a0d18]/95 backdrop-blur-3xl">
-          {/* Subtle accent orbs */}
-          <div className="pointer-events-none absolute -top-10 -left-6 w-32 h-32 rounded-full bg-accent-gold/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-6 -right-4 w-24 h-24 rounded-full bg-blue-400/10 blur-3xl" />
+        <div className="relative rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.8),0_0_20px_rgba(255,255,255,0.03)] p-3 overflow-hidden border border-white/10 bg-[#0a0d18]">
+
           {/* Top gradient border line */}
           <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-          
+
           <div className="relative z-10">
             {items.map((item, idx) => (
               <div
@@ -239,8 +333,8 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader, compact }) => {
               >
                 <div className={`flex items-center justify-between px-4 py-3 hover:bg-white/10 rounded-xl transition-all duration-300 cursor-pointer ${activeSubMenu === idx ? 'bg-white/10 shadow-inner' : ''}`}>
                   <div className="flex flex-col gap-1">
-                    <p className={`text-[15px] font-bold tracking-tight transition-colors ${activeSubMenu === idx ? 'text-accent-gold' : 'text-white hover:text-accent-gold'}`}>{item.label}</p>
-                    <p className="text-[11px] font-medium text-gray-300">{item.desc}</p>
+                    <p className={`text-[15px] font-bold tracking-tight transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${activeSubMenu === idx ? 'text-accent-gold' : 'text-white hover:text-accent-gold'}`}>{item.label}</p>
+                    <p className="text-[11px] font-medium text-gray-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">{item.desc}</p>
                   </div>
                   {item.subItems ? (
                     <div className="flex items-center gap-1.5">
@@ -265,14 +359,12 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader, compact }) => {
               exit={{ opacity: 0, x: 8, scale: 0.96 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
               onMouseEnter={() => setActiveSubMenu(activeSubMenu)}
-              className="absolute top-0 left-[calc(100%+0.4rem)] w-[26rem] rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.8)] p-3 z-[60] overflow-hidden transform-gpu max-h-[calc(100vh-100px)] border border-white/20 bg-[#0a0d18]/95 backdrop-blur-3xl"
+              className="absolute top-0 left-[calc(100%+0.4rem)] w-[26rem] rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.8),0_0_20px_rgba(255,255,255,0.03)] p-3 z-[60] overflow-hidden transform-gpu max-h-[calc(100vh-100px)] border border-white/10 bg-[#0a0d18]"
             >
-              {/* Subtle accent orbs */}
-              <div className="pointer-events-none absolute -top-8 right-0 w-28 h-28 rounded-full bg-blue-500/15 blur-3xl" />
-              <div className="pointer-events-none absolute bottom-0 left-0 w-20 h-20 rounded-full bg-accent-gold/15 blur-3xl" />
+
               {/* Top gradient border line */}
               <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-              
+
               <div className="relative z-10">
                 <div className="px-4 py-3 border-b border-white/10 mb-3 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-accent-gold"></div>
@@ -281,22 +373,22 @@ const NavItem = ({ title, items, isScrolled, isDarkHeader, compact }) => {
                 {/* 2-column grid so 8 countries stay compact */}
                 <div className="grid grid-cols-2 gap-2">
                   {items[activeSubMenu].subItems.map((sub, sIdx) => (
-                    <div 
-                      key={sIdx} 
-                      onClick={(e) => { 
+                    <div
+                      key={sIdx}
+                      onClick={(e) => {
                         e.stopPropagation();
-                        if(sub.path) { 
-                          navigate(sub.path); 
-                          setActiveSubMenu(null); 
-                        } 
-                      }} 
+                        if (sub.path) {
+                          navigate(sub.path);
+                          setActiveSubMenu(null);
+                        }
+                      }}
                       className="group/sub flex items-center gap-3 px-3 py-3 hover:bg-white/10 border border-transparent hover:border-white/10 rounded-xl transition-all cursor-pointer"
                     >
                       <div className="flex flex-col min-w-0">
-                        <p className="text-[14px] font-bold text-gray-100 group-hover/sub:text-accent-gold truncate pr-1 transition-colors">
+                        <p className="text-[14px] font-bold text-gray-100 group-hover/sub:text-accent-gold truncate pr-1 transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                           {sub.label}
                         </p>
-                        <p className="text-[11px] font-medium text-gray-400 truncate transition-colors">
+                        <p className="text-[11px] font-medium text-gray-400 truncate transition-colors drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
                           {sub.desc}
                         </p>
                       </div>
@@ -318,17 +410,17 @@ const MobileNavItem = ({ section }) => {
 
   return (
     <div className="border-b border-gray-100 pb-6 pt-2">
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
         className="text-3xl font-black tracking-tighter flex items-center justify-between w-full uppercase group transition-colors"
       >
         <span className={isOpen ? 'text-accent-gold' : 'text-white'}>{section.title}</span>
         <ChevronDown size={28} className={`text-accent-gold transition-transform duration-500 ${isOpen ? 'rotate-180 scale-110' : ''}`} />
       </button>
-      
+
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -359,7 +451,7 @@ const MobileSubItem = ({ item }) => {
 
   return (
     <div className="space-y-4">
-      <button 
+      <button
         onClick={() => {
           if (item.url) {
             window.open(item.url, '_blank', 'noopener,noreferrer');
@@ -380,16 +472,16 @@ const MobileSubItem = ({ item }) => {
       </button>
       <AnimatePresence>
         {isOpen && item.subItems && (
-          <motion.div 
+          <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="grid grid-cols-1 gap-3 pl-4 overflow-hidden"
           >
             {item.subItems.map((sub, idx) => (
-              <div 
-                key={idx} 
-                onClick={(e) => { 
+              <div
+                key={idx}
+                onClick={(e) => {
                   e.stopPropagation();
                   const countryPathMap = {
                     'Italy': '/study-in-italy',
@@ -401,11 +493,11 @@ const MobileSubItem = ({ item }) => {
                     'United Kingdom': '/study-in-uk',
                     'United States': '/study-in-usa'
                   };
-                  if(countryPathMap[sub]) {
+                  if (countryPathMap[sub]) {
                     navigate(countryPathMap[sub]);
                     setMobileMenuOpen(false);
                   }
-                }} 
+                }}
                 className="flex items-center justify-between text-gray-400 text-base font-bold bg-white/5 px-5 py-4 rounded-2xl border border-white/5 hover:border-accent-gold/40 hover:text-white transition-all cursor-pointer"
               >
                 {sub}
