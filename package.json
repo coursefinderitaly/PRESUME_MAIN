@@ -6,7 +6,7 @@
     "dev:frontend": "vite",
     "dev:backend": "cd next-backend && npm run dev",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "build": "vite build && cd next-backend && npx next build",
+    "build": "vite build",
     "start": "node next-backend/server.js",
     "lint": "eslint .",
     "preview": "vite preview"
