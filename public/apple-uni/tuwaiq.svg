@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <title>&#x623;&#x643;&#x627;&#x62F;&#x64A;&#x645;&#x64A;&#x629; &#x637;&#x648;&#x64A;&#x642;</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="title" content="&#x623;&#x643;&#x627;&#x62F;&#x64A;&#x645;&#x64A;&#x629; &#x637;&#x648;&#x64A;&#x642;">
+    <meta name="description" content="&#x645;&#x639;&#x633;&#x643;&#x631;&#x627;&#x62A; &#x648;&#x628;&#x631;&#x627;&#x645;&#x62C; &#x627;&#x62D;&#x62A;&#x631;&#x627;&#x641;&#x64A;&#x629; &#x641;&#x64A; &#x623;&#x628;&#x631;&#x632; &#x645;&#x62C;&#x627;&#x644;&#x627;&#x62A; &#x627;&#x644;&#x62A;&#x642;&#x646;&#x64A;&#x627;&#x62A; &#x627;&#x644;&#x645;&#x62A;&#x642;&#x62F;&#x645;&#x629;">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://tuwaiq.edu.sa/Error-D3EDD1EC-C6D2-4D9A-A9F0-BF5E488CA9FB/404" />
+    <meta property="og:title" content="&#x623;&#x643;&#x627;&#x62F;&#x64A;&#x645;&#x64A;&#x629; &#x637;&#x648;&#x64A;&#x642;"/>
+    <meta property="og:description" content="&#x645;&#x639;&#x633;&#x643;&#x631;&#x627;&#x62A; &#x648;&#x628;&#x631;&#x627;&#x645;&#x62C; &#x627;&#x62D;&#x62A;&#x631;&#x627;&#x641;&#x64A;&#x629; &#x641;&#x64A; &#x623;&#x628;&#x631;&#x632; &#x645;&#x62C;&#x627;&#x644;&#x627;&#x62A; &#x627;&#x644;&#x62A;&#x642;&#x646;&#x64A;&#x627;&#x62A; &#x627;&#x644;&#x645;&#x62A;&#x642;&#x62F;&#x645;&#x629;"/>
+    <meta property="og:image" content="https://cdn.tuwaiq.edu.sa/landing/images/logo/tuwaiq-og-banner.jpg"/>
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:url" content="https://tuwaiq.edu.sa/Error-D3EDD1EC-C6D2-4D9A-A9F0-BF5E488CA9FB/404" />
+    <meta name="twitter:title" content="&#x623;&#x643;&#x627;&#x62F;&#x64A;&#x645;&#x64A;&#x629; &#x637;&#x648;&#x64A;&#x642;">
+    <meta name="twitter:description" content="&#x645;&#x639;&#x633;&#x643;&#x631;&#x627;&#x62A; &#x648;&#x628;&#x631;&#x627;&#x645;&#x62C; &#x627;&#x62D;&#x62A;&#x631;&#x627;&#x641;&#x64A;&#x629; &#x641;&#x64A; &#x623;&#x628;&#x631;&#x632; &#x645;&#x62C;&#x627;&#x644;&#x627;&#x62A; &#x627;&#x644;&#x62A;&#x642;&#x646;&#x64A;&#x627;&#x62A; &#x627;&#x644;&#x645;&#x62A;&#x642;&#x62F;&#x645;&#x629;">
+    <meta name="twitter:image" content="https://cdn.tuwaiq.edu.sa/landing/images/logo/tuwaiq-og-banner.jpg">
+
+    <!-- LinkedIn -->
+    <meta property="og:site_name" content="&#x623;&#x643;&#x627;&#x62F;&#x64A;&#x645;&#x64A;&#x629; &#x637;&#x648;&#x64A;&#x642;">
+    <meta property="og:locale" content="ar">
+
+    <!-- Favicon (For better branding in browser tabs & previews) -->
+    <link rel="icon" type="image/x-icon" href="https://cdn.tuwaiq.edu.sa/landing/images/logo/favicon.ico">
+
+    <meta name="robots" content="index, follow">
+
+    <meta name="application-name" content="&#x623;&#x643;&#x627;&#x62F;&#x64A;&#x645;&#x64A;&#x629; &#x637;&#x648;&#x64A;&#x642;"/>
+    <meta name="apple-mobile-web-app-title" content="&#x623;&#x643;&#x627;&#x62F;&#x64A;&#x645;&#x64A;&#x629; &#x637;&#x648;&#x64A;&#x642;"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <link rel="stylesheet" href="/lib/toastify/toastify.css?v=vsHyqhQG77cIfUkNDjWDQB-Hjcm79DXNlk0AXZhEQnY" nonce="1UhcPN&#x2B;STUqlXaVEPgQoXt7fcLWPXxzUfsiUWJXLRao=">
+    <meta name="apple-mobile-web-app-status-bar-style" content="whites"/>
+    <link rel="apple-touch-icon" href="https://cdn.tuwaiq.edu.sa/landing/images/logo/logo-h.png"/>
+    <link rel="apple-touch-icon" sizes="57x57"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="144x144"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="60x60"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-iphone-60x60.png">
+    <link rel="apple-touch-icon" sizes="120x120"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="152x152"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-180x180.png">
+    <link rel="apple-touch-icon" href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="60x60"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-ipad-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-iphone-retina-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon-ipad-retina-152x152.png">
+    <link rel="apple-touch-icon-precomposed"
+          href="https://cdn.tuwaiq.edu.sa/landing/images/logo/apple/apple-touch-icon.png"/>
+    <link rel="icon" type="image/png" href="https://cdn.tuwaiq.edu.sa/landing/images/logo/logo-h-white.png"/>
+    
+    
+    
+        <link rel="stylesheet" href="/css/main-L-KMphdE.css?v=o6fbK9Ngma63YUsT1ca6ngOVU-gxh8aIZmXKlGxbgoY" />
+        
+    
+    <script nonce="1UhcPN&#x2B;STUqlXaVEPgQoXt7fcLWPXxzUfsiUWJXLRao=">window.base_url = 'https://tuwaiq.edu.sa/';</script>
+    
+    
+
+    
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-1MZ5GR49KS" nonce="1UhcPN&#x2B;STUqlXaVEPgQoXt7fcLWPXxzUfsiUWJXLRao="></script>
+        <script nonce="1UhcPN&#x2B;STUqlXaVEPgQoXt7fcLWPXxzUfsiUWJXLRao=">
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+
+            gtag('config', 'G-1MZ5GR49KS');
+        </script>
+    
+
+    <script nonce="1UhcPN&#x2B;STUqlXaVEPgQoXt7fcLWPXxzUfsiUWJXLRao=">
+        window.LandingPageSettings = {
+            portal: 'https://portal.tuwaiq.edu.sa',
+            countryId: '63055496-7497-e353-e315-49704fd0b5f5',
+            cityId: 'dc1156aa-a0b1-6a15-99c6-98c260d94fbb'
+        };
+    </script>
+    <!-- Matomo -->
+    <script nonce="1UhcPN&#x2B;STUqlXaVEPgQoXt7fcLWPXxzUfsiUWJXLRao=">
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['setUserId', '']);
+        _paq.push(['setCustomDimension', 1, '']);
+        _paq.push(['setCustomDimension', 2, '']);
+        _paq.push(['setCustomDimension', 3, '']);
+        _paq.push(['setCustomDimension', 4, '']);
+
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function () {
+            var u = "https://webrecorder.tuwaiq.edu.sa/";
+            _paq.push(['setTrackerUrl', u + 'matomo.php']);
+            _paq.push(['setSiteId', '1']);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.async = true;
+            g.src = u + 'matomo.js';
+            s.parentNode.insertBefore(g, s);
+        })();
+    </script>
+    <!-- End Matomo Code -->
+</head>
+
+<body class="overscroll-none relative m-0 font-sans text-base antialiased font-normal leading-default" x-data="mainMasterData" x-cloak x-init="cdnUrl = 'https://cdn.tuwaiq.edu.sa'">
+    <div x-show="isLoading"
+        class="flex flex-col items-center justify-center h-screen fixed !z-[9999999999] top-0 left-0 right-0 bottom-0">
+        <div class="flex relative flex-col justify-center items-center">
+            <img class="object-contain z-50 w-48 h-48" loading="lazy" alt="أكاديمية طويق"
+                src="/img/tuwaiq-loader.svg"/>
+        </div>
+    
+    </div>
+<main class="relative space-y-14 rounded-xl transition-all duration-200 ease-in-out xl:mr-68" x-show="!isLoading"
+      x-cloak>
+    <nav x-data="{ scrolled:false, openUser:false }"
+     x-init="window.addEventListener('scroll',()=>{ scrolled = window.pageYOffset > 30 })"
+     class="fixed top-0 left-0 z-40 w-full px-6 py-4 transition-colors duration-300 bg-white shadow-sm md:sticky md:bg-transparent"
+     :class="scrolled
+    ? 'md:bg-white/30 md:backdrop-blur-md md:border-b md:border-white/20'
+    : 'md:bg-transparent md:border-0'" id="navbar">
+
+    <div class="flex items-center justify-between md:gap-x-2">
+        <div class="flex items-center">
+            <a href="/" class="flex items-center">
+                <img src="/img/logo-v2/long-logo.webp" class="object-contain lg:w-[152px] lg:min-h-8" loading="lazy"
+                     alt="logo" width="152" height="32" />
+            </a>
+        </div>
+
+        <div class="hidden relative xl:gap-x-3 rounded-2xl items-center border border-[#ECECEC]  md:flex p-1 bg-[#FAFAFA]"
+             :class="{ 'bg-[#E8DFD0]': theme === 'founding_day' }"
+             x-data="{ openAboutMenu: false, openAcademyMobile: false, openInitiativesMobile: false, openOurPlatformMenu: false, openInitiativesMenu: false }">
+            <a class="px-2 py-2 font-medium rounded-xl xl:py-3 xl:px-5" :class="{ 'bg-[#4931AF] text-white': activeUrl == '/home'}" href="/?page=%2F">الرئيسية</a>
+
+            <!-- Header_About -->
+            <a href="#" x-on:click="openAboutMenu = !openAboutMenu"
+                   class="px-2 py-2 font-medium whitespace-nowrap rounded-xl xl:py-3 xl:px-5"
+                   :class="{ 'bg-[#4931AF] text-white': activeUrl == '/about' || activeUrl == '/accreditations' || activeUrl == '/partners' }">
+                <div class="flex flex-row items-center justify-center gap-1">
+                    حول الأكاديمية
+                    <span class="text-2xl iconify" data-icon="mdi:chevron-down"></span>
+                </div>
+            </a>
+            <div class="absolute top-1 mt-12 min-w-[200px] start-16
+                bg-white rounded-2xl border border-[#ECECEC] shadow-sm overflow-hidden"
+                 :class="{'bg-[#E8DFD0] border-[#684F46]': theme === 'founding_day'}" x-show="openAboutMenu"
+                 x-on:click.away="openAboutMenu=false" x-collapse.duration.300ms>
+                <ul class="flex flex-col">
+                    <li>
+                        <a class="block w-full px-5 py-3 text-black hover:bg-[#F6F4FF] hover:text-[#4728B5] transition-colors" style="font-size: 16px; font-weight: 500;" :class="{'hover:text-[#684F46]': theme === 'founding_day'}" href="/about">
+                            عن الأكاديمية
+                        </a>
+                    </li>
+                    <li>
+                        <a class="block w-full px-5 py-3 text-black hover:bg-[#F6F4FF] hover:text-[#4728B5] transition-colors" style="font-size: 16px; font-weight: 500;" :class="{'hover:text-[#684F46]': theme === 'founding_day'}" href="/Accreditations">
+                            الاعتمادات
+                        </a>
+                    </li>
+                    <li>
+                        <a class="block w-full px-5 py-3 text-black hover:bg-[#F6F4FF] hover:text-[#4728B5] transition-colors" style="font-size: 16px; font-weight: 500;" :class="{'hover:text-[#684F46]': theme === 'founding_day'}" href="/Partners">
+                            الشراكات
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Header_Academies -->
+            <a href="#" x-on:click="openAcademyMobile=!openAcademyMobile"
+                   class="px-2 py-2 font-medium whitespace-nowrap rounded-xl xl:py-3 xl:px-5">
+                <div class="flex flex-row items-center justify-center gap-1">
+                    الأكاديميات التابعة
+                    <span class="text-2xl iconify" data-icon="mdi:chevron-down"></span>
+                </div>
+            </a>
+            <div class="absolute top-1 mt-12 min-w-[250px] start-52
+                bg-white rounded-2xl border border-[#ECECEC] shadow-sm overflow-hidden" x-show="openAcademyMobile"
+                 x-on:click.away="openAcademyMobile=false" x-collapse.duration.300ms>
+                <ul class="flex flex-col">
+
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://developeracademy.tuwaiq.edu.sa" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <img class="w-8 h-8" src="/img/logos/apple.svg" alt="apple" loading="lazy" />
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                    أكاديمية مطوري آبل
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://metaverse.tuwaiq.edu.sa" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img class="w-8 h-8" src="/img/logos/metaverse-logo.svg" alt="metaverse" loading="lazy" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                    أكاديمية ميتافيرس
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://holberton.tuwaiq.edu.sa/" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img class="w-8 h-8" src="/img/holberton/holberton-logo.svg" alt="holberton" loading="lazy" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                    أكاديمية هوليبرتون
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://alibabacloud.tuwaiq.edu.sa/" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img class="w-8 h-8" src="/img/alibaba/alibaba-logo.svg" alt="alibaba" loading="lazy" />
+                                </span>
+                                <span
+                                    class="text-black text-lg transition-colors group-hover:text-[#4728B5] whitespace-nowrap"
+                                    :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                    أكاديمية علي بابا كلاود
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://thegarage.tuwaiq.edu.sa/" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img class="w-8 h-8" src="/img/garage/garage-logo.svg" alt="garage" loading="lazy" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                    أكاديمية الكراج
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+
+                    <!-- <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://kaspersky.tuwaiq.edu.sa/" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img class="w-8 h-8" src="~/img/kaspersky/kaspersky-logo.svg" alt="kaspersky"
+                                         loading="lazy" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                    أكاديمية كاسبر سكاي
+                                </span>
+                            </div>
+                        </a>
+                    </li> -->
+                </ul>
+            </div>
+
+
+            <!-- OurPlatform -->
+            <a href="#" x-on:click="openOurPlatformMenu=!openOurPlatformMenu"
+                   class="px-2 py-2 font-medium rounded-xl xl:py-3 xl:px-5">
+                <div class="flex flex-row items-center justify-center gap-1">
+                    المنصات
+                    <span class="text-2xl iconify" data-icon="mdi:chevron-down"></span>
+                </div>
+            </a>
+            <div class="absolute left-40 top-11 mt-2 min-w-[250px]
+                bg-white rounded-2xl border border-[#ECECEC] shadow-sm overflow-hidden" x-show="openOurPlatformMenu"
+                 x-on:click.away="openOurPlatformMenu=false" x-collapse.duration.300ms>
+                <ul class="flex flex-col">
+
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://satr.tuwaiq.edu.sa/" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                         src="/img/satr_logo.svg" />
+                                </span>
+                                <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                      :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                    سطر
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://challenges.tuwaiq.edu.sa" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                         src="/img/logo_tuwaiq_challenges.svg" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{ 'group-hover:text-[#684F46]': theme === 'founding_day' }">
+                                    تحديات طويق
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://bugbounty.sa/" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                         src="/img/bugbounty.svg" />
+                                </span>
+                                <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                      :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                    مكافآت الثغرات
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Header_Initiatives -->
+            <a href="#" x-on:click="openInitiativesMenu = !openInitiativesMenu"
+                   class="px-2 py-2 font-medium rounded-xl xl:py-3 xl:px-5"
+                   :class="{ 'bg-[#4931AF] text-white': activeUrl === '/testcenter' }">
+                <div class="flex flex-row items-center justify-center gap-1 px-4">
+                    المبادرات
+                    <span class="text-2xl iconify" data-icon="mdi:chevron-down"></span>
+                </div>
+            </a>
+            <div class="absolute left-5 top-11  min-w-[250px]
+                bg-white rounded-2xl border border-[#ECECEC] shadow-sm overflow-hidden" x-show="openInitiativesMenu"
+                 x-on:click.away="openInitiativesMenu=false" x-collapse.duration.300ms
+                 :class="{ 'bg-[#E8DFD0] border-[#684F46]': (typeof theme !== 'undefined') && theme === 'founding_day' }">
+
+                <ul class="flex flex-col">
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://assessment.tuwaiq.edu.sa" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                         src="/img/logo-v2/logo.webp" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{ 'group-hover:text-[#684F46]': theme === 'founding_day' }">
+                                    مقياس الميول التقني
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="/testcenter" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                         src="/img/logo-v2/logo.webp" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{ 'group-hover:text-[#684F46]': theme === 'founding_day' }">
+                                    مركز الاختبارات
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://club.tuwaiq.edu.sa" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                         src="/img/club/club-logo.png" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{ 'group-hover:text-[#684F46]': theme === 'founding_day' }">
+                                    نادي طويق
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://drones.tuwaiq.edu.sa" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                         src="/img/drones/drones-logo.png" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{ 'group-hover:text-[#684F46]': theme === 'founding_day' }">
+                                    طويق درونز
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" rel="noopener noreferrer" href="https://library.tuwaiq.edu.sa" class="block w-full group">
+                            <div class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                <span class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                    <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                         src="/img/tuwaiq-library-icon.svg" />
+                                </span>
+                                <span class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                      :class="{ 'group-hover:text-[#684F46]': theme === 'founding_day' }">
+                                    مكتبة طويق
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+            <a target="_blank" rel="noopener noreferrer" href="https://schools.tuwaiq.edu.sa"
+               class="px-2 py-2 font-medium whitespace-nowrap rounded-xl xl:py-3 xl:px-5"
+               :class="{ 'bg-[#4931AF] text-white': activeUrl === 'https://schools.tuwaiq.edu.sa' }">مدارس طويق</a>
+        </div>
+
+
+        <div class='items-center justify-center hidden gap-3 whitespace-nowrap md:flex' x-data="{cult:'ar'}">
+                <a class="text-base font-medium bg-[#4F29B7] text-white rounded-xl px-3 py-2 flex flex-nowrap items-center gap-1" :class="{'!bg-[#684F46] !text-[#FBE1D2]' : theme === 'founding_day'}" href="/signin?returnUrl=%2FError-D3EDD1EC-C6D2-4D9A-A9F0-BF5E488CA9FB%2F404">
+                    <span class="text-sm lg:text-base">تسجيل الدخول</span>
+                    <span class="text-2xl iconify" data-icon="solar:exit-linear"></span>
+                </a>
+
+
+
+                </div>
+                <div class="relative flex items-center justify-center md:hidden z-100" x-data x-init="
+                    $nextTick(() => { mobileMenuOpen = $refs.menuToggle.checked })
+                    window.addEventListener('pageshow', () => { mobileMenuOpen = $refs.menuToggle.checked })
+                    ">
+                    <div>
+                        <input id="menu-toggle" type="checkbox" class="hidden peer" x-model="mobileMenuOpen"
+                               x-ref="menuToggle" />
+
+                        <label for="menu-toggle"
+                               class="md:hidden grid place-items-center size-[44px] rounded-[7px] cursor-pointer peer-checked:hidden"
+                               :class="{'bg-[#E8DFD0]': theme === 'founding_day'}">
+                            <svg class="block w-[28px] h-[18px] text-black" viewBox="0 0 21 14"
+                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <rect x="3" y="1" width="15" height="1" rx="1" fill="currentColor" />
+                                <rect x="3" y="6" width="15" height="1" rx="1" fill="currentColor" />
+                                <rect x="3" y="11" width="15" height="1" rx="1" fill="currentColor" />
+                            </svg>
+                        </label>
+
+                        <label for="menu-toggle"
+                               class="md:hidden  place-items-center size-[44px] rounded-[7px] cursor-pointer hidden peer-checked:grid"
+                               :class="{'bg-[#E8DFD0]': theme === 'founding_day'}">
+                            <svg class="block w-[28px] h-[18px] text-black" xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24" aria-hidden="true">
+                                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                       stroke-width="2">
+                                    <path d="M5 12H19">
+                                        <animate fill="freeze" attributeName="d" dur="0.4s" values="M5 12H19;M12 12H12" />
+                                        <set fill="freeze" attributeName="opacity" begin="0.4s" to="0" />
+                                    </path>
+
+                                    <path d="M5 5L19 5M5 19L19 19" opacity="0">
+                                        <animate fill="freeze" attributeName="d" begin="0.2s" dur="0.4s"
+                                                 values="M5 5L19 5M5 19L19 19;M5 5L19 19M5 19L19 5" />
+                                        <set fill="freeze" attributeName="opacity" begin="0.2s" to="1" />
+                                    </path>
+                                </g>
+                            </svg>
+                        </label>
+
+                        <!-- Menu -->
+                        <div class="overflow-hidden fixed  left-0 right-0  max-h-0 bg-[#FAFAFA] transition-all duration-500 ease-in-out md:hidden
+                            rounded-b-[32px] shadow-lg "
+                             :class="{'bg-[#E8DFD0]': theme === 'founding_day', 'max-h-screen': mobileMenuOpen, 'translate-y-2': mobileMenuOpen}">
+                            <ul class="grid grid-cols-1 px-10 py-4 space-y-5">
+                                <li class="py-2">
+                                    <a class="text-base font-bold text-black" :class="{'text-[#684F46]' : theme === 'founding_day'}" href="/?page=%2F">
+                                        الرئيسية
+                                    </a>
+                                </li>
+                                <li class="py-2" x-data="{toggle:false}">
+                                    <a x-on:click="toggle=!toggle"
+                                           class="flex flex-row items-center gap-1 text-base font-semibold text-black"
+                                           :class="{'text-[#684F46]' : theme === 'founding_day'}">
+                                        حول الأكاديمية
+                                        <span class="text-2xl transition-transform duration-300 iconify"
+                                              data-icon="mdi:chevron-down" :class="toggle ? 'rotate-180' : ''"></span>
+
+                                    </a>
+                                    <div x-show="toggle" x-on:click.away="toggle=false" x-transition
+                                         class="px-5 py-3 left-1 w-60" :class="{'bg-[#E8DFD0]' : theme === 'founding_day'}">
+                                        <ul class="flex flex-col font-medium">
+                                            <li style="margin-bottom: 16px;">
+                                                <a class="px-5 py-3 text-black" style="font-size: 16px; font-weight: 500;" :class="{'hover:text-[#684F46]': theme === 'founding_day' }" href="/about">
+                                                    عن الأكاديمية
+                                                </a>
+                                            </li>
+                                            <li style="margin-bottom: 16px;">
+                                                <a class="px-5 py-3 text-black" style="font-size: 16px; font-weight: 500;" :class="{'hover:text-[#684F46]': theme === 'founding_day' }" href="/Accreditations">
+                                                    الاعتمادات
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="px-5 py-3 text-black" style="font-size: 16px; font-weight: 500;" :class="{'hover:text-[#684F46]': theme === 'founding_day' }" href="/Partners">
+                                                    الشراكات
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="py-2" x-data="{toggle:false}">
+                                    <a x-on:click="toggle=!toggle"
+                                           class="flex flex-row items-center gap-1 text-base font-semibold text-black"
+                                           :class="{'text-[#684F46]' : theme === 'founding_day'}">
+                                        الأكاديميات التابعة
+                                        <span class="text-2xl transition-transform duration-300 iconify"
+                                              data-icon="mdi:chevron-down" :class="toggle ? 'rotate-180' : ''"></span>
+                                    </a>
+                                    <div x-show="toggle" x-on:click.away="toggle=false" x-transition
+                                         class="p-2 left-1 w-60 xl:py-3 xl:px-5"
+                                         :class="{'bg-[#E8DFD0]' : theme === 'founding_day'}">
+                                        <ul class="flex flex-col font-medium">
+                                            <li style="margin-bottom: 16px;">
+                                                <a target="_blank" rel="noopener noreferrer" href="https://developeracademy.tuwaiq.edu.sa">
+                                                    <div class="flex flex-row gap-5">
+                                                        <img class="w-8 h-8" src="/img/logos/apple.svg" loading="lazy" alt="apple academy" />
+                                                        <div class="flex flex-col text-black text-lg hover:text-[#54BBBD]">
+                                                            <p>أكاديمية مطوري آبل</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li style="margin-bottom: 16px;">
+                                                <a target="_blank" rel="noopener noreferrer" href="https://metaverse.tuwaiq.edu.sa">
+                                                    <div class="flex flex-row gap-5">
+                                                        <div
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img class="w-8 h-8" src="/img/logos/metaverse-logo.svg" loading="lazy" alt="metaverse academy" />
+                                                        </div>
+                                                        <div class="flex flex-col text-black text-lg hover:text-[#54BBBD]">
+                                                            <p>أكاديمية ميتافيرس</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li style="margin-bottom: 16px;">
+                                                <a target="_blank" rel="noopener noreferrer" href="https://holberton.tuwaiq.edu.sa/">
+                                                    <div class="flex flex-row gap-5">
+                                                        <div
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy" src="/img/holberton/holberton-logo.svg" />
+                                                        </div>
+                                                        <div class="flex flex-col text-black text-lg hover:text-[#54BBBD]">
+                                                            <p>أكاديمية هوليبرتون</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li style="margin-bottom: 16px;">
+                                                <a target="_blank" rel="noopener noreferrer" href="http://alibabacloud.tuwaiq.edu.sa/">
+                                                    <div class="flex flex-row gap-5">
+                                                        <div
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy" src="/img/alibaba/alibaba-logo.svg" />
+                                                        </div>
+                                                        <div class="flex flex-col text-black text-lg hover:text-[#54BBBD]"
+                                                             :class="{ 'hover:text-[#684F46]': theme === 'founding_day' }">
+                                                            <p class="whitespace-nowrap">أكاديمية علي بابا كلاود</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li style="margin-bottom: 16px;">
+                                                <a target="_blank" rel="noopener noreferrer" href="https://thegarage.tuwaiq.edu.sa/">
+                                                    <div class="flex flex-row gap-5">
+                                                        <div
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy" src="/img/garage/garage-logo.svg" />
+                                                        </div>
+                                                        <div class="flex flex-col text-black text-lg hover:text-[#54BBBD]"
+                                                             :class="{ 'hover:text-[#684F46]': theme === 'founding_day' }">
+                                                            <p>أكاديمية الكراج</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="https://kaspersky.tuwaiq.edu.sa/">
+                                                    <div class="flex flex-row gap-5">
+                                                        <div
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy" src="/img/kaspersky/kaspersky-logo.svg" />
+                                                        </div>
+                                                        <div class="flex flex-col text-black text-lg hover:text-[#54BBBD]"
+                                                             :class="{ 'hover:text-[#684F46]': theme === 'founding_day' }">
+                                                            <p>أكاديمية كاسبر سكاي</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="py-2" x-data="{togglePlatforms:false}">
+                                    <a x-on:click="togglePlatforms=!togglePlatforms"
+                                           class="flex flex-row items-center gap-1 text-base font-semibold text-black"
+                                           :class="{'text-[#684F46]' : theme === 'founding_day'}">
+                                        المنصات
+                                        <span class="text-2xl transition-transform duration-300 iconify"
+                                              data-icon="mdi:chevron-down" :class="togglePlatforms ? 'rotate-180' : ''"></span>
+                                    </a>
+                                    <div x-show="togglePlatforms" x-on:click.away="togglePlatforms=false" x-transition
+                                         class="w-full p-2 left-1 xl:py-3 xl:px-5 md:w-60"
+                                         :class="{'bg-[#E8DFD0]' : theme === 'founding_day'}">
+                                        <ul class="flex flex-col font-medium">
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="https://satr.tuwaiq.edu.sa/"
+                                                       class="block w-full group">
+                                                    <div
+                                                        class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                                        <span
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                                                 src="/img/satr_logo.svg" />
+                                                        </span>
+                                                        <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                                              :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                                            سطر
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="https://challenges.tuwaiq.edu.sa"
+                                                       class="block w-full group">
+                                                    <div
+                                                        class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                                        <span
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                                                 src="/img/logo_tuwaiq_challenges.svg" />
+                                                        </span>
+                                                        <span
+                                                            class="text-black text-lg transition-colors group-hover:text-[#4728B5]"
+                                                            :class="{ 'group-hover:text-[#684F46]': theme === 'founding_day' }">
+                                                            تحديات طويق
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="https://bugbounty.sa/"
+                                                       class="flex flex-row items-center gap-5">
+                                                    <div
+                                                        class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                                        <span
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                                                 src="/img/bugbounty.svg" />
+                                                        </span>
+                                                        <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                                              :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                                            مكافآت الثغرات
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="py-2" x-data="{toggleInitiatives:false}">
+                                    <a x-on:click="toggleInitiatives=!toggleInitiatives"
+                                           class="flex flex-row items-center gap-1 text-base font-semibold text-black"
+                                           :class="{'text-[#684F46]' : theme === 'founding_day'}">
+                                        المبادرات
+                                        <span class="text-2xl transition-transform duration-300 iconify"
+                                              data-icon="mdi:chevron-down" :class="toggleInitiatives ? 'rotate-180' : ''"></span>
+                                    </a>
+                                    <div x-show="toggleInitiatives" x-on:click.away="toggleInitiatives=false" x-transition
+                                         class="p-2 left-1 w-60 xl:py-3 xl:px-5"
+                                         :class="{'bg-[#E8DFD0]' : theme === 'founding_day'}">
+                                        <ul class="flex flex-col font-medium">
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="https://assessment.tuwaiq.edu.sa" class="flex flex-row items-center gap-5">
+                                                    <div
+                                                        class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                                        <span
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                                                 src="/img/logo-v2/logo.webp" />
+                                                        </span>
+                                                        <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                                              :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                                            مقياس الميول التقني
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="/testcenter" class="flex flex-row items-center gap-5">
+                                                    <div
+                                                        class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                                        <span
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                                                 src="/img/logo-v2/logo.webp" />
+                                                        </span>
+                                                        <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                                              :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                                            مركز الاختبارات
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="https://club.tuwaiq.edu.sa"
+                                                       class="flex flex-row items-center gap-5">
+                                                    <div
+                                                        class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                                        <span
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                                                 src="/img/club/club-logo.png" />
+                                                        </span>
+                                                        <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                                              :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                                            نادي طويق
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="https://drones.tuwaiq.edu.sa"
+                                                       class="flex flex-row items-center gap-5">
+                                                    <div
+                                                        class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                                        <span
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                                                 src="/img/drones/drones-logo.png" />
+                                                        </span>
+                                                        <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                                              :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                                            طويق درونز
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+
+
+
+
+                                            <li>
+                                                <a target="_blank" rel="noopener noreferrer" href="https://library.tuwaiq.edu.sa" class="flex flex-row items-center gap-5">
+                                                    <div
+                                                        class="flex items-center gap-3 px-3 py-3 hover:bg-[#F6F4FF] transition-colors">
+                                                        <span
+                                                            class="rounded-lg bg-[#d5d2e5] p-2 w-8 h-8 flex items-center justify-center">
+                                                            <img alt="" class="object-contain w-full h-full" loading="lazy"
+                                                                 src="/img/tuwaiq-library-icon.svg" />
+                                                        </span>
+                                                        <span class="text-black text-lg group-hover:text-[#4728B5]"
+                                                              :class="{'group-hover:text-[#684F46]': theme === 'founding_day'}">
+                                                            مكتبة طويق
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="py-2">
+                                    <a target="_blank" rel="noopener noreferrer" href="https://schools.tuwaiq.edu.sa"
+                                           class="text-base font-semibold text-black"
+                                           :class="{'text-[#684F46]' : theme === 'founding_day'}">
+                                        مدارس طويق
+                                    </a>
+                                </li>
+
+                                    <li class="py-2">
+                                        <a class="flex items-center gap-2 font-semibold bg-[#4932af] xl:px-5  py-2 px-3 xl:py-3  rounded-2xl text-white mx-auto" style="width: fit-content; min-width: 120px;" :class="{'bg-[#684F46] text-[#FBE1D2]' : theme === 'founding_day'}" href="/signin?returnUrl=%2FError-D3EDD1EC-C6D2-4D9A-A9F0-BF5E488CA9FB%2F404">
+                                            تسجيل الدخول
+                                            <span class="text-2xl iconify" data-icon="solar:exit-linear"></span>
+                                        </a>
+                                    </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <template x-if="showMainTitle">
+            <div id="mainTitle" x-show="title"
+                 class="flex items-center justify-center w-full py-10 mt-20 text-3xl text-center text-primary-500 sm:text-right sm:px-32">
+                &#x627;&#x644;&#x635;&#x641;&#x62D;&#x629; &#x63A;&#x64A;&#x631; &#x645;&#x62A;&#x648;&#x641;&#x631;&#x629;
+            </div>
+        </template>
+
+    <section class="min-h-[60vh]">
+        
+
+<div class="flex flex-col min-h-[calc(100vh-40rem)] max-w-full justify-center bg-slate-50 gap-9 py-24">
+    <div class="items-center justify-center grid md:flex gap-7">
+        <img loading="lazy" class="h-full" src="/img/error-bg.svg" alt="">
+        <div class="flex flex-col items-center justify-center gap-7">
+            <h1 class="font-bold text-primary-500 text-8xl">404</h1>
+                <h6>عذراً هذه الصفحة غير متوفرة</h6>
+            <a href="/" class="rounded-3xl bg-[#54B8BD] hover:bg-secondary px-4 py-1 text-white">العودة إلى الصفحة الرئيسية</a>
+                <small>00-24aa976d45f14bac2428094a7a3f3d3b-cc933d5c5bd31871-00</small>
+        </div>
+    </div>
+</div>
+    </section>
+
+   <footer
+  class="w-full max-w-[1680px] mx-auto px-4 pb-6 sm:mb-4 sm:px-0"
+  :class="{ 'max-w-[1400px]': activeUrl !== '/home' }"
+>
+  <div
+    class="bg-[#E3D8FF] rounded-3xl"
+    :class="{ 'bg-[#E8DFD0]': theme === 'founding_day' }"
+  >
+
+    <div class="mx-auto w-full max-w-screen-xl md:px-4 py-10 text-center">
+      <!-- Top row: Social (center) + Logo (right) -->
+      <div>
+     <div class="flex md:flex-row flex-col md:items-center md:justify-around md:w-[65%]">
+     
+         <!-- Logo pinned to the right -->
+       <div class=" -translate-y-1/2 flex justify-start items-start px-10 md:px-0 md:mt-8" >
+          <a class="flex items-end justify-end" href="/?page=%2F">
+            <img
+              src="/img/logo-v2/long-logo.webp"
+              class="h-9"
+              :class="{ grayscale: theme === 'founding_day' }"
+              alt="Tuwaiq"
+            />
+          </a>
+        </div>
+     
+        <!-- Social icons centered exactly -->
+        <div class="flex items-center justify-center gap-4">
+          <a href="https://www.linkedin.com/company/tuwaiqacademy" class="text-white" aria-label="Linkedin">
+            <svg
+              class="h-11 w-11 rounded-full bg-[#4f29b7] p-2 hover:bg-[#8869dd]"
+              :class="{ 'bg-[#684F46] hover:bg-[#684F46]/80': theme === 'founding_day' }"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+            >
+              <path fill="#ffffff"
+                d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z" />
+            </svg>
+          </a>
+
+          <a href="https://www.snapchat.com/add/tuwaiqacademy" class="text-white" aria-label="Snapchat">
+            <svg
+              class="h-11 w-11 rounded-full bg-[#4f29b7] p-2 hover:bg-[#8869dd]"
+              :class="{ 'bg-[#684F46] hover:bg-[#684F46]/80': theme === 'founding_day' }"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+            >
+              <path fill="#ffffff"
+                d="M496.9 366.6c-3.4-9.2-9.8-14.1-17.1-18.2-1.4-.8-2.6-1.5-3.7-1.9-2.2-1.1-4.4-2.2-6.6-3.4-22.8-12.1-40.6-27.3-53-45.4a102.9 102.9 0 0 1 -9.1-16.1c-1.1-3-1-4.7-.2-6.3a10.2 10.2 0 0 1 2.9-3c3.9-2.6 8-5.2 10.7-7 4.9-3.2 8.8-5.7 11.2-7.4 9.4-6.5 15.9-13.5 20-21.3a42.4 42.4 0 0 0 2.1-35.2c-6.2-16.3-21.6-26.4-40.3-26.4a55.5 55.5 0 0 0 -11.7 1.2c-1 .2-2.1 .5-3.1 .7 .2-11.2-.1-22.9-1.1-34.5-3.5-40.8-17.8-62.1-32.7-79.2A130.2 130.2 0 0 0 332.1 36.4C309.5 23.5 283.9 17 256 17S202.6 23.5 180 36.4a129.7 129.7 0 0 0 -33.3 26.8c-14.9 17-29.2 38.4-32.7 79.2-1 11.6-1.2 23.4-1.1 34.5-1-.3-2-.5-3.1-.7a55.5 55.5 0 0 0 -11.7-1.2c-18.7 0-34.1 10.1-40.3 26.4a42.4 42.4 0 0 0 2 35.2c4.1 7.8 10.7 14.7 20 21.3 2.5 1.7 6.4 4.2 11.2 7.4 2.6 1.7 6.5 4.2 10.3 6.7a11.1 11.1 0 0 1 3.3 3.3c.8 1.6 .8 3.4-.4 6.6a102 102 0 0 1 -8.9 15.8c-12.1 17.7-29.4 32.6-51.4 44.6C32.4 348.6 20.2 352.8 15.1 366.7c-3.9 10.5-1.3 22.5 8.5 32.6a49.1 49.1 0 0 0 12.4 9.4 134.3 134.3 0 0 0 30.3 12.1 20 20 0 0 1 6.1 2.7c3.6 3.1 3.1 7.9 7.8 14.8a34.5 34.5 0 0 0 9 9.1c10 6.9 21.3 7.4 33.2 7.8 10.8 .4 23 .9 36.9 5.5 5.8 1.9 11.8 5.6 18.7 9.9C194.8 481 217.7 495 256 495s61.3-14.1 78.1-24.4c6.9-4.2 12.9-7.9 18.5-9.8 13.9-4.6 26.2-5.1 36.9-5.5 11.9-.5 23.2-.9 33.2-7.8a34.6 34.6 0 0 0 10.2-11.2c3.4-5.8 3.3-9.9 6.6-12.8a19 19 0 0 1 5.8-2.6A134.9 134.9 0 0 0 476 408.7a48.3 48.3 0 0 0 13-10.2l.1-.1C498.4 388.5 500.7 376.9 496.9 366.6z" />
+            </svg>
+          </a>
+
+          <a href="https://www.youtube.com/channel/UC_pOwgeaVK7bg3z7fJB5N8w" class="text-white" aria-label="Youtube">
+            <svg
+              class="h-11 w-11 rounded-full bg-[#4f29b7] p-2 hover:bg-[#8869dd]"
+              :class="{ 'bg-[#684F46] hover:bg-[#684F46]/80': theme === 'founding_day' }"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+            >
+              <path fill="#ffffff"
+                d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
+            </svg>
+          </a>
+
+          <a href="https://twitter.com/TuwaiqAcademy" class="text-white" aria-label="Twitter">
+            <svg
+              class="h-11 w-11 rounded-full bg-[#4f29b7] p-2 hover:bg-[#8869dd]"
+              :class="{ 'bg-[#684F46] hover:bg-[#684F46]/80': theme === 'founding_day' }"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+            >
+              <path fill="#ffffff"
+                d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+            </svg>
+          </a>
+
+          <a href="https://discord.gg/DWpUH7wFxj" class="text-white" aria-label="Discord">
+            <svg
+              class="h-11 w-11 rounded-full bg-[#4f29b7] p-2 hover:bg-[#8869dd]"
+              :class="{ 'bg-[#684F46] hover:bg-[#684F46]/80': theme === 'founding_day' }"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 16"
+            >
+              <path fill="#ffffff"
+                d="M16.942 1.556a16.3 16.3 0 0 0-4.126-1.3 12.04 12.04 0 0 0-.529 1.1 15.175 15.175 0 0 0-4.573 0 11.585 11.585 0 0 0-.535-1.1 16.274 16.274 0 0 0-4.129 1.3A17.392 17.392 0 0 0 .182 13.218a15.785 15.785 0 0 0 4.963 2.521c.41-.564.773-1.16 1.084-1.785a10.63 10.63 0 0 1-1.706-.83c.143-.106.283-.217.418-.33a11.664 11.664 0 0 0 10.118 0c.137.113.277.224.418.33-.544.328-1.116.606-1.71.832a12.52 12.52 0 0 0 1.084 1.785 16.46 16.46 0 0 0 5.064-2.595 17.286 17.286 0 0 0-2.973-11.59ZM6.678 10.813a1.941 1.941 0 0 1-1.8-2.045 1.93 1.93 0 0 1 1.8-2.047 1.919 1.919 0 0 1 1.8 2.047 1.93 1.93 0 0 1-1.8 2.045Zm6.644 0a1.94 1.94 0 0 1-1.8-2.045 1.93 1.93 0 0 1 1.8-2.047 1.918 1.918 0 0 1 1.8 2.047 1.93 1.93 0 0 1-1.8 2.045Z" />
+            </svg>
+          </a>
+        </div>
+     </div>
+
+      </div> 
+
+      <!-- Links row (center) -->
+      <div
+        class="mt-10 flex flex-wrap items-center justify-center text-[11px] md:text-base gap-x-4 md:gap-x-10 gap-y-4 text-[#4F29B7] font-medium"
+        :class="{ 'text-[#684F46]': theme === 'founding_day' }"
+      >
+        <a href="https://tuwaiq.edu.sa/form/YxdJKJwy" class="hover:underline">
+           شارك كمدرب
+        </a>
+        <a class="hover:underline" href="/about">
+          حول الأكاديمية
+        </a>
+        <a class="hover:underline" href="/privacy">
+           سياسة الخصوصية
+        </a>
+        <a class="hover:underline" href="/terms">
+           الشروط والأحكام
+        </a>
+      </div>
+
+      <!-- Bottom text (center) -->
+      <div
+        class="mt-10 text-center text-sm text-[#4F29B7]"
+        :class="{ 'text-[#684F46]': theme === 'founding_day' }"
+      >
+        © 2026
+        <a href="https://tuwaiq.edu.sa/" class="hover:underline">
+          أكاديمية طويق
+        </a>
+        . جميع الحقوق محفوظة.
+      </div>
+    </div>
+  </div>
+</footer>
+
+</main>
+</body>
+
+<div class="hidden">
+    <input id="isAuthenticated" type="hidden" value="false">
+</div>
+
+<script nonce="1UhcPN&#x2B;STUqlXaVEPgQoXt7fcLWPXxzUfsiUWJXLRao=">
+    window.token = 'CfDJ8NNEMvv4iNhFs-mrxeu-JusQzMz0H7OWSUKOaOJlFABVLMllnq-AfXuZHBZh_r1n3gZBMXlOK76yGZNYohO8m30Gtfwz4LOsD8BlRzTqgp3YCZpL6Myv-Bb-FyD2BRgW7mD9tRNe-IfBD1jxaxr-Kro';
+</script>
+
+
+
+    <script defer nonce="1UhcPN&#x2B;STUqlXaVEPgQoXt7fcLWPXxzUfsiUWJXLRao=">
+        setInterval(() => {
+            window.alpine_devtool = false;
+            window.ALPINE_DEV = false;
+            window.alpine = null;
+            window.Alpine = null;
+            window.__alpineDevtool = null;
+            window.alpineState = null;
+            window.devtools = null;
+        }, 500);
+    </script>
+
+
+
+
+    <script type="module" src="/js/main-DA8pjfFg.js?v=bK8aVhhdH14-ydH08eFb9vkGvwE9RtukwqEiTww-iHs"></script>
+    <script type="module" src="/js/vendor-Bp6wvP1F.js?v=sU_bPMzCrPOfdVsuqfzErgXGtj5XnFSAiDKHFKCoxpA"></script>
+
+
+
+<input type="hidden" id="acb2b840-0dea-4544-8bc7-d919888541b7" value="server-prod-01"/>
+<input type="hidden" id="isHome" value="false"/>
+<input type="hidden" id="isMobile" value="false"/>
+<input type="hidden" id="lang" value="ar"/>
+<input type="hidden" id="title" value="&#x627;&#x644;&#x635;&#x641;&#x62D;&#x629; &#x63A;&#x64A;&#x631; &#x645;&#x62A;&#x648;&#x641;&#x631;&#x629;"/>
+<input type="hidden" id="cult" value="ar"/>
+
+
+
+</html>

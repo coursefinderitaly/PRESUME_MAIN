@@ -1,273 +1,443 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Header } from './Header';
 import MinimalFooter from './MinimalFooter';
-import { MapPin, Globe, Code, Rocket, Cpu, Terminal, Sparkles, MoveRight, CheckCircle2, ShieldCheck, GraduationCap, Briefcase } from 'lucide-react';
+import { MapPin, Globe, Code, Rocket, GraduationCap, Briefcase, MoveRight, ShieldCheck, ExternalLink, ChevronRight } from 'lucide-react';
+
+// Apple logo as clean SVG
+const AppleLogo = ({ size = 64 }) => (
+  <svg width={size} height={size * 1.2} viewBox="0 0 100 120" fill="currentColor">
+    <path d="M75.3 63.1c-.1-10.2 8.3-15.1 8.7-15.4-4.7-6.9-12.1-7.9-14.8-8-6.3-.6-12.3 3.7-15.5 3.7-3.2 0-8.1-3.6-13.3-3.5-6.8.1-13.1 4-16.6 10-7.1 12.3-1.8 30.6 5.1 40.6 3.4 4.9 7.4 10.4 12.7 10.2 5.1-.2 7-3.3 13.2-3.3 6.1 0 7.8 3.3 13.2 3.2 5.5-.1 9-5 12.4-9.9 3.9-5.6 5.5-11.1 5.6-11.4-.1-.1-10.7-4.2-10.7-16.2zM64.4 32.7c2.8-3.4 4.7-8.2 4.2-12.9-4.1.2-9 2.7-11.9 6.1-2.6 3-4.9 7.9-4.3 12.5 4.6.4 9.2-2.4 12-5.7z"/>
+  </svg>
+);
+
+const locations = [
+  {
+    country: "Italy",
+    city: "Naples",
+    details: "University of Naples Federico II",
+    extra: "The oldest public university in the world, powering the Federico II Apple Foundation Program.",
+    link: "https://www.developeracademy.unina.it/en/",
+    flag: "🇮🇹",
+    logoUrl: "https://www.unina.it/documents/11958/11982/LOGO-FEDERICO-II.png",
+    logoFallback: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Logo_federico_II.svg/200px-Logo_federico_II.svg.png",
+    color: "from-blue-500/20 to-indigo-500/10",
+    border: "border-blue-500/30",
+    accent: "#60a5fa",
+  },
+  {
+    country: "United States",
+    city: "Detroit",
+    details: "Michigan State University",
+    extra: "Empowering all Detroiters with a 9-month Academy and 4-week Foundation program in the world's most vibrant app ecosystem.",
+    link: "https://developeracademy.msu.edu",
+    flag: "🇺🇸",
+    logoUrl: "https://brand.msu.edu/_images/logos/msu-wordmark-green.svg",
+    logoFallback: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Michigan_State_Athletics_logo.svg/200px-Michigan_State_Athletics_logo.svg.png",
+    color: "from-green-500/20 to-emerald-500/10",
+    border: "border-green-500/30",
+    accent: "#4ade80",
+  },
+  {
+    country: "South Korea",
+    city: "Pohang",
+    details: "POSTECH",
+    extra: "Pioneering the future of technology, fostering global innovators and next-generation developers in Asia.",
+    link: "https://developeracademy.postech.ac.kr/en/",
+    flag: "🇰🇷",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/POSTECH_emblem.png/200px-POSTECH_emblem.png",
+    logoFallback: "https://www.postech.ac.kr/img/common/logo.png",
+    color: "from-sky-500/20 to-cyan-500/10",
+    border: "border-sky-500/30",
+    accent: "#38bdf8",
+  },
+  {
+    country: "Saudi Arabia",
+    city: "Riyadh",
+    details: "Tuwaiq Academy",
+    extra: "The Middle East's premier hub for advanced Swift programming and tech entrepreneurship.",
+    link: "https://developeracademy.tuwaiq.edu.sa",
+    flag: "🇸🇦",
+    logoUrl: "https://tuwaiq.edu.sa/assets/images/logo.svg",
+    logoFallback: "https://tuwaiq.edu.sa/assets/images/logo.svg",
+    color: "from-amber-500/20 to-yellow-500/10",
+    border: "border-amber-500/30",
+    accent: "#fbbf24",
+  },
+  {
+    country: "Indonesia",
+    city: "Multiple Hubs",
+    details: "Binus University",
+    extra: "Accelerating Southeast Asia's digital economy through world-class iOS development training.",
+    link: "https://developeracademy.apps.binus.ac.id/bali/",
+    flag: "🇮🇩",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Binus_University.png/200px-Binus_University.png",
+    logoFallback: "https://binus.ac.id/wp-content/uploads/2019/08/binus-university.png",
+    color: "from-orange-500/20 to-red-500/10",
+    border: "border-orange-500/30",
+    accent: "#fb923c",
+  },
+  {
+    country: "Brazil",
+    city: "Nationwide",
+    details: "PUC-Rio & Partners",
+    extra: "A massive ecosystem across Brazil driving creativity, design, and business logic using Apple tools.",
+    link: "https://developeracademyucb.com.br",
+    flag: "🇧🇷",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/PUC-Rio_logo.svg/200px-PUC-Rio_logo.svg.png",
+    logoFallback: "https://www.puc-rio.br/assets/images/puc-logo.png",
+    color: "from-purple-500/20 to-pink-500/10",
+    border: "border-purple-500/30",
+    accent: "#c084fc",
+  },
+];
+
+const keyFeatures = [
+  { icon: <Code size={28} />, title: "Swift & SwiftUI", desc: "Deep training in Apple's native programming languages powering all Apple platforms.", color: "#22d3ee" },
+  { icon: <GraduationCap size={28} />, title: "University Partners", desc: "Collaborates with elite global universities to establish world-class developer academies.", color: "#fbbf24" },
+  { icon: <Briefcase size={28} />, title: "Real-World Projects", desc: "Challenge-based learning with actual app launches on the App Store.", color: "#a78bfa" },
+  { icon: <Globe size={28} />, title: "Global Network", desc: "Connect with 7,000+ alumni developers across 6 countries worldwide.", color: "#fb7185" },
+];
+
+const UniversityCard = ({ loc, idx }) => {
+  const [imgError, setImgError] = useState(false);
+  const [fallbackError, setFallbackError] = useState(false);
+
+  return (
+    <motion.a
+      href={loc.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: idx * 0.07, duration: 0.5 }}
+      whileHover={{ y: -6, transition: { duration: 0.2 } }}
+      className={`group block p-6 rounded-3xl bg-gradient-to-br ${loc.color} border ${loc.border} hover:border-opacity-60 backdrop-blur-md relative overflow-hidden shadow-xl cursor-pointer`}
+      style={{ textDecoration: 'none' }}
+    >
+      {/* glow on hover */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ background: `radial-gradient(ellipse at top right, ${loc.accent}15, transparent 60%)` }} />
+
+      {/* University Logo */}
+      <div className="relative z-10 flex items-start justify-between mb-5">
+        <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden p-2 backdrop-blur-sm">
+          {!fallbackError ? (
+            <img
+              src={imgError ? loc.logoFallback : loc.logoUrl}
+              alt={loc.details}
+              className="w-full h-full object-contain"
+              onError={() => {
+                if (!imgError) setImgError(true);
+                else setFallbackError(true);
+              }}
+            />
+          ) : (
+            <span className="text-2xl">{loc.flag}</span>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+          <span className="text-base">{loc.flag}</span>
+          <span className="text-xs font-bold text-white/50 uppercase tracking-wider">{loc.country}</span>
+        </div>
+      </div>
+
+      <div className="relative z-10">
+        <h3 className="text-xl font-black text-white mb-1 tracking-tight">{loc.city}</h3>
+        <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: loc.accent }}>{loc.details}</p>
+        <p className="text-sm text-white/50 leading-relaxed mb-5">{loc.extra}</p>
+        <div className="flex items-center gap-2 text-xs font-bold" style={{ color: loc.accent }}>
+          Visit Academy <ExternalLink size={12} />
+        </div>
+      </div>
+    </motion.a>
+  );
+};
 
 const AppleAcademyPage = () => {
-    // Fetched Live Data from Partner University Portals
-    const locations = [
-        {
-            country: "Italy",
-            city: "Naples",
-            details: "University of Naples Federico II",
-            extra: "Education has never been so #efficient, #diverse and #fun. Features the renowned Federico II Apple Foundation Program.",
-            link: "https://www.developeracademy.unina.it/en/"
-        },
-        {
-            country: "United States",
-            city: "Detroit",
-            details: "Michigan State University",
-            extra: "Empowering all Detroiters to thrive in the world’s most vibrant app ecosystem with a 9-month Academy and 4-week Foundation program.",
-            link: "https://developeracademy.msu.edu"
-        },
-        {
-            country: "South Korea",
-            city: "Pohang",
-            details: "POSTECH",
-            extra: "Pioneering the future of technology, fostering global innovators and next-gen developers.",
-            link: "https://developeracademy.postech.ac.kr/en/"
-        },
-        {
-            country: "Saudi Arabia",
-            city: "Riyadh",
-            details: "Tuwaiq Academy",
-            extra: "The Middle East's premier hub for advanced Swift programming and tech entrepreneurship.",
-            link: "https://developeracademy.tuwaiq.edu.sa"
-        },
-        {
-            country: "Indonesia",
-            city: "Multiple Hubs",
-            details: "Binus University & Others",
-            extra: "Accelerating Southeast Asia's digital economy through world-class iOS development training.",
-            link: "https://developeracademy.apps.binus.ac.id/bali/"
-        },
-        {
-            country: "Brazil",
-            city: "Nationwide",
-            details: "PUC-Rio, Senac, Mackenzie, Eldorado",
-            extra: "A massive ecosystem across Brazil driving creativity, design, and business logic using Apple tools.",
-            link: "https://developeracademyucb.com.br"
-        }
-    ];
+  return (
+    <div className="min-h-screen bg-[#030712] text-white font-sans flex flex-col relative overflow-x-hidden">
 
-    const keyFeatures = [
-        { icon: <Code className="text-cyan-400" size={26} />, title: "Focus on App Dev", desc: "Training in app development for Apple ecosystem (iOS, macOS, watchOS, tvOS)." },
-        { icon: <GraduationCap className="text-accent-gold" size={26} />, title: "University Partners", desc: "Collaborates with global universities to establish world-class academies." },
-        { icon: <Briefcase className="text-purple-400" size={26} />, title: "Real-World Projects", desc: "Engage in hands-on projects to provide practical skills and innovation." },
-        { icon: <Globe className="text-rose-400" size={26} />, title: "Industry Curriculum", desc: "Meet industry standards with networking, inclusivity, and sustainability ethos." },
-    ];
+      {/* ─── AMBIENT BACKGROUND ─── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-20%] left-[-10%] w-[900px] h-[900px] rounded-full bg-cyan-600/8 blur-[180px]" />
+        <div className="absolute top-[30%] right-[-15%] w-[700px] h-[700px] rounded-full bg-blue-600/8 blur-[160px]" />
+        <div className="absolute bottom-[-10%] left-[15%] w-[800px] h-[800px] rounded-full bg-purple-600/8 blur-[180px]" />
+        {/* Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        {/* Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_40%,#030712_100%)]" />
+      </div>
 
-    const programs = [
-        { phase: "01", title: "Foundation", desc: "A fast-paced introductory dive into Apple’s developer ecosystem." },
-        { phase: "02", title: "Academics", duration: "9 Months", desc: "Intensive training program building professional development capabilities." },
-        { phase: "03", title: "Academics", desc: "Extended mastery of Swift, SwiftUI, HIG, and full-stack integration." }
-    ];
+      <Header compact={false} />
 
-    return (
-        <div className="min-h-screen bg-[#050914] text-white font-sans flex flex-col relative overflow-hidden selection:bg-cyan-500/30">
-            {/* Techy Futuristic Ambient Background */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[800px] h-[800px] rounded-full bg-cyan-600/10 blur-[150px]" />
-                <div className="absolute top-[40%] right-[-20%] w-[600px] h-[600px] rounded-full bg-blue-600/10 blur-[150px]" />
-                <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] rounded-full bg-purple-600/10 blur-[150px]" />
-                {/* Tech Grid Overlay */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)] opacity-30"></div>
+      {/* ─── HERO SECTION ─── */}
+      <section className="relative z-10 pt-32 pb-20 px-6 flex flex-col items-center text-center">
+
+        {/* Top Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-black uppercase tracking-[0.2em] text-cyan-400 mb-10"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          Official Apple Education Partner Program
+        </motion.div>
+
+        {/* Apple Logo – clean SVG */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="text-white mb-8 drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]"
+        >
+          <AppleLogo size={72} />
+        </motion.div>
+
+        {/* Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter leading-none mb-6 max-w-5xl"
+        >
+          Apple Developer
+          <br />
+          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Academy
+          </span>
+        </motion.h1>
+
+        {/* Sub */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.35 }}
+          className="text-lg md:text-xl text-white/40 font-medium leading-relaxed max-w-2xl mb-4"
+        >
+          Designed by Apple to help the next generation of developers learn app development,
+          design, and entrepreneurship — completely free.
+        </motion.p>
+
+        {/* Stats Row */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.45 }}
+          className="flex flex-wrap items-center justify-center gap-8 mb-10 mt-4"
+        >
+          {[['6', 'Countries'], ['7,000+', 'Alumni'], ['100%', 'Free'], ['9 Months', 'Program']].map(([val, label]) => (
+            <div key={label} className="text-center">
+              <div className="text-3xl font-black text-white">{val}</div>
+              <div className="text-xs font-bold text-white/30 uppercase tracking-widest">{label}</div>
             </div>
+          ))}
+        </motion.div>
 
-            <Header compact={false} />
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.55 }}
+          className="flex flex-wrap gap-4 justify-center"
+        >
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => window.open('https://developer.apple.com/academies/', '_blank')}
+            className="px-8 py-4 rounded-full bg-white text-black font-black tracking-wider text-sm flex items-center gap-3 group shadow-[0_0_40px_rgba(255,255,255,0.15)]"
+          >
+            Explore Official Academies
+            <MoveRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => document.getElementById('locations')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-black tracking-wider text-sm hover:bg-white/10 transition-all"
+          >
+            View Global Locations
+          </motion.button>
+        </motion.div>
 
-            <main className="flex-1 relative z-10 pt-36 pb-24 px-6 md:px-12 max-w-7xl mx-auto w-full">
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="mt-16 flex flex-col items-center gap-2 text-white/20"
+        >
+          <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Scroll to explore</span>
+        </motion.div>
+      </section>
 
-                {/* Hero Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-center mb-24 max-w-4xl mx-auto"
-                >
-                    <div className="flex justify-center mb-6">
-                        <img src="/apple-logo.png" alt="Apple Logo" className="h-20 w-auto object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]" />
-                    </div>
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 text-cyan-400 text-[11px] font-black uppercase tracking-[0.2em] mb-8 backdrop-blur-md shadow-[0_0_20px_rgba(34,211,238,0.15)]">
-                        <Globe size={14} /> Full & Free Global Curriculum
-                    </div>
-                    <h1 className="text-5xl sm:text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[1.05]">
-                        Apple Developer <br className="hidden md:block" />
-                        <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">Academy</span>
-                    </h1>
-                    <p className="text-lg md:text-xl text-gray-400 font-medium leading-relaxed max-w-3xl mx-auto mb-10">
-                        Designed by Apple Inc. to help aspiring developers learn app development, design, and entrepreneurship. Build the future with Swift, Xcode, and SwiftUI.
-                    </p>
-                    <motion.button
-                        whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(34,211,238,0.4)" }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => window.open('https://developer.apple.com/academies/', '_blank')}
-                        className="px-8 py-4 rounded-full bg-white text-black font-black tracking-widest text-sm transition-all flex items-center gap-3 mx-auto group mb-16"
-                    >
-                        EXPLORE OFFICIAL ACADEMIES
-                        <MoveRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                    </motion.button>
+      <main className="relative z-10 px-6 md:px-12 max-w-7xl mx-auto w-full pb-24">
 
-                    <div className="flex flex-col items-center">
-                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-[0.3em] mb-6">Official Global University Partners</p>
-                        <img src="/university-logos.png" alt="Partner Universities" className="w-full max-w-3xl object-contain opacity-80 hover:opacity-100 transition-opacity mix-blend-screen" />
-                    </div>
-                </motion.div>
-
-                {/* Key Features */}
-                <div className="mb-32">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/10 pb-6 gap-6">
-                        <div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-2">Key Features & Aspects</h2>
-                            <p className="text-cyan-500 uppercase tracking-widest text-xs font-bold">What makes the Academy unique</p>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {keyFeatures.map((item, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 hover:border-cyan-500/30 transition-all duration-500 backdrop-blur-md relative overflow-hidden group hover:-translate-y-2 shadow-2xl"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                <div className="mb-8 bg-black/40 w-fit p-4 rounded-2xl border border-white/10 group-hover:border-cyan-500/50 transition-colors">
-                                    {item.icon}
-                                </div>
-                                <h3 className="text-lg font-black text-white mb-3 tracking-tight">{item.title}</h3>
-                                <p className="text-sm text-gray-400 leading-relaxed font-medium">
-                                    {item.desc}
-                                </p>
-                            </motion.div>
-                        ))}
-                    </div>
+        {/* ─── KEY FEATURES ─── */}
+        <section className="mb-28">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/5 pb-6 gap-4">
+            <div>
+              <p className="text-cyan-500 uppercase tracking-widest text-xs font-black mb-2">Why Apple Academy</p>
+              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">What Makes It Unique</h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {keyFeatures.map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="p-7 rounded-3xl bg-white/[0.025] border border-white/5 hover:border-white/10 transition-all duration-400 relative overflow-hidden group"
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ background: `radial-gradient(ellipse at bottom left, ${item.color}12, transparent 70%)` }} />
+                <div className="relative z-10">
+                  <div className="mb-6 w-14 h-14 rounded-2xl flex items-center justify-center border border-white/10"
+                    style={{ color: item.color, background: `${item.color}15` }}>
+                    {item.icon}
+                  </div>
+                  <h3 className="text-lg font-black text-white mb-2 tracking-tight">{item.title}</h3>
+                  <p className="text-sm text-white/40 leading-relaxed">{item.desc}</p>
                 </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
 
-                {/* Programs & Admissions */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-32">
-                    {/* Types of Programs */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <h2 className="text-3xl font-black text-white tracking-tight mb-8">Types of Programs</h2>
-                        <div className="flex flex-col gap-4">
-                            {programs.map((prog, idx) => (
-                                <div key={idx} className="flex gap-6 items-center bg-white/[0.02] border border-white/5 p-6 rounded-3xl backdrop-blur-md">
-                                    <div className="text-4xl font-black text-white/10 shrink-0">{prog.phase}</div>
-                                    <div>
-                                        <div className="flex items-center gap-3 mb-1">
-                                            <h4 className="text-xl font-black text-white">{prog.title}</h4>
-                                            <span className="px-3 py-1 bg-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest rounded-full">{prog.duration}</span>
-                                        </div>
-                                        <p className="text-sm text-gray-400 font-medium leading-relaxed">{prog.desc}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
-
-                    {/* Admissions & Requirements */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <h2 className="text-3xl font-black text-white tracking-tight mb-8">Admission Requirements</h2>
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            <div className="bg-[#0d121f] border border-white/5 p-5 rounded-2xl flex items-center gap-3">
-                                <ShieldCheck className="text-emerald-400" size={24} />
-                                <span className="text-sm font-bold text-white tracking-wide">Basic Coding<br />Required</span>
-                            </div>
-                            <div className="bg-[#0d121f] border border-white/5 p-5 rounded-2xl flex items-center gap-3">
-                                <ShieldCheck className="text-emerald-400" size={24} />
-                                <span className="text-sm font-bold text-white tracking-wide">No Experience<br />Required</span>
-                            </div>
-                            <div className="bg-[#0d121f] border border-white/5 p-5 rounded-2xl flex items-center gap-3">
-                                <ShieldCheck className="text-emerald-400" size={24} />
-                                <span className="text-sm font-bold text-white tracking-wide">No IELTS<br />Required</span>
-                            </div>
-                            <div className="bg-[#0d121f] border border-white/5 p-5 rounded-2xl flex items-center gap-3">
-                                <ShieldCheck className="text-emerald-400" size={24} />
-                                <span className="text-sm font-bold text-white tracking-wide">Only 18+<br />Mandate</span>
-                            </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border border-indigo-500/20 p-8 rounded-3xl backdrop-blur-xl">
-                            <h3 className="text-xl font-black text-white mb-4">Selection Procedure</h3>
-                            <div className="flex justify-between items-center relative mb-8">
-                                <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white/10 -z-10"></div>
-                                {['Apply', 'Test', 'Interview', 'Selection'].map((step, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-2 bg-[#050914] px-2 py-1 rounded-lg">
-                                        <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 font-black text-xs">
-                                            0{i + 1}
-                                        </div>
-                                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">{step}</span>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <h4 className="text-sm font-black text-white mb-2">Automated Assessment Test</h4>
-                            <p className="text-xs text-gray-400 leading-relaxed mb-4">
-                                60-minute automated multiple-choice test (30 stems). Top 400 applicants advance based on score (+2 correct, -0.5 wrong). Max 60 points.
-                            </p>
-                            <div className="flex flex-wrap gap-2">
-                                <span className="px-3 py-1 bg-white/5 text-white/70 text-[10px] font-black tracking-wider uppercase rounded-lg border border-white/10">Logical Reasoning</span>
-                                <span className="px-3 py-1 bg-white/5 text-white/70 text-[10px] font-black tracking-wider uppercase rounded-lg border border-white/10">Swift OOP Basics</span>
-                                <span className="px-3 py-1 bg-white/5 text-white/70 text-[10px] font-black tracking-wider uppercase rounded-lg border border-white/10">Apple HIG & Design</span>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* Locations Section with Fetched Data */}
-                <div className="mb-24">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/10 pb-6 gap-6">
-                        <div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-2">Global Network</h2>
-                            <p className="text-cyan-500 uppercase tracking-widest text-xs font-bold">Partner Universities & Hubs</p>
-                        </div>
+        {/* ─── PROGRAMS & ADMISSIONS ─── */}
+        <section className="mb-28">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* Programs */}
+            <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+              <p className="text-cyan-500 uppercase tracking-widest text-xs font-black mb-2">Curriculum</p>
+              <h2 className="text-3xl font-black text-white tracking-tight mb-8">Types of Programs</h2>
+              <div className="flex flex-col gap-4">
+                {[
+                  { phase: "01", title: "Foundation", badge: "4 Weeks", desc: "A fast-paced introductory dive into Apple's developer ecosystem, design thinking, and Swift basics." },
+                  { phase: "02", title: "Academy", badge: "9 Months", desc: "Intensive challenge-based training building professional development capabilities and App Store launches." },
+                  { phase: "03", title: "Advanced Track", badge: "Extended", desc: "Deep mastery of Swift, SwiftUI, Human Interface Guidelines, and full-stack Apple integration." },
+                ].map((prog, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="flex gap-5 items-start bg-white/[0.025] border border-white/5 p-5 rounded-2xl hover:border-cyan-500/20 transition-all"
+                  >
+                    <div className="text-4xl font-black text-white/8 shrink-0 leading-none mt-1">{prog.phase}</div>
+                    <div>
+                      <div className="flex items-center gap-3 mb-1.5 flex-wrap">
+                        <h4 className="text-lg font-black text-white">{prog.title}</h4>
+                        <span className="px-3 py-0.5 bg-cyan-500/15 text-cyan-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-cyan-500/20">{prog.badge}</span>
+                      </div>
+                      <p className="text-sm text-white/40 font-medium leading-relaxed">{prog.desc}</p>
                     </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {locations.map((loc, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, scale: 0.96 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.05 }}
-                                className="group p-8 rounded-[32px] bg-[#0d121f] border border-white/5 transition-all duration-500 relative overflow-hidden flex flex-col justify-between shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]"
-                            >
-                                {/* Hover Tech Glow */}
-                                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            {/* Admissions */}
+            <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+              <p className="text-purple-400 uppercase tracking-widest text-xs font-black mb-2">Eligibility</p>
+              <h2 className="text-3xl font-black text-white tracking-tight mb-8">Admission Requirements</h2>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                {[
+                  "No IELTS Required",
+                  "No Coding Experience",
+                  "Age 18+ Only",
+                  "100% Free to Join",
+                ].map((req) => (
+                  <div key={req} className="bg-white/[0.025] border border-white/5 p-4 rounded-2xl flex items-center gap-3">
+                    <ShieldCheck size={18} className="text-emerald-400 shrink-0" />
+                    <span className="text-sm font-bold text-white/80">{req}</span>
+                  </div>
+                ))}
+              </div>
 
-                                <div className="relative z-10">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <div className="flex items-center gap-2">
-                                            <MapPin size={16} className="text-blue-400" />
-                                            <h3 className="text-sm font-black text-blue-400 tracking-widest uppercase">{loc.country}</h3>
-                                        </div>
-                                    </div>
-                                    <h4 className="text-2xl font-black text-white mb-2">{loc.city}</h4>
-                                    <p className="text-xs text-accent-gold font-bold uppercase tracking-wider mb-4">{loc.details}</p>
-                                    <p className="text-sm text-gray-400 font-medium leading-relaxed">{loc.extra}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+              <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border border-indigo-500/20 p-7 rounded-3xl">
+                <h3 className="text-lg font-black text-white mb-4">Selection Process</h3>
+                <div className="flex items-center gap-2 mb-6">
+                  {['Apply', 'Test', 'Interview', 'Selected'].map((step, i) => (
+                    <React.Fragment key={i}>
+                      <div className="flex flex-col items-center gap-1.5">
+                        <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 font-black text-[10px]">
+                          0{i + 1}
+                        </div>
+                        <span className="text-[9px] font-black uppercase text-white/30 tracking-wider">{step}</span>
+                      </div>
+                      {i < 3 && <ChevronRight size={12} className="text-white/20 shrink-0 mb-4" />}
+                    </React.Fragment>
+                  ))}
                 </div>
+                <p className="text-xs text-white/40 leading-relaxed mb-4">60-minute automated assessment (30 questions). Top candidates advance based on score. Max 60 points (+2 correct, −0.5 wrong).</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Logical Reasoning', 'Swift OOP Basics', 'Apple HIG & Design'].map(t => (
+                    <span key={t} className="px-3 py-1 bg-white/5 text-white/50 text-[10px] font-black tracking-wider uppercase rounded-lg border border-white/10">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
-            </main>
+        {/* ─── GLOBAL LOCATIONS ─── */}
+        <section id="locations" className="mb-16">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/5 pb-6 gap-4">
+            <div>
+              <p className="text-cyan-500 uppercase tracking-widest text-xs font-black mb-2">Worldwide Campuses</p>
+              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">Global Partner Network</h2>
+            </div>
+            <p className="text-white/30 text-sm max-w-xs text-right">6 countries, 1 mission — building the next generation of Apple developers.</p>
+          </div>
 
-            <MinimalFooter />
-        </div>
-    );
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {locations.map((loc, idx) => (
+              <UniversityCard key={idx} loc={loc} idx={idx} />
+            ))}
+          </div>
+        </section>
+
+        {/* ─── BOTTOM CTA ─── */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-cyan-500/10 via-blue-600/10 to-purple-600/10 backdrop-blur-xl p-12 text-center"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(34,211,238,0.08),transparent)]" />
+          <div className="relative z-10 text-white mb-3">
+            <AppleLogo size={40} />
+          </div>
+          <h2 className="relative z-10 text-3xl md:text-4xl font-black text-white tracking-tight mb-4">
+            Ready to Build the Future?
+          </h2>
+          <p className="relative z-10 text-white/40 text-base mb-8 max-w-lg mx-auto">
+            Join thousands of developers worldwide. Apply to your nearest Apple Developer Academy — it's completely free.
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: '0 0 50px rgba(34,211,238,0.3)' }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => window.open('https://developer.apple.com/academies/', '_blank')}
+            className="relative z-10 px-10 py-4 rounded-full bg-white text-black font-black tracking-wider text-sm flex items-center gap-3 mx-auto group"
+          >
+            Apply Now — It's Free
+            <MoveRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </motion.button>
+        </motion.section>
+
+      </main>
+
+      <MinimalFooter />
+    </div>
+  );
 };
 
 export default AppleAcademyPage;
