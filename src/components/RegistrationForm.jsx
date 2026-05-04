@@ -220,8 +220,13 @@ export const RegistrationForm = () => {
                   initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.5 }}
                   className="relative group"
                 >
-                  <select className="w-full pb-3 pt-3 px-4 rounded-xl border border-white/10 bg-black/40 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all appearance-none cursor-pointer">
-                    <option value="" disabled selected className="text-gray-500">I am interested in...</option>
+                  <select 
+                    name="interest"
+                    value={formData.interest}
+                    onChange={handleChange}
+                    className="w-full pb-3 pt-3 px-4 rounded-xl border border-white/10 bg-black/40 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled className="text-gray-500">I am interested in...</option>
                     <option value="study" className="bg-gray-900">Study Visa</option>
                     <option value="work" className="bg-gray-900">Work Visa</option>
                     <option value="consultation" className="bg-gray-900">General Consultation</option>

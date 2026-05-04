@@ -127,10 +127,11 @@ export const AIPetMascot = ({ position = 'landing' }) => {
     return () => clearTimeout(activityTimer);
   }, []); // Run only once
 
-  // Eye tracking logic — RAF throttled to avoid 60fps JS work on every pixel
+  // Eye tracking logic — RAF throttled and locked to 60 FPS to prevent CPU spikes on high refresh rate monitors
   useEffect(() => {
     let rafId = null;
     let lastEvent = null;
+    let lastTime = 0;
 
     const processMouseMove = () => {
       rafId = null;
@@ -171,6 +172,11 @@ export const AIPetMascot = ({ position = 'landing' }) => {
 
     const handleMouseMove = (e) => {
       lastEvent = e;
+      const now = performance.now();
+      // Lock to 60 FPS (1000ms / 60 = 16.66ms)
+      if (now - lastTime < 16.66) return;
+      lastTime = now;
+      
       if (rafId) return; // skip if a frame is already queued
       rafId = requestAnimationFrame(processMouseMove);
     };

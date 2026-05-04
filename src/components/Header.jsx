@@ -138,21 +138,10 @@ export const Header = ({ compact = false }) => {
                 compact={compact}
                 title="PROGRAMS"
                 items={[
-                  { label: 'Apple Academy', desc: 'Premium coding & design programs' }
+                  { label: 'Apple Academy', desc: 'Premium coding & design programs', path: '/apple-academy' }
                 ]}
               />,
-              <NavItem
-                key="resources"
-                isDarkHeader={isDarkHeader}
-                compact={compact}
-                title="RESOURCES"
-                items={[
-                  { label: 'Course Finder', desc: 'Find your perfect degree', url: 'https://coursefinderitaly.com/' },
-                  { label: 'Scholarship Guide', desc: 'Maximize your funding' },
-                  { label: 'Pre-Assessment', desc: 'Free profile evaluation' },
-                  { label: 'Expert Consultation', desc: '1-on-1 career mapping' }
-                ]}
-              />,
+
               <NavItem
                 key="forms"
                 isDarkHeader={isDarkHeader}
@@ -169,9 +158,8 @@ export const Header = ({ compact = false }) => {
                 compact={compact}
                 title="COMPANY"
                 items={[
-                  { label: 'Our Story', desc: 'Mission to democratize education' },
-                  { label: 'Careers', desc: 'Join our growing team' },
-                  { label: 'Contact Us', desc: 'Get in touch today' }
+                  { label: 'Our Story', desc: 'Mission to democratize education', path: '/our-story' },
+                  { label: 'Contact Us', desc: 'Get in touch today', path: '/contact' }
                 ]}
               />
             ].map((item, i) => (
@@ -189,22 +177,38 @@ export const Header = ({ compact = false }) => {
           {/* Actions */}
           <div className="hidden md:flex items-center gap-6">
             {[
-              <button
-                key="login"
-                onClick={() => setModalOpen('login')}
-                className={`font-black text-[13px] tracking-widest hover:text-accent-gold transition-colors ${!isDarkHeader ? 'text-primary-blue' : 'text-white'}`}
-              >
-                LOGIN
-              </button>,
               <motion.button
-                key="signup"
-                whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -5px rgba(197,168,128,0.4)" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setModalOpen('signup')}
-                className="bg-accent-gold text-primary-blue px-7 py-3 rounded-full font-black text-[12px] tracking-wider hover:bg-yellow-500 transition-all shadow-lg"
+                key="coursefinder"
+                onClick={() => window.open('https://www.coursefinderitaly.com', '_blank')}
+                className="font-black text-[15px] tracking-[0.18em] bg-gradient-to-r from-amber-300 via-orange-200 to-rose-300 bg-clip-text text-transparent hover:from-amber-200 hover:via-white hover:to-rose-200 hover:scale-105 transition-all duration-300 uppercase border-b border-amber-400/40 pb-0.5"
+                animate={{ 
+                  scale: [1, 1.04, 1], 
+                  filter: ["brightness(1)", "brightness(1.25)", "brightness(1)"]
+                }}
+                transition={{ 
+                  duration: 2.5, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
               >
-                SIGN UP
-              </motion.button>
+                COURSEFINDER
+              </motion.button>,
+              <div key="auth-group" className="flex items-center gap-1.5 p-1 bg-white/[0.04] border border-white/10 rounded-full backdrop-blur-md">
+                <button
+                  onClick={() => setModalOpen('login')}
+                  className={`font-black text-[11px] tracking-widest hover:text-accent-gold transition-colors px-4 py-2 rounded-full ${!isDarkHeader ? 'text-primary-blue' : 'text-white'}`}
+                >
+                  LOGIN
+                </button>
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setModalOpen('signup')}
+                  className="bg-accent-gold text-primary-blue px-5 py-2.5 rounded-full font-black text-[11px] tracking-wider hover:bg-yellow-400 transition-all shadow-md"
+                >
+                  SIGN UP
+                </motion.button>
+              </div>
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -249,21 +253,27 @@ export const Header = ({ compact = false }) => {
                     { label: 'Work Visa', subItems: ['Bulgaria', 'Croatia', 'Czech Republic', 'Germany', 'Serbia'] }
                   ]
                 },
-                { title: 'PROGRAMS', items: ['Apple Academy'] },
-                { title: 'RESOURCES', items: ['Course Finder', 'Scholarship Guide', 'Pre-Assessment', 'Expert Consultation'] },
+                { title: 'PROGRAMS', items: [{ label: 'Apple Academy', path: '/apple-academy' }] },
                 {
                   title: 'FORMS', items: [
                     { label: 'Business Partner Registration', path: '/partner-registration' },
                     { label: 'Book an Appointment', path: '/book-appointment' }
                   ]
                 },
-                { title: 'COMPANY', items: ['Our Story', 'Careers', 'Contact Us'] }
+                { title: 'COMPANY', items: [{ label: 'Our Story', path: '/our-story' }, { label: 'Contact Us', path: '/contact' }] }
               ].map((section) => (
                 <MobileNavItem key={section.title} section={section} />
               ))}
             </div>
 
             <div className="mt-auto pt-10 grid grid-cols-1 gap-4">
+              <button
+                onClick={() => window.open('https://www.coursefinderitaly.com', '_blank')}
+                className="py-6 border-2 border-amber-400/20 hover:border-amber-400/50 transition-all rounded-2xl bg-black/40 flex items-center justify-center overflow-hidden relative group"
+              >
+                <span className="font-black text-[28px] tracking-[0.2em] bg-gradient-to-r from-amber-300 via-orange-200 to-rose-300 bg-clip-text text-transparent uppercase">COURSEFINDER</span>
+                <div className="absolute inset-0 bg-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
               <Link
                 to="/test"
                 target="_blank"

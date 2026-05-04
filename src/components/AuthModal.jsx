@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, Mail, User, Globe, MapPin, Phone, Smartphone, Lock, Eye, EyeOff, 
+import {
+  X, Mail, User, Globe, MapPin, Phone, Smartphone, Lock, Eye, EyeOff,
   ArrowRight, ArrowLeft, ShieldCheck, Sparkles, GraduationCap, CheckCircle2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -15,14 +15,14 @@ const AuthModal = ({ type: initialType, onClose }) => {
   const [error, setError] = useState('');
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   // Login fields
   const [identifier, setIdentifier] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  
+
   // Signup fields
   const [formData, setFormData] = useState({
     firstName: '',
@@ -41,16 +41,17 @@ const AuthModal = ({ type: initialType, onClose }) => {
   const countries = useMemo(() => Country.getAllCountries().map(c => ({
     value: c.isoCode,
     label: `${c.flag} ${c.name}`,
-    name: c.name
+    name: c.name,
+    phonecode: c.phonecode.replace('+', '')
   })), []);
 
-  const states = useMemo(() => 
+  const states = useMemo(() =>
     formData.country ? State.getStatesOfCountry(formData.country.value).map(s => ({
       value: s.isoCode,
       label: s.name
     })) : [], [formData.country]);
 
-  const cities = useMemo(() => 
+  const cities = useMemo(() =>
     (formData.country && formData.state) ? City.getCitiesOfState(formData.country.value, formData.state.value).map(c => ({
       value: c.name,
       label: c.name
@@ -73,7 +74,7 @@ const AuthModal = ({ type: initialType, onClose }) => {
     try {
       const res = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-csrf-protected': '1'
         },
@@ -103,21 +104,21 @@ const AuthModal = ({ type: initialType, onClose }) => {
     try {
       const res = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-csrf-protected': '1'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
           country: formData.country?.name,
           state: formData.state?.label,
           city: formData.city?.value,
-          phone: formData.phone,
-          whatsapp: formData.whatsapp,
+          phone: `+${formData.country?.phonecode || '91'}${formData.phone}`,
+          whatsapp: `+${formData.country?.phonecode || '91'}${formData.whatsapp}`,
           password: formData.password,
-          role: 'student' 
+          role: 'student'
         })
       });
       const data = await res.json();
@@ -193,7 +194,7 @@ const AuthModal = ({ type: initialType, onClose }) => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden"
       onClick={onClose}
@@ -230,7 +231,7 @@ const AuthModal = ({ type: initialType, onClose }) => {
       `}</style>
 
       {/* Orbs - z:0 */}
-      <div style={{ position:'absolute', inset:0, overflow:'hidden', pointerEvents:'none', zIndex:0 }}>
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
 
         {/* Cyan — top left */}
         <div style={{
@@ -274,16 +275,16 @@ const AuthModal = ({ type: initialType, onClose }) => {
         }} />
       </div>
       {/* Dark scrim sits ABOVE orbs but BELOW modal */}
-      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.55)', backdropFilter:'blur(2px)', zIndex:1 }} />
-      <motion.div 
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(2px)', zIndex: 1 }} />
+      <motion.div
         initial={{ scale: 0.95, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 30 }}
         className="relative border border-white/10 rounded-[2.5rem] shadow-[0_0_120px_rgba(0,0,0,0.9)] flex flex-col md:flex-row w-full max-w-5xl h-auto max-h-[90vh] overflow-hidden z-10"
-        style={{ background: 'rgba(5,8,20,0.72)', backdropFilter: 'blur(24px)', WebkitBackdropFilter:'blur(24px)', position:'relative', zIndex:2 }}
+        style={{ background: 'rgba(5,8,20,0.72)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', position: 'relative', zIndex: 2 }}
         onClick={e => e.stopPropagation()}
       >
-        <button 
+        <button
           type="button"
-          onClick={onClose} 
+          onClick={onClose}
           className="absolute top-6 right-6 z-[70] text-white/40 hover:text-white hover:rotate-90 transition-all duration-300 p-2 rounded-full hover:bg-white/10"
         >
           <X size={24} />
@@ -317,7 +318,7 @@ const AuthModal = ({ type: initialType, onClose }) => {
             <h2 className="text-3xl font-black text-white leading-tight mb-8">
               {type === 'login' ? 'Welcome Back Explorer' : 'Begin Your Global Journey'}
             </h2>
-            
+
             {type === 'signup' && (
               <div className="space-y-8">
                 {[
@@ -326,10 +327,9 @@ const AuthModal = ({ type: initialType, onClose }) => {
                   { n: 3, t: 'Security Access', d: 'Protect your account' }
                 ].map((s) => (
                   <div key={s.n} className={`flex items-start gap-4 transition-all duration-500 ${step >= s.n ? 'opacity-100' : 'opacity-30'}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border-2 ${
-                      step === s.n ? 'bg-cyan-500 border-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]' : 
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border-2 ${step === s.n ? 'bg-cyan-500 border-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]' :
                       step > s.n ? 'bg-green-500 border-green-500 text-white' : 'border-white/20 text-white/40'
-                    }`}>
+                      }`}>
                       {step > s.n ? <CheckCircle2 size={16} /> : s.n}
                     </div>
                     <div>
@@ -377,7 +377,7 @@ const AuthModal = ({ type: initialType, onClose }) => {
                     <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1 group-focus-within:text-cyan-400 transition-colors">Identifier</label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-cyan-400 transition-colors w-5 h-5" />
-                      <input type="text" required value={identifier} onChange={e=>setIdentifier(e.target.value)} className="w-full pl-12 pr-4 py-5 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all" placeholder="Email or Phone" />
+                      <input type="text" required value={identifier} onChange={e => setIdentifier(e.target.value)} className="w-full pl-12 pr-4 py-5 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all" placeholder="Enter Your Email" />
                     </div>
                   </div>
                   <div className="space-y-2 group">
@@ -387,7 +387,7 @@ const AuthModal = ({ type: initialType, onClose }) => {
                     </div>
                     <div className="relative">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-cyan-400 transition-colors w-5 h-5" />
-                      <input type={showPassword ? 'text' : 'password'} required value={loginPassword} onChange={e=>setLoginPassword(e.target.value)} className="w-full pl-12 pr-12 py-5 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all font-mono" placeholder="••••••••" />
+                      <input type={showPassword ? 'text' : 'password'} required value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="w-full pl-12 pr-12 py-5 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all font-mono" placeholder="••••••••" />
                       <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors">
                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
@@ -402,16 +402,16 @@ const AuthModal = ({ type: initialType, onClose }) => {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">First Name</label>
-                            <input type="text" required value={formData.firstName} onChange={e=>handleInputChange('firstName', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="John" />
+                            <input type="text" required value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="John" />
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Last Name</label>
-                            <input type="text" value={formData.lastName} onChange={e=>handleInputChange('lastName', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="Doe" />
+                            <input type="text" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="Doe" />
                           </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Email Address</label>
-                          <input type="email" required value={formData.email} onChange={e=>handleInputChange('email', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="john@example.com" />
+                          <input type="email" required value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="john@example.com" />
                         </div>
                       </div>
                     )}
@@ -435,20 +435,49 @@ const AuthModal = ({ type: initialType, onClose }) => {
 
                     {step === 3 && (
                       <div className="space-y-6">
-                         <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Phone</label>
-                            <input type="tel" required value={formData.phone} onChange={e=>handleInputChange('phone', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="+91" />
+                            <div className="flex gap-2">
+                              <div className="w-16 px-2 py-4 bg-white/5 border border-white/10 rounded-2xl text-white/40 flex items-center justify-center font-bold text-xs shrink-0">
+                                +{formData.country?.phonecode || '91'}
+                              </div>
+                              <input
+                                type="tel"
+                                required
+                                value={formData.phone}
+                                onChange={e => {
+                                  const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                  handleInputChange('phone', val);
+                                }}
+                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all"
+                                placeholder="0000000000"
+                              />
+                            </div>
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">WhatsApp</label>
-                            <input type="tel" value={formData.whatsapp} onChange={e=>handleInputChange('whatsapp', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="+91" />
+                            <div className="flex gap-2">
+                              <div className="w-16 px-2 py-4 bg-white/5 border border-white/10 rounded-2xl text-white/40 flex items-center justify-center font-bold text-xs shrink-0">
+                                +{formData.country?.phonecode || '91'}
+                              </div>
+                              <input
+                                type="tel"
+                                value={formData.whatsapp}
+                                onChange={e => {
+                                  const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                  handleInputChange('whatsapp', val);
+                                }}
+                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all"
+                                placeholder="0000000000"
+                              />
+                            </div>
                           </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Create Secure Password</label>
                           <div className="relative">
-                            <input type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={e=>handleInputChange('password', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
+                            <input type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={e => handleInputChange('password', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20">
                               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
@@ -456,7 +485,7 @@ const AuthModal = ({ type: initialType, onClose }) => {
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Confirm Password</label>
-                          <input type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={e=>handleInputChange('confirmPassword', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
+                          <input type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={e => handleInputChange('confirmPassword', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
                         </div>
                       </div>
                     )}
@@ -470,8 +499,8 @@ const AuthModal = ({ type: initialType, onClose }) => {
                     <ArrowLeft size={18} /> Back
                   </button>
                 )}
-                
-                <button 
+
+                <button
                   type={type === 'login' || step === 3 ? 'submit' : 'button'}
                   onClick={() => {
                     if (type === 'signup' && step < 3) {
@@ -494,9 +523,9 @@ const AuthModal = ({ type: initialType, onClose }) => {
             </form>
 
             <div className="mt-8 text-center">
-              <button 
-                type="button" 
-                onClick={() => { setType(type === 'login' ? 'signup' : 'login'); setError(''); setStep(1); }} 
+              <button
+                type="button"
+                onClick={() => { setType(type === 'login' ? 'signup' : 'login'); setError(''); setStep(1); }}
                 className="text-white/30 text-[10px] font-black uppercase tracking-[0.2em] hover:text-cyan-400 transition-colors"
               >
                 {type === 'login' ? "Don't have an account? Join Now" : "Already a member? Sign In"}

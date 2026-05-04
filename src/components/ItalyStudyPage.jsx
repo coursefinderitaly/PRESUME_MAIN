@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlaneTakeoff, GraduationCap, Coins, BookOpen, MapPin, Landmark, ArrowRight, ShieldCheck, ChevronDown, Euro, Briefcase, HeartHandshake, Building2, Stethoscope, FileText, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
 import { Header } from './Header';
+import FeesTable from './FeesTable';
+import MinimalFooter from './MinimalFooter';
 import AuthModal from './AuthModal';
+
 
 const ItalyStudyPage = () => {
     // State for interactive document checklist
@@ -527,6 +530,8 @@ const ItalyStudyPage = () => {
                         </div>
                     </div>
 
+                    <FeesTable />
+
                     {/* Vertical Journey Timeline */}
                     <div className="relative py-24 rounded-[48px] bg-white/[0.02] border border-white/10 backdrop-blur-[40px] px-6 md:px-20 shadow-2xl z-20 will-change-[transform,filter] transform-gpu">
                         <div className="text-center mb-20 relative z-10">
@@ -575,6 +580,7 @@ const ItalyStudyPage = () => {
                     <AuthModal type={modalOpen} onClose={() => setModalOpen(null)} />
                 )}
             </AnimatePresence>
+            <MinimalFooter />
         </div>
     );
 };

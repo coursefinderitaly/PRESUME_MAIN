@@ -9,6 +9,9 @@ import ItalyStudyPage from './components/ItalyStudyPage';
 import GenericCountryPage from './components/GenericCountryPage';
 import BusinessPartnerForm from './components/BusinessPartnerForm';
 import AppointmentForm from './components/AppointmentForm';
+import ContactUsPage from './components/ContactUsPage';
+import OurStoryPage from './components/OurStoryPage';
+import AppleAcademyPage from './components/AppleAcademyPage';
 import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
@@ -46,6 +49,9 @@ function App() {
             <Route path="/study-in-usa" element={<GenericCountryPage countryId="usa" />} />
             <Route path="/partner-registration" element={<BusinessPartnerForm />} />
             <Route path="/book-appointment" element={<AppointmentForm />} />
+            <Route path="/contact" element={<ContactUsPage />} />
+            <Route path="/our-story" element={<OurStoryPage />} />
+            <Route path="/apple-academy" element={<AppleAcademyPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </IdleTimeout>

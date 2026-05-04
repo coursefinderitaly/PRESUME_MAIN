@@ -3,6 +3,8 @@ import { useParams, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Landmark, Sparkles, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
 import { Header } from './Header';
+import MinimalFooter from './MinimalFooter';
+import FeesTable from './FeesTable';
 import { countryData } from '../data/countryData';
 
 const GenericCountryPage = ({ countryId }) => {
@@ -304,6 +306,8 @@ const GenericCountryPage = ({ countryId }) => {
                         </div>
                     </div>
 
+                    <FeesTable />
+
                     {/* Journey Timeline */}
                     <div className="relative py-24 rounded-[48px] bg-white/[0.02] border border-white/10 backdrop-blur-[40px] px-6 md:px-20 shadow-2xl z-20">
                         <div className="text-center mb-20 relative z-10">
@@ -339,6 +343,7 @@ const GenericCountryPage = ({ countryId }) => {
 
                 </div>
             </main>
+            <MinimalFooter />
         </div>
     );
 };

@@ -115,14 +115,14 @@ export const Hero = () => {
               >
                 <span className="animate-gradient-text">FREE</span> Study In <br />
                 <div className="relative h-[1.3em] overflow-visible inline-block min-w-[300px]">
-                  <AnimatePresence mode="wait">
+                  <AnimatePresence>
                     <motion.div
                       key={currentIndex}
                       initial={{ y: 30, opacity: 0, rotateX: -90, filter: "blur(10px)" }}
                       animate={{ y: 0, opacity: 1, rotateX: 0, filter: "blur(0px)" }}
                       exit={{ y: -30, opacity: 0, rotateX: 90, filter: "blur(10px)" }}
                       transition={{
-                        duration: 1.2,
+                        duration: 0.8,
                         ease: [0.23, 1, 0.32, 1]
                       }}
                       className="absolute left-0 top-0 block whitespace-nowrap pr-4 transform-gpu"
@@ -134,7 +134,7 @@ export const Hero = () => {
                       <motion.span 
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 }}
+                        transition={{ delay: 0.2 }}
                         className="ml-6 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-[10px] md:text-[12px] font-black uppercase tracking-[0.1em] align-middle shadow-[0_0_20px_rgba(6,182,212,0.2)]"
                       >
                          Global Rank {universities[currentIndex].rank}
