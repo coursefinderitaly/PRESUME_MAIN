@@ -16,35 +16,40 @@ const universities = [
     fullName: "University of Bologna",
     city: "Bologna, Italy",
     img: bologna,
-    rank: "#130"
+    rank: "#130",
+    link: "https://www.unibo.it/en"
   },
   {
     name: "Sapienza",
     fullName: "Sapienza University of Rome",
     city: "Rome, Italy",
     img: sapienza,
-    rank: "#140"
+    rank: "#140",
+    link: "https://www.uniroma1.it/en/pagina-strutturale/home"
   },
   {
     name: "Milan",
     fullName: "University of Milan",
     city: "Milan, Italy",
     img: milano,
-    rank: "#150"
+    rank: "#150",
+    link: "https://apply.unimi.it/"
   },
   {
     name: "Florence",
     fullName: "University of Florence",
     city: "Florence, Italy",
     img: florence,
-    rank: "#256"
+    rank: "#256",
+    link: "https://apply.unifi.it/"
   },
   {
     name: "Padua",
     fullName: "University of Padua",
     city: "Padua, Italy",
     img: padua,
-    rank: "#130"
+    rank: "#130",
+    link: "https://apply.unipd.it/"
   }
 ];
 
@@ -205,7 +210,12 @@ export const Hero = () => {
               <div
                 className="relative z-10 w-[500px] h-[500px] rounded-full p-3 bg-white/5 border border-white/20 shadow-[0_0_100px_-20px_rgba(197,168,128,0.2)] overflow-hidden group transform-gpu"
               >
-                <div className="relative h-full w-full rounded-full overflow-hidden bg-[#020817]">
+                <a 
+                  href={universities[currentIndex].link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative h-full w-full rounded-full overflow-hidden bg-[#020817] block cursor-pointer group/link"
+                >
                   <AnimatePresence>
                     <motion.div
                       key={currentIndex}
@@ -251,7 +261,7 @@ export const Hero = () => {
                       </div>
                     </motion.div>
                   </AnimatePresence>
-                </div>
+                </a>
               </div>
 
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-accent-gold rounded-full shadow-[0_0_20px_#C5A880] animate-pulse"></div>

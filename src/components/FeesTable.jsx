@@ -78,7 +78,11 @@ const FeesTable = () => {
                     <Wallet size={12} className="text-accent-gold" /> Fee Structure
                 </div>
                 <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none mb-1">
-                    Our Total Fee: <span className="bg-gradient-to-r from-accent-gold via-amber-300 to-yellow-500 bg-clip-text text-transparent">₹ 1,20,000</span>
+                    Our Total Fee: {applied ? (
+                        <><span className="line-through text-white/30 text-2xl md:text-4xl mr-3">₹ 1,20,000</span><span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">₹ 60,000</span></>
+                    ) : (
+                        <span className="bg-gradient-to-r from-accent-gold via-amber-300 to-yellow-500 bg-clip-text text-transparent">₹ 1,20,000</span>
+                    )}
                 </h2>
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
                     Perfectly divided among 4 phases
@@ -119,9 +123,15 @@ const FeesTable = () => {
                                     </div>
                                 </div>
                                 <div className="shrink-0 w-full sm:w-auto">
-                                    <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
-                                        {item.price}
-                                    </span>
+                                    {applied && idx < 2 ? (
+                                        <span className="px-5 py-2.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-sm font-black text-emerald-400 tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] block text-center min-w-[110px]">
+                                            <span className="line-through text-emerald-200/40 mr-2">{item.price}</span> WAIVED
+                                        </span>
+                                    ) : (
+                                        <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
+                                            {item.price}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
 
@@ -131,9 +141,9 @@ const FeesTable = () => {
                             {/* Deliverables checklist inside card */}
                             <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 md:px-2">
                                 {item.items.map((lineItem, lIdx) => (
-                                    <div key={lIdx} className="flex items-start gap-2 shrink-0">
+                                    <div key={lIdx} className={`flex items-start gap-2 shrink-0 ${applied && idx < 2 ? 'opacity-40' : ''}`}>
                                         <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 opacity-90 group-hover:scale-110 transition-transform shrink-0" />
-                                        <span className="text-sm text-gray-300 group-hover:text-gray-100 transition-colors font-medium leading-relaxed">{lineItem}</span>
+                                        <span className={`text-sm text-gray-300 transition-colors font-medium leading-relaxed ${applied && idx < 2 ? 'line-through' : 'group-hover:text-gray-100'}`}>{lineItem}</span>
                                     </div>
                                 ))}
                             </div>
