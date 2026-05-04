@@ -4,22 +4,22 @@ import { Play, X } from 'lucide-react';
 
 const videos = [
   { 
-    id: 'k_yNVJifegg', 
-    title: 'Study in Italy - Student Success Story', 
-    thumbnail: 'https://img.youtube.com/vi/k_yNVJifegg/maxresdefault.jpg',
-    fallbackThumbnail: 'https://img.youtube.com/vi/k_yNVJifegg/hqdefault.jpg',
-  },
-  { 
-    id: 'RnzvZt0OWfs', 
-    title: 'Work Visa Experience - Germany', 
-    thumbnail: 'https://img.youtube.com/vi/RnzvZt0OWfs/hqdefault.jpg',
-    fallbackThumbnail: 'https://img.youtube.com/vi/RnzvZt0OWfs/mqdefault.jpg',
-  },
-  { 
     id: 'ghr4xUI5dac', 
-    title: 'Presume Overseas - Student Testimonial', 
+    title: 'Study in Italy - Student Success Story', 
     thumbnail: 'https://img.youtube.com/vi/ghr4xUI5dac/maxresdefault.jpg',
     fallbackThumbnail: 'https://img.youtube.com/vi/ghr4xUI5dac/hqdefault.jpg',
+  },
+  { 
+    id: '9GFZaJxoOzs', 
+    title: 'Work Visa Experience - Germany', 
+    thumbnail: 'https://img.youtube.com/vi/9GFZaJxoOzs/maxresdefault.jpg',
+    fallbackThumbnail: 'https://img.youtube.com/vi/9GFZaJxoOzs/hqdefault.jpg',
+  },
+  { 
+    id: 'B61Skf27U-8', 
+    title: 'Presume Overseas - Student Testimonial', 
+    thumbnail: 'https://img.youtube.com/vi/B61Skf27U-8/maxresdefault.jpg',
+    fallbackThumbnail: 'https://img.youtube.com/vi/B61Skf27U-8/hqdefault.jpg',
   },
 ];
 
@@ -95,7 +95,7 @@ const VideoCard = ({ vid, index }) => {
               <iframe
                 width="100%"
                 height="100%"
-                src={`https://www.youtube.com/embed/${vid.id}?autoplay=1&rel=0`}
+                src={`https://www.youtube.com/embed/${vid.id}?autoplay=1&rel=0&origin=${window.location.origin}`}
                 title={vid.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
