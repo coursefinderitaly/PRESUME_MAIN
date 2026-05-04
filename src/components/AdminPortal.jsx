@@ -4,7 +4,7 @@ import {
   Users, Trash2, LogOut, ShieldAlert, Edit2, ChevronLeft, Save, Plus,
   MapPin, Phone, Briefcase, GraduationCap, Building2, UserCircle, KeyRound,
   Database, Server, ShieldCheck, Mail, Sun, Moon, Monitor, Globe, FileText, Unlock, Ban,
-  MessageSquare, Send, X, AlertTriangle, Search
+  MessageSquare, Send, X, AlertTriangle, Search, CheckSquare
 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { useTheme } from '../ThemeContext';
@@ -15,7 +15,7 @@ import SystemHierarchy from './SystemHierarchy';
 import PartnerDirectoryBrowser from './PartnerDirectoryBrowser';
 import SearchableSelect from './SearchableSelect';
 import ApplicationTracking from './ApplicationTracking';
-import { AIPetMascot } from './AIPetMascot';
+
 import UniversityDataManagement from './UniversityDataManagement';
 
 const AdminPortal = () => {
@@ -30,6 +30,7 @@ const AdminPortal = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [counselorPopupPartner, setCounselorPopupPartner] = useState(null);
   const [partnerStudentsPopup, setPartnerStudentsPopup] = useState(null);
+  const [freelancerStudentsPopup, setFreelancerStudentsPopup] = useState(null);
   const [showCreationTypePopup, setShowCreationTypePopup] = useState(false);
   const [selectedCounselorForPopup, setSelectedCounselorForPopup] = useState(null);
   const [formData, setFormData] = useState({});
@@ -44,13 +45,77 @@ const AdminPortal = () => {
   const [docDeleteConfirm, setDocDeleteConfirm] = useState({ isOpen: false, filename: null });
   const [chatClearConfirm, setChatClearConfirm] = useState({ isOpen: false, studentId: null, studentName: '' });
 
-  // Chat state
   const [chats, setChats] = useState([]);
   const [chatsLoading, setChatsLoading] = useState(false);
   const [openChat, setOpenChat] = useState(null);
   const [chatSending, setChatSending] = useState(false);
   const [totalUnreadChats, setTotalUnreadChats] = useState(0);
   const [chatEditorHeight, setChatEditorHeight] = useState(85);
+
+  // Contacts state
+  const [contactForms, setContactForms] = useState([]);
+  const [contactsLoading, setContactsLoading] = useState(false);
+  const [contactsFilter, setContactsFilter] = useState({ search: '', type: 'all', status: 'all', sort: 'desc' });
+  const [selectedEnquiries, setSelectedEnquiries] = useState([]);
+  const [enquiryDeleteConfirm, setEnquiryDeleteConfirm] = useState({ isOpen: false, ids: [], type: '' });
+
+  const fetchContacts = async () => {
+    setContactsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/admin/contacts`, { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setContactForms(data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    setContactsLoading(false);
+  };
+
+  const handleToggleRead = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/admin/contacts/${id}/toggle-read`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'x-csrf-protected': '1' }
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setContactForms(prev => prev.map(c => c._id === id ? updated : c));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteEnquiryClick = (id) => {
+    setEnquiryDeleteConfirm({ isOpen: true, ids: [id], type: 'single' });
+  };
+
+  const handleBulkDeleteEnquiriesClick = () => {
+    if (selectedEnquiries.length === 0) return;
+    setEnquiryDeleteConfirm({ isOpen: true, ids: selectedEnquiries, type: 'bulk' });
+  };
+
+  const executeDeleteEnquiries = async () => {
+    const ids = enquiryDeleteConfirm.ids;
+    setEnquiryDeleteConfirm({ isOpen: false, ids: [], type: '' });
+    
+    try {
+      await Promise.all(ids.map(id => 
+        fetch(`${API_BASE_URL}/admin/contacts/${id}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: { 'x-csrf-protected': '1' }
+        })
+      ));
+      setContactForms(prev => prev.filter(c => !ids.includes(c._id)));
+      setSelectedEnquiries([]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const chatBottomRef = useRef(null);
   const chatEditorRef = useRef(null);
@@ -448,6 +513,7 @@ const AdminPortal = () => {
     if (activeTab === 'direct_students') return nonAdmins.filter(u => u.role === 'student' && !u.registeredBy && !u.createdByCounselor);
     if (activeTab === 'partner_students') return nonAdmins.filter(u => u.role === 'student' && (!!u.registeredBy || !!u.createdByCounselor));
     if (activeTab === 'partners') return nonAdmins.filter(u => u.role === 'partner');
+    if (activeTab === 'freelancers') return nonAdmins.filter(u => u.role === 'freelancer');
     return nonAdmins;
   }, [users, activeTab]);
 
@@ -491,6 +557,7 @@ const AdminPortal = () => {
     directStudents: users.filter(u => u.role === 'student' && !u.registeredBy && !u.createdByCounselor).length,
     partnerStudents: users.filter(u => u.role === 'student' && (!!u.registeredBy || !!u.createdByCounselor)).length,
     partners: users.filter(u => u.role === 'partner').length,
+    freelancers: users.filter(u => u.role === 'freelancer').length,
     admins: users.filter(u => u.role === 'admin').length
   };
 
@@ -558,6 +625,9 @@ const AdminPortal = () => {
           <button className={`nav-item ${activeTab === 'partners' ? 'active' : ''}`} onClick={() => { setActiveTab('partners'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <Briefcase size={18} /> Business Partners
           </button>
+          <button className={`nav-item ${activeTab === 'freelancers' ? 'active' : ''}`} onClick={() => { setActiveTab('freelancers'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
+            <Briefcase size={18} /> Freelancers
+          </button>
           <div className="nav-divider" style={{ background: 'var(--glass-border)', margin: '8px 0' }}></div>
           <button className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`} onClick={() => { setActiveTab('applications'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <FileText size={18} /> Applied Applications
@@ -584,7 +654,35 @@ const AdminPortal = () => {
           >
             <Database size={18} /> Manage University Data
           </button>
+          <button 
+            className={`nav-item ${activeTab === 'contact_forms' ? 'active' : ''}`} 
+            onClick={() => { setActiveTab('contact_forms'); fetchContacts(); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}
+          >
+            <Mail size={18} /> Enquiries
+          </button>
         </nav>
+        <div style={{ marginTop: 'auto', padding: '0.5rem 0' }}>
+          <button 
+            onClick={handleLogout}
+            style={{ 
+              background: 'rgba(239, 68, 68, 0.1)', 
+              color: '#ef4444', 
+              border: '1px solid rgba(239, 68, 68, 0.2)', 
+              padding: '10px 15px', 
+              borderRadius: '8px', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px',
+              fontSize: '0.85rem',
+              fontWeight: '600',
+              width: '100%',
+              boxSizing: 'border-box'
+            }}
+          >
+            <LogOut size={18} /> Secure Logout
+          </button>
+        </div>
       </aside>
 
       {/* MAIN CONTENT PANEL */}
@@ -601,36 +699,17 @@ const AdminPortal = () => {
             </button>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginRight: '65px' }}>
             {/* Theme Toggle Group */}
             <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
               <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="Light Mode"><Sun size={14} /></button>
               <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="Dark Mode"><Moon size={14} /></button>
               <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="System Sync"><Monitor size={14} /></button>
             </div>
-
-            <button 
-              onClick={handleLogout}
-              style={{ 
-                background: 'rgba(239, 68, 68, 0.1)', 
-                color: '#ef4444', 
-                border: '1px solid rgba(239, 68, 68, 0.2)', 
-                padding: '6px 15px', 
-                borderRadius: '8px', 
-                cursor: 'pointer', 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px',
-                fontSize: '0.85rem',
-                fontWeight: '600'
-              }}
-            >
-              <LogOut size={16} /> Secure Logout
-            </button>
           </div>
         </div>
 
-        <div data-lenis-prevent style={{ padding: '1.5rem 2rem', flex: 1, overflowY: 'auto' }}>
+        <div data-lenis-prevent style={{ padding: '1.5rem 2rem', flex: 1, overflowY: activeTab === 'overview' ? 'hidden' : 'auto', display: activeTab === 'overview' ? 'flex' : 'block', flexDirection: 'column' }}>
 
         {viewingStudentProfile ? (
           <div className="animate-fade-in" style={{ background: 'var(--card-bg-solid)', padding: '20px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-lg)' }}>
@@ -658,9 +737,9 @@ const AdminPortal = () => {
         {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: LEDGER TABLE */}
         {/* -------------------------------------------------------------------------------- */}
-        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats') && (
-          <div className="animate-fade-in">
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms') && (
+          <div className="animate-fade-in" style={{ display: activeTab === 'overview' ? 'flex' : 'block', flexDirection: 'column', flex: activeTab === 'overview' ? 1 : 'none', minHeight: 0 }}>
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexShrink: 0 }}>
               <div>
                 <h1 style={{ color: 'var(--text-main)', fontSize: '1.6rem', margin: '0 0 8px 0', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '15px' }}>
                   {activeTab === 'overview' ? 'System Overview' : activeTab === 'all' ? 'Master Ledger' : activeTab === 'direct_students' ? 'Direct Student Database' : activeTab === 'partner_students' ? 'Partner-Registered Students' : 'Partner Database'}
@@ -683,20 +762,20 @@ const AdminPortal = () => {
             </header>
 
             {activeTab === 'overview' && (
-              <div className="admin-stats-grid" style={{ gap: '20px', marginBottom: '30px' }}>
-                <div style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05))', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '15px', borderRadius: '16px' }}>
+              <div className="admin-stats-grid" style={{ gap: '20px', marginBottom: '20px', flexShrink: 0 }}>
+                <div className="widget" style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '15px', borderRadius: '16px', textAlign: 'center', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)' }}>
                   <div style={{ color: '#60a5fa', fontSize: '2.5rem', fontWeight: 800 }}>{stats.total}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Total Records</div>
                 </div>
-                <div style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05))', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '15px', borderRadius: '16px' }}>
+                <div className="widget" style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '15px', borderRadius: '16px', textAlign: 'center', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)' }}>
                   <div style={{ color: '#34d399', fontSize: '2.5rem', fontWeight: 800 }}>{stats.directStudents}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Direct Students</div>
                 </div>
-                <div style={{ background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05))', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '15px', borderRadius: '16px' }}>
+                <div className="widget" style={{ background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '15px', borderRadius: '16px', textAlign: 'center', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)' }}>
                   <div style={{ color: '#fbbf24', fontSize: '2.5rem', fontWeight: 800 }}>{stats.partnerStudents}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Partner Students</div>
                 </div>
-                <div style={{ background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.05))', border: '1px solid rgba(168, 85, 247, 0.2)', padding: '15px', borderRadius: '16px' }}>
+                <div className="widget" style={{ background: 'rgba(168, 85, 247, 0.05)', border: '1px solid rgba(168, 85, 247, 0.2)', padding: '15px', borderRadius: '16px', textAlign: 'center', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)' }}>
                   <div style={{ color: '#c084fc', fontSize: '2.5rem', fontWeight: 800 }}>{stats.partners}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Partners</div>
                 </div>
@@ -743,29 +822,30 @@ const AdminPortal = () => {
                               onClick={() => {
                                 if (u.role === 'partner') setPartnerStudentsPopup(u);
                                 else if (u.role === 'student') setViewingStudentProfile(u);
+                                else if (u.role === 'freelancer') setFreelancerStudentsPopup(u);
                               }}
                               style={{ 
                                 color: u.role === 'partner' ? 'var(--accent-secondary)' : (u.role === 'student' ? 'var(--accent-primary)' : 'var(--text-main)'), 
                                 fontWeight: 600, 
                                 fontSize: '0.95rem', 
-                                cursor: (u.role === 'partner' || u.role === 'student') ? 'pointer' : 'default',
-                                textDecoration: u.role === 'student' ? 'underline' : 'none',
-                                textDecorationColor: u.role === 'student' ? 'rgba(59, 130, 246, 0.3)' : 'transparent',
+                                cursor: (u.role === 'partner' || u.role === 'student' || u.role === 'freelancer') ? 'pointer' : 'default',
+                                textDecoration: (u.role === 'student' || u.role === 'freelancer') ? 'underline' : 'none',
+                                textDecorationColor: (u.role === 'student' || u.role === 'freelancer') ? 'rgba(59, 130, 246, 0.3)' : 'transparent',
                                 textUnderlineOffset: '4px'
                               }}
                               onMouseOver={(e) => { 
-                                if(u.role === 'student') {
+                                if(u.role === 'student' || u.role === 'freelancer') {
                                   e.currentTarget.style.color = '#60a5fa'; 
                                   e.currentTarget.style.textDecorationColor = '#60a5fa'; 
                                 }
                               }}
                               onMouseOut={(e) => { 
-                                if(u.role === 'student') {
+                                if(u.role === 'student' || u.role === 'freelancer') {
                                   e.currentTarget.style.color = 'var(--accent-primary)'; 
                                   e.currentTarget.style.textDecorationColor = 'rgba(59, 130, 246, 0.3)'; 
                                 }
                               }}
-                              title={u.role === 'student' ? "Open Complete Student Profile" : (u.role === 'partner' ? "View Assigned Students" : "")}
+                              title={u.role === 'student' ? "Open Complete Student Profile" : (u.role === 'partner' ? "View Assigned Students" : (u.role === 'freelancer' ? "View Registered Students" : ""))}
                             >
                               {u.firstName} {u.lastName}
                             </div>
@@ -1339,6 +1419,188 @@ const AdminPortal = () => {
         )}
 
         {/* -------------------------------------------------------------------------------- */}
+        {/* VIEW: CONTACT FORMS                                                              */}
+        {/* -------------------------------------------------------------------------------- */}
+        {(!selectedUser && !isAdding && activeTab === 'contact_forms') && (
+          <div className="animate-fade-in">
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+              <div>
+                <h1 style={{ color: 'var(--text-main)', fontSize: '1.6rem', margin: '0 0 8px 0', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <Mail size={28} color="#3b82f6" /> Enquiries
+                </h1>
+                <p style={{ color: 'var(--text-muted)', margin: 0 }}>Review all incoming queries from the website's contact form.</p>
+              </div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button onClick={fetchContacts} style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  ↻ Refresh
+                </button>
+                {contactForms.length > 0 && (
+                  <button 
+                    onClick={() => {
+                      if (selectedEnquiries.length === contactForms.length) {
+                        setSelectedEnquiries([]);
+                      } else {
+                        setSelectedEnquiries(contactForms.map(c => c._id));
+                      }
+                    }} 
+                    style={{ background: selectedEnquiries.length === contactForms.length ? 'rgba(59, 130, 246, 0.2)' : 'var(--input-bg)', border: '1px solid rgba(59, 130, 246, 0.5)', color: '#3b82f6', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <CheckSquare size={16} /> {selectedEnquiries.length === contactForms.length ? 'Deselect All' : 'Select All'}
+                  </button>
+                )}
+                {selectedEnquiries.length > 0 && (
+                  <button 
+                    onClick={handleBulkDeleteEnquiriesClick}
+                    style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}
+                  >
+                    <Trash2 size={16} /> Delete Selected ({selectedEnquiries.length})
+                  </button>
+                )}
+              </div>
+            </header>
+            <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '20px', background: 'var(--card-bg-solid)', padding: '12px 18px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+              <input
+                type="text"
+                placeholder="Search name, email, message..."
+                value={contactsFilter.search}
+                onChange={(e) => setContactsFilter({ ...contactsFilter, search: e.target.value })}
+                style={{ flex: 1, minWidth: '200px', background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem' }}
+              />
+              <select
+                value={contactsFilter.status}
+                onChange={(e) => setContactsFilter({ ...contactsFilter, status: e.target.value })}
+                style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
+              >
+                <option value="all">All Status</option>
+                <option value="unread">Unread Only</option>
+                <option value="read">Read Only</option>
+              </select>
+              <select
+                value={contactsFilter.type}
+                onChange={(e) => setContactsFilter({ ...contactsFilter, type: e.target.value })}
+                style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
+              >
+                <option value="all">All Inquiry Types</option>
+                <option value="study">Study Visa</option>
+                <option value="work">Work Visa</option>
+                <option value="partner">Business Partner</option>
+                <option value="other">General / Other</option>
+              </select>
+              <select
+                value={contactsFilter.sort}
+                onChange={(e) => setContactsFilter({ ...contactsFilter, sort: e.target.value })}
+                style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
+              >
+                <option value="desc">Newest First</option>
+                <option value="asc">Oldest First</option>
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {contactsLoading ? (
+                <div className="empty-state" style={{ padding: '50px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading messages...</div>
+              ) : contactForms.length === 0 ? (
+                <div className="empty-state" style={{ padding: '50px', textAlign: 'center', color: 'var(--text-muted)' }}>No messages found.</div>
+              ) : (
+                (() => {
+                  let filtered = [...contactForms];
+
+                  if (contactsFilter.search.trim()) {
+                    const q = contactsFilter.search.trim().toLowerCase();
+                    filtered = filtered.filter(item => 
+                      (item.fname && item.fname.toLowerCase().includes(q)) ||
+                      (item.lname && item.lname.toLowerCase().includes(q)) ||
+                      (item.email && item.email.toLowerCase().includes(q)) ||
+                      (item.message && item.message.toLowerCase().includes(q))
+                    );
+                  }
+
+                  if (contactsFilter.status === 'unread') {
+                    filtered = filtered.filter(item => !item.isRead);
+                  } else if (contactsFilter.status === 'read') {
+                    filtered = filtered.filter(item => item.isRead);
+                  }
+
+                  if (contactsFilter.type !== 'all') {
+                    filtered = filtered.filter(item => 
+                      item.interest && item.interest.toLowerCase().includes(contactsFilter.type.toLowerCase())
+                    );
+                  }
+
+                  filtered.sort((a, b) => {
+                    const dateA = new Date(a.createdAt || 0).getTime();
+                    const dateB = new Date(b.createdAt || 0).getTime();
+                    return contactsFilter.sort === 'asc' ? dateA - dateB : dateB - dateA;
+                  });
+
+                  if (filtered.length === 0) {
+                    return <div className="empty-state" style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>No messages match your filters.</div>;
+                  }
+                  return filtered.map((form) => (
+                    <div key={form._id} className="widget hover:border-[var(--accent-primary)]" style={{ padding: '12px 18px', border: form.isRead ? '1px solid var(--glass-border)' : '1px solid rgba(59, 130, 246, 0.4)', background: form.isRead ? 'var(--card-bg-solid)' : 'rgba(59, 130, 246, 0.04)', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '8px', transition: 'all', opacity: form.isRead ? 0.8 : 1 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+                        <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                          <input 
+                            type="checkbox" 
+                            checked={selectedEnquiries.includes(form._id)} 
+                            onChange={(e) => {
+                              if (e.target.checked) setSelectedEnquiries(prev => [...prev, form._id]);
+                              else setSelectedEnquiries(prev => prev.filter(id => id !== form._id));
+                            }}
+                            style={{ marginTop: '4px', width: '16px', height: '16px', accentColor: '#3b82f6', cursor: 'pointer' }} 
+                          />
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <h4 style={{ margin: '0', color: 'var(--text-main)', fontSize: '0.95rem', fontWeight: 800 }}>
+                                {form.fname} {form.lname}
+                              </h4>
+                              <span style={{ background: form.isRead ? 'rgba(255,255,255,0.05)' : 'rgba(34,197,94,0.15)', color: form.isRead ? 'var(--text-muted)' : '#22c55e', border: '1px solid ' + (form.isRead ? 'var(--glass-border)' : 'rgba(34,197,94,0.2)'), padding: '1px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase' }}>
+                                {form.isRead ? 'Read' : 'Unread'}
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '4px' }}>
+                              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Mail size={12} /> {form.email}</span>
+                              {form.phone && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Phone size={12} /> {form.phone}</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <button
+                              onClick={() => handleToggleRead(form._id)}
+                              style={{ background: form.isRead ? 'var(--input-bg)' : 'rgba(59, 130, 246, 0.1)', color: form.isRead ? 'var(--text-muted)' : '#3b82f6', border: '1px solid var(--glass-border)', padding: '3px 8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                            >
+                              {form.isRead ? 'Mark as Unread' : 'Mark as Read'}
+                            </button>
+                            <button
+                              onClick={() => handleDeleteEnquiryClick(form._id)}
+                              style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '3px 8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            >
+                              <Trash2 size={12} /> Delete
+                            </button>
+                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 500 }}>
+                              {new Date(form.createdAt).toLocaleString()}
+                            </div>
+                          </div>
+                          {form.interest && (
+                            <span style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>
+                              {form.interest}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ background: 'var(--bg-primary)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--glass-border)', color: 'var(--text-main)', fontSize: '0.88rem', lineHeight: '1.4' }}>
+                        {form.message}
+                      </div>
+                    </div>
+                  ));
+                })()
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: DATA EDITOR / CREATOR */}
         {/* -------------------------------------------------------------------------------- */}
         {(selectedUser || isAdding) && (
@@ -1383,6 +1645,7 @@ const AdminPortal = () => {
                       options={[
                         { value: 'student', label: 'Student (Standard)' },
                         { value: 'counselor', label: 'Counselor (Sub-Agent)' },
+                        { value: 'freelancer', label: 'Freelancer' },
                         { value: 'partner', label: 'Business Partner' }
                       ]}
                     />
@@ -1722,6 +1985,98 @@ const AdminPortal = () => {
         </div>
       )}
 
+      {/* FREELANCER STUDENTS POPUP */}
+      {freelancerStudentsPopup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(5px)' }}>
+          <div className="animate-fade-in" style={{ background: 'var(--bg-primary)', width: '90%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto', borderRadius: '16px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)' }}>
+            <div style={{ padding: '20px 30px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--card-bg-solid)', position: 'sticky', top: 0, zIndex: 10 }}>
+              <div>
+                <h2 style={{ margin: 0, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '10px' }}><Users size={20} color="#3b82f6" /> Students Registered By Freelancer: {freelancerStudentsPopup.firstName} {freelancerStudentsPopup.lastName}</h2>
+                <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Manage student metadata originating from this freelancer.</p>
+              </div>
+              <button 
+                onClick={() => setFreelancerStudentsPopup(null)} 
+                style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+                onMouseOver={(e) => e.currentTarget.style.color = '#ef4444'}
+                onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-main)'}
+              >
+                <div style={{ fontWeight: 'bold' }}>X</div>
+              </button>
+            </div>
+            <div style={{ padding: '20px' }}>
+              {(() => {
+                const freelancerStudents = users.filter(u => u.role === 'student' && (u.registeredBy === freelancerStudentsPopup._id || u.createdByCounselor === freelancerStudentsPopup._id));
+
+                return (
+                  <div className="animate-fade-in">
+                    <div style={{ background: 'var(--card-bg-solid)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                        <thead style={{ background: 'var(--table-header-bg)', borderBottom: '1px solid var(--glass-border)' }}>
+                          <tr>
+                            <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Entity Name</th>
+                            <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Identifiers</th>
+                            <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Access Level</th>
+                            <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600, textAlign: 'right' }}>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {freelancerStudents.length === 0 ? (
+                            <tr>
+                              <td colSpan="4" style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                                <Users size={30} style={{ opacity: 0.3, marginBottom: '10px' }} />
+                                <div>No students currently assigned to this freelancer.</div>
+                              </td>
+                            </tr>
+                          ) : freelancerStudents.map(u => (
+                            <tr key={u._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'background 0.2s' }}>
+                              <td style={{ padding: '12px 16px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #3f3f46, #27272a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#fff', fontSize: '0.9rem' }}>
+                                    {u.firstName ? u.firstName.charAt(0).toUpperCase() : '?'}
+                                  </div>
+                                  <div 
+                                    onClick={() => { setFreelancerStudentsPopup(null); setViewingStudentProfile(u); }}
+                                    style={{ color: 'var(--accent-primary)', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', transition: 'color 0.2s', textDecoration: 'underline', textDecorationColor: 'rgba(59, 130, 246, 0.3)', textUnderlineOffset: '4px' }}
+                                    onMouseOver={(e) => { e.currentTarget.style.color = '#60a5fa'; e.currentTarget.style.textDecorationColor = '#60a5fa'; }}
+                                    onMouseOut={(e) => { e.currentTarget.style.color = 'var(--accent-primary)'; e.currentTarget.style.textDecorationColor = 'rgba(59, 130, 246, 0.3)'; }}
+                                    title="Open Complete Student Profile"
+                                  >
+                                    {u.firstName} {u.lastName}
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{ padding: '12px 16px' }}>
+                                <div style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>{u.email}</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>{u.phone || 'No Phone Data'}</div>
+                              </td>
+                              <td style={{ padding: '12px 16px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
+                                  <span style={{ padding: '6px 12px', borderRadius: '20px', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}>student</span>
+                                </div>
+                              </td>
+                              <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                  <button onClick={() => { setFreelancerStudentsPopup(null); handleEdit(u); }} style={{ background: 'var(--input-bg)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }}>
+                                    <Edit2 size={14} /> Modify
+                                  </button>
+                                  <button onClick={() => handleDeleteUser(u._id, false)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 600 }}>
+                                    <Trash2 size={14} /> Obliterate
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* CONFIRMATION MODAL OVERLAY */}
       {confirmDialog.isOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s ease' }}>
@@ -1853,9 +2208,39 @@ const AdminPortal = () => {
           </div>
         </div>
       )}
+      {/* ENQUIRY DELETE CONFIRMATION MODAL */}
+      {enquiryDeleteConfirm.isOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+          <div className="animate-fade-in" style={{ background: 'var(--card-bg-solid)', width: '100%', maxWidth: '400px', borderRadius: '20px', border: '1px solid rgba(239,68,68,0.3)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
+            <div style={{ padding: '24px', textAlign: 'center' }}>
+              <div style={{ width: '60px', height: '60px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                <Trash2 size={30} />
+              </div>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>Delete {enquiryDeleteConfirm.type === 'bulk' ? 'Enquiries' : 'Enquiry'}?</h3>
+              <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                Are you sure you want to permanently delete {enquiryDeleteConfirm.type === 'bulk' ? `these ${enquiryDeleteConfirm.ids.length} enquiries` : 'this enquiry'}? This action cannot be undone.
+              </p>
+            </div>
+            <div style={{ padding: '16px 24px', background: 'var(--table-header-bg)', display: 'flex', gap: '12px' }}>
+              <button 
+                onClick={() => setEnquiryDeleteConfirm({ isOpen: false, ids: [], type: '' })}
+                style={{ flex: 1, padding: '10px', borderRadius: '10px', background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', fontWeight: 600, cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={executeDeleteEnquiries}
+                style={{ flex: 1, padding: '10px', borderRadius: '10px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', border: 'none', color: '#fff', fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+              >
+                <Trash2 size={16} /> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
 
-      <AIPetMascot position="portal" />
+
     </>
   );
 };

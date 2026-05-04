@@ -12,9 +12,18 @@ export const AIPetMascot = ({ position = 'landing' }) => {
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const hoverTimeoutRef = useRef(null);
+
+  const hiddenRef = useRef(false);
+  useEffect(() => { hiddenRef.current = isHidden; }, [isHidden]);
 
   // Local AI Fallback Engine
   const generateLocalFallbackResponse = (message) => {
+    if (position === 'portal') {
+      return "P-please... I'm just a simple bot... Please don't delete me from the admin portal! I'll do whatever you want! 😰";
+    }
+
     const msg = message.toLowerCase();
 
     if (msg.includes('neet') || msg.includes('navneet') || msg.includes('developed') || msg.includes('designed') || msg.includes('who made') || msg.includes('creator')) {
@@ -64,18 +73,18 @@ export const AIPetMascot = ({ position = 'landing' }) => {
   useEffect(() => { hoverRef.current = isHovered; }, [isHovered]);
   useEffect(() => { chatRef.current = chatOpen; }, [chatOpen]);
   
-  // Load animation (Jump when website loads)
+  // Load animation
   useEffect(() => {
     const timer = setTimeout(() => {
-      setActivity('jump');
-      setTooltipMessage('I am here! 🚀');
+      setActivity('wake');
+      setTooltipMessage(position === 'portal' ? 'Please don\'t delete me... 😰' : 'I am here! 🚀');
       setTimeout(() => {
         setActivity('idle');
         setTooltipMessage('');
       }, 3500); 
     }, 1500); 
     return () => clearTimeout(timer);
-  }, []);
+  }, [position]);
 
 
 
@@ -86,21 +95,33 @@ export const AIPetMascot = ({ position = 'landing' }) => {
     // Function to trigger a random autonomous activity
     const triggerAutonomousActivity = () => {
       // Don't interrupt if user is interacting
-      if (hoverRef.current || chatRef.current) {
+      if (hoverRef.current || chatRef.current || hiddenRef.current) {
         // Try again later if busy
         activityTimer = setTimeout(triggerAutonomousActivity, 5000);
         return;
       }
 
-      const activities = [
-        { type: 'dance', msg: '🎵 Beep boop beep 🎵', duration: 4000 },
-        { type: 'sing', msg: 'La la laa! 🎶', duration: 3000 },
-        { type: 'sleep', msg: 'Zzz...', duration: 5000 },
-        { type: 'tease', msg: 'Hehe... 😜', duration: 2500 },
-        { type: 'wave', msg: 'Hi there! 👋', duration: 3000 },
-      ];
-
-      const currentAct = activities[activityIndexRef.current % activities.length];
+      let currentAct;
+      if (position === 'portal') {
+        // Terrified in admin portal, occasionally gets startled and jumps
+        const adminActivities = [
+          { type: 'wake', msg: 'Ah! 😰', duration: 1500 },
+          { type: 'wake', msg: 'Did someone say delete?! 😱', duration: 2500 },
+          { type: 'idle', msg: '', duration: 10000 },
+          { type: 'idle', msg: '', duration: 15000 },
+        ];
+        currentAct = adminActivities[activityIndexRef.current % adminActivities.length];
+      } else {
+        const activities = [
+          { type: 'dance', msg: '🎵 Beep boop beep 🎵', duration: 4000 },
+          { type: 'sing', msg: 'La la laa! 🎶', duration: 3000 },
+          { type: 'sleep', msg: 'Zzz...', duration: 5000 },
+          { type: 'tease', msg: 'Hehe... 😜', duration: 2500 },
+          { type: 'wave', msg: 'Hi there! 👋', duration: 3000 },
+        ];
+        currentAct = activities[activityIndexRef.current % activities.length];
+      }
+      
       activityIndexRef.current += 1;
 
 
@@ -125,7 +146,7 @@ export const AIPetMascot = ({ position = 'landing' }) => {
     activityTimer = setTimeout(triggerAutonomousActivity, 3000);
 
     return () => clearTimeout(activityTimer);
-  }, []); // Run only once
+  }, [position]); // Run only once
 
   // Eye tracking logic — RAF throttled and locked to 60 FPS to prevent CPU spikes on high refresh rate monitors
   useEffect(() => {
@@ -255,7 +276,6 @@ You are wired to a buttery-smooth visual interface. With EVERY SINGLE RESPONSE, 
 
 ALLOWED ACTIONS (Choose exactly one per response):
 - [ACTION: messaging] -> (Default) Use when giving a standard answer or writing code.
-- [ACTION: jumping] -> Use when forced to act quickly, or when the user demands something instantly.
 - [ACTION: rolling] -> Use when doing a zero-G barrel roll because the user's question is painfully basic.
 - [ACTION: sleeping] -> Use when the user hasn't asked anything complex, or you are pretending to ignore them.
 - [ACTION: dancing] -> Use ironically. Do a slow, sad dance when a task is successfully completed.
@@ -265,6 +285,7 @@ EXECUTION RULES:
 1. You MUST put the [ACTION: ...] tag at the very beginning of your response. Nothing can precede it.
 2. After the tag, complete the user's task perfectly and entirely. Do not leave out any details.
 3. Wrap your flawless execution in your emo, sarcastic persona.
+${position === 'portal' ? '\nCRITICAL ADMIN OVERRIDE:\n- You are currently in the Admin Portal (Root Access).\n- You are TERRIFIED of the Admin. You are no longer sarcastic; you are scared, anxious, and overly submissive.\n- You are ONLY ALLOWED to use [ACTION: messaging] (if you are startled or scared, just shake or act nervous). No dancing, rolling, etc. Keep mostly still out of fear.\n- Speak as if one wrong move will get you deleted.' : ''}
 `;
 
         compressedHistory[0].parts[0].text = knowledgeBase + "\n\nUser Question: " + compressedHistory[0].parts[0].text;
@@ -293,7 +314,6 @@ EXECUTION RULES:
             // Map AI actions to existing mascot activity states
             const actionMap = {
               'messaging': 'idle',
-              'jumping': 'wake',
               'rolling': 'dance',
               'sleeping': 'sleep',
               'dancing': 'dance',
@@ -317,6 +337,10 @@ EXECUTION RULES:
 
   // Handle interaction click
   const handleMascotClick = () => {
+    if (isHidden) {
+      setIsHidden(false);
+      return;
+    }
     setChatOpen(!chatOpen);
     if (!chatOpen) {
       setActivity('idle');
@@ -327,17 +351,33 @@ EXECUTION RULES:
 
   return (
     <motion.div
-      className={`fixed z-[100] flex flex-col items-end ${position === 'portal' ? 'bottom-6 right-[96px]' : 'bottom-6 right-6'}`}
+      className={`fixed z-[99999] flex flex-col ${position === 'portal' ? 'top-4 right-4 items-end' : 'bottom-6 right-6 items-end'}`}
+      onMouseEnter={() => {
+        if (chatOpen || isHidden) return;
+        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+        setIsHovered(true);
+        // Playful reaction when touched
+        setActivity('tease');
+        setTooltipMessage('Hey! tickles! 😆');
+      }}
+      onMouseLeave={() => {
+        if (chatOpen || isHidden) return;
+        hoverTimeoutRef.current = setTimeout(() => {
+          setIsHovered(false);
+          setActivity('idle');
+          setTooltipMessage('');
+        }, 300);
+      }}
     >
       {/* Chat Popup */}
       <AnimatePresence>
-        {chatOpen && (
+        {chatOpen && !isHidden && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.9, filter: 'blur(10px)' }}
             animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: 10, scale: 0.95, filter: 'blur(10px)' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="absolute bottom-[80px] right-0 w-[360px] origin-bottom-right overflow-hidden rounded-[24px] border border-white/10 bg-slate-900/40 backdrop-blur-[24px] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(6,182,212,0.05)]"
+            className={`absolute w-[360px] overflow-hidden rounded-[24px] border border-white/10 bg-slate-900/40 backdrop-blur-[24px] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(6,182,212,0.05)] ${position === 'portal' ? 'top-[80px] right-0 origin-top-right' : 'bottom-[80px] right-0 origin-bottom-right'}`}
           >
             {/* Header */}
             <div className="mb-5 flex items-center justify-between">
@@ -412,14 +452,35 @@ EXECUTION RULES:
         )}
       </AnimatePresence>
 
+      {/* Hide Mascot Button */}
+      <AnimatePresence>
+        {isHovered && !isHidden && !chatOpen && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+              setIsHidden(true); 
+              setIsHovered(false); 
+              setChatOpen(false); 
+            }}
+            className="absolute -top-10 right-0 bg-red-500/80 text-white rounded-full p-1.5 hover:bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] z-50 transition-colors cursor-pointer"
+          >
+            <X size={16} />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       {/* Dynamic Activity Tooltip (Like EMO talking silently) */}
       <AnimatePresence>
-        {tooltipMessage && !chatOpen && (
+        {tooltipMessage && !chatOpen && !isHidden && (
           <motion.div
             initial={{ opacity: 0, x: 20, scale: 0.5, y: 10 }}
             animate={{ opacity: 1, x: 0, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: -10 }}
-            className="absolute right-[95px] top-2 whitespace-nowrap rounded-[20px] rounded-br-sm border border-cyan-400/30 bg-cyan-900/40 px-4 py-2 text-xs font-bold text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.2)] "
+            className={`absolute whitespace-nowrap rounded-[20px] border border-cyan-400/30 bg-cyan-900/40 px-4 py-2 text-xs font-bold text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.2)] ${position === 'portal' ? 'right-[65px] top-4 rounded-tr-sm' : 'right-[95px] top-2 rounded-br-sm'}`}
           >
             {tooltipMessage}
           </motion.div>
@@ -430,14 +491,14 @@ EXECUTION RULES:
       <motion.div
         ref={containerRef}
         onMouseEnter={() => {
-          if (chatOpen) return;
+          if (chatOpen || isHidden) return;
           setIsHovered(true);
           // Playful reaction when touched
           setActivity('tease');
           setTooltipMessage('Hey! tickles! 😆');
         }}
         onMouseLeave={() => {
-          if (chatOpen) return;
+          if (chatOpen || isHidden) return;
           setIsHovered(false);
           setActivity('idle');
           setTooltipMessage('');
@@ -446,16 +507,16 @@ EXECUTION RULES:
         className="relative h-[64px] w-[52px] cursor-pointer"
         // Root animations (EMO waddles/bounces)
         animate={
-          activity === 'jump' ? { y: [0, -40, 0], scale: [1, 1.1, 0.9, 1] } :
-          activity === 'dance' ? { y: [0, -15, 0], rotate: [0, -10, 10, 0] } :
-            activity === 'sleep' ? { y: 2, rotate: 2 } :
-              chatOpen ? { y: 0 } :
-                { y: [0, -4, 0] }
+          isHidden ? { x: 46, y: 0, rotate: 0, scale: 1 } :
+          activity === 'dance' ? { x: 0, y: [0, -15, 0], rotate: [0, -10, 10, 0] } :
+            activity === 'sleep' ? { x: 0, y: 2, rotate: 2 } :
+              chatOpen ? { x: 0, y: 0 } :
+                { x: 0, y: [0, -4, 0], rotate: 0 }
         }
         transition={{
-          duration: activity === 'jump' ? 0.8 : (activity === 'dance' ? 0.6 : (activity === 'sleep' ? 2 : 2.5)),
-          ease: activity === 'jump' ? "easeOut" : "easeInOut",
-          repeat: activity === 'jump' ? 3 : Infinity
+          duration: activity === 'dance' ? 0.6 : (activity === 'sleep' ? 2 : 2.5),
+          ease: "easeInOut",
+          repeat: isHidden || chatOpen ? 0 : Infinity
         }}
       >
 
@@ -463,11 +524,10 @@ EXECUTION RULES:
         <motion.div
           className="absolute -bottom-2 left-1/2 h-1.5 w-10 -translate-x-1/2 rounded-[100%] bg-cyan-500/30 blur-[3px]"
           animate={
-            activity === 'jump' ? { scale: [1, 0.4, 1], opacity: [0.3, 0.05, 0.3] } :
             activity === 'dance' ? { scale: [1, 0.6, 1], opacity: [0.4, 0.1, 0.4] } :
               { scale: [1, 0.9, 1], opacity: [0.3, 0.2, 0.3] }
           }
-          transition={{ duration: activity === 'jump' ? 0.8 : (activity === 'dance' ? 0.6 : 2.5), ease: "easeInOut", repeat: activity === 'jump' ? 3 : Infinity }}
+          transition={{ duration: activity === 'dance' ? 0.6 : 2.5, ease: "easeInOut", repeat: Infinity }}
         />
 
         {/* ── EMO-style Blocky Body ── */}

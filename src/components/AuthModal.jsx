@@ -9,12 +9,20 @@ import Select from 'react-select';
 import { Country, State, City } from 'country-state-city';
 import { API_BASE_URL } from '../config';
 
-const AuthModal = ({ type: initialType, onClose }) => {
+const AuthModal = ({ type: initialProp, onClose }) => {
+  const initialType = typeof initialProp === 'object' ? initialProp?.type : initialProp;
+  const initialRole = typeof initialProp === 'object' ? initialProp?.role : 'student';
+
   const [type, setType] = useState(initialType);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (initialType) setType(initialType);
+    if (initialRole) setFormData(prev => ({ ...prev, role: initialRole }));
+  }, [initialType, initialRole]);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -23,7 +31,6 @@ const AuthModal = ({ type: initialType, onClose }) => {
   const [identifier, setIdentifier] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
-  // Signup fields
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -34,16 +41,22 @@ const AuthModal = ({ type: initialType, onClose }) => {
     phone: '',
     whatsapp: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: initialRole || 'student'
   });
 
   // Country/State/City Data
-  const countries = useMemo(() => Country.getAllCountries().map(c => ({
-    value: c.isoCode,
-    label: `${c.flag} ${c.name}`,
-    name: c.name,
-    phonecode: c.phonecode.replace('+', '')
-  })), []);
+  const countries = useMemo(() => {
+    const all = Country.getAllCountries();
+    const india = all.find(c => c.isoCode === 'IN');
+    const others = all.filter(c => c.isoCode !== 'IN');
+    return [india, ...others].filter(Boolean).map(c => ({
+      value: c.isoCode,
+      label: `${c.flag} ${c.name}`,
+      name: c.name,
+      phonecode: c.phonecode.replace('+', '')
+    }));
+  }, []);
 
   const states = useMemo(() =>
     formData.country ? State.getStatesOfCountry(formData.country.value).map(s => ({
@@ -118,7 +131,7 @@ const AuthModal = ({ type: initialType, onClose }) => {
           phone: `+${formData.country?.phonecode || '91'}${formData.phone}`,
           whatsapp: `+${formData.country?.phonecode || '91'}${formData.whatsapp}`,
           password: formData.password,
-          role: 'student'
+          role: formData.role
         })
       });
       const data = await res.json();
@@ -369,6 +382,24 @@ const AuthModal = ({ type: initialType, onClose }) => {
                 {error}
               </motion.div>
             )}
+
+            {/* Role Selection Toggle */}
+            <div className="flex bg-white/5 border border-white/10 p-1.5 rounded-2xl gap-2 mb-8">
+              <button
+                type="button"
+                onClick={() => handleInputChange('role', 'student')}
+                className={`flex-1 py-3.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${formData.role === 'student' ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+              >
+                Student
+              </button>
+              <button
+                type="button"
+                onClick={() => handleInputChange('role', 'freelancer')}
+                className={`flex-1 py-3.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${formData.role === 'freelancer' ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+              >
+                Freelancer
+              </button>
+            </div>
 
             <form onSubmit={type === 'login' ? handleLogin : (e) => e.preventDefault()} className="space-y-6">
               {type === 'login' ? (

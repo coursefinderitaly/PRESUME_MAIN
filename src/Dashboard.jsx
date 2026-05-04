@@ -277,6 +277,7 @@ const Dashboard = () => {
 
   const isPartner = profile.role === 'partner';
   const isCounselor = profile.role === 'counselor';
+  const isFreelancer = profile.role === 'freelancer';
   const isStudent = profile.role === 'student';
 
   // Sidebar link generator
@@ -337,7 +338,7 @@ const Dashboard = () => {
             {isSidebarOpen && (
               <div style={{ animation: 'fadeIn 0.3s ease', marginTop: '0.5rem', width: '100%', textAlign: 'center' }}>
                 <span style={{ fontSize: '0.75rem', color: 'var(--accent-secondary)', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '1px' }}>
-                  {isPartner ? 'Partner Portal' : isCounselor ? 'Counselor Portal' : 'Student Portal'}
+                  {isPartner ? 'Partner Portal' : isCounselor ? 'Counselor Portal' : isFreelancer ? 'Freelancer Portal' : 'Student Portal'}
                 </span>
               </div>
             )}
@@ -406,6 +407,18 @@ const Dashboard = () => {
               </>
             )}
 
+            {/* Freelancer specific tabs */}
+            {isFreelancer && (
+              <>
+                <NavButton id="register-student" icon={User} label="Register New Student" />
+                <NavButton id="students-list" icon={Users} label="My Students" />
+                <NavButton id="course-finder" icon={Search} label="Search Program" />
+                <NavButton id="partner-applications" icon={FileText} label="Applied Applications" />
+                <NavButton id="student-documents" icon={UploadCloud} label="Student Documents" />
+                <NavButton id="profile" icon={User} label="My Account" />
+              </>
+            )}
+
             <div className="nav-divider"></div>
 
           </nav>
@@ -415,7 +428,7 @@ const Dashboard = () => {
               <div className="avatar" style={{ minWidth: '32px', width: '32px', height: '32px', fontSize: '1rem' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
               <div className="user-info">
                 <span className="name" style={{ fontSize: '0.85rem' }}>{profile.firstName} {profile.lastName || ''}</span>
-                <span className="role" style={{ fontSize: '0.7rem' }}>{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : 'Student'}</span>
+                <span className="role" style={{ fontSize: '0.7rem' }}>{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'}</span>
               </div>
             </div>
           </div>
@@ -551,14 +564,14 @@ const Dashboard = () => {
             {/* ================================== */}
             {/* VIEW: PARTNER APPLICATIONS         */}
             {/* ================================== */}
-            {activeTab === 'partner-applications' && (isPartner || isCounselor) && (
+            {activeTab === 'partner-applications' && (isPartner || isCounselor || isFreelancer) && (
               <PartnerApplications profile={profile} setMessage={setMessage} />
             )}
 
             {/* ================================== */}
             {/* VIEW: STUDENT DOCUMENTS            */}
             {/* ================================== */}
-            {activeTab === 'student-documents' && (isPartner || isCounselor) && (
+            {activeTab === 'student-documents' && (isPartner || isCounselor || isFreelancer) && (
               <StudentDocuments />
             )}
 
@@ -585,7 +598,7 @@ const Dashboard = () => {
                 preselectedUnis={pendingApplications}
                 onProceed={(selected) => {
                   setPendingApplications(selected);
-                  if (isPartner || isCounselor) {
+                  if (isPartner || isCounselor || isFreelancer) {
                     setActiveTab('students-list');
                   } else {
                     setActiveTab('applications');

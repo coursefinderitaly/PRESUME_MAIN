@@ -16,7 +16,7 @@ async function run() {
         phone: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
-        role: { type: String, enum: ['student', 'partner', 'admin', 'counselor'], default: 'student' }
+        role: { type: String, enum: ['student', 'partner', 'admin', 'counselor', 'freelancer'], default: 'student' }
     }, { timestamps: true });
     
     const User = mongoose.models.User || mongoose.model('User', UserSchema);

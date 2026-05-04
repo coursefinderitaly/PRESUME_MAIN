@@ -154,7 +154,7 @@ const RegisterStudent = ({ profile, setMessage }) => {
             <input type="tel" name="phone" value={formData.phone} onChange={enforcePhonePrefix} required className="dash-input" />
           </div>
           
-          {profile.role !== 'counselor' && (
+          {profile.role !== 'counselor' && profile.role !== 'freelancer' && (
             <div className="dash-input-group" style={{ zIndex: 100 }}>
               <label>Assigned Counselor</label>
               <Select 

@@ -15,7 +15,6 @@ import AppleAcademyPage from './components/AppleAcademyPage';
 import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
-import FPSCounter from './components/FPSCounter';
 import NotFound from './components/NotFound';
 import './index.css';
 
@@ -24,7 +23,6 @@ function App() {
     <ThemeProvider>
       <Router>
         <SmoothScrollLayout>
-          <FPSCounter />
           <ScrollToTop />
           <IdleTimeout>
           <Routes>

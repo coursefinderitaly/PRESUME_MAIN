@@ -12,7 +12,7 @@ router.use(auth);
 // =======================
 // DASHBOARD STATS
 // =======================
-router.get('/stats', checkRole(['admin', 'partner', 'counselor']), async (req, res) => {
+router.get('/stats', checkRole(['admin', 'partner', 'counselor', 'freelancer']), async (req, res) => {
   try {
     const currentUser = await User.findById(req.user.id);
     let studentQuery = { role: 'student' };
@@ -185,7 +185,7 @@ router.put('/counselors/:id', checkRole(['admin', 'partner', 'counselor']), asyn
 // STUDENTS MANAGEMENT
 // =======================
 // Get all students (with active filters via query param)
-router.get('/students', checkRole(['admin', 'partner', 'counselor']), async (req, res) => {
+router.get('/students', checkRole(['admin', 'partner', 'counselor', 'freelancer']), async (req, res) => {
   try {
     const currentUser = await User.findById(req.user.id);
     const { country, state, isAssigned } = req.query;
@@ -196,13 +196,14 @@ router.get('/students', checkRole(['admin', 'partner', 'counselor']), async (req
     if (currentUser && currentUser.role === 'partner') {
       // Partner sees students they registered DIRECTLY OR students registered by their counselors
       query.registeredBy = currentUser._id;
-    } else if (currentUser && currentUser.role === 'counselor') {
-      // Counselors ONLY see students explicitly assigned to them or created by them
+    } else if (currentUser && (currentUser.role === 'counselor' || currentUser.role === 'freelancer')) {
+      // Counselors/Freelancers ONLY see students explicitly assigned to them or created by them
       query = { 
         ...query, 
         $or: [
           { assignedCounselor: currentUser._id },
-          { createdByCounselor: currentUser._id }
+          { createdByCounselor: currentUser._id },
+          { registeredBy: currentUser._id }
         ]
       };
     }
@@ -224,8 +225,8 @@ router.get('/students', checkRole(['admin', 'partner', 'counselor']), async (req
   }
 });
 
-// Partner OR Counselor Register New Student Lead
-router.post('/students', checkRole(['admin', 'partner', 'counselor']), async (req, res) => {
+// Partner OR Counselor OR Freelancer Register New Student Lead
+router.post('/students', checkRole(['admin', 'partner', 'counselor', 'freelancer']), async (req, res) => {
   try {
     const { firstName, lastName, email, phone, country, state, city, offerStatus, assignedCounselor, password } = req.body;
     
@@ -258,11 +259,15 @@ router.post('/students', checkRole(['admin', 'partner', 'counselor']), async (re
     };
     
     // Mapping logic based on creator's role
-    if (currentUser.role === 'counselor') {
-      // Counselor creates the student
+    if (currentUser.role === 'counselor' || currentUser.role === 'freelancer') {
+      // Counselor or Freelancer creates the student
       studentData.createdByCounselor = currentUser._id;
       studentData.assignedCounselor = currentUser._id;
-      studentData.registeredBy = currentUser.parentPartner; // Roll up to the Partner
+      if (currentUser.role === 'counselor') {
+        studentData.registeredBy = currentUser.parentPartner; // Roll up to the Partner
+      } else {
+        studentData.registeredBy = currentUser._id; // Freelancer registers directly
+      }
     } else {
       // Partner (or Admin) creates the student
       studentData.registeredBy = currentUser._id;

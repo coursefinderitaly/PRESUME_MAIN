@@ -38,7 +38,7 @@ const SystemHierarchy = ({ users, onStudentClick }) => {
   const containerStyle = {
     display: 'flex',
     gap: '20px',
-    height: 'calc(100vh - 280px)', // Rigid calc fitting below AdminPortal Header + Top Cards
+    flex: 1, // Fit within the parent flex container
     overflow: 'hidden',
     opacity: mounted ? 1 : 0,
     transform: mounted ? 'translateY(0)' : 'translateY(20px)',

@@ -1,10 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Send, Globe2 } from 'lucide-react';
 import { Header } from './Header';
 import MinimalFooter from './MinimalFooter';
+import { API_BASE_URL } from '../config';
 
 const ContactUsPage = () => {
+    const [formData, setFormData] = useState({ fullName: '', email: '', interest: '', message: '' });
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState({ type: '', text: '' });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setStatus({ type: '', text: '' });
+
+        const names = (formData.fullName || '').trim().split(' ');
+        const fname = names[0] || '';
+        const lname = names.slice(1).join(' ') || '';
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/contact`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+                body: JSON.stringify({ fname, lname, email: formData.email, interest: formData.interest, message: formData.message })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setStatus({ type: 'success', text: 'Message sent successfully. We will get back to you soon!' });
+                setFormData({ fullName: '', email: '', interest: '', message: '' });
+            } else {
+                setStatus({ type: 'error', text: data.error || 'Failed to send message' });
+            }
+        } catch (error) {
+            setStatus({ type: 'error', text: 'Server error. Please try again later.' });
+        }
+        setLoading(false);
+    };
+
     return (
         <div className="min-h-screen bg-[#0a0d18] text-white font-sans flex flex-col relative overflow-hidden">
             {/* Background Atmosphere */}
@@ -90,36 +127,41 @@ const ContactUsPage = () => {
                             <p className="text-gray-400 text-sm font-medium">Don't hesitate to ask us anything. Our team usually responds within 2 hours.</p>
                         </div>
 
-                        <form className="relative z-10 space-y-6" onSubmit={(e) => e.preventDefault()}>
+                        <form className="relative z-10 space-y-6" onSubmit={handleSubmit}>
+                            {status.text && (
+                                <div className={`p-4 rounded-2xl mb-6 text-sm font-bold border ${status.type === 'success' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
+                                    {status.text}
+                                </div>
+                            )}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Full Name</label>
-                                    <input type="text" className="w-full bg-black/40 border border-white/10 focus:border-cyan-500 text-white rounded-2xl py-4 px-5 transition-all outline-none placeholder-white/20 font-medium" placeholder="John Doe" />
+                                    <input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} className="w-full bg-black/40 border border-white/10 focus:border-cyan-500 text-white rounded-2xl py-4 px-5 transition-all outline-none placeholder-white/20 font-medium" placeholder="John Doe" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Email Address</label>
-                                    <input type="email" className="w-full bg-black/40 border border-white/10 focus:border-cyan-500 text-white rounded-2xl py-4 px-5 transition-all outline-none placeholder-white/20 font-medium" placeholder="john@example.com" />
+                                    <input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full bg-black/40 border border-white/10 focus:border-cyan-500 text-white rounded-2xl py-4 px-5 transition-all outline-none placeholder-white/20 font-medium" placeholder="john@example.com" />
                                 </div>
                             </div>
                             
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Subject / Interest</label>
-                                <select defaultValue="" className="w-full bg-black/40 border border-white/10 focus:border-cyan-500 text-white rounded-2xl py-4 px-5 transition-all outline-none appearance-none font-medium">
+                                <select name="interest" value={formData.interest} onChange={handleChange} className="w-full bg-black/40 border border-white/10 focus:border-cyan-500 text-white rounded-2xl py-4 px-5 transition-all outline-none appearance-none font-medium">
                                     <option value="" disabled className="text-gray-500">Select your inquiry type</option>
-                                    <option value="study" className="bg-gray-900">Study Visa Assistance</option>
-                                    <option value="work" className="bg-gray-900">Work Visa Guidance</option>
-                                    <option value="partner" className="bg-gray-900">Business Partnership</option>
-                                    <option value="other" className="bg-gray-900">General Inquiry</option>
+                                    <option value="Study Visa" className="bg-gray-900">Study Visa Assistance</option>
+                                    <option value="Work Visa" className="bg-gray-900">Work Visa Guidance</option>
+                                    <option value="Business Partner" className="bg-gray-900">Business Partnership</option>
+                                    <option value="Other" className="bg-gray-900">General Inquiry</option>
                                 </select>
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Your Message</label>
-                                <textarea rows="4" className="w-full bg-black/40 border border-white/10 focus:border-cyan-500 text-white rounded-2xl py-4 px-5 transition-all outline-none placeholder-white/20 resize-none font-medium" placeholder="How can we help you today?"></textarea>
+                                <textarea rows="4" name="message" required value={formData.message} onChange={handleChange} className="w-full bg-black/40 border border-white/10 focus:border-cyan-500 text-white rounded-2xl py-4 px-5 transition-all outline-none placeholder-white/20 resize-none font-medium" placeholder="How can we help you today?"></textarea>
                             </div>
 
-                            <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black uppercase tracking-widest text-[13px] shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_40px_rgba(6,182,212,0.5)] transition-all flex items-center justify-center gap-3">
-                                Send Message <Send size={16} />
+                            <button type="submit" disabled={loading} className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black uppercase tracking-widest text-[13px] shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_40px_rgba(6,182,212,0.5)] transition-all flex items-center justify-center gap-3">
+                                {loading ? 'Sending...' : 'Send Message'} <Send size={16} />
                             </button>
                         </form>
                     </div>

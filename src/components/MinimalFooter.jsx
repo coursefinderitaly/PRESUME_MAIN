@@ -58,7 +58,7 @@ const MinimalFooter = () => {
                animate={{ y: [0, -3, 0] }}
                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
              >
-               <span className="relative z-10 font-black uppercase tracking-[0.25em] text-[10px] text-gray-400 transition-all duration-300 group-hover:text-white flex items-center gap-1.5 select-none">
+               <span className="relative z-10 font-black uppercase tracking-[0.25em] text-[8px] text-gray-400 transition-all duration-300 group-hover:text-white flex items-center gap-1.5 select-none">
                  <Sparkles size={12} className="text-cyan-500/40 group-hover:text-cyan-400 group-hover:animate-pulse transition-colors" />
                  Handcrafted <span className="text-cyan-500/60 group-hover:text-cyan-300 transition-colors">@</span> NEET
                </span>

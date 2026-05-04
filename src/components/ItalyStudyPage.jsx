@@ -492,44 +492,6 @@ const ItalyStudyPage = () => {
                         </div>
                     </div>
 
-                    {/* Cost Section (Sleek Data Cards) */}
-                    <div className="mb-32 relative z-20">
-                        <div className="text-center mb-16">
-                            <h2 className="text-4xl md:text-5xl font-black mb-4 text-white tracking-tight">Affordable Tuition</h2>
-                            <p className="text-gray-400 text-lg font-medium">Top-ranked public universities at a fraction of the global cost.</p>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {mbbsCosts.map((uni, idx) => (
-                                <div key={idx} className="rounded-[40px] border border-white/10 bg-white/5 backdrop-blur-[40px] overflow-hidden hover:border-accent-gold/30 transition-all duration-500 shadow-2xl flex flex-col">
-                                    <div className="p-10 pb-8 border-b border-white/5 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-8 opacity-10">
-                                            <Landmark className="w-32 h-32" />
-                                        </div>
-                                        <h3 className="text-3xl font-black text-white mb-3 relative z-10">{uni.university}</h3>
-                                        <p className="text-sm text-gray-400 font-medium leading-relaxed max-w-sm relative z-10">{uni.description}</p>
-                                    </div>
-                                    <div className="p-8 flex-1 flex flex-col justify-center gap-4 bg-white/[0.01]">
-                                        {uni.rows.map((row, rIdx) => (
-                                            <div key={rIdx} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 rounded-2xl bg-[#0a0d18]/40 border border-white/5 gap-4">
-                                                <div>
-                                                    <div className="text-white font-bold mb-1">{row.year}</div>
-                                                    <div className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">
-                                                        Tuition: {row.tuition} &bull; Admin: {row.admin}
-                                                    </div>
-                                                </div>
-                                                <div className="text-right w-full sm:w-auto border-t sm:border-t-0 sm:border-l border-white/10 pt-4 sm:pt-0 sm:pl-6">
-                                                    <div className="text-[10px] text-accent-gold uppercase tracking-widest font-bold mb-1">Total Due</div>
-                                                    <div className="text-2xl font-black text-white">{row.total}</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
                     <FeesTable />
 
                     {/* Vertical Journey Timeline */}
@@ -541,7 +503,7 @@ const ItalyStudyPage = () => {
 
                         <div className="max-w-4xl mx-auto relative">
                             {/* Vertical connecting line */}
-                            <div className="absolute left-[28px] md:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-accent-gold via-white/10 to-transparent md:-translate-x-1/2"></div>
+                            <div className="absolute left-[28px] md:left-1/2 top-0 bottom-[100px] w-[2px] bg-gradient-to-b from-accent-gold via-white/10 to-transparent md:-translate-x-1/2"></div>
 
                             <div className="space-y-12 relative z-10">
                                 {journeySteps.map((item, idx) => (
@@ -569,6 +531,22 @@ const ItalyStudyPage = () => {
                                     </motion.div>
                                 ))}
                             </div>
+                            
+                            {/* Call to Action Button */}
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                className="flex justify-center mt-20 relative z-10"
+                            >
+                                <button 
+                                    onClick={() => setModalOpen('signup')}
+                                    className="group relative px-10 py-5 bg-gradient-to-r from-accent-gold to-yellow-500 rounded-full text-primary-blue text-sm font-black uppercase tracking-[0.2em] hover:shadow-[0_0_40px_rgba(250,204,21,0.5)] transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                                    <span className="relative z-10 flex items-center gap-2">Start Your Application <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></span>
+                                </button>
+                            </motion.div>
                         </div>
                     </div>
                 </div>

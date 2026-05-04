@@ -284,7 +284,7 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
               <th style={{padding: '15px'}}>Contact</th>
               <th style={{padding: '15px'}}>Offer Status</th>
               <th style={{padding: '15px'}}>Student Status</th>
-              {profile.role !== 'counselor' && <th style={{padding: '15px'}}>Assigned Counselor</th>}
+              {profile.role !== 'counselor' && profile.role !== 'freelancer' && <th style={{padding: '15px'}}>Assigned Counselor</th>}
               <th style={{padding: '15px', textAlign: 'center'}}>Actions</th>
             </tr>
           </thead>
@@ -321,7 +321,7 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
                       <td style={{padding: '15px', fontSize: '0.8rem'}} className="text-muted">
                         Status handled in view mode.
                       </td>
-                      {profile.role !== 'counselor' && (
+                      {profile.role !== 'counselor' && profile.role !== 'freelancer' && (
                         <td style={{padding: '15px', fontSize: '0.8rem'}} className="text-muted">
                           Counselor assignment handled in view mode.
                         </td>
@@ -384,7 +384,7 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
                         isSearchable={false}
                       />
                     </td>
-                    {profile.role !== 'counselor' && (
+                    {profile.role !== 'counselor' && profile.role !== 'freelancer' && (
                       <td style={{padding: '15px'}} onClick={(e) => e.stopPropagation()}>
                         <Select 
                           menuPortalTarget={document.body}

@@ -3,6 +3,21 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 
+// Suppress skipped transition warnings
+window.addEventListener('unhandledrejection', (event) => {
+  if (event.reason && (event.reason.name === 'AbortError' || (event.reason.message && event.reason.message.includes('Transition was skipped')))) {
+    event.preventDefault();
+  }
+});
+
+const originalConsoleError = console.error;
+console.error = (...args) => {
+  if (args[0] && typeof args[0] === 'string' && (args[0].includes('Transition was skipped') || args[0].includes('AbortError'))) {
+    return;
+  }
+  originalConsoleError(...args);
+};
+
 // CSRF Protection Interceptor
 const originalFetch = window.fetch;
 window.fetch = async (...args) => {

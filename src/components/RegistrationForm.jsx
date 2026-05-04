@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Phone, Mail, MessageCircle, MapPin, Send } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 export const RegistrationForm = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -8,6 +9,32 @@ export const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     fname: '', lname: '', email: '', phone: '+91 ', interest: '', message: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({ type: '', text: '' });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus({ type: '', text: '' });
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus({ type: 'success', text: 'Message sent successfully. We will contact you soon!' });
+        setFormData({ fname: '', lname: '', email: '', phone: '+91 ', interest: '', message: '' });
+      } else {
+        setStatus({ type: 'error', text: data.error || 'Failed to send message' });
+      }
+    } catch (error) {
+      setStatus({ type: 'error', text: 'Server connection error. Please try again later.' });
+    }
+    setLoading(false);
+  };
 
   const handlePhoneChange = (e) => {
     let { name, value } = e.target;
@@ -180,7 +207,14 @@ export const RegistrationForm = () => {
               >
                 Send Us A Message
               </motion.h3>
-              <form className="space-y-5">
+              
+              {status.text && (
+                <div className={`mb-4 p-3 rounded-lg text-sm font-bold border ${status.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-green-500/10 border-green-500/20 text-green-400'}`}>
+                  {status.text}
+                </div>
+              )}
+
+              <form className="space-y-5" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
@@ -240,7 +274,7 @@ export const RegistrationForm = () => {
                   initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.6 }}
                   className="relative group"
                 >
-                  <textarea id="message" rows="3" className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent resize-none" placeholder="Your Message"></textarea>
+                  <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows="3" className="peer w-full pt-6 pb-2 px-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm focus:outline-none focus:border-cyan-500 focus:bg-white/5 transition-all placeholder-transparent resize-none" placeholder="Your Message"></textarea>
                   <label htmlFor="message" className="absolute left-4 top-2 text-white/40 text-[10px] transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-[10px] peer-focus:text-cyan-400 font-medium pointer-events-none">Your Message</label>
                 </motion.div>
 
@@ -248,10 +282,12 @@ export const RegistrationForm = () => {
                   initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.7 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3.5 rounded-xl text-sm font-black mt-2 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center gap-2"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3.5 rounded-xl text-sm font-black mt-2 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <Send size={16} />
-                  Send Message
+                  {loading ? 'Sending...' : 'Send Message'}
                 </motion.button>
               </form>
             </div>

@@ -337,5 +337,47 @@ router.delete('/chats/:studentId', async (req, res) => {
   }
 });
 
+// =============================================
+// ADMIN CONTACT FORMS ROUTES
+// =============================================
+
+// GET all contact form submissions
+router.get('/contacts', async (req, res) => {
+  try {
+    const Contact = require('../models/Contact');
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+    res.json(contacts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error fetching contact forms' });
+  }
+});
+
+// Toggle read status of a contact form submission
+router.put('/contacts/:id/toggle-read', async (req, res) => {
+  try {
+    const Contact = require('../models/Contact');
+    const contact = await Contact.findById(req.params.id);
+    if (!contact) return res.status(404).json({ error: 'Contact form not found' });
+    contact.isRead = !contact.isRead;
+    await contact.save();
+    res.json(contact);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error updating read status' });
+  }
+});
+
+// DELETE contact form submission
+router.delete('/contacts/:id', async (req, res) => {
+  try {
+    const Contact = require('../models/Contact');
+    await Contact.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Contact form deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error deleting contact form' });
+  }
+});
 
 module.exports = router;

@@ -98,7 +98,7 @@ export const Footer = () => {
                 animate={{ opacity: [0, 0.3, 0], scale: [0.9, 1.1, 0.9] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
-              <span className="relative z-10 font-black uppercase tracking-[0.3em] text-white/50 transition-all duration-300 group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">
+              <span className="relative z-10 font-black uppercase tracking-[0.3em] text-[9px] text-white/50 transition-all duration-300 group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">
                 Designer <span className="text-cyan-500/70 transition-colors group-hover:text-cyan-300">@</span> NEET
               </span>
               <div className="absolute -bottom-1 left-1/2 h-px w-0 -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-400 to-transparent transition-all duration-500 group-hover:w-full" />

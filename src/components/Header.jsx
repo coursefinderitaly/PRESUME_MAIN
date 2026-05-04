@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Menu, X, ArrowRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -179,7 +180,7 @@ export const Header = ({ compact = false }) => {
             {[
               <motion.button
                 key="coursefinder"
-                onClick={() => window.open('https://www.coursefinderitaly.com', '_blank')}
+                onClick={() => setModalOpen('signup')}
                 className="font-black text-[15px] tracking-[0.18em] bg-gradient-to-r from-amber-300 via-orange-200 to-rose-300 bg-clip-text text-transparent hover:from-amber-200 hover:via-white hover:to-rose-200 hover:scale-105 transition-all duration-300 uppercase border-b border-amber-400/40 pb-0.5"
                 animate={{ 
                   scale: [1, 1.04, 1], 
@@ -194,20 +195,55 @@ export const Header = ({ compact = false }) => {
                 COURSEFINDER
               </motion.button>,
               <div key="auth-group" className="flex items-center gap-1.5 p-1 bg-white/[0.04] border border-white/10 rounded-full backdrop-blur-md">
-                <button
-                  onClick={() => setModalOpen('login')}
-                  className={`font-black text-[11px] tracking-widest hover:text-accent-gold transition-colors px-4 py-2 rounded-full ${!isDarkHeader ? 'text-primary-blue' : 'text-white'}`}
-                >
-                  LOGIN
-                </button>
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => setModalOpen('signup')}
-                  className="bg-accent-gold text-primary-blue px-5 py-2.5 rounded-full font-black text-[11px] tracking-wider hover:bg-yellow-400 transition-all shadow-md"
-                >
-                  SIGN UP
-                </motion.button>
+                {/* LOGIN ITEM */}
+                <div className="relative group/login-menu pb-4 -mb-4">
+                  <button
+                    onClick={() => setModalOpen({ type: 'login', role: 'student' })}
+                    className={`font-black text-[11px] tracking-widest hover:text-accent-gold transition-colors px-4 py-2 rounded-full ${!isDarkHeader ? 'text-primary-blue' : 'text-white'}`}
+                  >
+                    LOGIN
+                  </button>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 bg-[#0b0e17] border border-white/10 p-1.5 rounded-2xl flex flex-col gap-1 opacity-0 group-hover/login-menu:opacity-100 translate-y-2 group-hover/login-menu:translate-y-0 pointer-events-none group-hover/login-menu:pointer-events-auto transition-all duration-300 shadow-2xl backdrop-blur-xl z-[60] w-36">
+                    <button
+                      onClick={() => setModalOpen({ type: 'login', role: 'student' })}
+                      className="px-4 py-2.5 text-[10px] font-black tracking-widest text-white/60 hover:text-cyan-400 hover:bg-white/5 rounded-xl transition-all uppercase text-left"
+                    >
+                      As Student
+                    </button>
+                    <button
+                      onClick={() => setModalOpen({ type: 'login', role: 'freelancer' })}
+                      className="px-4 py-2.5 text-[10px] font-black tracking-widest text-white/60 hover:text-cyan-400 hover:bg-white/5 rounded-xl transition-all uppercase text-left"
+                    >
+                      As Freelancer
+                    </button>
+                  </div>
+                </div>
+
+                {/* SIGN UP ITEM */}
+                <div className="relative group/signup-menu pb-4 -mb-4">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setModalOpen({ type: 'signup', role: 'student' })}
+                    className="bg-accent-gold text-primary-blue px-5 py-2.5 rounded-full font-black text-[11px] tracking-wider hover:bg-yellow-400 transition-all shadow-md"
+                  >
+                    SIGN UP
+                  </motion.button>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 bg-[#0b0e17] border border-white/10 p-1.5 rounded-2xl flex flex-col gap-1 opacity-0 group-hover/signup-menu:opacity-100 translate-y-2 group-hover/signup-menu:translate-y-0 pointer-events-none group-hover/signup-menu:pointer-events-auto transition-all duration-300 shadow-2xl backdrop-blur-xl z-[60] w-36">
+                    <button
+                      onClick={() => setModalOpen({ type: 'signup', role: 'student' })}
+                      className="px-4 py-2.5 text-[10px] font-black tracking-widest text-white/60 hover:text-cyan-400 hover:bg-white/5 rounded-xl transition-all uppercase text-left"
+                    >
+                      As Student
+                    </button>
+                    <button
+                      onClick={() => setModalOpen({ type: 'signup', role: 'freelancer' })}
+                      className="px-4 py-2.5 text-[10px] font-black tracking-widest text-white/60 hover:text-cyan-400 hover:bg-white/5 rounded-xl transition-all uppercase text-left"
+                    >
+                      As Freelancer
+                    </button>
+                  </div>
+                </div>
               </div>
             ].map((item, i) => (
               <motion.div
@@ -268,7 +304,7 @@ export const Header = ({ compact = false }) => {
 
             <div className="mt-auto pt-10 grid grid-cols-1 gap-4">
               <button
-                onClick={() => window.open('https://www.coursefinderitaly.com', '_blank')}
+                onClick={() => { setModalOpen('signup'); setMobileMenuOpen(false); }}
                 className="py-6 border-2 border-amber-400/20 hover:border-amber-400/50 transition-all rounded-2xl bg-black/40 flex items-center justify-center overflow-hidden relative group"
               >
                 <span className="font-black text-[28px] tracking-[0.2em] bg-gradient-to-r from-amber-300 via-orange-200 to-rose-300 bg-clip-text text-transparent uppercase">COURSEFINDER</span>
@@ -281,29 +317,47 @@ export const Header = ({ compact = false }) => {
               >
                 VIEW ANIMATION
               </Link>
-              <button
-                onClick={() => { setModalOpen('login'); setMobileMenuOpen(false); }}
-                className="py-5 font-black tracking-widest text-white border-2 border-white/10 hover:border-accent-gold transition-colors rounded-2xl bg-white/5"
-              >
-                LOGIN
-              </button>
-              <button
-                onClick={() => { setModalOpen('signup'); setMobileMenuOpen(false); }}
-                className="py-5 font-black tracking-widest text-primary-blue bg-accent-gold rounded-2xl shadow-xl"
-              >
-                SIGN UP
-              </button>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => { setModalOpen({ type: 'login', role: 'student' }); setMobileMenuOpen(false); }}
+                  className="py-4 font-black tracking-wider text-xs text-white border border-white/10 hover:border-cyan-400 transition-colors rounded-xl bg-white/5 uppercase"
+                >
+                  Student Login
+                </button>
+                <button
+                  onClick={() => { setModalOpen({ type: 'login', role: 'freelancer' }); setMobileMenuOpen(false); }}
+                  className="py-4 font-black tracking-wider text-xs text-white border border-white/10 hover:border-cyan-400 transition-colors rounded-xl bg-white/5 uppercase"
+                >
+                  Freelancer Login
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => { setModalOpen({ type: 'signup', role: 'student' }); setMobileMenuOpen(false); }}
+                  className="py-4 font-black tracking-wider text-xs text-primary-blue bg-accent-gold hover:bg-yellow-400 transition-all rounded-xl uppercase shadow-md"
+                >
+                  Student Sign Up
+                </button>
+                <button
+                  onClick={() => { setModalOpen({ type: 'signup', role: 'freelancer' }); setMobileMenuOpen(false); }}
+                  className="py-4 font-black tracking-wider text-xs text-primary-blue bg-accent-gold hover:bg-yellow-400 transition-all rounded-xl uppercase shadow-md"
+                >
+                  Freelancer Sign Up
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Auth Modal */}
-      <AnimatePresence>
-        {modalOpen && (
+      {/* Auth Modal via Portal */}
+      {modalOpen && createPortal(
+        <AnimatePresence>
           <AuthModal type={modalOpen} onClose={() => setModalOpen(null)} />
-        )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 };
