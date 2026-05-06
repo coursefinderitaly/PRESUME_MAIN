@@ -22,24 +22,24 @@ export const Footer = () => {
 
       <div className="relative z-10 mx-auto max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-12">
         <div className="mx-auto max-w-4xl text-center">
-          <motion.img 
+          <motion.img
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-            src={logo} alt="Presume Overseas" className="mx-auto h-12 w-auto object-contain drop-shadow-[0_0_18px_rgba(255,255,255,0.2)]" 
+            src={logo} alt="Presume Overseas" className="mx-auto h-12 w-auto object-contain drop-shadow-[0_0_18px_rgba(255,255,255,0.2)]"
           />
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}
             className="footer-readable-title mt-4 text-2xl font-black tracking-normal sm:text-3xl"
           >
-            Your next destination starts with one clear plan.
+            Anywhere around the world with us...
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
             className="footer-readable-copy mx-auto mt-3 max-w-2xl text-sm font-medium leading-relaxed text-white/72 sm:text-base"
           >
             Study and work visa guidance made simple, focused, and practical.
           </motion.p>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-5 flex flex-wrap justify-center gap-2"
           >
@@ -54,7 +54,7 @@ export const Footer = () => {
             ))}
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }}
             className="mt-6 flex flex-col gap-4 text-left md:flex-row md:items-center md:justify-center"
           >
@@ -86,14 +86,14 @@ export const Footer = () => {
               <a href="#" className="transition-colors hover:text-white">Privacy</a>
             </div>
           </div>
-          
+
           <div className="flex justify-center">
-            <motion.div 
+            <motion.div
               className="group relative cursor-pointer px-2"
               animate={{ y: [0, -2, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             >
-              <motion.div 
+              <motion.div
                 className="absolute inset-0 rounded-full bg-cyan-400/20  transition-opacity duration-300 group-hover:opacity-100"
                 animate={{ opacity: [0, 0.3, 0], scale: [0.9, 1.1, 0.9] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}

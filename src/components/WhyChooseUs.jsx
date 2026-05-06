@@ -7,14 +7,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const stats = [
-  { id: 1, name: 'Partners', value: '500+', icon: Globe2,  accent: '#06b6d4' },
-  { id: 2, name: 'Success',  value: '98%',  icon: Target,  accent: '#818cf8' },
-  { id: 3, name: 'Students', value: '10k+', icon: Users,   accent: '#34d399' },
-  { id: 4, name: 'Grants',   value: '$5M+', icon: Award,   accent: '#f59e0b' },
-  { id: 5, name: 'Network',  value: 'Elite', icon: Shield, accent: '#ec4899' },
-  { id: 6, name: 'Experts',  value: '50+',  icon: Star,   accent: '#8b5cf6' },
-  { id: 7, name: 'Express',  value: 'Fast',  icon: Zap,    accent: '#10b981' },
-  { id: 8, name: 'Support',  value: '24/7', icon: Clock,  accent: '#f43f5e' },
+  { id: 1, name: 'Partners', value: '500+', icon: Globe2, accent: '#06b6d4' },
+  { id: 2, name: 'Success', value: '98%', icon: Target, accent: '#818cf8' },
+  { id: 3, name: 'Students', value: '10k+', icon: Users, accent: '#34d399' },
+  { id: 4, name: 'Grants', value: '$5M+', icon: Award, accent: '#f59e0b' },
+  { id: 5, name: 'Network', value: 'Elite', icon: Shield, accent: '#ec4899' },
+  { id: 6, name: 'Experts', value: '50+', icon: Star, accent: '#8b5cf6' },
+  { id: 7, name: 'Express', value: 'Fast', icon: Zap, accent: '#10b981' },
 ];
 
 const advantages = [
@@ -38,7 +37,7 @@ function OrbitingCard({ stat, index, total, radius }) {
   const duration = 50; // seconds, same as before
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
@@ -54,9 +53,9 @@ function OrbitingCard({ stat, index, total, radius }) {
           willChange: 'transform',
         }}
       >
-        <div 
+        <div
           className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-auto"
-          style={{ 
+          style={{
             transform: `rotate(${angle}deg) translateY(-${radius}px)`,
             transformOrigin: `center ${radius}px`,
           }}
@@ -70,7 +69,7 @@ function OrbitingCard({ stat, index, total, radius }) {
                 willChange: 'transform',
               }}
             >
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.1, zIndex: 100 }}
                 className="w-20 h-20 lg:w-[110px] lg:h-[110px] rounded-full bg-slate-900/80 backdrop-blur-[20px] border-2 border-white/20 flex flex-col items-center justify-center text-center p-2 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(255,255,255,0.05)] relative overflow-hidden group"
                 style={{ borderColor: `${stat.accent}60` }}
@@ -131,7 +130,7 @@ export const WhyChooseUs = () => {
       className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-transparent"
     >
       <ElegantBackground />
-      
+
       {/* Background Texture */}
       <div className="absolute inset-0 z-[5] opacity-30 pointer-events-none transform-gpu">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
@@ -140,9 +139,9 @@ export const WhyChooseUs = () => {
       <div className="max-w-[85rem] mx-auto w-full relative z-20 px-4 sm:px-6 lg:px-8">
         <div className="presume-advantage-bg rounded-[2.5rem] border border-white/10 shadow-[0_0_80px_rgba(6,182,212,0.12)] p-6 lg:p-10 overflow-hidden relative group">
           <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center relative z-10">
-            
+
             {/* Left: Orbital Visualization */}
             <div className="lg:col-span-7 relative flex items-center justify-center h-[380px] lg:h-[520px]">
               {/* Central Core — rich glassmorphic ring */}
@@ -166,12 +165,12 @@ export const WhyChooseUs = () => {
 
               <div className="absolute inset-0 pointer-events-none">
                 {stats.map((stat, i) => (
-                  <OrbitingCard 
-                    key={stat.id} 
-                    stat={stat} 
-                    index={i} 
-                    total={stats.length} 
-                    radius={radius} 
+                  <OrbitingCard
+                    key={stat.id}
+                    stat={stat}
+                    index={i}
+                    total={stats.length}
+                    radius={radius}
                   />
                 ))}
               </div>
@@ -179,7 +178,7 @@ export const WhyChooseUs = () => {
 
             {/* Right: Detailed List of Advantages */}
             <div className="lg:col-span-5 flex flex-col gap-3 lg:gap-4 relative z-10">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -226,7 +225,7 @@ export const WhyChooseUs = () => {
                 </a>
               </motion.div>
             </div>
-            
+
           </div>
         </div>
       </div>

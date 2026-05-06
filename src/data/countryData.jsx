@@ -1,6 +1,13 @@
 import React from 'react';
 import { PlaneTakeoff, GraduationCap, Coins, BookOpen, MapPin, Landmark, ArrowRight, ShieldCheck, Euro, Briefcase, HeartHandshake, Building2, Stethoscope, FileText, CheckCircle2, Sparkles, DollarSign, PoundSterling } from 'lucide-react';
 
+import ausVideo from '../univideo/Australia.mp4';
+import canVideo from '../univideo/canada.mp4';
+import fraVideo from '../univideo/France.mp4';
+import gerVideo from '../univideo/Germany.mp4';
+import ireVideo from '../univideo/Ireland.mp4';
+import ukVideo from '../univideo/UK.mp4';
+import usaVideo from '../univideo/USA.mp4';
 const genericUGDocs = [
     "10th & 12th Mark Sheets",
     "Valid Passport",
@@ -26,16 +33,16 @@ export const countryData = {
         heroText: "STUDY",
         heroHighlight: "AUSTRALIA.",
         heroDesc: "Experience high-quality education, vibrant student life, and a strong economy with incredible post-study work rights.",
-        videoSrc: "/${country}.mp4",
-        videoSrc: "/${country}.mp4",
-        videoSrc: "/${country}.mp4",
-        videoSrc: "/${country}.mp4",
-        videoSrc: "/${country}.mp4",
-        videoSrc: "/${country}.mp4",
-        videoSrc: "/${country}.mp4",
+        videoSrc: ausVideo,
         currencyIcon: <DollarSign className="w-10 h-10 text-accent-gold" />,
         currencyText: "Post-Study Visa",
         currencyValue: "Up to 4 Yrs",
+        floatingCards: [
+            { title: "Globally Recognized", subtitle: "Education", icon: <GraduationCap /> },
+            { title: "Part-Time", subtitle: "Work Allowed", icon: <Briefcase /> },
+            { title: "High Quality", subtitle: "Of Life", icon: <HeartHandshake /> },
+            { title: "Diverse", subtitle: "Course Options", icon: <BookOpen /> }
+        ],
         opportunities: [
             { title: "Post-Study Work Visa", desc: "Work for up to 4 years post-graduation depending on your degree and location.", icon: <Briefcase className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
             { title: "Group of Eight", desc: "Access to world-renowned research-intensive universities.", icon: <Building2 className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
@@ -135,9 +142,16 @@ export const countryData = {
         heroText: "STUDY",
         heroHighlight: "CANADA.",
         heroDesc: "Join one of the world's most welcoming countries with exceptional academic quality and clear pathways to permanent residency.",
+        videoSrc: canVideo,
         currencyIcon: <DollarSign className="w-10 h-10 text-accent-gold" />,
         currencyText: "PGWP Visa",
         currencyValue: "Up to 3 Yrs",
+        floatingCards: [
+            { title: "Post-Graduation", subtitle: "Work Permit", icon: <Briefcase /> },
+            { title: "Welcoming", subtitle: "Society", icon: <HeartHandshake /> },
+            { title: "Strong Job", subtitle: "Market", icon: <Building2 /> },
+            { title: "Affordable", subtitle: "Education", icon: <Coins /> }
+        ],
         opportunities: [
             { title: "PR Pathway", desc: "Clear points-based immigration system (Express Entry) favors international graduates.", icon: <ShieldCheck className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
             { title: "Co-op Programs", desc: "Gain paid, professional work experience integrated into your degree.", icon: <Briefcase className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
@@ -237,9 +251,16 @@ export const countryData = {
         heroText: "STUDY",
         heroHighlight: "FRANCE.",
         heroDesc: "Immerse yourself in culture, innovation, and top-tier business and engineering schools with heavily subsidized tuition.",
+        videoSrc: fraVideo,
         currencyIcon: <Euro className="w-10 h-10 text-accent-gold" />,
         currencyText: "Post-Study Visa",
         currencyValue: "Up to 2 Yrs",
+        floatingCards: [
+            { title: "Learn", subtitle: "French", icon: <BookOpen /> },
+            { title: "European", subtitle: "Job Market", icon: <Briefcase /> },
+            { title: "Cultural", subtitle: "Exposure", icon: <MapPin /> },
+            { title: "Industry", subtitle: "Connections", icon: <Building2 /> }
+        ],
         opportunities: [
             { title: "Subsidized Education", desc: "Public universities have extremely low tuition fees subsidized by the state.", icon: <Euro className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
             { title: "Grandes Écoles", desc: "Access to elite, world-renowned Business and Engineering schools.", icon: <Building2 className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
@@ -339,9 +360,16 @@ export const countryData = {
         heroText: "STUDY",
         heroHighlight: "GERMANY.",
         heroDesc: "Experience world-class education with zero to low tuition fees at prestigious public universities.",
+        videoSrc: gerVideo,
         currencyIcon: <Euro className="w-10 h-10 text-accent-gold" />,
         currencyText: "Post-Study Visa",
         currencyValue: "18 Months",
+        floatingCards: [
+            { title: "Zero", subtitle: "Tuition Fees", icon: <Euro /> },
+            { title: "English", subtitle: "Taught Programs", icon: <GraduationCap /> },
+            { title: "Pathway", subtitle: "To PR", icon: <ShieldCheck /> },
+            { title: "Strong", subtitle: "Economy", icon: <Building2 /> }
+        ],
         opportunities: [
             { title: "Zero Tuition Fees", desc: "Most public universities charge no tuition, only a small semester contribution.", icon: <Euro className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
             { title: "18-Month Work Visa", desc: "Generous post-study visa to find employment in Europe's largest economy.", icon: <Briefcase className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
@@ -441,9 +469,16 @@ export const countryData = {
         heroText: "STUDY",
         heroHighlight: "IRELAND.",
         heroDesc: "Study in an English-speaking tech hub and launch your global career with top multinational companies.",
+        videoSrc: ireVideo,
         currencyIcon: <Euro className="w-10 h-10 text-accent-gold" />,
         currencyText: "Post-Study Visa",
         currencyValue: "Up to 2 Yrs",
+        floatingCards: [
+            { title: "Gateway", subtitle: "To Europe", icon: <MapPin /> },
+            { title: "English", subtitle: "Speaking", icon: <BookOpen /> },
+            { title: "Global", subtitle: "Tech Hub", icon: <Building2 /> },
+            { title: "High", subtitle: "Employability", icon: <Briefcase /> }
+        ],
         opportunities: [
             { title: "Tech & Pharma Hub", desc: "European headquarters for Google, Meta, Apple, and Pfizer.", icon: <Building2 className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
             { title: "2-Year Work Visa", desc: "Master's graduates can stay back for 2 years to find a job.", icon: <Briefcase className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
@@ -543,9 +578,16 @@ export const countryData = {
         heroText: "STUDY IN",
         heroHighlight: "THE UK.",
         heroDesc: "Fast-track your career with 1-year Master's programs and a 2-year post-study work visa at world-leading institutions.",
+        videoSrc: ukVideo,
         currencyIcon: <PoundSterling className="w-10 h-10 text-accent-gold" />,
         currencyText: "Graduate Route",
         currencyValue: "2 Years",
+        floatingCards: [
+            { title: "Flexible", subtitle: "Courses", icon: <BookOpen /> },
+            { title: "Global", subtitle: "Exposure", icon: <MapPin /> },
+            { title: "Post-Study", subtitle: "Work Visa", icon: <Briefcase /> },
+            { title: "Multicultural", subtitle: "Environment", icon: <HeartHandshake /> }
+        ],
         opportunities: [
             { title: "1-Year Master's", desc: "Save time and money with intensive one-year postgraduate degrees.", icon: <GraduationCap className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
             { title: "Graduate Route Visa", desc: "Stay in the UK for 2 years (3 for PhD) to work after graduating.", icon: <Briefcase className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
@@ -645,9 +687,16 @@ export const countryData = {
         heroText: "STUDY",
         heroHighlight: "IN USA.",
         heroDesc: "Unlock limitless potential in the world's leading destination for higher education, innovation, and research.",
+        videoSrc: usaVideo,
         currencyIcon: <DollarSign className="w-10 h-10 text-accent-gold" />,
         currencyText: "OPT Extension",
         currencyValue: "Up to 3 Yrs",
+        floatingCards: [
+            { title: "World-Leading", subtitle: "Universities", icon: <GraduationCap /> },
+            { title: "Flexible", subtitle: "Education", icon: <BookOpen /> },
+            { title: "Up to 36 Months", subtitle: "STEM OPT", icon: <Briefcase /> },
+            { title: "Global", subtitle: "Network", icon: <HeartHandshake /> }
+        ],
         opportunities: [
             { title: "STEM OPT", desc: "STEM graduates can work in the US for up to 3 years without an H1B visa.", icon: <ShieldCheck className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
             { title: "Academic Flexibility", desc: "Change majors and explore diverse subjects before declaring a focus.", icon: <BookOpen className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },

@@ -5,12 +5,13 @@ import { Header } from './Header';
 import FeesTable from './FeesTable';
 import MinimalFooter from './MinimalFooter';
 import AuthModal from './AuthModal';
-
+import EligibilityModal from './EligibilityModal';
 
 const ItalyStudyPage = () => {
     // State for interactive document checklist
     const [checkedDocs, setCheckedDocs] = useState({});
     const [modalOpen, setModalOpen] = useState(null);
+    const [eligibilityModalLevel, setEligibilityModalLevel] = useState(null);
 
     const toggleDoc = (category, index) => {
         const key = `${category}-${index}`;
@@ -21,11 +22,11 @@ const ItalyStudyPage = () => {
     };
 
     const opportunities = [
-        { title: "Regional Scholarships (DSU)", desc: "Need-based scholarships from regional governments covering tuition, accommodation, and offering a monthly €8,000 stipend.", icon: <Euro className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
-        { title: "Post-Study Work Visa", desc: "Non-EU graduates can apply for a 12-month 'Permesso di attesa occupazione'.", icon: <Briefcase className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
+        { title: "Regional Scholarships (DSU)", desc: "Need-based scholarships from regional governments covering tuition, accommodation, and offering a yearly €8,000 stipend.", icon: <Euro className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
+        { title: "Post-Study Work Visa", desc: "Non-EU graduates can apply for a 12-month work visa.", icon: <Briefcase className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
         { title: "Cultural Immersion", desc: "Live in an 'outdoor classroom' surrounded by thousands of years of history and art.", icon: <HeartHandshake className="w-6 h-6 text-rose-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
         { title: "Top-Tier Universities", desc: "Access to prestigious, globally-ranked institutions with very low tuition fees.", icon: <Building2 className="w-6 h-6 text-indigo-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
-        { title: "English-Taught Programs", desc: "No IELTS required. Full degree programs taught entirely in English.", icon: <BookOpen className="w-6 h-6 text-emerald-400" />, colSpan: "md:col-span-2 lg:col-span-1", bg: "bg-white/5 border-white/10" }
+        { title: "English-Taught Programs", desc: "With/Without IELTS. Full degree programs taught entirely in English.", icon: <BookOpen className="w-6 h-6 text-emerald-400" />, colSpan: "md:col-span-2 lg:col-span-1", bg: "bg-white/5 border-white/10" }
     ];
 
     const popularCourses = [
@@ -38,7 +39,7 @@ const ItalyStudyPage = () => {
         {
             category: "Business & Economics",
             programs: ["BSc Business Administration", "MSc International Management", "Economics & Finance"],
-            institutions: "Bocconi University, University of Bologna",
+            institutions: "Sapienza University, University of Bologna",
             icon: <Building2 className="w-6 h-6 text-accent-gold" />
         },
         {
@@ -78,32 +79,34 @@ const ItalyStudyPage = () => {
     ];
 
     const mbbsDocs = [
-        "10th & 12th Mark Sheets",
+        "10th, 11th & 12th Mark Sheets",
         "Valid Passport",
         "Passport-size photographs",
-        "Birth Certificate",
-        "Medical Fitness Certificate",
-        "Police Clearance Certificate",
-        "Admission Letter & Visa"
+        "IELTS and MOI Certificate",
+        "Motivation Letter / SOP",
+        "Europass CV",
+        "2 LORs",
+        "NEET Score Card"
     ];
 
     const bachelorsDocs = [
-        "10th & 12th Mark Sheets",
+        "10th, 11th & 12th Mark Sheets",
         "Valid Passport",
         "Passport-size photographs",
-        "MOI Certificate",
+        "IELTS and MOI Certificate",
         "Motivation Letter / SOP",
-        "Europass CV"
+        "Europass CV",
+        "2 LORs"
     ];
 
     const mastersDocs = [
-        "Bachelor's Transcripts",
-        "10th & 12th Mark Sheets",
+        "Bachelor's Degree and Transcripts",
+        "10th, 11th & 12th Mark Sheets",
         "Valid Passport",
-        "MOI Certificate",
+        "IELTS and MOI Certificate",
         "Motivation Letter / SOP",
-        "2 LORs",
-        "Europass CV"
+        "Europass CV",
+        "2 LORs"
     ];
 
     const studyLevels = [
@@ -120,10 +123,10 @@ const ItalyStudyPage = () => {
             checkedInput: "checked:bg-blue-500 checked:border-blue-500",
             eligibility: [
                 "12 years of formal education.",
-                "Minimum 60% aggregate.",
-                "IELTS waived if MOI was English."
+                "Minimum 65% and above.",
+                "With or without IELTS."
             ],
-            exam: "Many programs require the TOLC exam for Engineering, Economics, etc.",
+            exam: "Many programs require the CEnT-S or SAT exam for Engineering, Economics, etc.",
             docs: bachelorsDocs
         },
         {
@@ -139,10 +142,10 @@ const ItalyStudyPage = () => {
             checkedInput: "checked:bg-emerald-500 checked:border-emerald-500",
             eligibility: [
                 "Bachelor's degree (3 or 4 yrs).",
-                "Minimum CGPA of 6.5+.",
-                "IELTS waived if degree in English."
+                "Minimum 70% and above.",
+                "With or without IELTS."
             ],
-            exam: "Based on academic profile, SOP, and LORs. Interview may be required.",
+            exam: "Based on academic profile, Portfolio and Interview (if required)",
             docs: mastersDocs
         },
         {
@@ -158,7 +161,7 @@ const ItalyStudyPage = () => {
             checkedInput: "checked:bg-accent-gold checked:border-accent-gold",
             eligibility: [
                 "10+2 with Science (PCB).",
-                "Minimum 60% aggregate.",
+                "Minimum 65% and above.",
                 "Age 17+ by Dec 2025."
             ],
             exam: "Must clear the IMAT (mandatory for public medical universities).",
@@ -217,7 +220,7 @@ const ItalyStudyPage = () => {
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto md:mt-0">
-                                <button 
+                                <button
                                     onClick={() => setModalOpen('signup')}
                                     className="w-full sm:w-auto group relative px-8 py-4 md:px-10 md:py-5 bg-white text-[#0a0d18] rounded-full font-black tracking-widest text-[11px] md:text-[13px] overflow-hidden shadow-[0_20px_50px_-10px_rgba(255,255,255,0.2)]"
                                 >
@@ -479,7 +482,10 @@ const ItalyStudyPage = () => {
                                             </div>
 
                                             {/* Check Eligibility Button */}
-                                            <button className={`w-full py-4 rounded-2xl bg-white/5 border ${level.borderBox} hover:${level.checkedBg} transition-all duration-300 group/btn`}>
+                                            <button 
+                                                onClick={() => setEligibilityModalLevel(level.id)}
+                                                className={`w-full py-4 rounded-2xl bg-white/5 border ${level.borderBox} hover:${level.checkedBg} transition-all duration-300 group/btn`}
+                                            >
                                                 <span className={`text-[10px] font-black tracking-[0.2em] ${level.themeColor} flex items-center justify-center gap-2 uppercase`}>
                                                     Check Eligibility
                                                     <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
@@ -531,15 +537,15 @@ const ItalyStudyPage = () => {
                                     </motion.div>
                                 ))}
                             </div>
-                            
+
                             {/* Call to Action Button */}
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 className="flex justify-center mt-20 relative z-10"
                             >
-                                <button 
+                                <button
                                     onClick={() => setModalOpen('signup')}
                                     className="group relative px-10 py-5 bg-gradient-to-r from-accent-gold to-yellow-500 rounded-full text-primary-blue text-sm font-black uppercase tracking-[0.2em] hover:shadow-[0_0_40px_rgba(250,204,21,0.5)] transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
                                 >
@@ -556,6 +562,19 @@ const ItalyStudyPage = () => {
             <AnimatePresence>
                 {modalOpen && (
                     <AuthModal type={modalOpen} onClose={() => setModalOpen(null)} />
+                )}
+                {eligibilityModalLevel && (
+                    <EligibilityModal 
+                        level={eligibilityModalLevel} 
+                        onClose={() => setEligibilityModalLevel(null)} 
+                        onEligibleAction={() => {
+                            setEligibilityModalLevel(null);
+                            setModalOpen('signup');
+                        }}
+                        onNotEligibleAction={() => {
+                            window.location.href = '/contact';
+                        }}
+                    />
                 )}
             </AnimatePresence>
             <MinimalFooter />

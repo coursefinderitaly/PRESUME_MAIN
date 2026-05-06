@@ -6,58 +6,70 @@ const FeesTable = () => {
     const [coupon, setCoupon] = useState('');
     const [applied, setApplied] = useState(false);
     const [error, setError] = useState('');
+    const [selectedLevel, setSelectedLevel] = useState('Bachelors');
+
+    const pricing = {
+        'Bachelors': [30000, 15000, 40000, 35000],
+        'Masters': [30000, 15000, 40000, 35000],
+        'MBBS': [50000, 25000, 65000, 60000]
+    };
+
+    const currentPhases = pricing[selectedLevel];
+    const totalFee = currentPhases.reduce((a, b) => a + b, 0);
+    const discountedTotal = 60000; // Fixed discounted total as per request
 
     const feeStructure = [
         {
             title: "Admission Process",
-            price: "₹ 30,000",
+            price: `₹ ${currentPhases[0].toLocaleString('en-IN')}`,
             icon: <FileText className="text-cyan-400" size={18} />,
             color: "from-cyan-500/10 to-blue-500/10 hover:border-cyan-400/40",
             glow: "bg-cyan-500/10",
             items: [
                 "Assessment of profile",
-                "Universities shortlisting",
-                "Format of recommendation letters",
-                "English proficiency & motivation letter support",
-                "Applications to top universities"
+                "Full assistentace for profile building",
+                "Require Documents sample will be provided",
+                "Top universities Shortlisting"
             ]
         },
         {
-            title: "Pre-Enrollment Process",
-            price: "₹ 30,000",
-            icon: <Compass className="text-indigo-400" size={18} />,
+            title: "After Admission",
+            price: `₹ ${currentPhases[1].toLocaleString('en-IN')}`,
+            icon: <CheckCircle2 className="text-indigo-400" size={18} />,
             color: "from-indigo-500/10 to-purple-500/10 hover:border-indigo-400/40",
             glow: "bg-indigo-500/10",
             items: [
                 "University Acceptance Letter",
+                "Interview Guidence",
+                "Pre Enrollment Assistance",
+                "Documents Verification"
+            ]
+        },
+        {
+            title: "Pre-enrollment & Scholarship Docs",
+            price: `₹ ${currentPhases[2].toLocaleString('en-IN')}`,
+            icon: <Compass className="text-yellow-400" size={18} />,
+            color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
+            glow: "bg-yellow-500/10",
+            items: [
                 "HRD attestation assistance",
                 "Apostille, translation & legalization",
                 "Courier charges",
                 "Pre-enrollment filing",
-                "DOV process assistance"
+                "DOV process assistance",
+                "Financial Guidence"
             ]
         },
         {
-            title: "Scholarship Process",
-            price: "₹ 30,000",
-            icon: <Award className="text-yellow-400" size={18} />,
-            color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
-            glow: "bg-yellow-500/10",
-            items: [
-                "Scholarship application & submission",
-                "Apostille, translation & legalization",
-                "Courier charges"
-            ]
-        },
-        {
-            title: "VISA Process",
-            price: "₹ 30,000",
+            title: "Scholarship application + Visa process",
+            price: `₹ ${currentPhases[3].toLocaleString('en-IN')}`,
             icon: <ShieldCheck className="text-emerald-400" size={18} />,
             color: "from-emerald-500/10 to-teal-500/10 hover:border-emerald-400/40",
             glow: "bg-emerald-500/10",
             items: [
+                "Scholarship application & submission",
                 "Visa application assistance",
-                "Sponsor & cover letter filling",
+                "Visa/Scholarship Documents Assistence",
                 "1-year travel insurance & itinerary",
                 "Accommodation proof assistance",
                 "Mock interview prep"
@@ -65,90 +77,179 @@ const FeesTable = () => {
         }
     ];
 
+    const currentPricing = { total: totalFee, phase: currentPhases[0] };
+
     return (
         <div className="relative z-20 w-full max-w-6xl mx-auto my-8 px-4 select-none">
-            {/* Header / Intro */}
-            <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="mb-8"
-            >
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/10 text-accent-gold text-[10px] font-black uppercase tracking-[0.2em] backdrop-blur-md mb-3">
-                    <Wallet size={12} className="text-accent-gold" /> Fee Structure
+            {/* Header / Intro & Level Switcher grouped together (Centered) */}
+            <div className="flex flex-col items-center text-center gap-8 mb-12">
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                >
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/10 text-accent-gold text-[10px] font-black uppercase tracking-[0.2em] backdrop-blur-md mb-3">
+                        <Wallet size={12} className="text-accent-gold" /> Fee Structure
+                    </div>
+                    <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none mb-1">
+                        Our Total Fee: {applied ? (
+                            <><span className="line-through text-white/30 text-2xl md:text-4xl mr-3">₹ {currentPricing.total.toLocaleString('en-IN')}</span><span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">₹ {discountedTotal.toLocaleString('en-IN')}</span></>
+                        ) : (
+                            <span className="bg-gradient-to-r from-accent-gold via-amber-300 to-yellow-500 bg-clip-text text-transparent">₹ {currentPricing.total.toLocaleString('en-IN')}</span>
+                        )}
+                    </h2>
+                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
+                        {applied ? 'Flash Offer: Specialized Combined Packages' : 'Perfectly divided among 4 phases'}
+                    </p>
+                </motion.div>
+
+                {/* Level Switcher (Now below and centered) */}
+                <div className="flex flex-wrap justify-center gap-3">
+                    {['Bachelors', 'Masters', 'MBBS'].map((level) => (
+                        <button
+                            key={level}
+                            onClick={() => setSelectedLevel(level)}
+                            className={`px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 border-2 ${selectedLevel === level
+                                ? 'bg-accent-gold border-accent-gold text-black shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] scale-105'
+                                : 'bg-white/[0.05] border-white/10 text-white/60 hover:border-white/30 hover:text-white hover:bg-white/10'
+                                }`}
+                        >
+                            {level}
+                        </button>
+                    ))}
                 </div>
-                <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none mb-1">
-                    Our Total Fee: {applied ? (
-                        <><span className="line-through text-white/30 text-2xl md:text-4xl mr-3">₹ 1,20,000</span><span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">₹ 60,000</span></>
-                    ) : (
-                        <span className="bg-gradient-to-r from-accent-gold via-amber-300 to-yellow-500 bg-clip-text text-transparent">₹ 1,20,000</span>
-                    )}
-                </h2>
-                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
-                    Perfectly divided among 4 phases
-                </p>
-            </motion.div>
+            </div>
 
             {/* Two Column Side-By-Side Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-                {/* Left Column (2/3 width): 4 Phase Cards */}
+                {/* Left Column (2/3 width): 4 Phase Cards OR Two Merged Cards */}
                 <div className="lg:col-span-2 flex flex-col gap-4">
-                    {feeStructure.map((item, idx) => (
-                        <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, x: -10 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.05 }}
-                            className={`group relative p-6 rounded-3xl bg-gradient-to-br ${item.color} backdrop-blur-2xl border border-white/5 hover:border-white/20 transition-all duration-300 overflow-hidden shadow-xl flex flex-col gap-5 cursor-default select-none h-full`}
-                        >
-                            {/* Dynamic Aura */}
-                            <div className={`absolute top-0 right-0 w-48 h-48 ${item.glow} rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
-
-                            {/* Phase Number, Icon, Title & Price */}
-                            <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-black/60 border border-white/10 rounded-2xl flex items-center justify-center font-black text-sm text-accent-gold group-hover:scale-105 group-hover:border-white/20 transition-all shrink-0">
-                                        0{idx + 1}
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-black/40 border border-white/5 rounded-xl flex items-center justify-center shrink-0">
-                                            {item.icon}
+                    {applied ? (
+                        <>
+                            {/* Card 1: Admission + After Admission */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="group relative p-6 rounded-[32px] bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-indigo-500/10 backdrop-blur-3xl border border-cyan-500/30 overflow-hidden shadow-xl flex flex-col gap-5"
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/15 rounded-full blur-[60px] -mr-16 -mt-16" />
+                                <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-11 h-11 bg-cyan-500 text-black rounded-xl flex items-center justify-center font-black shadow-[0_0_15px_rgba(6,182,212,0.3)] shrink-0">
+                                            <FileText size={22} />
                                         </div>
                                         <div>
-                                            <p className="text-accent-gold text-[10px] font-black uppercase tracking-wider mb-0.5">Phase 0{idx + 1}</p>
-                                            <h3 className="text-xl font-black text-white group-hover:text-white transition-colors tracking-tight leading-tight">{item.title}</h3>
+                                            <h3 className="text-lg font-black text-white tracking-tight">Admission + After Admission</h3>
+                                            <p className="text-cyan-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 01 & 02 Combined</p>
+                                        </div>
+                                    </div>
+                                    <div className="shrink-0">
+                                        <div className="px-5 py-2 rounded-xl bg-black/60 border border-cyan-500/30 text-center">
+                                            <span className="text-xl font-black text-white tracking-tighter">₹ 30,000</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="shrink-0 w-full sm:w-auto">
-                                    {applied && idx < 2 ? (
-                                        <span className="px-5 py-2.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-sm font-black text-emerald-400 tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] block text-center min-w-[110px]">
-                                            <span className="line-through text-emerald-200/40 mr-2">{item.price}</span> WAIVED
-                                        </span>
-                                    ) : (
-                                        <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
-                                            {item.price}
-                                        </span>
-                                    )}
+                                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
+                                    {[...feeStructure[0].items, ...feeStructure[1].items].map((item, i) => (
+                                        <div key={i} className="flex items-start gap-2.5">
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 mt-1 shrink-0" />
+                                            <span className="text-xs text-gray-300 font-medium leading-relaxed">{item}</span>
+                                        </div>
+                                    ))}
                                 </div>
-                            </div>
+                            </motion.div>
 
-                            {/* Divider line inside card */}
-                            <div className="h-px bg-gradient-to-r from-white/10 via-transparent to-transparent" />
-
-                            {/* Deliverables checklist inside card */}
-                            <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 md:px-2">
-                                {item.items.map((lineItem, lIdx) => (
-                                    <div key={lIdx} className={`flex items-start gap-2 shrink-0 ${applied && idx < 2 ? 'opacity-40' : ''}`}>
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 opacity-90 group-hover:scale-110 transition-transform shrink-0" />
-                                        <span className={`text-sm text-gray-300 transition-colors font-medium leading-relaxed ${applied && idx < 2 ? 'line-through' : 'group-hover:text-gray-100'}`}>{lineItem}</span>
+                            {/* Card 2: Pre-enrollment & Scholarship Docs + Scholarship application & Visa process */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="group relative p-6 rounded-[32px] bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-cyan-500/10 backdrop-blur-3xl border border-emerald-500/30 overflow-hidden shadow-xl flex flex-col gap-5"
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/15 rounded-full blur-[60px] -mr-16 -mt-16" />
+                                <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-11 h-11 bg-emerald-500 text-black rounded-xl flex items-center justify-center font-black shadow-[0_0_15px_rgba(16,185,129,0.3)] shrink-0">
+                                            <Compass size={22} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-black text-white tracking-tight">Pre-enrollment, Scholarship & Visa</h3>
+                                            <p className="text-emerald-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 03 & 04 Combined</p>
+                                        </div>
                                     </div>
-                                ))}
-                            </div>
-                        </motion.div>
-                    ))}
+                                    <div className="shrink-0">
+                                        <div className="px-5 py-2 rounded-xl bg-black/60 border border-emerald-500/30 text-center">
+                                            <span className="text-xl font-black text-white tracking-tighter">₹ 30,000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
+                                    {[...feeStructure[2].items, ...feeStructure[3].items].map((item, i) => (
+                                        <div key={i} className="flex items-start gap-2.5">
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 mt-1 shrink-0" />
+                                            <span className="text-xs text-gray-300 font-medium leading-relaxed">{item}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        </>
+                    ) : (
+                        feeStructure.map((item, idx) => (
+                            <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, x: -10 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.05 }}
+                                className={`group relative p-6 rounded-3xl bg-gradient-to-br ${item.color} backdrop-blur-2xl border border-white/5 hover:border-white/20 transition-all duration-300 overflow-hidden shadow-xl flex flex-col gap-5 cursor-default select-none h-full`}
+                            >
+                                {/* Dynamic Aura */}
+                                <div className={`absolute top-0 right-0 w-48 h-48 ${item.glow} rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+
+                                {/* Phase Number, Icon, Title & Price */}
+                                <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-black/60 border border-white/10 rounded-2xl flex items-center justify-center font-black text-sm text-accent-gold group-hover:scale-105 group-hover:border-white/20 transition-all shrink-0">
+                                            0{idx + 1}
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-black/40 border border-white/5 rounded-xl flex items-center justify-center shrink-0">
+                                                {item.icon}
+                                            </div>
+                                            <div>
+                                                <p className="text-accent-gold text-[10px] font-black uppercase tracking-wider mb-0.5">Phase 0{idx + 1}</p>
+                                                <h3 className="text-xl font-black text-white group-hover:text-white transition-colors tracking-tight leading-tight">{item.title}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="shrink-0 w-full sm:w-auto">
+                                        {applied && idx < 2 ? (
+                                            <span className="px-5 py-2.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-sm font-black text-emerald-400 tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] block text-center min-w-[110px]">
+                                                <span className="line-through text-emerald-200/40 mr-2">{item.price}</span> WAIVED
+                                            </span>
+                                        ) : (
+                                            <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
+                                                {item.price}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Divider line inside card */}
+                                <div className="h-px bg-gradient-to-r from-white/10 via-transparent to-transparent" />
+
+                                {/* Deliverables checklist inside card */}
+                                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 md:px-2">
+                                    {item.items.map((lineItem, lIdx) => (
+                                        <div key={lIdx} className={`flex items-start gap-2 shrink-0 ${applied && idx < 2 ? 'opacity-40' : ''}`}>
+                                            <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 opacity-90 group-hover:scale-110 transition-transform shrink-0" />
+                                            <span className={`text-sm text-gray-300 transition-colors font-medium leading-relaxed ${applied && idx < 2 ? 'line-through' : 'group-hover:text-gray-100'}`}>{lineItem}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )))}
                 </div>
 
                 {/* Right Column (1/3 width): Total Fee Card & Coupon Apply Card */}
@@ -184,7 +285,7 @@ const FeesTable = () => {
                         {/* Total per Phase Cost */}
                         <div className="flex items-center justify-between gap-2 bg-white/[0.02] border border-white/10 px-5 py-4 rounded-2xl backdrop-blur-md mt-2">
                             <span className="text-[10px] font-black uppercase tracking-wider text-white/40">Phase Payment:</span>
-                            <span className="text-lg font-black text-white tracking-wider">₹ 30,000 <span className="text-accent-gold text-sm font-bold">/ Phase</span></span>
+                            <span className="text-lg font-black text-white tracking-wider">₹ {currentPricing.phase.toLocaleString('en-IN')} <span className="text-accent-gold text-sm font-bold">/ Phase</span></span>
                         </div>
 
                         {/* Coupon Apply */}
@@ -196,13 +297,21 @@ const FeesTable = () => {
                                 type="text"
                                 placeholder="COUPON CODE"
                                 value={coupon}
+                                readOnly={applied}
                                 onChange={(e) => setCoupon(e.target.value.toUpperCase())}
-                                className="bg-transparent border-none outline-none text-white text-xs font-black placeholder-white/30 tracking-widest w-full px-1"
+                                className={`bg-transparent border-none outline-none text-white text-xs font-black placeholder-white/30 tracking-widest w-full px-1 ${applied ? 'opacity-50 cursor-not-allowed' : ''}`}
                             />
                             <button
                                 onClick={() => {
+                                    if (applied) {
+                                        setApplied(false);
+                                        setCoupon('');
+                                        setError('');
+                                        return;
+                                    }
                                     if (!coupon.trim()) return;
-                                    if (coupon.toUpperCase() === 'PRESUME') {
+                                    const code = coupon.toUpperCase();
+                                    if (code === 'PRESUME' || code === 'NEET') {
                                         setApplied(true);
                                         setError('');
                                     } else {
@@ -210,9 +319,9 @@ const FeesTable = () => {
                                         setError('Invalid discount code');
                                     }
                                 }}
-                                className={`px-4 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all duration-300 shadow-md shrink-0 ${applied ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 cursor-default' : 'bg-accent-gold text-primary-blue hover:bg-yellow-400'}`}
+                                className={`px-4 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all duration-300 shadow-md shrink-0 ${applied ? 'bg-rose-500/20 border border-rose-500/40 text-rose-400 hover:bg-rose-500 hover:text-white' : 'bg-accent-gold text-primary-blue hover:bg-yellow-400'}`}
                             >
-                                {applied ? 'Applied' : 'Apply'}
+                                {applied ? 'Remove' : 'Apply'}
                             </button>
                         </div>
                         {applied && (
@@ -239,11 +348,7 @@ const FeesTable = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <CheckCircle2 className="w-3.5 h-3.5 text-accent-gold" />
-                                    <span className="text-xs font-medium text-gray-300">Dedicated Personal Mentorship</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-accent-gold" />
-                                    <span className="text-xs font-medium text-gray-300">24/7 Priority Admissions Care</span>
+                                    <span className="text-xs font-medium text-gray-300">Flight/Insurance Booking</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <CheckCircle2 className="w-3.5 h-3.5 text-accent-gold" />

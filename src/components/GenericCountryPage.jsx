@@ -27,16 +27,17 @@ const GenericCountryPage = ({ countryId }) => {
 
     return (
         <div className="min-h-screen flex flex-col bg-[#0a0d18] text-white font-sans overflow-x-hidden relative">
-            {/* Blurred Background (Video or Image) */}
+            {/* Blurred Video Background */}
             <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none">
                 <div className="absolute inset-0">
                     {data.videoSrc ? (
                         <video
+                            key={data.videoSrc}
                             autoPlay
                             loop
                             muted
                             playsInline
-                            className="w-full h-full object-cover blur-[4px] opacity-40 scale-105"
+                            className="w-full h-full object-cover blur-[4px] opacity-40 scale-105 will-change-[transform,filter] transform-gpu"
                         >
                             <source src={data.videoSrc} type="video/mp4" />
                         </video>
@@ -44,11 +45,11 @@ const GenericCountryPage = ({ countryId }) => {
                         <img
                             src={`/uni/bologna.jpg`}
                             alt="Background"
-                            className="w-full h-full object-cover blur-[8px] opacity-20 scale-105 grayscale"
+                            className="w-full h-full object-cover blur-[8px] opacity-20 scale-105 grayscale will-change-[transform,filter] transform-gpu"
                         />
                     )}
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0d18] via-[#0a0d18]/80 to-transparent z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0d18] via-[#0a0d18]/70 to-transparent z-10"></div>
             </div>
 
             <Header />
@@ -109,9 +110,9 @@ const GenericCountryPage = ({ countryId }) => {
                                 <motion.div
                                     animate={{ y: [-12, 12, -12], rotateX: [0, 5, 0], rotateY: [0, -5, 0] }}
                                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute p-10 rounded-[40px] bg-gradient-to-br from-[#0a0d18]/95 to-yellow-900/40 backdrop-blur-[60px] border border-accent-gold/30 shadow-[0_40px_100px_rgba(0,0,0,0.6)] flex items-center gap-8 z-50"
+                                    className="absolute p-10 rounded-[40px] bg-gradient-to-br from-[#0a0d18]/95 to-yellow-900/40 backdrop-blur-[60px] border border-accent-gold/30 shadow-[0_40px_100px_rgba(0,0,0,0.6)] flex items-center gap-8 z-50 transform translate-z-20 will-change-[transform,filter] transform-gpu"
                                 >
-                                    <div className="w-20 h-20 rounded-[24px] bg-accent-gold/20 flex items-center justify-center border border-accent-gold/30">
+                                    <div className="w-20 h-20 rounded-[24px] bg-accent-gold/20 flex items-center justify-center border border-accent-gold/30 shadow-[0_0_30px_rgba(197,168,128,0.2)]">
                                         {data.currencyIcon}
                                     </div>
                                     <div>
@@ -119,6 +120,68 @@ const GenericCountryPage = ({ countryId }) => {
                                         <div className="text-xs uppercase tracking-[0.3em] text-accent-gold font-bold">{data.currencyText}</div>
                                     </div>
                                 </motion.div>
+
+                                {/* Top Left */}
+                                {data.floatingCards?.[0] && (
+                                <motion.div
+                                    animate={{ y: [-15, 10, -15], x: [-10, 5, -10], rotateZ: [-3, 3, -3] }}
+                                    transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                                    className="absolute top-[10%] left-[0%] px-6 py-4 rounded-full bg-blue-500/10 backdrop-blur-[40px] border border-blue-500/30 shadow-2xl flex items-center gap-3 z-30 will-change-[transform,filter] transform-gpu"
+                                >
+                                    <div className="text-blue-400 [&>svg]:w-4 [&>svg]:h-4">
+                                        {data.floatingCards[0].icon}
+                                    </div>
+                                    <div className="text-xs font-black text-white uppercase tracking-widest">{data.floatingCards[0].title}</div>
+                                </motion.div>
+                                )}
+
+                                {/* Top Right */}
+                                {data.floatingCards?.[1] && (
+                                <motion.div
+                                    animate={{ y: [15, -10, 15], x: [10, -5, 10], rotateZ: [3, -3, 3] }}
+                                    transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                    className="absolute top-[18%] right-[0%] px-7 py-5 rounded-[30px] bg-white/5 backdrop-blur-[40px] border border-white/10 shadow-2xl flex items-center gap-4 z-40 will-change-[transform,filter] transform-gpu"
+                                >
+                                    <div className="w-10 h-10 rounded-full bg-accent-gold/20 flex items-center justify-center text-accent-gold [&>svg]:w-5 [&>svg]:h-5">
+                                        {data.floatingCards[1].icon}
+                                    </div>
+                                    <div>
+                                        <div className="text-base font-black text-white">{data.floatingCards[1].title}</div>
+                                        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{data.floatingCards[1].subtitle}</div>
+                                    </div>
+                                </motion.div>
+                                )}
+
+                                {/* Bottom Left */}
+                                {data.floatingCards?.[2] && (
+                                <motion.div
+                                    animate={{ y: [-20, 15, -20], x: [-5, 10, -5], rotateY: [-10, 10, -10] }}
+                                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                                    className="absolute bottom-[12%] left-[2%] p-7 rounded-[35px] bg-white/5 backdrop-blur-[40px] border border-emerald-500/20 shadow-2xl flex items-center gap-6 z-40"
+                                >
+                                    <div className="w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 [&>svg]:w-7 [&>svg]:h-7">
+                                        {data.floatingCards[2].icon}
+                                    </div>
+                                    <div>
+                                        <div className="text-2xl font-black text-white tracking-tighter">{data.floatingCards[2].title}</div>
+                                        <div className="text-[11px] uppercase tracking-widest text-emerald-400 font-bold mt-1">{data.floatingCards[2].subtitle}</div>
+                                    </div>
+                                </motion.div>
+                                )}
+
+                                {/* Bottom Right */}
+                                {data.floatingCards?.[3] && (
+                                <motion.div
+                                    animate={{ y: [20, -15, 20], x: [10, -5, 10], rotateX: [10, -10, 10] }}
+                                    transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+                                    className="absolute bottom-[20%] right-[-8%] px-8 py-5 rounded-[30px] bg-indigo-500/10 backdrop-blur-[40px] border border-indigo-500/30 shadow-2xl flex items-center gap-5 z-30"
+                                >
+                                    <div className="text-indigo-400 [&>svg]:w-7 [&>svg]:h-7">
+                                        {data.floatingCards[3].icon}
+                                    </div>
+                                    <div className="text-[13px] font-bold text-white uppercase tracking-wider leading-tight">{data.floatingCards[3].title}<br />{data.floatingCards[3].subtitle}</div>
+                                </motion.div>
+                                )}
                             </div>
                         </motion.div>
                     </div>
