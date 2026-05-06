@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Landmark, Sparkles, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
 import { Header } from './Header';
 import MinimalFooter from './MinimalFooter';
 import FeesTable from './FeesTable';
+import AuthModal from './AuthModal';
+import EligibilityModal from './EligibilityModal';
 import { countryData } from '../data/countryData';
 
 const GenericCountryPage = ({ countryId }) => {
@@ -12,6 +14,8 @@ const GenericCountryPage = ({ countryId }) => {
 
     // State for interactive document checklist
     const [checkedDocs, setCheckedDocs] = useState({});
+    const [modalOpen, setModalOpen] = useState(null);
+    const [eligibilityModalLevel, setEligibilityModalLevel] = useState(null);
 
     if (!data) {
         return <Navigate to="/" />;
@@ -322,7 +326,10 @@ const GenericCountryPage = ({ countryId }) => {
                                                 </div>
 
                                                 {/* Check Eligibility Button */}
-                                                <button className={`w-full py-4 rounded-2xl bg-white/5 border ${level.borderBox} hover:${level.checkedBg} transition-all duration-300 group/btn`}>
+                                                <button 
+                                                    onClick={() => setEligibilityModalLevel(level.id)}
+                                                    className={`w-full py-4 rounded-2xl bg-white/5 border ${level.borderBox} hover:${level.checkedBg} transition-all duration-300 group/btn`}
+                                                >
                                                     <span className={`text-[10px] font-black tracking-[0.2em] ${level.themeColor} flex items-center justify-center gap-2 uppercase`}>
                                                         Check Eligibility 
                                                         <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
@@ -406,6 +413,26 @@ const GenericCountryPage = ({ countryId }) => {
 
                 </div>
             </main>
+            
+            <AnimatePresence>
+                {modalOpen && (
+                    <AuthModal type={modalOpen} onClose={() => setModalOpen(null)} />
+                )}
+                {eligibilityModalLevel && (
+                    <EligibilityModal 
+                        level={eligibilityModalLevel} 
+                        onClose={() => setEligibilityModalLevel(null)} 
+                        onEligibleAction={() => {
+                            setEligibilityModalLevel(null);
+                            setModalOpen('signup');
+                        }}
+                        onNotEligibleAction={() => {
+                            window.location.href = '/contact';
+                        }}
+                    />
+                )}
+            </AnimatePresence>
+
             <MinimalFooter />
         </div>
     );
