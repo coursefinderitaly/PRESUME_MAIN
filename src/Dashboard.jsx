@@ -307,6 +307,8 @@ const Dashboard = () => {
       <div className="dash-universe">
         <div className="dash-bg">
           <div className="dash-grid"></div>
+          <div className="dash-particles"></div>
+          <div className="dash-blob"></div>
         </div>
 
       <div className="dash-container">
@@ -443,12 +445,12 @@ const Dashboard = () => {
             </button>
           </div>
 
-          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px' }}>
-            <div className="sidebar-user" style={{ opacity: !isSidebarOpen ? 0 : 1, overflow: 'hidden', whiteSpace: 'nowrap', transition: 'opacity 0.2s', padding: !isSidebarOpen ? 0 : '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div className="avatar" style={{ minWidth: '32px', width: '32px', height: '32px', fontSize: '1rem' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
+          <div className="sidebar-footer" style={{ marginTop: '10px', opacity: !isSidebarOpen ? 0 : 1, transition: 'opacity 0.2s' }}>
+            <div className="sidebar-user">
+              <div className="avatar">{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
               <div className="user-info">
-                <span className="name" style={{ fontSize: '0.85rem' }}>{profile.firstName} {profile.lastName || ''}</span>
-                <span className="role" style={{ fontSize: '0.7rem' }}>{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'}</span>
+                <span className="name">{profile.firstName} {profile.lastName || ''}</span>
+                <span className="role">{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'}</span>
               </div>
             </div>
           </div>
