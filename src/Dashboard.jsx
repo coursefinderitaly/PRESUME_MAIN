@@ -487,10 +487,24 @@ const Dashboard = () => {
 
           {/* STUDENT GLOBAL PROGRESS TRACKER (COMPACT PILL) */}
           {isStudent && (() => {
-            let p = 25;
-            if (profile?.firstName && profile?.phone) p = 45;
-            if (profile?.passportNumber || profile?.documents?.length > 0) p = 75;
-            if (profile?.applicationStatus === 'submitted' || profile?.applicationStatus === 'approved') p = 100;
+            const fields = [
+              'firstName', 'lastName', 'email', 'phone', 'dob', 'gender',
+              'nationality', 'passportNo', 'issueDate', 'expiryDate',
+              'mailingAddress1', 'mailingCity', 'mailingState', 'mailingPincode',
+              'highestLevelOfEducation'
+            ];
+            
+            let points = 0;
+            fields.forEach(f => { if (profile?.[f]) points++; });
+            
+            // Special checks for arrays and nested objects
+            if (profile?.documents?.length > 0) points++;
+            if (profile?.appliedUniversities?.length > 0) points++;
+            if (profile?.secondaryEducation) points++;
+            if (profile?.graduation) points++;
+            if (profile?.applicationStatus === 'submitted' || profile?.applicationStatus === 'approved') points++;
+
+            const p = Math.round((points / 20) * 100);
 
             return (
               <div style={{ padding: '15px 1.5rem 0', animation: 'fadeUp 0.5s ease', zIndex: 10, position: 'relative' }}>
