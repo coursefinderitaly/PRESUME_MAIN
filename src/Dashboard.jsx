@@ -21,7 +21,6 @@ import AppliedUniversities from './components/AppliedUniversities';
 import PartnerApplications from './components/PartnerApplications';
 import StudentDocuments from './components/StudentDocuments';
 import { API_BASE_URL } from './config';
-import { AIPetMascot } from './components/AIPetMascot';
 
 const DesignerTag = ({ isSidebarOpen }) => {
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -308,8 +307,6 @@ const Dashboard = () => {
       <div className="dash-universe">
         <div className="dash-bg">
           <div className="dash-grid"></div>
-          <div className="dash-particles"></div>
-          <div className="dash-blob"></div>
         </div>
 
       <div className="dash-container">
@@ -419,11 +416,34 @@ const Dashboard = () => {
               </>
             )}
 
-            <div className="nav-divider"></div>
-
           </nav>
 
-          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px', marginTop: 'auto' }}>
+          <div style={{ marginTop: 'auto', padding: '10px 0' }}>
+            <button
+              onClick={handleLogout}
+              className="nav-item logout-btn"
+              style={{ 
+                color: '#ef4444', 
+                background: 'rgba(239, 68, 68, 0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '12px 14px',
+                width: '100%',
+                border: 'none',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                justifyContent: !isSidebarOpen ? 'center' : 'flex-start'
+              }}
+            >
+              <LogOut size={18} style={{ minWidth: '18px' }} />
+              <span style={{ opacity: !isSidebarOpen ? 0 : 1, width: !isSidebarOpen ? 0 : 'auto', transition: 'opacity 0.2s' }}>Secure Logout</span>
+            </button>
+          </div>
+
+          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '15px' }}>
             <div className="sidebar-user" style={{ opacity: !isSidebarOpen ? 0 : 1, overflow: 'hidden', whiteSpace: 'nowrap', transition: 'opacity 0.2s', padding: !isSidebarOpen ? 0 : '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div className="avatar" style={{ minWidth: '32px', width: '32px', height: '32px', fontSize: '1rem' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
               <div className="user-info">
@@ -462,26 +482,33 @@ const Dashboard = () => {
                 <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>
               </div>
 
-              <button 
-                onClick={handleLogout}
-                style={{ 
-                  background: 'rgba(239, 68, 68, 0.1)', 
-                  color: '#ef4444', 
-                  border: '1px solid rgba(239, 68, 68, 0.2)', 
-                  padding: '6px 12px', 
-                  borderRadius: '8px', 
-                  cursor: 'pointer', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '8px',
-                  fontSize: '0.85rem',
-                  fontWeight: '600'
-                }}
-              >
-                <LogOut size={16} /> Logout
-              </button>
             </div>
           </div>
+
+          {/* STUDENT GLOBAL PROGRESS TRACKER (COMPACT PILL) */}
+          {isStudent && (() => {
+            let p = 25;
+            if (profile?.firstName && profile?.phone) p = 45;
+            if (profile?.passportNumber || profile?.documents?.length > 0) p = 75;
+            if (profile?.applicationStatus === 'submitted' || profile?.applicationStatus === 'approved') p = 100;
+
+            return (
+              <div style={{ padding: '15px 1.5rem 0', animation: 'fadeUp 0.5s ease', zIndex: 10, position: 'relative' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', background: 'var(--card-bg-solid)', backdropFilter: 'blur(36px) saturate(180%)', WebkitBackdropFilter: 'blur(36px) saturate(180%)', border: '1px solid var(--glass-border)', borderRadius: '30px', padding: '12px 25px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
+                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: '0.5px' }}><CheckSquare size={14} style={{ display: 'inline', marginRight: '6px', verticalAlign: '-2px' }}/>App Progress</div>
+                  <div style={{ flex: 1, position: 'relative', height: '6px', background: 'color-mix(in srgb, var(--glass-border) 60%, transparent)', borderRadius: '10px', overflow: 'hidden' }}>
+                    <div style={{ 
+                      position: 'absolute', top: 0, left: 0, height: '100%', width: `${p}%`, 
+                      background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))', 
+                      borderRadius: '10px', transition: 'width 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                      boxShadow: '0 0 10px var(--accent-primary)'
+                    }}></div>
+                  </div>
+                  <div style={{ fontWeight: 900, fontSize: '0.9rem', color: 'var(--accent-primary)', whiteSpace: 'nowrap' }}>{p}%</div>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* COMMON HEADER LOGIC */}
           {activeTab === 'profile' && (
@@ -1163,8 +1190,6 @@ const Dashboard = () => {
         </div>
       )}
       </div>
-
-      <AIPetMascot position="portal" />
     </>
   );
 };

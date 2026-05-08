@@ -1,123 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Clock, FileText, Users, AlertTriangle } from 'lucide-react';
-
-const IMPORTANT_NOTIFICATIONS = [
-  {
-    icon: '🔐',
-    title: 'Account Security',
-    message: 'Your portal account is protected. Never share your login credentials with anyone, including support staff.',
-  },
-  {
-    icon: '📋',
-    title: 'Application Processing Times',
-    message: 'All submitted applications are currently being processed. Allow up to 48 business hours for status updates.',
-  },
-  {
-    icon: '📄',
-    title: 'Document Submission',
-    message: 'Ensure all uploaded documents are clear, valid, and not expired. Incomplete submissions may cause delays.',
-  },
-  {
-    icon: '🌐',
-    title: 'University Intake Deadlines',
-    message: 'September 2026 intake deadlines are approaching. Please finalise course selections and documents promptly.',
-  },
-];
-
-const ImportantNotifications = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex(prev => (prev + 1) % IMPORTANT_NOTIFICATIONS.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const note = IMPORTANT_NOTIFICATIONS[activeIndex];
-
-  return (
-    <>
-      <style>{`
-        @keyframes gradientShift {
-          0%   { background-position: 0% 50%; }
-          50%  { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        @keyframes noteFade {
-          0%   { opacity: 0; transform: translateY(6px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        .imp-notif-wrap {
-          position: relative;
-          padding: 3px;
-          border-radius: 16px;
-          background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
-          background-size: 300% 300%;
-          animation: gradientShift 5s ease infinite;
-        }
-        .imp-notif-inner {
-          background: var(--bg-secondary);
-          border-radius: 13px;
-          padding: 24px;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          box-sizing: border-box;
-        }
-      `}</style>
-      <div className="imp-notif-wrap">
-        <div className="imp-notif-inner">
-
-          {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <AlertTriangle size={18} style={{ color: '#f59e0b', flexShrink: 0 }} />
-            <h3 style={{ margin: 0, border: 'none', padding: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)' }}>
-              Important Notices
-            </h3>
-            <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>
-              {activeIndex + 1} / {IMPORTANT_NOTIFICATIONS.length}
-            </span>
-          </div>
-
-          {/* Notification body */}
-          <div key={activeIndex} style={{ animation: 'noteFade 0.45s ease forwards', flex: 1 }}>
-            <div style={{ fontSize: '2rem', marginBottom: '10px' }}>{note.icon}</div>
-            <p style={{ margin: '0 0 8px 0', fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-main)' }}>
-              {note.title}
-            </p>
-            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.65 }}>
-              {note.message}
-            </p>
-          </div>
-
-          {/* Dot indicators */}
-          <div style={{ display: 'flex', gap: '6px', paddingTop: '4px' }}>
-            {IMPORTANT_NOTIFICATIONS.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveIndex(idx)}
-                style={{
-                  width: idx === activeIndex ? '22px' : '8px',
-                  height: '8px',
-                  borderRadius: '4px',
-                  border: 'none',
-                  background: idx === activeIndex ? '#8b5cf6' : 'var(--glass-border)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  transition: 'all 0.35s ease',
-                  outline: 'none',
-                }}
-              />
-            ))}
-          </div>
-
-        </div>
-      </div>
-    </>
-  );
-};
+import { Activity, Clock, FileText, Users } from 'lucide-react';
 
 const DashboardHome = ({ isPartner, profile, setActiveTab, stats, fetchStats, setPendingApplications, unreadMsgCount }) => {
   useEffect(() => {
@@ -126,44 +8,39 @@ const DashboardHome = ({ isPartner, profile, setActiveTab, stats, fetchStats, se
 
   return (
     <div className="view-home">
-      <header className="dash-header">
-        <div>
-          <h1>Welcome back, {profile.firstName}!</h1>
-          <p>Here is an overview of your operations.</p>
-        </div>
-      </header>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>Welcome back, {profile.firstName}!</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>Overview of your current operations and metrics.</p>
+      </div>
 
       {/* Admin message alert banner (student only) */}
       {!isPartner && unreadMsgCount > 0 && (
         <div
           onClick={() => setActiveTab('notifications')}
           style={{
-            background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(109,40,217,0.06))',
-            border: '1px solid rgba(139,92,246,0.3)',
-            borderRadius: '12px',
-            padding: '14px 18px',
-            marginBottom: '20px',
+            background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(109,40,217,0.05))',
+            border: '1px solid rgba(139,92,246,0.2)',
+            borderRadius: '16px',
+            padding: '12px 16px',
+            marginBottom: '1.5rem',
             display: 'flex',
             alignItems: 'center',
-            gap: '14px',
+            gap: '12px',
             cursor: 'pointer',
-            transition: 'all 0.2s',
-            boxShadow: '0 4px 20px rgba(139,92,246,0.1)'
+            transition: 'all 0.3s ease',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
           }}
-          onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(139,92,246,0.6)'}
-          onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(139,92,246,0.3)'}
         >
-          <div style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <span style={{ fontSize: '1.2rem' }}>💬</span>
+          <div style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: '1rem' }}>💬</span>
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-main)', marginBottom: '2px' }}>
-              You have {unreadMsgCount} new message{unreadMsgCount !== 1 ? 's' : ''} from Admin
+            <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-main)' }}>
+              {unreadMsgCount} new message{unreadMsgCount !== 1 ? 's' : ''} from Admin
             </div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Click to view your messages and reply</div>
           </div>
-          <div style={{ background: '#8b5cf6', color: '#fff', borderRadius: '20px', padding: '4px 12px', fontSize: '0.75rem', fontWeight: 800, flexShrink: 0 }}>
-            {unreadMsgCount} New
+          <div style={{ background: 'var(--accent-primary)', color: '#fff', borderRadius: '12px', padding: '2px 10px', fontSize: '0.7rem', fontWeight: 800 }}>
+            VIEW
           </div>
         </div>
       )}
@@ -272,9 +149,6 @@ const DashboardHome = ({ isPartner, profile, setActiveTab, stats, fetchStats, se
             </div>
           </div>
         </div>
-
-        {/* Important Notifications Card */}
-        <ImportantNotifications />
 
       </div>
 

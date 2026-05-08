@@ -699,7 +699,7 @@ const AdminPortal = () => {
             </button>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginRight: '65px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             {/* Theme Toggle Group */}
             <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
               <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="Light Mode"><Sun size={14} /></button>
@@ -1422,50 +1422,52 @@ const AdminPortal = () => {
         {/* VIEW: CONTACT FORMS                                                              */}
         {/* -------------------------------------------------------------------------------- */}
         {(!selectedUser && !isAdding && activeTab === 'contact_forms') && (
-          <div className="animate-fade-in">
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-              <div>
-                <h1 style={{ color: 'var(--text-main)', fontSize: '1.6rem', margin: '0 0 8px 0', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                  <Mail size={28} color="#3b82f6" /> Enquiries
-                </h1>
-                <p style={{ color: 'var(--text-muted)', margin: 0 }}>Review all incoming queries from the website's contact form.</p>
-              </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button onClick={fetchContacts} style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  ↻ Refresh
-                </button>
-                {contactForms.length > 0 && (
-                  <button 
-                    onClick={() => {
-                      if (selectedEnquiries.length === contactForms.length) {
-                        setSelectedEnquiries([]);
-                      } else {
-                        setSelectedEnquiries(contactForms.map(c => c._id));
-                      }
-                    }} 
-                    style={{ background: selectedEnquiries.length === contactForms.length ? 'rgba(59, 130, 246, 0.2)' : 'var(--input-bg)', border: '1px solid rgba(59, 130, 246, 0.5)', color: '#3b82f6', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <CheckSquare size={16} /> {selectedEnquiries.length === contactForms.length ? 'Deselect All' : 'Select All'}
+          <div className="animate-fade-in" style={{ height: 'calc(100vh - 180px)', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ background: 'var(--card-bg-solid)', padding: '24px', borderRadius: '20px', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-xl)', display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <header style={{ marginBottom: '25px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+                <div>
+                  <h1 style={{ color: 'var(--text-main)', fontSize: '1.6rem', margin: '0 0 8px 0', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <Mail size={28} color="#3b82f6" /> Enquiries
+                  </h1>
+                  <p style={{ color: 'var(--text-muted)', margin: 0 }}>Review all incoming queries from the website's contact form.</p>
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button onClick={fetchContacts} style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    ↻ Refresh
                   </button>
-                )}
-                {selectedEnquiries.length > 0 && (
-                  <button 
-                    onClick={handleBulkDeleteEnquiriesClick}
-                    style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}
-                  >
-                    <Trash2 size={16} /> Delete Selected ({selectedEnquiries.length})
-                  </button>
-                )}
-              </div>
-            </header>
-            <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '20px', background: 'var(--card-bg-solid)', padding: '12px 18px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-              <input
-                type="text"
-                placeholder="Search name, email, message..."
-                value={contactsFilter.search}
-                onChange={(e) => setContactsFilter({ ...contactsFilter, search: e.target.value })}
-                style={{ flex: 1, minWidth: '200px', background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem' }}
-              />
+                  {contactForms.length > 0 && (
+                    <button 
+                      onClick={() => {
+                        if (selectedEnquiries.length === contactForms.length) {
+                          setSelectedEnquiries([]);
+                        } else {
+                          setSelectedEnquiries(contactForms.map(c => c._id));
+                        }
+                      }} 
+                      style={{ background: selectedEnquiries.length === contactForms.length ? 'rgba(59, 130, 246, 0.2)' : 'var(--input-bg)', border: '1px solid rgba(59, 130, 246, 0.5)', color: '#3b82f6', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+                    >
+                      <CheckSquare size={16} /> {selectedEnquiries.length === contactForms.length ? 'Deselect All' : 'Select All'}
+                    </button>
+                  )}
+                  {selectedEnquiries.length > 0 && (
+                    <button 
+                      onClick={handleBulkDeleteEnquiriesClick}
+                      style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}
+                    >
+                      <Trash2 size={16} /> Delete Selected ({selectedEnquiries.length})
+                    </button>
+                  )}
+                </div>
+              </header>
+              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '20px', background: 'var(--card-bg-solid)', padding: '12px 18px', borderRadius: '12px', border: '1px solid var(--glass-border)', flexShrink: 0 }}>
+                <input
+                  type="text"
+                  placeholder="Search name, email, message..."
+                  value={contactsFilter.search}
+                  onChange={(e) => setContactsFilter({ ...contactsFilter, search: e.target.value })}
+                  style={{ flex: 1, minWidth: '200px', background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem' }}
+                />
+
               <select
                 value={contactsFilter.status}
                 onChange={(e) => setContactsFilter({ ...contactsFilter, status: e.target.value })}
@@ -1496,7 +1498,7 @@ const AdminPortal = () => {
               </select>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, overflowY: 'auto', paddingRight: '10px' }}>
               {contactsLoading ? (
                 <div className="empty-state" style={{ padding: '50px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading messages...</div>
               ) : contactForms.length === 0 ? (
@@ -1598,7 +1600,8 @@ const AdminPortal = () => {
               )}
             </div>
           </div>
-        )}
+        </div>
+      )}
 
         {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: DATA EDITOR / CREATOR */}
@@ -1817,8 +1820,6 @@ const AdminPortal = () => {
           </div>
         )}
         </>)}
-        </div>
-      </main>
 
       {/* PARTNER STUDENTS POPUP */}
       {partnerStudentsPopup && (
@@ -2238,9 +2239,9 @@ const AdminPortal = () => {
           </div>
         </div>
       )}
-      </div>
-
-
+        </div>
+      </main>
+    </div>
     </>
   );
 };

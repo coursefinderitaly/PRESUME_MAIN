@@ -594,45 +594,45 @@
 
 /* --- PORTAL STYLES --- */
 :root {
-  --input-bg: rgba(0, 0, 0, 0.3);
-  --input-border: rgba(255, 255, 255, 0.1);
-  --input-focus: rgba(255, 255, 255, 0.03);
-  --table-border: rgba(255, 255, 255, 0.05);
-  --table-header-bg: rgba(0, 0, 0, 0.2);
-  --filter-chip-bg: rgba(0, 0, 0, 0.3);
-  --card-bg-solid: rgba(8, 12, 24, 0.88);
-  /* Deep dark, high opacity for readability */
-  --glass-popup: rgba(8, 12, 24, 0.90);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.15);
+  --input-focus: #8b5cf6;
+  --table-border: rgba(255, 255, 255, 0.1);
+  --table-header-bg: rgba(255, 255, 255, 0.03);
+  --filter-chip-bg: rgba(255, 255, 255, 0.05);
+  --card-bg-solid: rgba(24, 24, 27, 0.55);
+  --glass-popup: rgba(24, 24, 27, 0.75);
   --glass-popup-inner: rgba(255, 255, 255, 0.05);
-  --modal-card-bg: rgba(0, 0, 0, 0.6);
+  --modal-card-bg: rgba(24, 24, 27, 0.85);
 }
 
 :root[data-theme='light'] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f1f5f9;
+  --bg-primary: #f4f4f5;
+  --bg-secondary: rgba(255, 255, 255, 0.6);
+  --bg-tertiary: rgba(255, 255, 255, 0.5);
   --glass-bg: rgba(255, 255, 255, 0.5);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --accent-primary: #2563eb;
-  --accent-secondary: #0ea5e9;
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --cyber-grid: rgba(37, 99, 235, 0.03);
-  --bg-card: #ffffff;
-  --accent-glow: #3b82f6;
-  --glow-color: rgba(37, 99, 235, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --accent-primary: #6366f1;
+  --accent-secondary: #ec4899;
+  --accent-tertiary: #3b82f6;
+  --text-main: #09090b !important;
+  --text-muted: #71717a !important;
+  --cyber-grid: transparent;
+  --bg-card: rgba(255, 255, 255, 0.6);
+  --accent-glow: #6366f1;
+  --glow-color: rgba(99, 102, 241, 0.15);
   --error-color: #ef4444;
-  --heading-color: #0f172a;
-  --input-bg: rgba(255, 255, 255, 0.8);
-  --input-border: rgba(0, 0, 0, 0.1);
-  --input-focus: rgba(37, 99, 235, 0.05);
-  --table-border: rgba(0, 0, 0, 0.05);
-  --table-header-bg: rgba(0, 0, 0, 0.03);
-  --filter-chip-bg: rgba(0, 0, 0, 0.03);
-  --card-bg-solid: #ffffff;
-  --glass-popup: rgba(255, 255, 255, 0.85);
-  --glass-popup-inner: rgba(255, 255, 255, 0.95);
-  --modal-card-bg: rgba(255, 255, 255, 0.9);
+  --heading-color: #09090b;
+  --input-bg: rgba(255, 255, 255, 0.7);
+  --input-border: rgba(255, 255, 255, 0.9);
+  --input-focus: #6366f1;
+  --table-border: rgba(0, 0, 0, 0.06);
+  --table-header-bg: rgba(255, 255, 255, 0.3);
+  --filter-chip-bg: rgba(255, 255, 255, 0.4);
+  --card-bg-solid: rgba(255, 255, 255, 0.65);
+  --glass-popup: rgba(255, 255, 255, 0.75);
+  --glass-popup-inner: rgba(255, 255, 255, 0.8);
+  --modal-card-bg: rgba(255, 255, 255, 0.85);
 }
 
 .theme-input {

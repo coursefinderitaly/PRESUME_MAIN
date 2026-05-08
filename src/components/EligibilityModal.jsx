@@ -1,81 +1,72 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle2, AlertCircle, PhoneCall } from 'lucide-react';
-
-const AnimatedSuccessBackground = () => (
-    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center rounded-[32px]">
-        <motion.div 
-            animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.5, 0.3]
-            }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute w-64 h-64 bg-emerald-500/20 rounded-full blur-[60px]"
-        />
-        {[...Array(3)].map((_, i) => (
-            <motion.div
-                key={i}
-                initial={{ scale: 0, opacity: 0.8 }}
-                animate={{ scale: 3, opacity: 0 }}
-                transition={{ 
-                    duration: 3, 
-                    repeat: Infinity, 
-                    delay: i * 1,
-                    ease: "easeOut"
-                }}
-                className="absolute w-32 h-32 border border-emerald-400/30 rounded-full"
-            />
-        ))}
-    </div>
-);
-
-const SideDecorations = () => (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-20 rounded-[32px]">
-        {/* Left Side Elements */}
-        {[...Array(6)].map((_, i) => (
-            <motion.div
-                key={`left-${i}`}
-                initial={{ y: "120%", opacity: 0, x: -20 }}
-                animate={{ y: "-20%", opacity: [0, 1, 1, 0], x: 0 }}
-                transition={{
-                    duration: 2 + Math.random() * 2,
-                    repeat: Infinity,
-                    delay: Math.random() * 2,
-                    ease: "easeOut"
-                }}
-                className="absolute w-1 h-16 bg-gradient-to-t from-transparent via-emerald-400 to-transparent rounded-full blur-[1px]"
-                style={{ left: `${Math.random() * 15}%` }}
-            />
-        ))}
-        {/* Right Side Elements */}
-        {[...Array(6)].map((_, i) => (
-            <motion.div
-                key={`right-${i}`}
-                initial={{ y: "120%", opacity: 0, x: 20 }}
-                animate={{ y: "-20%", opacity: [0, 1, 1, 0], x: 0 }}
-                transition={{
-                    duration: 2 + Math.random() * 2,
-                    repeat: Infinity,
-                    delay: Math.random() * 2,
-                    ease: "easeOut"
-                }}
-                className="absolute w-1 h-16 bg-gradient-to-t from-transparent via-emerald-400 to-transparent rounded-full blur-[1px]"
-                style={{ right: `${Math.random() * 15}%` }}
-            />
-        ))}
-    </div>
-);
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import {
+    GraduationCap, Book, FileText, Sparkles, Plane,
+    Globe, X, Star, Compass, Headset, Map, ArrowRight, CheckCircle2,
+    Loader2
+} from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleAction }) => {
-    console.log("EligibilityModal rendered with level:", level);
-    const [step, setStep] = useState('form'); // 'form', 'eligible', 'not-eligible'
+    const [step, setStep] = useState('form'); // 'form', 'eligible', 'ineligible'
+    const [allCourses, setAllCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         percent11: '',
         percent12: '',
         percentGrad: '',
         stream: '',
-        passingYear: ''
+        passingYear: '',
+        interestedField: '',
+        program: ''
     });
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/sheets`);
+                const data = await response.json();
+                setAllCourses(data);
+            } catch (error) {
+                console.error("Failed to fetch courses:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCourses();
+    }, []);
+
+    // Map internal level to Excel Program Level
+    const excelLevel = useMemo(() => {
+        if (level === 'bachelors') return 'Bachelor';
+        if (level === 'masters') return 'Masters';
+        if (level === 'mbbs') return 'Bachelor'; // MBBS is usually under Bachelor in the sheet
+        return '';
+    }, [level]);
+
+    // Get unique Interested Fields for the selected level
+    const interestedFields = useMemo(() => {
+        const fields = allCourses
+            .filter(c => (c['Program Level '] || '').trim() === excelLevel)
+            .map(c => (c['InterestedField '] || '').trim())
+            .filter(Boolean);
+        return [...new Set(fields)].sort();
+    }, [allCourses, excelLevel]);
+
+    // Get Programs for selected Interested Field
+    const programs = useMemo(() => {
+        if (!formData.interestedField) return [];
+        return allCourses
+            .filter(c => 
+                (c['Program Level '] || '').trim() === excelLevel && 
+                (c['InterestedField '] || '').trim() === formData.interestedField
+            )
+            .map(c => (c['Program Name '] || '').trim())
+            .filter(Boolean)
+            .sort();
+    }, [allCourses, excelLevel, formData.interestedField]);
+
+    if (!level) return null;
 
     const streams = {
         bachelors: ['Science (PCM)', 'Science (PCB)', 'Commerce', 'Arts', 'Other'],
@@ -86,7 +77,13 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
     const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + 1 - i);
 
     const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+            // Reset program if field changes
+            ...(name === 'interestedField' ? { program: '' } : {})
+        }));
     };
 
     const checkEligibility = (e) => {
@@ -107,160 +104,286 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
             }
         }
 
-        setStep(isEligible ? 'eligible' : 'not-eligible');
+        setStep(isEligible ? 'eligible' : 'ineligible');
     };
 
     const renderForm = () => (
-        <form onSubmit={checkEligibility} className="flex flex-col gap-4 relative z-30">
-            <h3 className="text-2xl font-black text-white mb-2 text-center uppercase tracking-widest">
-                Check {level} Eligibility
-            </h3>
-            
-            {(level === 'bachelors' || level === 'mbbs') && (
-                <>
-                    <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">11th Percentage (%)</label>
-                        <input required type="number" step="0.01" name="percent11" value={formData.percent11} onChange={handleInputChange} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-accent-gold transition-colors" placeholder="e.g. 75" />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">12th Percentage (%)</label>
-                        <input required type="number" step="0.01" name="percent12" value={formData.percent12} onChange={handleInputChange} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-accent-gold transition-colors" placeholder="e.g. 80" />
-                    </div>
-                </>
-            )}
+        <form onSubmit={checkEligibility} className="relative z-10 flex flex-col gap-8 text-left max-w-sm mx-auto">
+            <div className="text-center space-y-1.5">
+                <h2 className="text-4xl font-black text-white tracking-tight">
+                    Check <span className="text-blue-500">Eligibility</span>
+                </h2>
+                <p className="text-zinc-500 text-xs font-semibold uppercase tracking-[0.2em]">
+                    For {level} programs
+                </p>
+            </div>
 
-            {level === 'masters' && (
-                <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Graduation Percentage (%)</label>
-                    <input required type="number" step="0.01" name="percentGrad" value={formData.percentGrad} onChange={handleInputChange} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-accent-gold transition-colors" placeholder="e.g. 72" />
+            <div className="space-y-5">
+                {(level === 'bachelors' || level === 'mbbs') && (
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">11th Grade (%)</label>
+                            <input
+                                required type="number" step="0.01" name="percent11"
+                                value={formData.percent11} onChange={handleInputChange}
+                                className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
+                                placeholder="00.00"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">12th Grade (%)</label>
+                            <input
+                                required type="number" step="0.01" name="percent12"
+                                value={formData.percent12} onChange={handleInputChange}
+                                className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
+                                placeholder="00.00"
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {level === 'masters' && (
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Graduation Score (%)</label>
+                        <input
+                            required type="number" step="0.01" name="percentGrad"
+                            value={formData.percentGrad} onChange={handleInputChange}
+                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
+                            placeholder="e.g. 75.50"
+                        />
+                    </div>
+                )}
+
+                <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Academic Stream</label>
+                    <div className="relative group">
+                        <select
+                            required name="stream" value={formData.stream} onChange={handleInputChange}
+                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                        >
+                            <option value="" disabled className="bg-zinc-900 text-gray-500">Select your major</option>
+                            {streams[level].map(s => (
+                                <option key={s} value={s} className="bg-zinc-900">{s}</option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-600 group-focus-within:text-blue-500 transition-colors">
+                            <ArrowRight className="w-4 h-4 rotate-90" />
+                        </div>
+                    </div>
                 </div>
-            )}
 
-            <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Stream / Major</label>
-                <select required name="stream" value={formData.stream} onChange={handleInputChange} className="px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white outline-none focus:border-accent-gold transition-colors appearance-none cursor-pointer">
-                    <option value="" disabled className="bg-[#0a0d18]">Select Stream</option>
-                    {streams[level].map(s => (
-                        <option key={s} value={s} className="bg-[#0a0d18]">{s}</option>
-                    ))}
-                </select>
+                <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Interested Field</label>
+                    <div className="relative group">
+                        <select
+                            required name="interestedField" value={formData.interestedField} onChange={handleInputChange}
+                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                            disabled={loading}
+                        >
+                            <option value="" disabled className="bg-zinc-900 text-gray-500">
+                                {loading ? 'Loading Fields...' : 'Select Interest'}
+                            </option>
+                            {interestedFields.map(f => (
+                                <option key={f} value={f} className="bg-zinc-900">{f}</option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-600 group-focus-within:text-blue-500 transition-colors">
+                            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4 rotate-90" />}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Preferred Program</label>
+                    <div className="relative group">
+                        <select
+                            required name="program" value={formData.program} onChange={handleInputChange}
+                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                            disabled={!formData.interestedField}
+                        >
+                            <option value="" disabled className="bg-zinc-900 text-gray-500">
+                                {!formData.interestedField ? 'Select Field First' : 'Select Program'}
+                            </option>
+                            {programs.map(p => (
+                                <option key={p} value={p} className="bg-zinc-900">{p}</option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-600 group-focus-within:text-blue-500 transition-colors">
+                            <ArrowRight className="w-4 h-4 rotate-90" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Graduation Year</label>
+                    <div className="relative group">
+                        <select
+                            required name="passingYear" value={formData.passingYear} onChange={handleInputChange}
+                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                        >
+                            <option value="" disabled className="bg-zinc-900 text-gray-500">Select year</option>
+                            {years.map(y => (
+                                <option key={y} value={y} className="bg-zinc-900">{y}</option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-600 group-focus-within:text-blue-500 transition-colors">
+                            <ArrowRight className="w-4 h-4 rotate-90" />
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Passing Year</label>
-                <select required name="passingYear" value={formData.passingYear} onChange={handleInputChange} className="px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white outline-none focus:border-accent-gold transition-colors appearance-none cursor-pointer">
-                    <option value="" disabled className="bg-[#0a0d18]">Select Year</option>
-                    {years.map(y => (
-                        <option key={y} value={y} className="bg-[#0a0d18]">{y}</option>
-                    ))}
-                </select>
-            </div>
-
-            <button type="submit" className="mt-4 w-full py-4 bg-accent-gold text-primary-blue rounded-xl font-black uppercase tracking-widest hover:bg-yellow-400 transition-colors shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                Check Now
+            <button type="submit" disabled={loading} className="group relative w-full flex items-center justify-center gap-3 py-4 bg-white text-black text-sm font-black rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-[0_20px_40px_-10px_rgba(255,255,255,0.2)] disabled:opacity-50">
+                <span className="relative z-10">{loading ? 'Please Wait...' : 'Check Now'}</span>
+                {loading ? <Loader2 className="relative z-10 w-4 h-4 animate-spin" /> : <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
         </form>
     );
 
-    const renderEligible = () => (
-        <div className="flex flex-col items-center justify-center text-center gap-6 py-6 relative">
-            <AnimatedSuccessBackground />
-            <SideDecorations />
-            
-            <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.5)] relative z-30 border-4 border-[#0a0d18]"
-            >
-                <CheckCircle2 className="w-12 h-12 text-[#0a0d18]" strokeWidth={3} />
-            </motion.div>
-
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="relative z-30 bg-[#0a0d18]/80 backdrop-blur-xl border border-white/10 p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] w-full"
-            >
-                <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-emerald-500 mb-4 drop-shadow-md">
-                    Congratulations!
-                </h3>
-                
-                <motion.div 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.3, type: "spring" }}
-                    className="inline-block bg-gradient-to-r from-emerald-500/20 via-emerald-400/30 to-emerald-500/20 border border-emerald-400/50 px-6 py-3 rounded-full mb-6 shadow-[0_0_30px_rgba(16,185,129,0.3)]"
-                >
-                    <div className="text-emerald-300 font-black uppercase tracking-[0.2em] text-sm md:text-[15px] drop-shadow-[0_2px_10px_rgba(16,185,129,0.8)]">
-                        Pack Your Bags, Future Scholar! ✈️
-                    </div>
-                </motion.div>
-
-                <p className="text-gray-300 font-medium text-sm leading-relaxed">
-                    Great news! Your profile meets the criteria for <strong className="text-white">{level}</strong> programs. Let's fast-track your admission and unlock your global future.
-                </p>
-            </motion.div>
-
-            <motion.button 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                onClick={onEligibleAction} 
-                className="relative z-30 px-8 py-4 bg-emerald-500 text-black rounded-xl font-black uppercase tracking-widest hover:bg-emerald-400 transition-colors mt-2 w-full shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-            >
-                Start Application
-            </motion.button>
-        </div>
-    );
-
-    const renderNotEligible = () => (
-        <div className="flex flex-col items-center justify-center text-center gap-6 py-8">
-            <div className="w-24 h-24 bg-rose-500/20 rounded-full flex items-center justify-center border border-rose-500/40 shadow-[0_0_40px_rgba(243,64,121,0.3)]">
-                <AlertCircle className="w-12 h-12 text-rose-400" />
-            </div>
-            <div>
-                <h3 className="text-3xl font-black text-white mb-2">Don't Worry!</h3>
-                <p className="text-gray-400 font-medium leading-relaxed">
-                    Based on these inputs, you might not meet the standard criteria. 
-                    <strong className="text-white block mt-2">But we can find a way!</strong>
-                    Book a free counselling session with our experts to explore alternative pathways or foundation programs.
-                </p>
-            </div>
-            <button onClick={onNotEligibleAction} className="px-8 py-4 bg-white/10 border border-white/20 text-white rounded-xl font-black uppercase tracking-widest hover:bg-white/20 transition-colors mt-4 w-full flex items-center justify-center gap-3">
-                <PhoneCall className="w-4 h-4" /> Take a Counselling
-            </button>
-        </div>
-    );
-
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                exit={{ opacity: 0 }} 
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <style>
+                {`
+                @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(5deg); } }
+                @keyframes pulse-soft { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.1); } }
+                @keyframes fly-in { 0% { transform: translate(-20px, 20px) rotate(-20deg) scale(0.5); opacity: 0; } 100% { transform: translate(0, 0) rotate(12deg) scale(1); opacity: 1; } }
+                @keyframes eligible-sparks-particle {
+                    0% { opacity: 0; transform: translateY(20px) scale(0.5); }
+                    20% { opacity: 1; transform: translateY(0px) scale(1.1); }
+                    80% { opacity: 1; transform: translateY(-40px) scale(1); }
+                    100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+                }
+                .animate-float { animation: float 6s ease-in-out infinite; }
+                .animate-pulse-soft { animation: pulse-soft 4s ease-in-out infinite; }
+                .animate-fly-in { animation: fly-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+                .eligible-sparks-effect { animation: eligible-sparks-particle 3s ease-out infinite; }
+                .animation-delay-200 { animation-delay: 200ms; }
+                .animation-delay-500 { animation-delay: 500ms; }
+                `}
+            </style>
+
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 onClick={onClose}
-                className="absolute inset-0 bg-[#0a0d18]/80 backdrop-blur-md"
+                className="absolute inset-0 bg-zinc-950/90 backdrop-blur-sm"
             />
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-                animate={{ opacity: 1, scale: 1, y: 0 }} 
-                exit={{ opacity: 0, scale: 0.95, y: 20 }} 
-                className="relative z-10 w-full max-w-md bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-2xl border border-white/20 p-8 rounded-[32px] shadow-2xl overflow-hidden"
+
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                className="relative w-full max-w-xl bg-zinc-950 border border-white/[0.05] rounded-[40px] p-10 overflow-hidden shadow-2xl"
             >
-                <button 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onClose();
-                    }} 
-                    className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-50 cursor-pointer p-2"
+                {/* Premium Background Effects */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-[200px] h-[200px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+                <button
+                    onClick={onClose}
+                    className="absolute top-6 right-6 text-zinc-600 hover:text-white transition-colors z-50 p-2"
                 >
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5" />
                 </button>
 
+                {/* ================= FORM STATE ================= */}
                 {step === 'form' && renderForm()}
-                {step === 'eligible' && renderEligible()}
-                {step === 'not-eligible' && renderNotEligible()}
+
+                {/* ================= ELIGIBLE STATE ================= */}
+                {step === 'eligible' && (
+                    <>
+                        {/* FULL MODAL DYNAMIC PARTICLE SHOWER */}
+                        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden rounded-[40px]">
+                            <div className="absolute top-[10%] left-[10%] eligible-sparks-effect"><GraduationCap className="w-8 h-8 text-white/20" /></div>
+                            <div className="absolute top-[20%] left-[20%] eligible-sparks-effect animation-delay-200"><Star className="w-6 h-6 text-cyan-400/40" fill="currentColor" /></div>
+                            <div className="absolute top-[15%] right-[15%] eligible-sparks-effect animation-delay-500"><Book className="w-8 h-8 text-purple-400/30" /></div>
+                            <div className="absolute top-[40%] left-[10%] eligible-sparks-effect"><FileText className="w-7 h-7 text-white/20" /></div>
+                            <div className="absolute top-[30%] right-[20%] eligible-sparks-effect animation-delay-200"><Sparkles className="w-10 h-10 text-yellow-400/40" /></div>
+                            <div className="absolute bottom-[20%] left-[15%] eligible-sparks-effect animation-delay-500"><GraduationCap className="w-7 h-7 text-blue-400/30" /></div>
+                            <div className="absolute bottom-[30%] right-[10%] eligible-sparks-effect"><Book className="w-7 h-7 text-cyan-400/30" /></div>
+                            <div className="absolute bottom-[10%] right-[30%] eligible-sparks-effect animation-delay-200"><Star className="w-5 h-5 text-yellow-400/40" fill="currentColor" /></div>
+                        </div>
+
+                        <div className="relative z-10 flex flex-col items-center text-center space-y-8 animate-pop-in py-4">
+
+                        <div className="relative mx-auto w-28 h-28 mt-8 mb-4 z-10 animate-float flex items-center justify-center">
+                            <div className="absolute inset-0 bg-blue-600/30 rounded-full animate-pulse blur-xl"></div>
+                            <div className="relative w-24 h-24 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 rounded-full flex items-center justify-center border-4 border-blue-400/40 shadow-[0_0_40px_rgba(59,130,246,0.6)]">
+                                <GraduationCap className="w-12 h-12 text-white" />
+                            </div>
+                            <Sparkles className="absolute -top-3 -right-3 text-yellow-400 w-9 h-9" />
+                            <FileText className="absolute bottom-1 -left-1 text-white w-6 h-6 rotate-[-15deg] opacity-80" />
+                        </div>
+
+                        <div className="space-y-4">
+                            <h2 className="text-4xl font-black text-white tracking-tight">
+                                Congratulations!
+                            </h2>
+                            <motion.h3
+                                initial={{ opacity: 0, y: 15, scale: 0.9 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
+                                className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 flex items-center justify-center gap-3 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                            >
+                                Pack Your Bags, Future Scholar!
+                                <Plane className="w-7 h-7 text-blue-400 animate-fly-in shadow-blue-500/50" />
+                            </motion.h3>
+                            <p className="text-zinc-400 text-lg max-w-sm mx-auto font-medium leading-relaxed">
+                                You are eligible for <span className="text-white">{level}</span> programs. Let's start your journey today.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-4 w-full max-w-xs">
+                            <button
+                                onClick={onEligibleAction}
+                                className="group w-full flex items-center justify-center gap-3 py-4 bg-white text-black text-sm font-black rounded-2xl transition-all hover:scale-[1.02] active:scale-95"
+                            >
+                                Start Application
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                            <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">
+
+                            </p>
+                        </div>
+                    </div>
+                    </>
+                )}
+
+                {/* ================= INELIGIBLE STATE ================= */}
+                {step === 'ineligible' && (
+                    <div className="relative z-10 flex flex-col items-center text-center space-y-8 animate-pop-in py-4">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-amber-500/10 rounded-full blur-2xl animate-pulse-soft" />
+                            <div className="relative w-24 h-24 bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 rounded-full flex items-center justify-center shadow-2xl">
+                                <Compass className="w-12 h-12 text-amber-500" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <h2 className="text-4xl font-black text-white tracking-tight">
+                                Don't Worry!
+                            </h2>
+                            <p className="text-zinc-400 text-lg max-w-sm mx-auto font-medium leading-relaxed">
+                                You may need some guidance. Our experts can help you find alternative pathways.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-4 w-full max-w-xs">
+                            <button
+                                onClick={onNotEligibleAction}
+                                className="group w-full flex items-center justify-center gap-3 py-4 bg-zinc-800 text-white text-sm font-black rounded-2xl transition-all hover:bg-zinc-700 active:scale-95"
+                            >
+                                Book Counselling
+                                <Headset className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            </button>
+                            <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">
+                                100% Free Consultation
+                            </p>
+                        </div>
+                    </div>
+                )}
             </motion.div>
         </div>
     );

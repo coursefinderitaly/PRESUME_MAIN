@@ -341,6 +341,18 @@ router.delete('/chats/:studentId', async (req, res) => {
 // ADMIN CONTACT FORMS ROUTES
 // =============================================
 
+// GET total unread count for contact forms (for notification badge)
+router.get('/contacts/unread-count', async (req, res) => {
+  try {
+    const Contact = require('../models/Contact');
+    const total = await Contact.countDocuments({ isRead: false });
+    res.json({ unread: total });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // GET all contact form submissions
 router.get('/contacts', async (req, res) => {
   try {

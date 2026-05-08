@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import RazorpayGateway from './RazorpayGateway';
 import { ArrowLeft, ArrowRight, Save, User, FileText, FolderOpen, Mail, Phone, MapPin, Eraser, X, UploadCloud, Eye, AlertTriangle, ChevronLeft, ChevronRight, Globe, CheckSquare, Plus, Trash2, Download, CheckCircle, Search, ExternalLink } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import Select from 'react-select';
@@ -19,6 +21,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
   const [formData, setFormData] = useState({});
   const [message, setMessage] = useState('');
   const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [isPaymentPending, setIsPaymentPending] = useState(false);
   const [attachedDocsPreview, setAttachedDocsPreview] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -215,6 +218,35 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
       ...prev,
       workExperience: [...prev.workExperience, { organisationName: '', position: '', jobProfile: '', modeOfSalary: '', startDate: '', endDate: '', currentlyWorkingHere: false }]
     }));
+  };
+
+  const handleFinalSubmit = async () => {
+    if (documentUploadRef.current) {
+      setIsUploading(true);
+      setUploadProgress(5);
+      try {
+        await documentUploadRef.current.executeProcessing((p) => setUploadProgress(p), { 
+          ...formData, 
+          appliedUniversities: selectedForApplication, 
+          studentId: student._id 
+        });
+
+        if (refreshProfile) refreshProfile();
+
+        setTimeout(() => {
+          setIsUploading(false);
+          setIsSubmitted(true);
+          setIsPaymentPending(false);
+          if (setPendingApplications) {
+            setPendingApplications([]);
+          }
+        }, 800);
+      } catch (err) {
+        console.error(err);
+        setIsUploading(false);
+        alert('An error occurred during final submission. Please contact support.');
+      }
+    }
   };
 
   const handleChange = (e) => {
@@ -1358,14 +1390,22 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
         </div>
       )}
 
-      {showSummaryModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px', backdropFilter: 'blur(10px)' }}>
-          <div style={{ background: 'var(--card-bg-solid)', backdropFilter: 'blur(25px)', width: '85%', maxWidth: '1400px', height: '85vh', borderRadius: '24px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.3)', border: '1px solid var(--glass-border)' }}>
-            {!isSubmitted ? (
-              <>
-                <div style={{ padding: '12px 25px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '25px', flex: 1 }}>
-                    <h2 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.8rem', fontWeight: 900, whiteSpace: 'nowrap' }}>Final Review & Submission</h2>
+      {showSummaryModal && createPortal(
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000, backdropFilter: 'blur(12px)', animation: 'fadeIn 0.3s ease' }}>
+          {isPaymentPending ? (
+            <RazorpayGateway 
+              isOpen={true} 
+              onClose={() => setIsPaymentPending(false)} 
+              amount="29,900" 
+              onPaymentSuccess={handleFinalSubmit}
+            />
+          ) : (
+            <div style={{ background: 'var(--card-bg-solid)', backdropFilter: 'blur(40px)', width: '92%', maxWidth: '1400px', height: '90vh', borderRadius: '24px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 30px 60px -12px rgba(0, 0, 0, 0.5)', border: '1px solid var(--glass-border)', position: 'relative' }}>
+              {!isSubmitted ? (
+                <>
+                  <div style={{ padding: '12px 25px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '25px', flex: 1 }}>
+                      <h2 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.8rem', fontWeight: 900, whiteSpace: 'nowrap' }}>Final Review & Submission</h2>
                     <div style={{ background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 15px', borderRadius: '10px', color: '#f87171', fontSize: '0.82rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '10px', lineHeight: 1.4 }}>
                       <AlertTriangle size={16} style={{ flexShrink: 0 }} />
                       <span><strong style={{ fontWeight: 800 }}>Attention:</strong> After submission, your profile and documents cannot be modified. Ensure all information is accurate before proceeding.</span>
@@ -1500,28 +1540,11 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   </button>
                   <button
                     type="button"
-                    onClick={async () => {
-                      if (documentUploadRef.current) {
-                        setIsUploading(true);
-                        setUploadProgress(5);
-                        await documentUploadRef.current.executeProcessing((p) => setUploadProgress(p), { ...formData, appliedUniversities: selectedForApplication, studentId: student._id });
-
-                        // The database is now updated atomically in the backend during executeProcessing
-                        if (refreshProfile) refreshProfile();
-
-                        setTimeout(() => {
-                          setIsUploading(false);
-                          setIsSubmitted(true);
-                          if (setPendingApplications) {
-                            setPendingApplications([]);
-                          }
-                        }, 800);
-                      }
-                    }}
+                    onClick={() => setIsPaymentPending(true)}
                     className="btn-save"
                     style={{ padding: '14px 45px', fontSize: '1.05rem', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 900, letterSpacing: '0.5px', boxShadow: '0 8px 12px -3px rgba(16, 185, 129, 0.25)' }}
                   >
-                    FINAL SUBMIT & LOCK
+                    PROCEED TO PAYMENT
                   </button>
                 </div>
               </>
@@ -1543,8 +1566,10 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
               </div>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </div>,
+      document.body
+    )}
     </div>
   );
 };

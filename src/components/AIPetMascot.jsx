@@ -2,7 +2,26 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { Send, X, MessageSquare } from 'lucide-react';
 
+// --- CENTRAL POSITIONING CONFIG ---
+// Manually adjust these values to change the mascot's position across all portals
+const MASCOT_POSITIONS = {
+  portal: {
+    top: '620px',
+    right: '100px',
+    bottom: 'auto',
+    left: 'auto'
+  },
+  landing: {
+    top: 'auto',
+    right: '24px',
+    bottom: '24px',
+    left: 'auto'
+  }
+};
+
 export const AIPetMascot = ({ position = 'landing' }) => {
+  const currentPos = MASCOT_POSITIONS[position] || MASCOT_POSITIONS.landing;
+
   const [isHovered, setIsHovered] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [activity, setActivity] = useState('idle'); // idle, wave, dance, tease, sing, sleep, wake, jump
@@ -72,7 +91,7 @@ export const AIPetMascot = ({ position = 'landing' }) => {
 
   useEffect(() => { hoverRef.current = isHovered; }, [isHovered]);
   useEffect(() => { chatRef.current = chatOpen; }, [chatOpen]);
-  
+
   // Load animation
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -81,8 +100,8 @@ export const AIPetMascot = ({ position = 'landing' }) => {
       setTimeout(() => {
         setActivity('idle');
         setTooltipMessage('');
-      }, 3500); 
-    }, 1500); 
+      }, 3500);
+    }, 1500);
     return () => clearTimeout(timer);
   }, [position]);
 
@@ -121,7 +140,7 @@ export const AIPetMascot = ({ position = 'landing' }) => {
         ];
         currentAct = activities[activityIndexRef.current % activities.length];
       }
-      
+
       activityIndexRef.current += 1;
 
 
@@ -197,7 +216,7 @@ export const AIPetMascot = ({ position = 'landing' }) => {
       // Lock to 60 FPS (1000ms / 60 = 16.66ms)
       if (now - lastTime < 16.66) return;
       lastTime = now;
-      
+
       if (rafId) return; // skip if a frame is already queued
       rafId = requestAnimationFrame(processMouseMove);
     };
@@ -351,7 +370,13 @@ ${position === 'portal' ? '\nCRITICAL ADMIN OVERRIDE:\n- You are currently in th
 
   return (
     <motion.div
-      className={`fixed z-[99999] flex flex-col ${position === 'portal' ? 'top-4 right-4 items-end' : 'bottom-6 right-6 items-end'}`}
+      className="fixed z-[99999] flex flex-col items-end"
+      style={{
+        top: currentPos.top,
+        bottom: currentPos.bottom,
+        left: currentPos.left,
+        right: currentPos.right
+      }}
       onMouseEnter={() => {
         if (chatOpen || isHidden) return;
         if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -377,7 +402,7 @@ ${position === 'portal' ? '\nCRITICAL ADMIN OVERRIDE:\n- You are currently in th
             animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: 10, scale: 0.95, filter: 'blur(10px)' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`absolute w-[360px] overflow-hidden rounded-[24px] border border-white/10 bg-slate-900/40 backdrop-blur-[24px] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(6,182,212,0.05)] ${position === 'portal' ? 'top-[80px] right-0 origin-top-right' : 'bottom-[80px] right-0 origin-bottom-right'}`}
+            className={`absolute w-[360px] overflow-hidden rounded-[24px] border border-white/10 bg-slate-900/40 backdrop-blur-[24px] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(6,182,212,0.05)] ${currentPos.bottom === 'auto' ? 'top-[80px] right-0 origin-top-right' : 'bottom-[80px] right-0 origin-bottom-right'}`}
           >
             {/* Header */}
             <div className="mb-5 flex items-center justify-between">
@@ -459,12 +484,12 @@ ${position === 'portal' ? '\nCRITICAL ADMIN OVERRIDE:\n- You are currently in th
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
-            onClick={(e) => { 
-              e.stopPropagation(); 
+            onClick={(e) => {
+              e.stopPropagation();
               if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-              setIsHidden(true); 
-              setIsHovered(false); 
-              setChatOpen(false); 
+              setIsHidden(true);
+              setIsHovered(false);
+              setChatOpen(false);
             }}
             className="absolute -top-10 right-0 bg-red-500/80 text-white rounded-full p-1.5 hover:bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] z-50 transition-colors cursor-pointer"
           >
@@ -480,7 +505,7 @@ ${position === 'portal' ? '\nCRITICAL ADMIN OVERRIDE:\n- You are currently in th
             initial={{ opacity: 0, x: 20, scale: 0.5, y: 10 }}
             animate={{ opacity: 1, x: 0, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: -10 }}
-            className={`absolute whitespace-nowrap rounded-[20px] border border-cyan-400/30 bg-cyan-900/40 px-4 py-2 text-xs font-bold text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.2)] ${position === 'portal' ? 'right-[65px] top-4 rounded-tr-sm' : 'right-[95px] top-2 rounded-br-sm'}`}
+            className={`absolute whitespace-nowrap rounded-[20px] border border-cyan-400/30 bg-cyan-900/40 px-4 py-2 text-xs font-bold text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.2)] ${currentPos.bottom === 'auto' ? 'right-[65px] top-4 rounded-tr-sm' : 'right-[95px] top-2 rounded-br-sm'}`}
           >
             {tooltipMessage}
           </motion.div>
@@ -508,10 +533,10 @@ ${position === 'portal' ? '\nCRITICAL ADMIN OVERRIDE:\n- You are currently in th
         // Root animations (EMO waddles/bounces)
         animate={
           isHidden ? { x: 46, y: 0, rotate: 0, scale: 1 } :
-          activity === 'dance' ? { x: 0, y: [0, -15, 0], rotate: [0, -10, 10, 0] } :
-            activity === 'sleep' ? { x: 0, y: 2, rotate: 2 } :
-              chatOpen ? { x: 0, y: 0 } :
-                { x: 0, y: [0, -4, 0], rotate: 0 }
+            activity === 'dance' ? { x: 0, y: [0, -15, 0], rotate: [0, -10, 10, 0] } :
+              activity === 'sleep' ? { x: 0, y: 2, rotate: 2 } :
+                chatOpen ? { x: 0, y: 0 } :
+                  { x: 0, y: [0, -4, 0], rotate: 0 }
         }
         transition={{
           duration: activity === 'dance' ? 0.6 : (activity === 'sleep' ? 2 : 2.5),
