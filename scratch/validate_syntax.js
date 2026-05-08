@@ -2,7 +2,7 @@ const fs = require('fs');
 const acorn = require('acorn');
 const jsx = require('acorn-jsx');
 
-const files = ['src/components/AdminPortal.jsx', 'src/components/StudentDetails.jsx', 'src/components/RazorpayGateway.jsx'];
+const files = ['src/Dashboard.jsx', 'src/components/AdminPortal.jsx', 'src/components/StudentDetails.jsx', 'src/components/RazorpayGateway.jsx'];
 
 const Parser = acorn.Parser.extend(jsx());
 

@@ -329,17 +329,14 @@ const Dashboard = () => {
           onMouseEnter={() => setIsSidebarOpen(true)}
           onMouseLeave={() => { if (!isSidebarLocked) setIsSidebarOpen(false); }}
         >
-          <div className="sidebar-brand" style={{ padding: '0 0 1.5rem 0', display: 'flex', flexDirection: 'column', alignItems: isSidebarOpen ? 'flex-start' : 'center' }}>
+          <div className="sidebar-brand" style={{ padding: '0 0 1.2rem 0', alignItems: isSidebarOpen ? 'flex-start' : 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', width: '100%', overflow: 'hidden' }}>
-              {/* Force image to fill width gracefully, hiding text part when collapsed */}
-              <img src="/logo.png" alt="Company Logo" style={{ height: '38px', objectFit: 'contain', objectPosition: 'center', width: isSidebarOpen ? '200px' : '60px', transition: 'width 0.3s ease', flexShrink: 0, filter: activeTheme === 'light' ? 'invert(1) hue-rotate(180deg) contrast(1.2)' : 'none' }} />
+              <img src="/logo.png" alt="Company Logo" style={{ height: '36px', objectFit: 'contain', objectPosition: 'left center', width: isSidebarOpen ? '200px' : '56px', transition: 'width 0.4s ease', flexShrink: 0, filter: activeTheme === 'light' ? 'none' : 'brightness(1.1)' }} />
             </div>
             {isSidebarOpen && (
-              <div style={{ animation: 'fadeIn 0.3s ease', marginTop: '0.5rem', width: '100%', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--accent-secondary)', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '1px' }}>
-                  {isPartner ? 'Partner Portal' : isCounselor ? 'Counselor Portal' : isFreelancer ? 'Freelancer Portal' : 'Student Portal'}
-                </span>
-              </div>
+              <span style={{ animation: 'fadeIn 0.3s ease' }}>
+                {isPartner ? '🏢 Partner Portal' : isCounselor ? '🎓 Counselor Portal' : isFreelancer ? '⚡ Freelancer Portal' : '🎒 Student Portal'}
+              </span>
             )}
           </div>
 
@@ -445,9 +442,11 @@ const Dashboard = () => {
             </button>
           </div>
 
-          <div className="sidebar-footer" style={{ marginTop: '10px', opacity: !isSidebarOpen ? 0 : 1, transition: 'opacity 0.2s' }}>
+          <div className="sidebar-footer" style={{ marginTop: '8px', opacity: !isSidebarOpen ? 0 : 1, transition: 'opacity 0.2s' }}>
             <div className="sidebar-user">
-              <div className="avatar">{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
+              <div className="avatar">
+                <div className="avatar-inner">{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
+              </div>
               <div className="user-info">
                 <span className="name">{profile.firstName} {profile.lastName || ''}</span>
                 <span className="role">{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'}</span>
