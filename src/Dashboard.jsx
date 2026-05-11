@@ -377,125 +377,128 @@ const Dashboard = () => {
   const isFreelancer = profile.role === 'freelancer';
   const isStudent = profile.role === 'student';
 
-  // Improved Sidebar Link Generator
-  const NavButton = ({ id, icon: Icon, label, isBadge = false, count = 0 }) => {
-    const isActive = activeTab === id;
+  // Sidebar link generator
+  const NavButton = ({ id, icon: Icon, label }) => {
     return (
       <button
-        className={`nav-item ${isActive ? 'active' : ''}`}
-        onClick={() => {
-          setActiveTab(id);
-          setMessage({ text: '', type: '' });
-          setEditMode(false);
-          if (isBadge) { setShowMsgAlert(false); setAlertDismissed(true); }
+        className={`nav-item ${activeTab === id ? 'active' : ''}`}
+        onClick={() => { setActiveTab(id); setMessage({ text: '', type: '' }); setEditMode(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', borderRadius: '100px',
+          border: '1px solid transparent',
+          background: activeTab === id ? 'var(--accent-glow)' : 'transparent',
+          color: activeTab === id ? 'var(--accent-secondary)' : 'var(--text-muted)',
+          fontWeight: 700,
+          fontSize: '0.75rem',
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase',
+          cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s'
         }}
-        title={!isSidebarLocked && !isSidebarOpen ? label : ''}
       >
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <Icon size={18} />
-          {isBadge && count > 0 && (
-            <span style={{ 
-              position: 'absolute', top: '-6px', right: '-6px', background: '#ef4444', color: '#fff', 
-              borderRadius: '50%', width: '16px', height: '16px', fontSize: '0.6rem', 
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, 
-              animation: 'pulse 2s infinite', boxShadow: '0 0 8px rgba(239,68,68,0.5)' 
-            }}>
-              {count > 9 ? '9+' : count}
-            </span>
-          )}
-        </div>
-        <span className="nav-label" style={{
-          opacity: (!isSidebarLocked && !isSidebarOpen) ? 0 : 1,
-          transition: 'opacity 0.2s',
-          whiteSpace: 'nowrap'
-        }}>
-          {label}
-        </span>
+        <Icon size={16} />
+        <span>{label}</span>
       </button>
     );
   };
 
-  // Dynamic Sidebar width calculation
-  const sidebarWidth = isSidebarLocked ? '260px' : (isSidebarOpen ? '260px' : '76px');
-  const isSidebarActuallyCollapsed = !isSidebarLocked && !isSidebarOpen;
-
   return (
-    <div className="dash-universe">
-      {/* Antigravity Dynamic Animated Backdrop Layers */}
-      <div className="dash-bg">
-        <div className="dash-grid"></div>
-        <div className="dash-particles"></div>
-        <div className="dash-blob"></div>
-      </div>
+    <>
+      <div className="dash-universe" style={{ 
+        height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', 
+        background: 'var(--bg-primary)', boxSizing: 'border-box'
+      }}>
 
-      <div className="dash-container" style={{ display: 'flex', height: '100vh', width: '100%', padding: '1rem', gap: '1rem', boxSizing: 'border-box' }}>
-        
-        {/* 🛸 FLOATING DOCKER SIDEBAR */}
-        <aside 
-          className={`dash-sidebar ${isSidebarActuallyCollapsed ? 'collapsed' : ''}`}
-          onMouseEnter={() => { if (!isSidebarLocked) setIsSidebarOpen(true); }}
-          onMouseLeave={() => { if (!isSidebarLocked) setIsSidebarOpen(false); }}
-          style={{
-            width: sidebarWidth,
-            flexShrink: 0,
-            transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)'
-          }}
-        >
-          {/* Lock Toggle Icon */}
-          <button 
-            onClick={() => setIsSidebarLocked(!isSidebarLocked)}
-            style={{
-              position: 'absolute', top: '16px', right: '16px',
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              color: 'var(--text-dim)', opacity: isSidebarActuallyCollapsed ? 0 : 0.6,
-              transition: 'opacity 0.2s'
-            }}
-            title={isSidebarLocked ? "Click to float sidebar" : "Click to lock sidebar"}
-          >
-            <Menu size={16} />
-          </button>
-
-          {/* Sidebar Brand Logo */}
-          <div className="sidebar-brand" style={{ paddingBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <img
-              src="/logo.png"
-              alt="Logo"
-              style={{ height: '32px', width: '32px', minWidth: '32px', objectFit: 'contain', filter: activeTheme === 'light' ? 'invert(1) hue-rotate(180deg) contrast(1.2)' : 'none' }}
-            />
-            <div className="nav-label" style={{ opacity: isSidebarActuallyCollapsed ? 0 : 1, transition: 'opacity 0.2s', minWidth: 0 }}>
-              <h2>{isPartner ? 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'}</h2>
-              <span className="portal-badge" style={{ fontSize: '0.6rem', opacity: 0.6 }}>Secured Portal</span>
+        {/* ================================== */}
+        {/* HEADER CARD                        */}
+        {/* ================================== */}
+        <header style={{ 
+          display: 'flex', flexDirection: 'column', 
+          background: 'var(--glass-bg)', borderBottom: '1px solid var(--glass-border)',
+          flexShrink: 0, boxShadow: 'var(--card-shadow)',
+          backdropFilter: 'blur(36px) saturate(160%)', WebkitBackdropFilter: 'blur(36px) saturate(160%)',
+          position: 'sticky', top: 0, zIndex: 100
+        }}>
+          {/* Top Row */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 1.5rem', borderBottom: '1px solid var(--glass-border)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <img
+                src="/logo.png"
+                alt="Company Logo"
+                style={{ height: '32px', objectFit: 'contain', filter: activeTheme === 'light' ? 'invert(1) hue-rotate(180deg) contrast(1.2)' : 'none' }}
+              />
+              <span className="portal-badge" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '100px' }}>
+                {isPartner ? 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'} Portal
+              </span>
+            </div>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
+              <div style={{ display: 'flex', background: 'var(--table-header-bg)', padding: '5px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Light Mode"><Sun size={14} /></button>
+                <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Dark Mode"><Moon size={14} /></button>
+                <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>{profile.firstName} {profile.lastName || ''}</span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Active Student'}</span>
+                </div>
+                <div style={{ position: 'relative', width: '38px', height: '38px', flexShrink: 0 }}>
+                  <div className="avatar" style={{ width: '38px', height: '38px', fontSize: '1rem', overflow: 'hidden', border: '2px solid rgba(167,139,250,0.4)', padding: 0, borderRadius: '10px' }}>
+                    {profile.avatarUrl
+                      ? <img src={profile.avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', fontWeight: 800, background: 'var(--accent-primary)', color: '#fff' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '8px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
+              >
+                <LogOut size={16} /> Logout
+              </button>
             </div>
           </div>
 
-          {/* Scrollable Sidebar Navigation Stack */}
-          <nav className="sidebar-nav" style={{ marginTop: '0.5rem' }}>
-            <NavButton id="home" icon={Home} label="Dashboard Overview" />
-            <div className="nav-divider" />
-            
+          {/* Bottom Row - Navigation */}
+          <nav style={{ display: 'flex', justifyContent: 'center', gap: '10px', padding: '10px 1.5rem', overflowX: 'auto', scrollbarWidth: 'none' }}>
+            <style>{`nav::-webkit-scrollbar { display: none; }`}</style>
+            <NavButton id="home" icon={Home} label="Dashboard" />
             {isStudent && (
               <>
                 <NavButton id="course-finder" icon={Search} label="Search Programs" />
-                <NavButton id="applications" icon={FileText} label="My Applications" />
+                <NavButton id="applications" icon={FileText} label="Applications" />
                 <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" />
                 <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" />
-                <NavButton id="notifications" icon={Bell} label="Alerts" isBadge={true} count={unreadMsgCount} />
+                <button
+                  className={`nav-item ${activeTab === 'notifications' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('notifications'); setMessage({ text: '', type: '' }); setEditMode(false); setShowMsgAlert(false); setAlertDismissed(true); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', borderRadius: '100px', border: '1px solid transparent', background: activeTab === 'notifications' ? 'var(--accent-glow)' : 'transparent', color: activeTab === 'notifications' ? 'var(--accent-secondary)' : 'var(--text-muted)', fontWeight: 700, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s', position: 'relative' }}
+                >
+                  <Bell size={16} /> Alerts
+                  {unreadMsgCount > 0 && (
+                    <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#ef4444', color: '#fff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '0.65rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, animation: 'pulse 2s infinite', textTransform: 'none', letterSpacing: 'normal' }}>
+                      {unreadMsgCount > 9 ? '9+' : unreadMsgCount}
+                    </span>
+                  )}
+                </button>
+                <NavButton id="profile" icon={User} label="Account Profile" />
               </>
             )}
-
             {isPartner && (
               <>
                 <NavButton id="register-student" icon={User} label="Register New" />
                 <NavButton id="students-list" icon={Users} label="My Students" />
-                <NavButton id="course-finder" icon={Search} label="Program Finder" />
-                <NavButton id="partner-applications" icon={FileText} label="Track Records" />
+                <NavButton id="course-finder" icon={Search} label="Prog. Finder" />
+                <NavButton id="partner-applications" icon={FileText} label="Applications" />
                 <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
                 <NavButton id="learning" icon={MonitorPlay} label="Resources" />
                 <NavButton id="notifications" icon={Bell} label="Alerts" />
                 <NavButton id="counselors" icon={Briefcase} label="Manage Team" />
+                <NavButton id="profile" icon={User} label="Account" />
               </>
             )}
-
             {isCounselor && (
               <>
                 <NavButton id="register-student" icon={User} label="Register New" />
@@ -503,9 +506,9 @@ const Dashboard = () => {
                 <NavButton id="course-finder" icon={Search} label="Finder" />
                 <NavButton id="partner-applications" icon={FileText} label="Track Apps" />
                 <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
+                <NavButton id="profile" icon={User} label="Account" />
               </>
             )}
-
             {isFreelancer && (
               <>
                 <NavButton id="register-student" icon={User} label="Register New" />
@@ -513,70 +516,18 @@ const Dashboard = () => {
                 <NavButton id="course-finder" icon={Search} label="Finder" />
                 <NavButton id="partner-applications" icon={FileText} label="Applications" />
                 <NavButton id="student-documents" icon={UploadCloud} label="Docs" />
+                <NavButton id="profile" icon={User} label="Profile" />
               </>
             )}
-
-            <div className="nav-divider" />
-            <NavButton id="profile" icon={User} label="Account Profile" />
           </nav>
+        </header>
 
-          {/* Sidebar Footer Widget Area (Theme, User info, Logout) */}
-          <div className="sidebar-footer" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {/* Elegant Theme Toggle Pillar */}
-            <div style={{ 
-              display: 'flex', 
-              background: 'rgba(255,255,255,0.03)', 
-              padding: '4px', 
-              borderRadius: '10px', 
-              border: '1px solid var(--glass-border)',
-              justifyContent: isSidebarActuallyCollapsed ? 'center' : 'space-between',
-              alignItems: 'center'
-            }}>
-              <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', flex: isSidebarActuallyCollapsed ? 'none' : 1, display: 'flex', justifyContent: 'center' }} title="Light Mode"><Sun size={14} /></button>
-              <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', flex: isSidebarActuallyCollapsed ? 'none' : 1, display: 'flex', justifyContent: 'center' }} title="Dark Mode"><Moon size={14} /></button>
-              {!isSidebarActuallyCollapsed && <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', flex: 1, display: 'flex', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>}
-            </div>
-
-            {/* Mini User Identification Cell */}
-            <div className="sidebar-user">
-              <div className="avatar">
-                {profile.avatarUrl
-                  ? <img src={profile.avatarUrl} alt="U" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <span>{(profile.firstName || 'U')[0].toUpperCase()}</span>
-                }
-              </div>
-              <div className="user-info nav-label" style={{ opacity: isSidebarActuallyCollapsed ? 0 : 1, transition: 'opacity 0.2s' }}>
-                <div className="name">{profile.firstName} {profile.lastName || ''}</div>
-                <div className="role">{isPartner ? profile.companyName || 'Partner' : 'Authenticated'}</div>
-              </div>
-            </div>
-
-            {/* Integrated Session Termination */}
-            <button
-              onClick={handleLogout}
-              className="nav-item logout-btn"
-              style={{ justifyContent: isSidebarActuallyCollapsed ? 'center' : 'flex-start' }}
-            >
-              <LogOut size={16} />
-              <span className="nav-label" style={{ opacity: isSidebarActuallyCollapsed ? 0 : 1, transition: 'opacity 0.2s' }}>Sign Out</span>
-            </button>
-          </div>
-        </aside>
-
-        {/* 💻 MAIN CANVAS CONTAINER */}
-        <main className="dash-main" style={{ flex: 1, minWidth: 0, position: 'relative', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          {/* Contextual Breadcrumb/Header Bar */}
-          <header style={{ 
-             padding: '1.2rem 1.5rem', borderBottom: '1px solid var(--glass-border)', 
-             display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 
-          }}>
-             <div>
-               <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', textTransform: 'capitalize' }}>
-                 {activeTab.replace(/-/g, ' ')}
-               </h2>
-               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Welcome back, {profile.firstName}</p>
-             </div>
-          </header>
+        {/* ================================== */}
+        {/* MAIN CONTENT CARD                  */}
+        {/* ================================== */}
+        <main className="dash-main" style={{ 
+          flex: 1, minHeight: 0, background: 'transparent', display: 'flex', flexDirection: 'column'
+        }}>
           {activeTab === 'profile' && (
             <header className="dash-header" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', marginBottom: '10px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1076,7 +1027,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
