@@ -48,7 +48,7 @@ const VerticalMarquee = ({ images, align, direction = -1, speed = 30, isVisible 
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-      className={`absolute ${align === 'left' ? 'left-8 sm:left-12 lg:left-24' : 'right-8 sm:right-12 lg:right-24'} top-0 bottom-0 my-auto -translate-y-12 h-[420px] lg:h-[510px] w-[130px] lg:w-[170px] overflow-hidden z-30 pointer-events-none hidden md:flex flex-col justify-center`}
+      className={`absolute ${align === 'left' ? 'left-8 sm:left-12 lg:left-24' : 'right-8 sm:right-12 lg:right-24'} top-0 bottom-0 my-auto -translate-y-12 h-[420px] lg:h-[510px] w-[130px] lg:w-[170px] overflow-hidden z-30 pointer-events-none hidden md:flex flex-col`}
     >
       {/* Top and Bottom faded mask */}
       <div className="absolute top-0 inset-x-0 h-16 lg:h-20 bg-gradient-to-b from-[#0a0d18] via-[#0a0d18]/80 to-transparent z-20 pointer-events-none" />
@@ -56,6 +56,7 @@ const VerticalMarquee = ({ images, align, direction = -1, speed = 30, isVisible 
 
       <motion.div
         className="flex flex-col"
+        initial={{ y: direction === -1 ? '0%' : '-50%' }}
         animate={isVisible ? { y: direction === -1 ? ['0%', '-50%'] : ['-50%', '0%'] } : {}}
         transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
       >
