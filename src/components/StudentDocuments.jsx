@@ -59,7 +59,7 @@ const StudentDocuments = () => {
 
   return (
     <div style={{ padding: '20px', animation: 'fadeIn 0.3s ease' }}>
-      <header className="dash-header" style={{ marginBottom: '20px' }}>
+      <header className="dash-header" style={{ marginBottom: "20px" }}>
         <div>
           <h1>Student Documents</h1>
           <p>Download the latest document bundles uploaded by your students.</p>
@@ -105,7 +105,7 @@ const StudentDocuments = () => {
         </div>
       ) : (
         <div style={{ overflowX: 'auto', background: 'var(--card-bg)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
             <thead>
               <tr style={{ background: 'var(--table-header-bg)', borderBottom: '1px solid var(--glass-border)' }}>
                 <th style={{ padding: '15px 20px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase' }}>Student Name</th>

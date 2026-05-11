@@ -25,8 +25,8 @@ const advantages = [
 
 // Static fallback background for performance
 const ElegantBackground = () => (
-  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-[#020617]">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1)_0%,rgba(2,6,23,1)_100%)] z-10 pointer-events-none" />
+  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-[#0a0d18]">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1)_0%,#0a0d18_100%)] z-10 pointer-events-none" />
     <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-[1]" />
   </div>
 );
@@ -127,7 +127,7 @@ export const WhyChooseUs = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-transparent"
+      className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-[#0a0d18]"
     >
       <ElegantBackground />
 

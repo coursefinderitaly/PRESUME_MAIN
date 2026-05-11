@@ -47,7 +47,7 @@ const VerticalMarquee = ({ images, align, direction = -1, speed = 30, isVisible 
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-      className={`absolute ${align === 'left' ? 'left-3 sm:left-6 lg:left-8' : 'right-3 sm:right-6 lg:right-8'} top-0 bottom-0 w-[120px] sm:w-[140px] lg:w-[180px] overflow-hidden z-30 pointer-events-none hidden md:flex flex-col`}
+      className={`absolute ${align === 'left' ? 'left-3 sm:left-6 lg:left-8' : 'right-3 sm:right-6 lg:right-8'} top-32 bottom-10 w-[120px] sm:w-[140px] lg:w-[180px] overflow-hidden z-30 pointer-events-none hidden md:flex flex-col`}
     >
       {/* Top and Bottom faded mask */}
       <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#0a0d18] to-transparent z-20 pointer-events-none" />
@@ -105,7 +105,7 @@ export const Universities = () => {
   return (
     <section
       ref={sectionRef}
-      className="section-safe relative bg-transparent overflow-hidden"
+      className="section-safe relative bg-[#0a0d18] overflow-hidden"
       style={{ height: '100svh', minHeight: 'min(760px, 100svh)', display: 'flex', flexDirection: 'column' }}
     >
       {/* Elegant static gradient bg */}
@@ -170,7 +170,7 @@ export const Universities = () => {
         />
 
         {/* User Provided Interactive Accordion Gallery */}
-        <div className="relative z-[1000] w-full max-w-5xl mx-auto flex items-center justify-center pointer-events-auto">
+        <div className="relative z-1 w-full max-w-5xl mx-auto flex items-center justify-center pointer-events-auto">
           <InteractiveAccordionGallery 
             items={universities.slice(0, 5).map(uni => ({
               id: uni.id,

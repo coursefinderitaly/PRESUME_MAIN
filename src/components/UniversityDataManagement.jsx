@@ -55,9 +55,9 @@ const UniversityDataManagement = () => {
     };
 
     return (
-        <div style={{ padding: '10px 20px', animation: 'fadeIn 0.4s ease-out', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '10px 20px', animation: 'fadeIn 0.4s ease-out', display: 'flex', flexDirection: 'column' }}>
             {/* Header Section - Compact */}
-            <header className="dash-header" style={{ marginBottom: '15px', background: 'transparent', border: 'none', padding: 0 }}>
+            <header className="dash-header" style={{ marginBottom: "20px" }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{ background: 'var(--accent-primary)', padding: '10px', borderRadius: '10px', color: 'white', display: 'flex', boxShadow: '0 0 15px rgba(0, 71, 171, 0.3)' }}>
                         <Database size={20} />

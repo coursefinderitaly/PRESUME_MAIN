@@ -54,8 +54,6 @@ function LandingPage() {
 
         {/* Container for all sections below Hero — gets the global background */}
         <div className="relative flex-1">
-          <div className="absolute inset-0 bg-[#050814] z-0" />
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-[1]" />
 
           {/* All below-the-fold sections are lazy + animated */}
           <Suspense fallback={<SectionFallback />}>

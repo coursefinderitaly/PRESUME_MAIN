@@ -155,7 +155,7 @@ const ManageCounselors = ({ setMessage, targetPartnerId }) => {
   return (
     <div className="view-counselors">
       {!targetPartnerId && (
-        <header className="dash-header">
+        <header className="dash-header" style={{ marginBottom: "20px" }}>
           <div>
             <h1>Manage Counselors</h1>
             <p>Add or remove admission counselors from the network.</p>
@@ -218,7 +218,7 @@ const ManageCounselors = ({ setMessage, targetPartnerId }) => {
       </div>
 
       <div className="widget placeholder-panel">
-        <table style={{width: '100%', borderCollapse: 'collapse', textAlign: 'left'}}>
+        <table style={{width: '100%', borderCollapse: 'collapse', textAlign: 'center'}}>
           <thead>
             <tr className="theme-header-bg">
               <th style={{padding: '10px'}}>Name</th>

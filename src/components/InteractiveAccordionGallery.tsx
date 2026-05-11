@@ -35,7 +35,7 @@ const InteractiveAccordionGallery: React.FC<InteractiveAccordionGalleryProps> = 
   const selectedItem = items.find((item) => item.id === selectedId);
 
   return (
-    <div className="relative w-full h-[320px] md:h-[400px] flex items-center justify-center px-4 z-[2000] pointer-events-auto">
+    <div className="relative w-full h-[320px] md:h-[400px] flex items-center justify-center px-4 z-10 pointer-events-auto">
       <div className="flex items-stretch justify-center w-full h-full max-w-2xl md:max-w-3xl mx-auto gap-2 md:gap-3 py-4">
         {items.map((item, idx) => {
           const shiftDirection = idx % 2 === 0 ? 1 : -1;

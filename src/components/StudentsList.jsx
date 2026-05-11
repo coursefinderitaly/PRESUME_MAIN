@@ -222,14 +222,15 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
   }
 
   return (
-    <div className="view-students">
-      <header className="dash-header">
+    <div className="view-students" style={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+      <header className="dash-header" style={{ marginBottom: "20px", flexShrink: 0 }}>
         <div>
           <h1>Student Directory</h1>
           <p>Filter, manage, view profiles, and assign counselors to enrolled students.</p>
         </div>
       </header>
 
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
       {pendingApplications && pendingApplications.length > 0 && (
         <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px dashed var(--accent-secondary)', padding: '15px 20px', borderRadius: '12px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', animation: 'fadeIn 0.3s ease' }}>
           <div>
@@ -250,14 +251,14 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
       )}
 
       {/* FILTER BAR */}
-      <div className="widget" style={{ marginBottom: '20px', padding: '15px' }}>
+      <div className="glass-panel" style={{ marginBottom: '20px', padding: '15px' }}>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <div className="theme-flex-filter" style={{ minWidth: '200px' }}>
-            <MapPin size={16} className="text-muted" />
+          <div className="theme-flex-filter" style={{ minWidth: '200px', background: 'var(--glass-highlight)' }}>
+            <MapPin size={16} style={{ color: 'var(--accent-secondary)' }} />
             <input type="text" name="country" placeholder="Filter by Country" value={filters.country} onChange={handleFilterChange} style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', width: '100%', outline: 'none', marginLeft: '8px' }} />
           </div>
-          <div className="theme-flex-filter" style={{ minWidth: '200px' }}>
-            <MapPin size={16} className="text-muted" />
+          <div className="theme-flex-filter" style={{ minWidth: '200px', background: 'var(--glass-highlight)' }}>
+            <MapPin size={16} style={{ color: 'var(--accent-secondary)' }} />
             <input type="text" name="state" placeholder="Filter by State" value={filters.state} onChange={handleFilterChange} style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', width: '100%', outline: 'none', marginLeft: '8px' }} />
           </div>
           <div style={{ minWidth: '200px' }}>
@@ -275,144 +276,147 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
       </div>
 
       {/* STUDENTS TABLE */}
-      <div className="widget placeholder-panel" style={{ padding: '0', overflowX: 'auto' }}>
-        <table style={{width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px'}}>
-          <thead>
-            <tr className="theme-header-bg">
-              <th style={{padding: '15px'}}>Student Name</th>
-              <th style={{padding: '15px'}}>Location</th>
-              <th style={{padding: '15px'}}>Contact</th>
-              <th style={{padding: '15px'}}>Offer Status</th>
-              <th style={{padding: '15px'}}>Student Status</th>
-              {profile.role !== 'counselor' && profile.role !== 'freelancer' && <th style={{padding: '15px'}}>Assigned Counselor</th>}
-              <th style={{padding: '15px', textAlign: 'center'}}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan="6" style={{padding: '30px', textAlign: 'center'}}>Loading database...</td></tr>
-            ) : students.length === 0 ? (
-              <tr><td colSpan="6" style={{padding: '30px', textAlign: 'center', color: '#9ca3af'}}>No students match the active filters.</td></tr>
-            ) : (
-              students.map(s => {
-                const currentCounselor = s.assignedCounselor 
-                  ? assignOptions.find(o => o.value === s.assignedCounselor._id)
-                  : assignOptions[0];
+      <div className="glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{width: '100%', borderCollapse: 'collapse', textAlign: 'center', minWidth: '800px'}}>
+            <thead>
+              <tr className="theme-header-bg">
+                <th style={{padding: '16px 20px'}}>Student Name</th>
+                <th style={{padding: '16px 20px'}}>Location</th>
+                <th style={{padding: '16px 20px'}}>Contact</th>
+                <th style={{padding: '16px 20px'}}>Offer Status</th>
+                <th style={{padding: '16px 20px'}}>Student Status</th>
+                {profile.role !== 'counselor' && profile.role !== 'freelancer' && <th style={{padding: '16px 20px'}}>Assigned Counselor</th>}
+                <th style={{padding: '16px 20px', textAlign: 'center'}}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan="7" style={{padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading database...</td></tr>
+              ) : students.length === 0 ? (
+                <tr><td colSpan="7" style={{padding: '40px', textAlign: 'center', color: 'var(--text-muted)'}}>No students match the active filters.</td></tr>
+              ) : (
+                students.map(s => {
+                  const currentCounselor = s.assignedCounselor 
+                    ? assignOptions.find(o => o.value === s.assignedCounselor._id)
+                    : assignOptions[0];
 
-                if (editingStudentId === s._id) {
+                  if (editingStudentId === s._id) {
+                    return (
+                      <tr key={s._id} className="theme-row-border">
+                        <td style={{padding: '15px 20px'}}>
+                          <input type="text" name="firstName" value={editFormData.firstName} onChange={handleEditChange} className="theme-input" style={{width: '100px', marginBottom: '5px', display: 'block'}} />
+                          <input type="text" name="lastName" value={editFormData.lastName} onChange={handleEditChange} className="theme-input" style={{width: '100px', display: 'block'}} />
+                        </td>
+                        <td style={{padding: '15px 20px'}}>
+                          <input type="text" name="city" value={editFormData.city} onChange={handleEditChange} className="theme-input" style={{width: '90px', marginBottom: '5px', display: 'block'}} />
+                          <input type="text" name="state" value={editFormData.state} onChange={handleEditChange} className="theme-input" style={{width: '90px', marginBottom: '5px', display: 'block'}} />
+                          <input type="text" name="country" value={editFormData.country} onChange={handleEditChange} className="theme-input" style={{width: '90px', display: 'block'}} />
+                        </td>
+                        <td style={{padding: '15px 20px'}}>
+                          <input type="email" name="email" value={editFormData.email} onChange={handleEditChange} className="theme-input" style={{width: '130px', marginBottom: '5px', display: 'block'}} />
+                          <input type="text" name="phone" value={editFormData.phone} onChange={handleEditChange} className="theme-input" style={{width: '130px', display: 'block'}} />
+                        </td>
+                        <td style={{padding: '15px 20px', fontSize: '0.8rem', color: 'var(--text-muted)'}}>
+                          Selection based updates.
+                        </td>
+                        <td style={{padding: '15px 20px', fontSize: '0.8rem', color: 'var(--text-muted)'}}>
+                          Status updates in view.
+                        </td>
+                        {profile.role !== 'counselor' && profile.role !== 'freelancer' && (
+                          <td style={{padding: '15px 20px', fontSize: '0.8rem', color: 'var(--text-muted)'}}>
+                            Counselor updates in view.
+                          </td>
+                        )}
+                        <td style={{padding: '15px 20px', textAlign: 'center'}}>
+                          <div style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
+                            <button onClick={() => handleSaveEdit(s._id)} style={{background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', padding: '5px'}} title="Save">
+                              <Save size={18} />
+                            </button>
+                            <button onClick={() => setEditingStudentId(null)} style={{background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '5px'}} title="Cancel">
+                              <X size={18} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+
                   return (
-                    <tr key={s._id} className="theme-row-border">
-                      <td style={{padding: '15px'}}>
-                        <input type="text" name="firstName" value={editFormData.firstName} onChange={handleEditChange} className="theme-input" style={{width: '100px', marginBottom: '5px', display: 'block'}} />
-                        <input type="text" name="lastName" value={editFormData.lastName} onChange={handleEditChange} className="theme-input" style={{width: '100px', display: 'block'}} />
+                    <tr 
+                      key={s._id} 
+                      className="theme-row-border" 
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setSelectedStudentDetails(s)}
+                    >
+                      <td style={{padding: '18px 20px'}}>
+                        <div style={{fontWeight: '700', color: 'var(--text-main)'}}>{s.firstName} {s.lastName}</div>
+                        <div style={{fontSize: '0.8rem', color: 'var(--text-muted)'}}>{s.email}</div>
+                        {s.createdByCounselor && profile.role === 'partner' && (
+                          <div style={{fontSize: '0.75rem', color: 'var(--accent-secondary)', marginTop: '6px', background: 'var(--accent-glow)', padding: '2px 8px', borderRadius: '4px', display: 'inline-block', border: '1px solid var(--glass-border)' }}>
+                            By: {s.createdByCounselor.firstName}
+                          </div>
+                        )}
                       </td>
-                      <td style={{padding: '15px'}}>
-                        <input type="text" name="city" value={editFormData.city} onChange={handleEditChange} className="theme-input" style={{width: '90px', marginBottom: '5px', display: 'block'}} />
-                        <input type="text" name="state" value={editFormData.state} onChange={handleEditChange} className="theme-input" style={{width: '90px', marginBottom: '5px', display: 'block'}} />
-                        <input type="text" name="country" value={editFormData.country} onChange={handleEditChange} className="theme-input" style={{width: '90px', display: 'block'}} />
+                      <td style={{padding: '18px 20px', color: 'var(--text-main)'}}>
+                        <span style={{ fontWeight: 600 }}>{s.city}, {s.state}</span><br/>
+                        <span style={{fontSize: '0.8rem', color: 'var(--text-muted)'}}>{s.country}</span>
                       </td>
-                      <td style={{padding: '15px'}}>
-                        <input type="email" name="email" value={editFormData.email} onChange={handleEditChange} className="theme-input" style={{width: '130px', marginBottom: '5px', display: 'block'}} />
-                        <input type="text" name="phone" value={editFormData.phone} onChange={handleEditChange} className="theme-input" style={{width: '130px', display: 'block'}} />
+                      <td style={{padding: '18px 20px'}}>
+                        <div style={{ color: 'var(--text-main)' }}>{s.email}</div>
+                        <div style={{fontSize: '0.8rem', color: 'var(--text-muted)'}}>{s.phone}</div>
                       </td>
-                      <td style={{padding: '15px', fontSize: '0.8rem'}} className="text-muted">
-                        Saved automatically on selection.
+                      <td style={{padding: '18px 20px'}} onClick={(e) => e.stopPropagation()}>
+                        <Select 
+                          menuPortalTarget={document.body}
+                          options={offerStatusOptions}
+                          value={offerStatusOptions.find(o => o.value === (s.offerStatus || 'Pending'))}
+                          onChange={(val) => handleUpdateOfferStatus(s._id, val)}
+                          styles={{...customSelectStyles, control: (b,st) => ({...customSelectStyles.control(b,st), minWidth: '120px', fontSize: '0.82rem'})}}
+                          isSearchable={false}
+                        />
                       </td>
-                      <td style={{padding: '15px', fontSize: '0.8rem'}} className="text-muted">
-                        Status handled in view mode.
+                      <td style={{padding: '18px 20px'}} onClick={(e) => e.stopPropagation()}>
+                        <Select 
+                          menuPortalTarget={document.body}
+                          options={studentStatusOptions}
+                          value={studentStatusOptions.find(o => o.value === (s.studentStatus || 'Active'))}
+                          onChange={(val) => handleUpdateStudentStatus(s._id, val)}
+                          styles={{...customSelectStyles, control: (b,st) => ({...customSelectStyles.control(b,st), minWidth: '120px', fontSize: '0.82rem'})}}
+                          isSearchable={false}
+                        />
                       </td>
                       {profile.role !== 'counselor' && profile.role !== 'freelancer' && (
-                        <td style={{padding: '15px', fontSize: '0.8rem'}} className="text-muted">
-                          Counselor assignment handled in view mode.
+                        <td style={{padding: '18px 20px'}} onClick={(e) => e.stopPropagation()}>
+                          <Select 
+                            menuPortalTarget={document.body}
+                            options={assignOptions}
+                            value={currentCounselor}
+                            onChange={(val) => handleAssignCounselor(s._id, val)}
+                            styles={{...customSelectStyles, control: (b,st) => ({...customSelectStyles.control(b,st), minWidth: '160px', fontSize: '0.85rem'})}}
+                            isSearchable={true}
+                          />
                         </td>
                       )}
-                      <td style={{padding: '15px', textAlign: 'center'}}>
-                        <div style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
-                          <button onClick={() => handleSaveEdit(s._id)} style={{background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', padding: '5px'}} title="Save">
-                            <Save size={18} />
+                      <td style={{padding: '18px 20px', textAlign: 'center'}} onClick={(e) => e.stopPropagation()}>
+                        <div style={{display: 'flex', gap: '12px', justifyContent: 'center'}}>
+                          <button onClick={(e) => { e.stopPropagation(); handleEditClick(s); }} style={{background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer', opacity: '0.9'}} title="Edit Student">
+                            <Edit2 size={16} />
                           </button>
-                          <button onClick={() => setEditingStudentId(null)} style={{background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', padding: '5px'}} title="Cancel">
-                            <X size={18} />
+                          <button onClick={(e) => { e.stopPropagation(); handleDeleteStudent(s._id); }} style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', opacity: '0.9'}} title="Remove Student">
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </td>
                     </tr>
                   );
-                }
-
-                return (
-                  <tr 
-                    key={s._id} 
-                    className="theme-row-border" 
-                    style={{ transition: 'background 0.2s', cursor: 'pointer' }}
-                    onClick={() => setSelectedStudentDetails(s)}
-                  >
-                    <td style={{padding: '15px'}}>
-                      <div style={{fontWeight: '600'}}>{s.firstName} {s.lastName}</div>
-                      <div style={{fontSize: '0.8rem'}} className="text-muted">{s.email}</div>
-                      {s.createdByCounselor && profile.role === 'partner' && (
-                        <div style={{fontSize: '0.75rem', color: 'var(--accent-secondary)', marginTop: '4px', background: 'rgba(59, 130, 246, 0.1)', padding: '2px 6px', borderRadius: '4px', display: 'inline-block'}}>
-                          Registered by: {s.createdByCounselor.firstName}
-                        </div>
-                      )}
-                    </td>
-                    <td style={{padding: '15px', color: 'var(--text-main)'}}>
-                      {s.city}, {s.state}<br/>
-                      <span style={{fontSize: '0.8rem'}} className="text-muted">{s.country}</span>
-                    </td>
-                    <td style={{padding: '15px'}}>
-                      <div>{s.email}</div>
-                      <div style={{fontSize: '0.8rem'}} className="text-muted">{s.phone}</div>
-                    </td>
-                    <td style={{padding: '15px'}} onClick={(e) => e.stopPropagation()}>
-                      <Select 
-                        menuPortalTarget={document.body}
-                        options={offerStatusOptions}
-                        value={offerStatusOptions.find(o => o.value === (s.offerStatus || 'Pending'))}
-                        onChange={(val) => handleUpdateOfferStatus(s._id, val)}
-                        styles={{...customSelectStyles, control: (b,st) => ({...customSelectStyles.control(b,st), minWidth: '120px', fontSize: '0.82rem'})}}
-                        isSearchable={false}
-                      />
-                    </td>
-                    <td style={{padding: '15px'}} onClick={(e) => e.stopPropagation()}>
-                      <Select 
-                        menuPortalTarget={document.body}
-                        options={studentStatusOptions}
-                        value={studentStatusOptions.find(o => o.value === (s.studentStatus || 'Active'))}
-                        onChange={(val) => handleUpdateStudentStatus(s._id, val)}
-                        styles={{...customSelectStyles, control: (b,st) => ({...customSelectStyles.control(b,st), minWidth: '120px', fontSize: '0.82rem'})}}
-                        isSearchable={false}
-                      />
-                    </td>
-                    {profile.role !== 'counselor' && profile.role !== 'freelancer' && (
-                      <td style={{padding: '15px'}} onClick={(e) => e.stopPropagation()}>
-                        <Select 
-                          menuPortalTarget={document.body}
-                          options={assignOptions}
-                          value={currentCounselor}
-                          onChange={(val) => handleAssignCounselor(s._id, val)}
-                          styles={{...customSelectStyles, control: (b,st) => ({...customSelectStyles.control(b,st), minWidth: '160px', fontSize: '0.85rem'})}}
-                          isSearchable={true}
-                        />
-                      </td>
-                    )}
-                    <td style={{padding: '15px', textAlign: 'center'}} onClick={(e) => e.stopPropagation()}>
-                      <div style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
-                        <button onClick={(e) => { e.stopPropagation(); handleEditClick(s); }} style={{background: 'none', border: 'none', color: '#60a5fa', cursor: 'pointer', opacity: '0.8'}} title="Edit Student">
-                          <Edit2 size={16} />
-                        </button>
-                        <button onClick={(e) => { e.stopPropagation(); handleDeleteStudent(s._id); }} style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', opacity: '0.8'}} title="Remove Student">
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
+    </div>
     </div>
   );
 };

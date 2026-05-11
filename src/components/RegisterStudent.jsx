@@ -124,7 +124,7 @@ const RegisterStudent = ({ profile, setMessage }) => {
 
   return (
     <div className="view-standard">
-      <header className="dash-header" style={{ padding: '1.5rem 3rem' }}>
+      <header className="dash-header" style={{ marginBottom: "20px" }}>
         <div>
           <h1 style={{ fontSize: '1.8rem', marginBottom: '0.2rem' }}>Register New Student Lead</h1>
           <p style={{ margin: 0 }}>Enter personal and contact details for the prospect.</p>

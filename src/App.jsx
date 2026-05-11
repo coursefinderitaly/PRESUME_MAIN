@@ -16,6 +16,7 @@ import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
 import NotFound from './components/NotFound';
+import Map from './components/Map';
 import './index.css';
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
             <Route path="/contact" element={<ContactUsPage />} />
             <Route path="/our-story" element={<OurStoryPage />} />
             <Route path="/apple-academy" element={<AppleAcademyPage />} />
+            <Route path="/map" element={<Map />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </IdleTimeout>

@@ -140,7 +140,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
         setUniversitiesData(dataWithIds);
       } catch (err) {
         console.error("Error fetching universities:", err);
-        setError("Failed to load university data. Please ensure 'courses.xlsx' is placed in the backend folder.");
+        setError("Failed to load university data.");
         setUniversitiesData(sampleSheetData); // Fallback to sample on error
       } finally {
         setIsLoading(false);
@@ -250,8 +250,9 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       color: 'var(--text-main)',
       boxShadow: state.isFocused ? '0 0 0 3px rgba(14, 165, 233, 0.15)' : 'none',
       cursor: 'pointer',
-      padding: '2px 4px',
-      borderRadius: '10px',
+      minHeight: '30px',
+      height: '30px',
+      borderRadius: '8px',
       '&:hover': { borderColor: 'var(--accent-secondary)' },
     }),
     menu: (base) => ({
@@ -272,11 +273,11 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       cursor: 'pointer',
       '&:hover': { backgroundColor: 'rgba(128, 128, 128, 0.1)' }
     }),
-    singleValue: (base) => ({ ...base, color: 'var(--text-main)' }),
-    input: (base) => ({ ...base, color: 'var(--text-main)' }),
-    placeholder: (base) => ({ ...base, color: 'var(--text-muted)' }),
-    indicatorSeparator: (base) => ({ ...base, backgroundColor: 'var(--glass-border)' }),
-    dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)' }),
+    singleValue: (base) => ({ ...base, color: 'var(--text-main)', fontSize: '0.8rem' }),
+    valueContainer: (base) => ({ ...base, padding: '0 8px', height: '28px' }),
+    placeholder: (base) => ({ ...base, color: 'var(--text-muted)', fontSize: '0.8rem' }),
+    indicatorSeparator: () => ({ display: 'none' }),
+    dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)', padding: '4px' }),
   };
 
   const handleSelectChange = (name, selectedOption) => {
@@ -538,81 +539,336 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
   };
 
   return (
-    <div className="view-search" style={{ position: 'relative', paddingBottom: selectedUniIds.length > 0 ? '80px' : '0' }}>
-      <header className="dash-header">
-        <div>
-          <h1>Search Program Interface</h1>
-          <p>Explore programs</p>
-        </div>
-      </header>
+    <div className="view-search" style={{
+      display: 'flex',
+      gap: '24px',
+      height: '100%',
+      maxHeight: '100%',
+      overflow: 'hidden',
+      minHeight: 0,
+      position: 'relative',
+      animation: 'fadeUp 0.4s ease',
+      paddingBottom: selectedUniIds.length > 0 && !hideFooter ? '60px' : '0'
+    }}>
 
-      {error && (
-        <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '15px', borderRadius: '8px', marginBottom: '20px', border: '1px solid #ef4444' }}>
-          {error}
-        </div>
-      )}
+      {/* LEFT CANVAS: SEARCH RESULTS */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: 0, height: '100%' }}>
 
-      <div className="widget" style={{ marginBottom: '20px' }}>
-        <h3 style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Filter size={18} /> Search Parameters
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+        <header className="dash-header" style={{ marginBottom: "16px", flexShrink: 0, borderBottom: 'none', padding: 0, background: 'transparent', backdropFilter: 'none' }}>
           <div>
-            <label className="text-muted" style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px' }}>Program Level</label>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>Course Finder</h1>
+            <p style={{ margin: '4px 0 0 0', color: 'var(--text-muted)' }}>Discover optimal academic pathways tailored for you.</p>
+          </div>
+        </header>
+
+        {error && (
+          <div style={{ flexShrink: 0, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '15px', borderRadius: '12px', marginBottom: '16px', border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '0.9rem' }}>
+            {error}
+          </div>
+        )}
+
+        {/* Result Scroll Context */}
+        <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)' }}>Search Results</h3>
+              {!isLoading && hasSearched && (
+                <div style={{ background: 'rgba(139, 92, 246, 0.1)', color: 'var(--accent-primary)', padding: '4px 12px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 700 }}>
+                  {filteredResults.length} Found
+                </div>
+              )}
+            </div>
+
+            {!isLoading && hasSearched && filteredResults.length > 0 && !hideFooter && (
+              <button
+                onClick={handleSelectAllFiltered}
+                style={{
+                  background: 'var(--glass-bg)',
+                  color: 'var(--text-main)',
+                  border: '1px solid var(--glass-border)',
+                  padding: '6px 14px',
+                  borderRadius: '8px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <CheckSquare size={14} />
+                {filteredResults.slice(0, 25).every(u => selectedUniIds.includes(u.id || u.SNO))
+                  ? 'Deselect Page'
+                  : 'Select Max 25'}
+              </button>
+            )}
+          </div>
+
+          {isLoading ? (
+            <div className="empty-state" style={{ height: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px', background: 'var(--card-bg-solid)', borderRadius: '20px', border: '1px solid var(--glass-border)' }}>
+              <div style={{ position: 'relative', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '3px solid transparent', borderTopColor: 'var(--accent-primary)', borderRightColor: 'var(--accent-secondary)', animation: 'spin 1.5s linear infinite' }}></div>
+                <Database size={28} style={{ color: 'var(--accent-primary)' }} />
+              </div>
+              <p style={{ margin: 0, color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem' }}>Querying University Database...</p>
+            </div>
+          ) : !hasSearched ? (
+            <div style={{ height: '100%', minHeight: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', color: 'var(--text-muted)', background: 'var(--card-bg-solid)', border: '1px dashed var(--glass-border)', borderRadius: '20px' }}>
+              <div style={{ background: 'var(--glass-highlight)', padding: '20px', borderRadius: '50%' }}>
+                <Search size={40} style={{ color: 'var(--text-dim)' }} />
+              </div>
+              <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.1rem' }}>Begin Your Search</h3>
+              <p style={{ margin: 0, fontSize: '0.85rem', textAlign: 'center', maxWidth: '300px' }}>Configure the filters on the right panel to narrow down global course opportunities.</p>
+            </div>
+          ) : filteredResults.length === 0 ? (
+            <div style={{ padding: '40px 20px', color: 'var(--text-muted)', textAlign: 'center', background: 'rgba(239, 68, 68, 0.03)', borderRadius: '16px', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
+              <X size={32} style={{ color: '#ef4444', marginBottom: '12px', opacity: 0.7 }} />
+              <h3 style={{ margin: '0 0 8px 0', color: '#ef4444' }}>No Results Found</h3>
+              <p style={{ margin: 0, fontSize: '0.85rem' }}>Try adjusting your filtration parameters or checking availability for a different intake.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {filteredResults.map((uni, idx) => {
+                const uniId = uni.id || `fallback_${idx}`;
+                const isSelected = selectedUniIds.includes(uniId);
+                const otherCols = getOtherColumns(uni);
+
+                const uniName = uni["University Name"] || uni["university name"] || uni.name || "Unknown University";
+                const programNameRaw = uni["Program Name "] || uni["program name"] || uni["Program name"] || uni.program || "";
+                const programName = (programNameRaw && programNameRaw !== "N/A") ? programNameRaw : "";
+                const location = (uni["Location"] || uni.location) ? (uni["Location"] || uni.location) : "Location N/A";
+                const type = (uni["Type"] || uni.type) && (uni["Type"] || uni.type) !== "N/A" ? (uni["Type"] || uni.type) : "";
+                const ranking = (uni["Ranking"] || uni.ranking) && (uni["Ranking"] || uni.ranking) !== "N/A" ? (uni["Ranking"] || uni.ranking) : "";
+                const reqPercentage = uni["percentage"] || uni["Percentage"] || uni.percentage || "0";
+
+                let displayPercentage = reqPercentage;
+                if (reqPercentage && reqPercentage !== "0") {
+                  const rawStr = String(reqPercentage).replace('%', '').trim();
+                  const rawNum = parseFloat(rawStr);
+                  if (!isNaN(rawNum)) {
+                    displayPercentage = (rawNum < 1 ? Math.round(rawNum * 100) : rawNum).toString();
+                  }
+                }
+
+                const levelRaw = uni["program level"] || uni["Program level"] || uni.level || "";
+                const level = (levelRaw && levelRaw !== "N/A") ? levelRaw : "";
+                const interestedFieldRaw = uni["Interested field"] || uni["interested field"] || uni.interestedField || "";
+                const interestedField = (interestedFieldRaw && interestedFieldRaw !== "N/A") ? interestedFieldRaw : "";
+                const subFieldRaw = uni["sub field"] || uni["Sub field"] || uni.subField || "";
+                const subField = (subFieldRaw && subFieldRaw !== "N/A") ? subFieldRaw : "";
+
+                return (
+                  <div key={uniId} style={{
+                    background: isSelected ? 'rgba(139, 92, 246, 0.05)' : 'var(--card-bg-solid)',
+                    border: isSelected ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)',
+                    borderRadius: '16px',
+                    padding: '16px 20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer',
+                    boxShadow: isSelected ? '0 8px 20px -8px rgba(139, 92, 246, 0.15)' : 'none'
+                  }}
+                    onClick={() => toggleSelection({ ...uni, id: uniId })}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                        <div style={{ paddingTop: '4px' }}>
+                          <div style={{
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '6px',
+                            border: `2px solid ${isSelected ? 'var(--accent-primary)' : 'var(--glass-border)'}`,
+                            background: isSelected ? 'var(--accent-primary)' : 'transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'all 0.2s'
+                          }}>
+                            {isSelected && <CheckSquare size={12} color="#fff" />}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <h4 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.05rem', fontWeight: 700, lineHeight: 1.3 }}>
+                            {programName || uniName}
+                          </h4>
+                          {programName && (
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <Building size={13} />
+                              <span>{uniName}</span>
+                            </div>
+                          )}
+                          <div style={{ display: 'flex', gap: '12px', color: 'var(--text-muted)', fontSize: '0.75rem', flexWrap: 'wrap', marginTop: '6px' }}>
+                            {location !== "Location N/A" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} /> {location}</span>}
+                            {reqPercentage !== "0" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--accent-primary)', fontWeight: 600 }}><GraduationCap size={12} /> Min. {displayPercentage}%</span>}
+                            {type !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '2px 8px', borderRadius: '4px' }}>{type}</span>}
+                            {ranking !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '2px 8px', borderRadius: '4px' }}>Rank: {ranking}</span>}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                        {level && <span style={{ fontSize: '0.7rem', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--accent-primary)', padding: '4px 8px', borderRadius: '6px', fontWeight: 700 }}>{level}</span>}
+                      </div>
+                    </div>
+
+                    {otherCols.length > 0 && (
+                      <div style={{
+                        marginTop: '4px',
+                        paddingTop: '12px',
+                        borderTop: '1px solid var(--table-header-bg)',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+                        gap: '10px'
+                      }}>
+                        {otherCols.map(col => {
+                          const isDateContext = col.toLowerCase().includes('deadline') || col.toLowerCase().includes('date');
+                          return (
+                            <div key={col} style={{
+                              fontSize: '0.75rem',
+                              background: isDateContext ? 'rgba(239, 68, 68, 0.03)' : 'var(--glass-bg)',
+                              padding: '8px 10px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--glass-border)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '2px'
+                            }}>
+                              <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDateContext ? '#ef4444' : 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                {isDateContext && <CalendarClock size={10} />}
+                                {col}
+                              </span>
+                              <span style={{ color: isDateContext ? '#ef4444' : 'var(--text-main)', fontWeight: 600 }}>
+                                {formatDisplayValue(uni[col], isDateContext)}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <style>{`
+            @keyframes spin { 100% { transform: rotate(360deg); } }
+          `}</style>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE: FILTER PANEL */}
+      <div style={{
+        width: '280px',
+        flexShrink: 0,
+        background: 'var(--card-bg-solid)',
+        border: '1px solid var(--glass-border)',
+        borderRadius: '20px',
+        padding: '12px 14px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        height: '100%',
+        maxHeight: '100%',
+        minHeight: 0,
+        overflowY: 'auto',
+        boxShadow: 'var(--card-shadow)',
+        scrollbarWidth: 'none'
+      }}>
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          paddingBottom: '8px',
+          borderBottom: '1px solid var(--glass-border)',
+          flexShrink: 0,
+          position: 'relative',
+          zIndex: 2
+        }}>
+          <div style={{
+            background: 'rgba(88, 166, 255, 0.15)',
+            padding: '6px',
+            borderRadius: '8px',
+            color: 'var(--accent-primary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0
+          }}>
+            <Filter size={18} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)', lineHeight: 1.2 }}>Search Settings</h3>
+            <p style={{ margin: '1px 0 0 0', fontSize: '0.68rem', color: 'var(--text-muted)', lineHeight: 1.2 }}>Refine course selection</p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Program Level</label>
             <Select
               name="programLevel"
+              isSearchable={false}
               value={searchParams.programLevel}
               onChange={(val) => handleSelectChange("programLevel", val)}
               options={levelOptions}
               styles={customSelectStyles}
               menuPortalTarget={document.body}
-              placeholder="Select Level"
+              placeholder="All Levels"
             />
           </div>
+
           <div>
-            <label className="text-muted" style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px' }}>Interested Field</label>
+            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Interested Field</label>
             <Select
               name="interestedField"
+              isSearchable={false}
               value={searchParams.interestedField}
               onChange={(val) => handleSelectChange("interestedField", val)}
               options={interestedFieldOptions}
               styles={customSelectStyles}
               menuPortalTarget={document.body}
-              placeholder="Select Field"
+              placeholder="All Fields"
             />
           </div>
+
           <div>
-            <label className="text-muted" style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px' }}>Sub Field</label>
+            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Sub Field</label>
             <Select
               name="subField"
+              isSearchable={false}
               value={searchParams.subField}
               onChange={(val) => handleSelectChange("subField", val)}
               options={subFieldOptions}
               styles={customSelectStyles}
               menuPortalTarget={document.body}
-              placeholder="Select Sub Field"
+              placeholder="All Sub Fields"
             />
           </div>
+
           <div>
-            <label className="text-muted" style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px' }}>Program Name</label>
+            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Program Name</label>
             <Select
               name="programName"
+              isSearchable={false}
               value={searchParams.programName}
               onChange={(val) => handleSelectChange("programName", val)}
               options={programNameOptions}
               styles={customSelectStyles}
               menuPortalTarget={document.body}
-              placeholder="Select Program"
+              placeholder="Program Title"
             />
           </div>
+
           <div>
-            <label className="text-muted" style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px' }}>Your Highest Percentage (%)</label>
-            <input type="number" name="percentage" value={searchParams.percentage} onChange={handleTextChange} placeholder="e.g. 75" className="theme-input" />
-          </div>
-          <div>
-            <label className="text-muted" style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px' }}>Target Intake</label>
+            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Target Intake</label>
             <Select
               name="intake"
+              isSearchable={false}
               value={searchParams.intake}
               onChange={(val) => handleSelectChange("intake", val)}
               options={intakeOptions}
@@ -621,322 +877,145 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
               placeholder="Select Intake"
             />
           </div>
-        </div>
-        <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-          <button className="btn-save" onClick={(e) => {
-            e.preventDefault();
-            const hasFilter =
-              (searchParams.programLevel && searchParams.programLevel.value) ||
-              (searchParams.interestedField && searchParams.interestedField.value) ||
-              (searchParams.subField && searchParams.subField.value) ||
-              (searchParams.programName && searchParams.programName.value) ||
-              (searchParams.intake && searchParams.intake.value) ||
-              (searchParams.percentage && searchParams.percentage.trim() !== '');
 
-            if (hasFilter) {
-              setHasSearched(true);
-            } else {
-              setError("Please select at least one filter before searching.");
-              setTimeout(() => setError(null), 4000);
-            }
-          }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 25px', width: 'auto' }}>
-            <Search size={16} />
-            Search Programs
+          <div>
+            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Score Percentage (%)</label>
+            <input
+              type="number"
+              name="percentage"
+              value={searchParams.percentage}
+              onChange={handleTextChange}
+              placeholder="e.g. 75"
+              className="theme-input"
+              style={{
+                width: '100%',
+                background: 'var(--input-bg)',
+                border: '1px solid var(--glass-border)',
+                borderRadius: '8px',
+                padding: '6px 10px',
+                color: 'var(--text-main)',
+                fontSize: '0.85rem',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginTop: 'auto', paddingTop: '8px' }}>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              const hasFilter =
+                (searchParams.programLevel && searchParams.programLevel.value) ||
+                (searchParams.interestedField && searchParams.interestedField.value) ||
+                (searchParams.subField && searchParams.subField.value) ||
+                (searchParams.programName && searchParams.programName.value) ||
+                (searchParams.intake && searchParams.intake.value) ||
+                (searchParams.percentage && String(searchParams.percentage).trim() !== '');
+
+              if (hasFilter) {
+                setHasSearched(true);
+              } else {
+                setError("Please fill at least one preference before executing search.");
+                setTimeout(() => setError(null), 4000);
+              }
+            }}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              padding: '12px',
+              borderRadius: '12px',
+              background: 'var(--accent-primary)',
+              color: '#fff',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 4px 20px var(--accent-glow)',
+              transition: 'transform 0.2s active:scale-95'
+            }}
+          >
+            <Search size={16} /> Find Courses
           </button>
         </div>
       </div>
 
-      <div className="widget mt-4" style={{ padding: '0', overflow: 'hidden' }}>
-        <h3 style={{ padding: '20px 20px 0 20px', margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <span>Search Results</span>
-            {!isLoading && hasSearched && <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>{filteredResults.length} programs found</span>}
-          </div>
-          {!isLoading && hasSearched && filteredResults.length > 0 && !hideFooter && (
-            <button
-              onClick={handleSelectAllFiltered}
-              style={{
-                background: 'rgba(59, 130, 246, 0.1)',
-                color: 'var(--accent-secondary)',
-                border: '1px solid rgba(59, 130, 246, 0.2)',
-                padding: '6px 15px',
-                borderRadius: '8px',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <CheckSquare size={14} />
-              {filteredResults.slice(0, 25).every(u => selectedUniIds.includes(u.id || u.SNO))
-                ? 'Deselect All'
-                : 'Select All (Max 25)'}
-            </button>
-          )}
-        </h3>
-
-        {isLoading ? (
-          <div className="empty-state" style={{ padding: '60px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '25px', background: 'var(--card-bg-solid)', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-            <div style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '3px solid transparent', borderTopColor: 'var(--accent-primary)', borderRightColor: 'var(--accent-secondary)', animation: 'spin 1.5s linear infinite' }}></div>
-              <div style={{ position: 'absolute', inset: '10px', borderRadius: '50%', border: '3px solid transparent', borderBottomColor: 'var(--accent-secondary)', borderLeftColor: 'var(--accent-primary)', animation: 'spin 2s linear infinite reverse', opacity: 0.7 }}></div>
-              <Database size={32} style={{ color: 'var(--text-main)', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-              <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.2rem', letterSpacing: '1px' }}>Synchronizing Database</h3>
-              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.9rem' }}>...</p>
-            </div>
-            <style>{`
-              @keyframes spin { 100% { transform: rotate(360deg); } }
-              @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(0.9); } }
-            `}</style>
-          </div>
-        ) : !hasSearched ? (
-          <div className="empty-state" style={{ padding: '60px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', color: 'var(--text-muted)' }}>
-            <Search size={48} style={{ opacity: 0.2, marginBottom: '10px' }} />
-            <h3 style={{ margin: 0, color: 'var(--text-main)' }}>Ready to Search</h3>
-            <p style={{ margin: 0 }}>Configure your parameters above and click "Search Programs" to begin.</p>
-          </div>
-        ) : filteredResults.length === 0 ? (
-          <div className="empty-state" style={{ padding: '50px 20px', color: '#ef4444', textAlign: 'center', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '12px', border: '1px dashed rgba(239, 68, 68, 0.3)' }}>
-            <h3 style={{ margin: '0 0 10px 0' }}>No Match Found</h3>
-            <p style={{ margin: 0, fontSize: '0.9rem' }}>No universities matched your specific criteria. Try lowering the percentage or changing filters.</p>
-          </div>
-        ) : (
-          <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            {filteredResults.map((uni, idx) => {
-              const uniId = uni.id || `fallback_${idx}`;
-              const isSelected = selectedUniIds.includes(uniId);
-              const otherCols = getOtherColumns(uni);
-
-              const uniName = uni["University Name"] || uni["university name"] || uni.name || "Unknown University";
-              const programNameRaw = uni["Program Name "] || uni["program name"] || uni["Program name"] || uni.program || "";
-              const programName = (programNameRaw && programNameRaw !== "N/A") ? programNameRaw : "";
-              const location = (uni["Location"] || uni.location) ? (uni["Location"] || uni.location) : "Location Not Listed";
-              const type = (uni["Type"] || uni.type) && (uni["Type"] || uni.type) !== "N/A" ? (uni["Type"] || uni.type) : "";
-              const ranking = (uni["Ranking"] || uni.ranking) && (uni["Ranking"] || uni.ranking) !== "N/A" ? (uni["Ranking"] || uni.ranking) : "";
-              const reqPercentage = uni["percentage"] || uni["Percentage"] || uni.percentage || "0";
-
-              let displayPercentage = reqPercentage;
-              if (reqPercentage && reqPercentage !== "0") {
-                const rawStr = String(reqPercentage).replace('%', '').trim();
-                const rawNum = parseFloat(rawStr);
-                if (!isNaN(rawNum)) {
-                  displayPercentage = (rawNum < 1 ? Math.round(rawNum * 100) : rawNum).toString();
-                }
-              }
-
-              const levelRaw = uni["program level"] || uni["Program level"] || uni.level || "";
-              const level = (levelRaw && levelRaw !== "N/A") ? levelRaw : "";
-              const interestedFieldRaw = uni["Interested field"] || uni["interested field"] || uni.interestedField || "";
-              const interestedField = (interestedFieldRaw && interestedFieldRaw !== "N/A") ? interestedFieldRaw : "";
-              const subFieldRaw = uni["sub field"] || uni["Sub field"] || uni.subField || "";
-              const subField = (subFieldRaw && subFieldRaw !== "N/A") ? subFieldRaw : "";
-
-              return (
-                <div key={uniId} style={{
-                  background: isSelected ? 'rgba(59, 130, 246, 0.05)' : 'var(--bg-secondary)',
-                  border: isSelected ? '1px solid var(--accent-secondary)' : '1px solid var(--glass-border)',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '15px',
-                  transition: 'all 0.2s ease',
-                  cursor: 'pointer'
-                }} className="hover:border-[var(--accent-secondary)]"
-                  onClick={() => toggleSelection({ ...uni, id: uniId })}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
-                      <div style={{ paddingTop: '4px' }}>
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => toggleSelection({ ...uni, id: uniId })}
-                          onClick={(e) => e.stopPropagation()}
-                          style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-secondary)' }}
-                        />
-                      </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <h4 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <Building size={18} className="text-muted" /> {programName || uniName}
-                        </h4>
-                        {programName && (
-                          <div style={{ fontSize: '0.95rem', color: 'var(--accent-secondary)', fontWeight: 600 }}>
-                            {uniName}
-                          </div>
-                        )}
-                        <div style={{ display: 'flex', gap: '15px', color: 'var(--text-muted)', fontSize: '0.85rem', flexWrap: 'wrap', marginTop: '5px' }}>
-                          {location !== "Location Not Listed" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={14} /> {location}</span>}
-                          {reqPercentage !== "0" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><GraduationCap size={14} /> Min. {displayPercentage}%</span>}
-                          {type !== "" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', padding: '2px 8px', borderRadius: '4px' }}>{type}</span>}
-                          {ranking !== "" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '2px 8px', borderRadius: '4px' }}>{ranking}</span>}
-                        </div>
-                        <div style={{ fontSize: '0.9rem', color: 'var(--text-main)', marginTop: '8px' }}>
-                          {level && <span className="text-muted">Target Level: ({level})</span>}
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                            {interestedField} {subField && ` > ${subField}`}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Dynamic Other Columns from Google Sheet */}
-                  {otherCols.length > 0 && (
-                    <div style={{
-                      marginTop: '5px',
-                      paddingTop: '15px',
-                      borderTop: '1px dashed var(--glass-border)',
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                      gap: '12px'
-                    }}>
-                      {otherCols.map(col => {
-                        const isDateContext = col.toLowerCase().includes('deadline') || col.toLowerCase().includes('date');
-                        return (
-                          <div key={col} style={{
-                            fontSize: '0.85rem',
-                            background: isDateContext ? 'rgba(239, 68, 68, 0.05)' : 'var(--input-bg)',
-                            padding: '10px 12px',
-                            borderRadius: '8px',
-                            border: isDateContext ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid var(--glass-border)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '4px'
-                          }}>
-                            <span style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                              fontSize: '0.75rem',
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.5px',
-                              color: isDateContext ? '#ef4444' : 'var(--text-muted)'
-                            }}>
-                              {isDateContext && <CalendarClock size={12} />}
-                              {col}
-                            </span>
-                            <span style={{
-                              color: isDateContext ? '#ef4444' : 'var(--text-main)',
-                              fontWeight: isDateContext ? 700 : 500
-                            }}>
-                              {formatDisplayValue(uni[col], isDateContext)}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
+      {/* FLOATING EXPORT TRIGGER (BOTTOM FLOATER) */}
       {!hideFooter && selectedUniIds.length > 0 && (
         <div style={{
           position: 'fixed',
-          bottom: '30px',
-          left: '50%',
+          bottom: '24px',
+          left: 'calc(50% - 150px)', /* Offset slightly towards left to account for right panel width visual center */
           transform: 'translateX(-50%)',
-          background: 'var(--card-bg-solid)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid var(--accent-secondary)',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.15)',
-          padding: '10px 25px',
-          borderRadius: '50px',
+          background: 'rgba(9, 9, 14, 0.8)',
+          backdropFilter: 'blur(20px) saturate(1.5)',
+          border: '1px solid var(--accent-primary)',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
+          padding: '8px 12px 8px 20px',
+          borderRadius: '100px',
           display: 'flex',
           alignItems: 'center',
-          gap: '15px',
+          gap: '16px',
           zIndex: 1000,
-          animation: 'slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+          animation: 'slideUp 0.4s cubic-bezier(0.19, 1, 0.22, 1)'
         }}>
-          <span style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: '0.95rem' }}>
-            {selectedUniIds.length} Program{selectedUniIds.length === 1 ? '' : 's'} Selected
+          <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.85rem' }}>
+            {selectedUniIds.length} Item{selectedUniIds.length === 1 ? '' : 's'} Selected
           </span>
           <button
-            className="btn-save"
             onClick={() => setShowDownloadModal(true)}
             style={{
-              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              background: 'var(--accent-primary)',
               border: 'none',
-              color: '#ffffff',
-              padding: '8px 20px',
-              fontSize: '0.95rem',
+              color: '#fff',
+              padding: '8px 18px',
+              fontSize: '0.8rem',
               fontWeight: 800,
-              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-              borderRadius: '25px',
-              margin: 0,
+              borderRadius: '50px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '6px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px var(--accent-glow)'
             }}
           >
-            <Download size={18} /> Export (Coming Soon)
+            <Download size={14} /> Export Selection
           </button>
         </div>
       )}
 
       {/* EXCEL EXPORT REVIEW MODAL */}
       {showDownloadModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s ease', padding: '20px' }}>
-          <div style={{ background: 'var(--card-bg-solid)', padding: '0', borderRadius: '20px', border: '1px solid var(--glass-border)', maxWidth: '600px', width: '100%', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', maxHeight: '85vh', overflow: 'hidden' }}>
-
-            <div style={{ padding: '20px 25px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-secondary)' }}>
-              <h3 style={{ margin: 0, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', fontWeight: 800 }}><FileSpreadsheet size={22} color="#10b981" /> Export Data Configuration</h3>
-              <button onClick={() => setShowDownloadModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px' }}><X size={20} /></button>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s ease' }}>
+          <div style={{ background: 'var(--card-bg-solid)', padding: '0', borderRadius: '20px', border: '1px solid var(--glass-border)', maxWidth: '500px', width: '90%', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', maxHeight: '80vh' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.1rem', fontWeight: 700 }}>Export Batch</h3>
+              <button onClick={() => setShowDownloadModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-
-            <div style={{ padding: '25px', overflowY: 'auto', flex: 1 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>Currently Selected Programs:</div>
-                <div style={{ fontSize: '0.85rem', color: selectedUniIds.length === 25 ? '#ef4444' : 'var(--accent-secondary)', fontWeight: 800, background: 'var(--input-bg)', padding: '4px 12px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>{selectedUniIds.length} / 25 Maximum</div>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ padding: '20px', overflowY: 'auto', flex: 1 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {universitiesData.filter(u => selectedUniIds.includes(u.id)).map(uni => {
-                  const uniName = uni["University Name"] || uni["university name"] || uni.name || "Unknown University";
-                  const programNameRaw = uni["Program Name "] || uni["program name"] || uni["Program name"] || uni.program || "";
-                  const programName = (programNameRaw && programNameRaw !== "N/A") ? programNameRaw : "";
-
+                  const uniName = uni["University Name"] || uni["university name"] || uni.name || "Unknown";
+                  const prog = uni["Program Name "] || uni["program name"] || "";
                   return (
-                    <div key={uni.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--input-bg)', border: '1px solid var(--glass-border)', padding: '12px 15px', borderRadius: '12px' }}>
-                      <div style={{ flex: 1, minWidth: 0, paddingRight: '15px' }}>
-                        <div style={{ color: 'var(--text-main)', fontWeight: 700, fontSize: '0.95rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{programName || uniName}</div>
-                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '2px' }}>{programName ? uniName : ''}</div>
+                    <div key={uni.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--input-bg)', padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ color: 'var(--text-main)', fontWeight: 600, fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{prog || uniName}</div>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{prog ? uniName : ''}</div>
                       </div>
-                      <button
-                        onClick={() => toggleSelection(uni)}
-                        style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
-                        title="Remove from export list"
-                      >
-                        <X size={14} />
-                      </button>
+                      <button onClick={() => toggleSelection(uni)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><X size={14} /></button>
                     </div>
                   );
                 })}
-                {selectedUniIds.length === 0 && (
-                  <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)', fontStyle: 'italic' }}>No programs selected for export.</div>
-                )}
               </div>
             </div>
-
-            <div style={{ padding: '20px 25px', borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'flex-end', gap: '15px', background: 'var(--bg-secondary)' }}>
-              <button onClick={() => setShowDownloadModal(false)} style={{ padding: '10px 20px', background: 'transparent', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
-              <button
-                onClick={handleDownloadExcel}
-                disabled={selectedUniIds.length === 0}
-                style={{ padding: '10px 20px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: 600, cursor: selectedUniIds.length === 0 ? 'not-allowed' : 'pointer', opacity: selectedUniIds.length === 0 ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)' }}
-              >
-                <Download size={16} /> Send to Email
-              </button>
+            <div style={{ padding: '16px 20px', borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <button onClick={() => setShowDownloadModal(false)} style={{ padding: '8px 16px', background: 'transparent', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}>Close</button>
+              <button onClick={handleDownloadExcel} style={{ padding: '8px 20px', background: 'var(--accent-primary)', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 12px var(--accent-glow)' }}>Request Data</button>
             </div>
-
           </div>
         </div>
       )}

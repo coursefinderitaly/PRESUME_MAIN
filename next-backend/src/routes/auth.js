@@ -185,6 +185,24 @@ router.put('/update', auth, async (req, res) => {
   }
 });
 
+// 4.6 UPLOAD / UPDATE AVATAR
+router.put('/avatar', auth, async (req, res) => {
+  try {
+    const { avatarUrl } = req.body;
+    // Accept "" or null as removal, but throw error if field is undefined/absent entirely
+    if (avatarUrl === undefined) return res.status(400).json({ error: 'No avatar data payload provided' });
+    // Limit size only if data is present
+    if (avatarUrl && avatarUrl.length > 800000) return res.status(400).json({ error: 'Image too large. Please use a smaller photo.' });
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    user.avatarUrl = avatarUrl;
+    await user.save();
+    res.json({ message: 'Avatar updated', avatarUrl: user.avatarUrl });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error uploading avatar' });
+  }
+});
+
 // 4.5 CHANGE PASSWORD ROUTE
 router.put('/change-password', auth, async (req, res) => {
   try {

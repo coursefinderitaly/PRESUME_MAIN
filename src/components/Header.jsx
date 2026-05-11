@@ -84,9 +84,9 @@ export const Header = ({ compact = false }) => {
     <>
       <header
         ref={headerRef}
-        className="fixed top-0 w-full z-50 transition-all duration-500 bg-transparent py-6 transform-gpu"
+        className="fixed top-0 w-full z-[2000] transition-all duration-500 bg-transparent py-6 transform-gpu"
       >
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 flex justify-between items-center">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 flex justify-between items-center relative">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -98,7 +98,7 @@ export const Header = ({ compact = false }) => {
           </motion.div>
 
           {/* Desktop Nav */}
-          <nav ref={navRef} className={`hidden md:flex items-center ${compact ? 'gap-4' : 'gap-8'}`}>
+          <nav ref={navRef} className={`hidden md:flex items-center absolute left-1/2 -translate-x-1/2 ${compact ? 'gap-4' : 'gap-8'}`}>
             {[
               <NavItem
                 key="services"

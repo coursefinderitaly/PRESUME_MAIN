@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, GraduationCap, CheckCircle2, Star, Zap, Globe, MapPin, School } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthModal from './AuthModal';
 
 // Import images from local src/uni folder
@@ -57,6 +58,7 @@ export const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState({});
   const [modalOpen, setModalOpen] = useState(null);
+  const navigate = useNavigate();
 
 
 
@@ -188,6 +190,15 @@ export const Hero = () => {
                   className="bg-accent-gold text-primary-blue px-10 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-yellow-500 transition-all w-full sm:w-auto justify-center shadow-[0_20px_50px_-10px_rgba(197,168,128,0.3)]"
                 >
                   Book Your University <ArrowRight size={20} />
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/map')}
+                  className="bg-white/5 backdrop-blur-md text-white border border-white/10 px-10 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-white/10 transition-all w-full sm:w-auto justify-center"
+                >
+                  Where to Study <Globe size={20} />
                 </motion.button>
               </div>
             </motion.div>

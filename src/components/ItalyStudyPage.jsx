@@ -6,6 +6,7 @@ import FeesTable from './FeesTable';
 import MinimalFooter from './MinimalFooter';
 import AuthModal from './AuthModal';
 import EligibilityModal from './EligibilityModal';
+import ItalyMap from './Map';
 
 const ItalyStudyPage = () => {
     // State for interactive document checklist
@@ -51,12 +52,16 @@ const ItalyStudyPage = () => {
     ];
 
     const journeySteps = [
-        { step: "01", title: "Apply", desc: "Shortlist universities, prepare transcripts, and clear the IMAT or university interviews." },
-        { step: "02", title: "Pre-Enrol", desc: "Complete mandatory pre-enrollment via the Universitaly platform to initiate the visa process." },
-        { step: "03", title: "Funding", desc: "Apply for regional scholarships and legalize/translate your financial documents." },
-        { step: "04", title: "Visa", desc: "Secure DOV/CIMEA certification and submit your completed file at VFS Global." },
-        { step: "05", title: "Depart", desc: "Book your flight, pack essentials, and activate your international roaming pack." },
-        { step: "06", title: "Arrive", desc: "Apply for your Codice Fiscale, Permesso di Soggiorno (Residence Permit), and open a bank account." }
+        { step: "01", title: "Find a programme", desc: "Search and select the right course across leading Italian universities." },
+        { step: "02", title: "Verify entry requirements", desc: "Check academic eligibility, GPA thresholds, and specific prerequisites." },
+        { step: "03", title: "Italian language skills", desc: "Verify language requirements for your chosen English or Italian course." },
+        { step: "04", title: "Check student visa", desc: "Confirm your eligibility status and necessary visa requirements based on residency." },
+        { step: "05", title: "Contact institution", desc: "Reach out to the university for acceptance protocols and course details." },
+        { step: "06", title: "Start pre-enrollment", desc: "Begin mandatory online pre-enrollment via the Universitaly official platform." },
+        { step: "07", title: "Apply for visa", desc: "Submit your application and book an appointment at the local VFS Global center." },
+        { step: "08", title: "Contact Embassy", desc: "Liaise with the competent Italian Diplomatic Consular Mission for final checks." },
+        { step: "09", title: "Request Permit of Stay", desc: "Apply for Permesso di Soggiorno within 8 days of your arrival in Italy." },
+        { step: "10", title: "Finalise enrolment", desc: "Pay initial fees and complete your formal registration with the university." }
     ];
 
     const mbbsCosts = [
@@ -411,6 +416,11 @@ const ItalyStudyPage = () => {
                                 </div>
                             ))}
                         </div>
+                    </div>
+
+                    {/* Embedded Interactive Italy Map Section */}
+                    <div className="mb-32 relative z-20">
+                         <ItalyMap isEmbedded={true} />
                     </div>
 
                     {/* Compact Study Levels Grid (MBBS, Bachelors, Masters) */}

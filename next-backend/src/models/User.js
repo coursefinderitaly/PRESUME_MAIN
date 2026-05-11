@@ -146,6 +146,9 @@ const UserSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now }
   }],
 
+  // Profile Picture (base64 data URI, per-account)
+  avatarUrl: { type: String, default: '' },
+
   // Security & Lockout Mechanisms
   loginAttempts: { type: Number, default: 0 },
   lockUntil: { type: Date },

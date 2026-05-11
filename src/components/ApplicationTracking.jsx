@@ -67,7 +67,7 @@ const ApplicationTracking = ({ student, applications = [], initialSelectedAppId,
   const currentComments = commentsMap[selectedAppId] || [];
 
   return (
-    <div className="view-standard" style={{ animation: 'fadeIn 0.3s ease', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column', height: '100%', minHeight: '80vh' }}>
+    <div className="view-standard" style={{ animation: 'fadeIn 0.3s ease', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column', minHeight: '80vh' }}>
       
       {/* Top Header / Breadcrumb */}
       <div style={{ padding: '15px 20px', borderBottom: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -129,94 +129,92 @@ const ApplicationTracking = ({ student, applications = [], initialSelectedAppId,
 
         {/* Right Pane: Selected Application Details */}
         {selectedApp && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', overflowY: 'auto', padding: '30px' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', overflowY: 'auto', padding: '25px' }}>
             
             {/* Header / Info box */}
-            <div style={{ background: 'var(--card-bg-solid)', borderRadius: '12px', border: '1px solid var(--glass-border)', padding: '25px', marginBottom: '20px' }}>
+            <div className="glass-panel" style={{ padding: '25px', marginBottom: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                 <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                   {selectedApp.dateApplied ? new Date(selectedApp.dateApplied).toLocaleString() : new Date().toLocaleString()}
                 </span>
-                <span style={{ padding: '6px 15px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
+                <span style={{ padding: '6px 15px', background: 'var(--accent-glow)', color: 'var(--accent-secondary)', borderRadius: '8px', fontWeight: 700, fontSize: '0.9rem', border: '1px solid var(--glass-border)' }}>
                   {selectedApp.status || 'Application Received'}
                 </span>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 600 }}>{selectedApp.programs && selectedApp.programs[0] ? selectedApp.programs[0] : 'Course Details'}</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>{selectedApp.name}</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '5px' }}>{selectedApp.intake || 'Sep-2026'}</span>
+                <span style={{ fontSize: '1.4rem', color: 'var(--text-main)', fontWeight: 800, letterSpacing: '-0.02em' }}>{selectedApp.programs && selectedApp.programs[0] ? selectedApp.programs[0] : 'Course Details'}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '1rem', fontWeight: 500 }}>{selectedApp.name}</span>
+                <span style={{ color: 'var(--accent-secondary)', fontSize: '0.9rem', marginTop: '5px', fontWeight: 600 }}>Intake: {selectedApp.intake || 'Sep-2026'}</span>
               </div>
               
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                <button onClick={() => setShowProgramDetails(true)} style={{ background: 'none', border: 'none', color: '#3b82f6', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}>
+                <button onClick={() => setShowProgramDetails(true)} style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', textDecoration: 'underline', cursor: 'pointer', fontWeight: 700 }}>
                   View Program Details
                 </button>
               </div>
             </div>
 
             {/* Fee Status */}
-            <div style={{ background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '15px 25px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '15px' }}>
-              <span style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Application Fee Status:</span>
-              <span style={{ padding: '6px 15px', background: '#10b98120', color: '#10b981', borderRadius: '6px', fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ background: 'rgba(16, 185, 129, 0.08)', borderRadius: '14px', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '15px 25px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '15px', backdropFilter: 'blur(10px)' }}>
+              <span style={{ color: 'var(--text-main)', fontSize: '0.95rem', fontWeight: 500 }}>Application Fee Status:</span>
+              <span style={{ padding: '6px 15px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                 <CheckCircle size={14} /> {selectedApp.feeStatus || 'No Application Fee'}
               </span>
             </div>
 
             {/* Comments Section */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--card-bg-solid)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+            <div className="glass-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 0 }}>
               
               {/* Comments Header */}
-              <div style={{ display: 'flex', borderBottom: '1px solid var(--glass-border)', padding: '15px 25px' }}>
-                <h3 style={{ margin: 0, color: '#3b82f6', fontWeight: 700 }}>Communication Thread</h3>
+              <div style={{ display: 'flex', borderBottom: '1px solid var(--glass-border)', padding: '15px 25px', background: 'var(--table-header-bg)' }}>
+                <h3 style={{ margin: 0, color: 'var(--accent-primary)', fontWeight: 800, fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Communication Thread</h3>
               </div>
 
               {/* Chat Thread */}
-              <div style={{ flex: 1, padding: '25px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '15px', minHeight: '200px' }}>
+              <div style={{ flex: 1, padding: '25px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '15px', minHeight: '300px' }}>
                 {currentComments.map((msg, i) => {
                   const isStaff = msg.sender && (msg.sender.toLowerCase().includes('admin') || msg.sender.toLowerCase().includes('partner') || msg.sender.toLowerCase().includes('counselor'));
                   const alignSelf = !isPortalAdmin && isStaff ? 'flex-start' : (!isPortalAdmin && !isStaff ? 'flex-end' : (isPortalAdmin && isStaff ? 'flex-end' : 'flex-start'));
-                  const bgColor = alignSelf === 'flex-end' ? 'rgba(59, 130, 246, 0.1)' : 'var(--input-bg)';
-                  const borderColor = alignSelf === 'flex-end' ? 'rgba(59, 130, 246, 0.2)' : 'var(--glass-border)';
+                  const bgColor = alignSelf === 'flex-end' ? 'var(--accent-glow)' : 'var(--glass-highlight)';
+                  const borderColor = alignSelf === 'flex-end' ? 'var(--accent-primary)' : 'var(--glass-border)';
 
                   return (
-                    <div key={i} style={{ alignSelf, maxWidth: '80%', padding: '12px', background: bgColor, borderRadius: '8px', border: `1px solid ${borderColor}` }}>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '5px' }}>
-                        <strong style={{ color: 'var(--text-main)', marginRight: '8px' }}>{msg.sender}</strong>
-                        {new Date(msg.timestamp).toLocaleString()}
+                    <div key={i} style={{ alignSelf, maxWidth: '85%', padding: '14px 18px', background: bgColor, borderRadius: '16px', border: `1px solid ${borderColor}`, boxShadow: '0 4px 15px rgba(0,0,0,0.05)', position: 'relative' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '6px', display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
+                        <strong style={{ color: 'var(--accent-secondary)' }}>{msg.sender}</strong>
+                        <span>{new Date(msg.timestamp).toLocaleString([], {hour: '2-digit', minute:'2-digit', day: '2-digit', month: 'short'})}</span>
                       </div>
-                      <div style={{ color: 'var(--text-main)' }}>{msg.text}</div>
+                      <div style={{ color: 'var(--text-main)', lineHeight: 1.5, fontSize: '0.95rem' }}>{msg.text}</div>
                     </div>
                   );
                 })}
                 {currentComments.length === 0 && (
-                  <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '20px' }}>
+                  <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '40px' }}>
                     No comments yet in this thread.
                   </div>
                 )}
               </div>
 
               {/* Editor */}
-              <div style={{ padding: '20px', borderTop: '1px solid var(--glass-border)' }}>
-                <div style={{ border: '1px solid var(--glass-border)', borderRadius: '12px', overflow: 'hidden', background: 'var(--bg-tertiary)' }}>
+              <div style={{ padding: '20px', borderTop: '1px solid var(--glass-border)', background: 'var(--table-header-bg)' }}>
+                <div className="glass-panel" style={{ padding: 0, overflow: 'hidden', background: 'var(--bg-tertiary)' }}>
                   
                   {/* Toolbar */}
-                  <div style={{ display: 'flex', padding: '10px 15px', borderBottom: '1px solid var(--glass-border)', gap: '15px' }}>
-                    <select style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', outline: 'none' }}>
-                      <option>16px</option>
+                  <div style={{ display: 'flex', padding: '10px 15px', borderBottom: '1px solid var(--glass-border)', gap: '15px', background: 'var(--glass-highlight)' }}>
+                    <select style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', outline: 'none', fontSize: '0.8rem', fontWeight: 600 }}>
                       <option>14px</option>
-                      <option>18px</option>
+                      <option>16px</option>
                     </select>
-                    <div style={{ display: 'flex', gap: '10px', color: 'var(--text-main)' }}>
+                    <div style={{ display: 'flex', gap: '12px', color: 'var(--text-muted)' }}>
                       <span style={{ fontWeight: 800, cursor: 'pointer' }}>B</span>
                       <span style={{ fontStyle: 'italic', cursor: 'pointer' }}>I</span>
                       <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>U</span>
-                      <span style={{ textDecoration: 'line-through', cursor: 'pointer' }}>S</span>
                     </div>
                   </div>
 
                   <textarea 
-                    placeholder="Write comments..."
+                    placeholder="Write a message..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendComment(); } }}
@@ -228,16 +226,17 @@ const ApplicationTracking = ({ student, applications = [], initialSelectedAppId,
                       color: 'var(--text-main)', 
                       padding: '15px', 
                       resize: 'none', 
-                      outline: 'none' 
+                      outline: 'none',
+                      fontSize: '0.95rem'
                     }}
                   />
                   
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px', gap: '10px' }}>
-                    <button style={{ background: 'rgba(59, 130, 246, 0.1)', border: 'none', color: '#3b82f6', width: '36px', height: '36px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '12px', gap: '10px', background: 'var(--glass-highlight)' }}>
+                    <button style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--accent-secondary)', width: '38px', height: '38px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}>
                       <AttachmentIcon size={18} />
                     </button>
-                    <button onClick={handleSendComment} style={{ background: '#8b5cf6', border: 'none', color: '#fff', width: '36px', height: '36px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                      <Send size={18} />
+                    <button onClick={handleSendComment} style={{ background: 'var(--accent-primary)', border: 'none', color: '#fff', padding: '0 20px', height: '38px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s' }}>
+                      <Send size={16} /> Send
                     </button>
                   </div>
 

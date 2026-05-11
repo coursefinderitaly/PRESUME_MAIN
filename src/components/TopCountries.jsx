@@ -210,6 +210,7 @@ export const TopCountries = () => {
 
   return (
     <section
+      id="countries"
       className="section-safe top-destinations-shell relative h-[100svh] overflow-hidden bg-transparent text-white"
     >
       <div className="absolute inset-0 pointer-events-none top-destinations-gradient" />

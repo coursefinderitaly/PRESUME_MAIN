@@ -11,7 +11,7 @@ const FeesTable = () => {
     const pricing = {
         'Bachelors': [30000, 15000, 40000, 35000],
         'Masters': [30000, 15000, 40000, 35000],
-        'MBBS': [50000, 25000, 65000, 60000]
+        'MBBS': [0, 35000, 65000, 60000]
     };
 
     const currentPhases = pricing[selectedLevel];
@@ -97,6 +97,7 @@ const FeesTable = () => {
                         ) : (
                             <span className="bg-gradient-to-r from-accent-gold via-amber-300 to-yellow-500 bg-clip-text text-transparent">₹ {currentPricing.total.toLocaleString('en-IN')}</span>
                         )}
+                        <span className="text-[10px] text-gray-400 ml-2 font-bold uppercase tracking-widest block md:inline-block mt-2 md:mt-0 opacity-60">(18% GST applicable)</span>
                     </h2>
                     <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
                         {applied ? 'Flash Offer: Specialized Combined Packages' : 'Perfectly divided among 4 phases'}
@@ -282,12 +283,6 @@ const FeesTable = () => {
                             </div>
                         </div>
 
-                        {/* Total per Phase Cost */}
-                        <div className="flex items-center justify-between gap-2 bg-white/[0.02] border border-white/10 px-5 py-4 rounded-2xl backdrop-blur-md mt-2">
-                            <span className="text-[10px] font-black uppercase tracking-wider text-white/40">Phase Payment:</span>
-                            <span className="text-lg font-black text-white tracking-wider">₹ {currentPricing.phase.toLocaleString('en-IN')} <span className="text-accent-gold text-sm font-bold">/ Phase</span></span>
-                        </div>
-
                         {/* Coupon Apply */}
                         <div className="flex items-center gap-2 bg-[#050811]/90 border border-white/10 p-2 rounded-2xl backdrop-blur-xl mt-1">
                             <div className="flex items-center gap-2 pl-2 text-white/50">
@@ -397,7 +392,7 @@ const FeesTable = () => {
                     </div>
 
                     <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest bg-white/[0.02] border border-white/5 px-3 py-2 rounded-xl text-center mt-4">
-                        * Taxes applicable extra.
+                        * 18% GST applicable extra.
                     </p>
                 </motion.div>
 

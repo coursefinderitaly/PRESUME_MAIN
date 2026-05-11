@@ -37,7 +37,7 @@ const LearningResources = () => {
 
   return (
     <div className="view-resources">
-      <header className="dash-header">
+      <header className="dash-header" style={{ marginBottom: "20px" }}>
         <div>
           <h1>Learning Resources</h1>
           <p>Access and retrieve authorized operating documents.</p>
@@ -62,7 +62,7 @@ const LearningResources = () => {
 
         {/* Explorer Body */}
         <div style={{ padding: '10px' }}>
-          <table style={{width: '100%', borderCollapse: 'collapse', textAlign: 'left'}}>
+          <table style={{width: '100%', borderCollapse: 'collapse', textAlign: 'center'}}>
             <thead>
               <tr style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
                 <th style={{padding: '10px', fontWeight: 'normal'}}>Name</th>

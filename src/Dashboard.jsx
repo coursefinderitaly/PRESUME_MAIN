@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   LogOut, User, MapPin, Globe, Phone, Smartphone, Edit2, Save, X,
   Home, Search, Users, Briefcase, FileText, Bell, MonitorPlay, Building2, CheckSquare, KeyRound,
-  Sun, Moon, Monitor, Menu, UploadCloud, MessageSquare, ChevronRight
+  Sun, Moon, Monitor, Menu, UploadCloud, MessageSquare, ChevronRight, Camera, Trash2
 } from 'lucide-react';
 import './Dashboard.css';
 import { useTheme } from './ThemeContext';
@@ -56,6 +56,7 @@ const Dashboard = () => {
   const [formData, setFormData] = useState({});
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [message, setMessage] = useState({ text: '', type: '' });
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarLocked, setIsSidebarLocked] = useState(true);
@@ -186,6 +187,103 @@ const Dashboard = () => {
     navigate('/');
   };
 
+  const compressImage = (file, maxWidth, maxHeight, quality) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width *= maxHeight / height;
+              height = maxHeight;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+      };
+    });
+  };
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { 
+      setMessage({ text: 'Please select an image file.', type: 'error' }); 
+      return; 
+    }
+    
+    setAvatarUploading(true);
+    setMessage({ text: 'Compressing and uploading photo...', type: 'info' });
+    
+    try {
+      // Auto compress to max 600px dimension and 0.75 quality
+      const avatarUrl = await compressImage(file, 600, 600, 0.75);
+      
+      const res = await fetch(`${API_BASE_URL}/auth/avatar`, {
+        method: 'PUT', 
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+        body: JSON.stringify({ avatarUrl })
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        setProfile(prev => ({ ...prev, avatarUrl: data.avatarUrl }));
+        setMessage({ text: 'Profile photo updated!', type: 'success' });
+      } else {
+        setMessage({ text: data.error || 'Failed to upload.', type: 'error' });
+      }
+    } catch (err) { 
+      console.error(err);
+      setMessage({ text: 'Failed during upload.', type: 'error' }); 
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    if (!window.confirm('Are you sure you want to remove your profile photo?')) return;
+    
+    setAvatarUploading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/avatar`, {
+        method: 'PUT', 
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+        body: JSON.stringify({ avatarUrl: "" })
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        setProfile(prev => ({ ...prev, avatarUrl: null }));
+        setMessage({ text: 'Profile photo removed.', type: 'success' });
+      } else {
+        setMessage({ text: data.error || 'Failed to remove photo.', type: 'error' });
+      }
+    } catch (err) { 
+      console.error(err);
+      setMessage({ text: 'Request failed.', type: 'error' }); 
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -279,281 +377,239 @@ const Dashboard = () => {
   const isFreelancer = profile.role === 'freelancer';
   const isStudent = profile.role === 'student';
 
-  // Sidebar link generator
-  const NavButton = ({ id, icon: Icon, label }) => {
+  // Improved Sidebar Link Generator
+  const NavButton = ({ id, icon: Icon, label, isBadge = false, count = 0 }) => {
+    const isActive = activeTab === id;
     return (
       <button
-        className={`nav-item ${activeTab === id ? 'active' : ''} ${!isSidebarOpen ? 'icon-only' : ''}`}
-        onClick={() => { 
-            setActiveTab(id); 
-            setMessage({ text: '', type: '' }); 
-            setEditMode(false); 
-            if (window.innerWidth <= 768) {
-                setIsSidebarOpen(false);
-                setIsSidebarLocked(false);
-            }
+        className={`nav-item ${isActive ? 'active' : ''}`}
+        onClick={() => {
+          setActiveTab(id);
+          setMessage({ text: '', type: '' });
+          setEditMode(false);
+          if (isBadge) { setShowMsgAlert(false); setAlertDismissed(true); }
         }}
-        style={{ overflow: 'hidden', whiteSpace: 'nowrap', justifyContent: !isSidebarOpen ? 'center' : 'flex-start' }}
-        title={!isSidebarOpen ? label : ''}
+        title={!isSidebarLocked && !isSidebarOpen ? label : ''}
       >
-        <Icon size={18} style={{ minWidth: '18px' }} />
-        <span className="nav-label" style={{ opacity: !isSidebarOpen ? 0 : 1, width: !isSidebarOpen ? 0 : 'auto', transition: 'opacity 0.2s', marginLeft: !isSidebarOpen ? '0' : '10px' }}>{label}</span>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <Icon size={18} />
+          {isBadge && count > 0 && (
+            <span style={{ 
+              position: 'absolute', top: '-6px', right: '-6px', background: '#ef4444', color: '#fff', 
+              borderRadius: '50%', width: '16px', height: '16px', fontSize: '0.6rem', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, 
+              animation: 'pulse 2s infinite', boxShadow: '0 0 8px rgba(239,68,68,0.5)' 
+            }}>
+              {count > 9 ? '9+' : count}
+            </span>
+          )}
+        </div>
+        <span className="nav-label" style={{
+          opacity: (!isSidebarLocked && !isSidebarOpen) ? 0 : 1,
+          transition: 'opacity 0.2s',
+          whiteSpace: 'nowrap'
+        }}>
+          {label}
+        </span>
       </button>
     );
   };
 
+  // Dynamic Sidebar width calculation
+  const sidebarWidth = isSidebarLocked ? '260px' : (isSidebarOpen ? '260px' : '76px');
+  const isSidebarActuallyCollapsed = !isSidebarLocked && !isSidebarOpen;
+
   return (
-    <>
-      <div className="dash-universe">
-        <div className="dash-bg">
-          <div className="dash-grid"></div>
-          <div className="dash-particles"></div>
-          <div className="dash-blob"></div>
-        </div>
+    <div className="dash-universe">
+      {/* Antigravity Dynamic Animated Backdrop Layers */}
+      <div className="dash-bg">
+        <div className="dash-grid"></div>
+        <div className="dash-particles"></div>
+        <div className="dash-blob"></div>
+      </div>
 
-      <div className="dash-container">
-
-        {/* ================================== */}
-        {/* SIDEBAR                            */}
-        {/* ================================== */}
-        {isSidebarOpen && window.innerWidth <= 768 && (
-          <div 
-            className="sidebar-overlay"
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 999 }}
-            onClick={() => { setIsSidebarOpen(false); setIsSidebarLocked(false); }}
-          ></div>
-        )}
-        <aside
-          className={`dash-sidebar ${!isSidebarOpen ? 'collapsed' : ''}`}
-          style={{ width: isSidebarOpen ? '260px' : '80px', padding: isSidebarOpen ? '2rem 1.5rem' : '2rem 10px', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
-          onMouseEnter={() => setIsSidebarOpen(true)}
+      <div className="dash-container" style={{ display: 'flex', height: '100vh', width: '100%', padding: '1rem', gap: '1rem', boxSizing: 'border-box' }}>
+        
+        {/* 🛸 FLOATING DOCKER SIDEBAR */}
+        <aside 
+          className={`dash-sidebar ${isSidebarActuallyCollapsed ? 'collapsed' : ''}`}
+          onMouseEnter={() => { if (!isSidebarLocked) setIsSidebarOpen(true); }}
           onMouseLeave={() => { if (!isSidebarLocked) setIsSidebarOpen(false); }}
+          style={{
+            width: sidebarWidth,
+            flexShrink: 0,
+            transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
         >
-          <div className="sidebar-brand" style={{ padding: '0 0 1.2rem 0', alignItems: isSidebarOpen ? 'flex-start' : 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', width: '100%', overflow: 'hidden' }}>
-              <img src="/logo.png" alt="Company Logo" style={{ height: '36px', objectFit: 'contain', objectPosition: 'left center', width: isSidebarOpen ? '200px' : '56px', transition: 'width 0.4s ease', flexShrink: 0, filter: activeTheme === 'light' ? 'none' : 'brightness(1.1)' }} />
+          {/* Lock Toggle Icon */}
+          <button 
+            onClick={() => setIsSidebarLocked(!isSidebarLocked)}
+            style={{
+              position: 'absolute', top: '16px', right: '16px',
+              background: 'transparent', border: 'none', cursor: 'pointer',
+              color: 'var(--text-dim)', opacity: isSidebarActuallyCollapsed ? 0 : 0.6,
+              transition: 'opacity 0.2s'
+            }}
+            title={isSidebarLocked ? "Click to float sidebar" : "Click to lock sidebar"}
+          >
+            <Menu size={16} />
+          </button>
+
+          {/* Sidebar Brand Logo */}
+          <div className="sidebar-brand" style={{ paddingBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img
+              src="/logo.png"
+              alt="Logo"
+              style={{ height: '32px', width: '32px', minWidth: '32px', objectFit: 'contain', filter: activeTheme === 'light' ? 'invert(1) hue-rotate(180deg) contrast(1.2)' : 'none' }}
+            />
+            <div className="nav-label" style={{ opacity: isSidebarActuallyCollapsed ? 0 : 1, transition: 'opacity 0.2s', minWidth: 0 }}>
+              <h2>{isPartner ? 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'}</h2>
+              <span className="portal-badge" style={{ fontSize: '0.6rem', opacity: 0.6 }}>Secured Portal</span>
             </div>
-            {isSidebarOpen && (
-              <span style={{ animation: 'fadeIn 0.3s ease' }}>
-                {isPartner ? '🏢 Partner Portal' : isCounselor ? '🎓 Counselor Portal' : isFreelancer ? '⚡ Freelancer Portal' : '🎒 Student Portal'}
-              </span>
-            )}
           </div>
 
-          <nav className="sidebar-nav" style={{ padding: '1rem 0' }}>
-            <NavButton id="home" icon={Home} label="Dashboard" />
-
-            {/* Student specific tabs */}
+          {/* Scrollable Sidebar Navigation Stack */}
+          <nav className="sidebar-nav" style={{ marginTop: '0.5rem' }}>
+            <NavButton id="home" icon={Home} label="Dashboard Overview" />
+            <div className="nav-divider" />
+            
             {isStudent && (
               <>
-                <NavButton id="course-finder" icon={Search} label="Course Finder" />
-                <NavButton id="applications" icon={FileText} label=" Application" />
-                <NavButton id="applied-universities" icon={CheckSquare} label="Applied Universities" />
-                <NavButton id="learning" icon={MonitorPlay} label="Learning Resource" />
-                {/* Notifications with unread badge */}
-                <button
-                  className={`nav-item ${activeTab === 'notifications' ? 'active' : ''} ${!isSidebarOpen ? 'icon-only' : ''}`}
-                  onClick={() => {
-                    setActiveTab('notifications');
-                    setMessage({ text: '', type: '' });
-                    setEditMode(false);
-                    setShowMsgAlert(false);
-                    setAlertDismissed(true);
-                    if (window.innerWidth <= 768) { setIsSidebarOpen(false); setIsSidebarLocked(false); }
-                  }}
-                  style={{ overflow: 'hidden', whiteSpace: 'nowrap', justifyContent: !isSidebarOpen ? 'center' : 'flex-start', position: 'relative' }}
-                  title={!isSidebarOpen ? 'Notifications' : ''}
-                >
-                  <Bell size={18} style={{ minWidth: '18px' }} />
-                  <span className="nav-label" style={{ opacity: !isSidebarOpen ? 0 : 1, width: !isSidebarOpen ? 0 : 'auto', transition: 'opacity 0.2s', marginLeft: !isSidebarOpen ? '0' : '10px' }}>Notifications</span>
-                  {unreadMsgCount > 0 && (
-                    <span style={{ position: 'absolute', top: '8px', right: isSidebarOpen ? '12px' : '6px', background: '#ef4444', color: '#fff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '0.65rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, animation: 'pulse 2s infinite' }}>
-                      {unreadMsgCount > 9 ? '9+' : unreadMsgCount}
-                    </span>
-                  )}
-                </button>
-                <NavButton id="profile" icon={User} label="Profile" />
+                <NavButton id="course-finder" icon={Search} label="Search Programs" />
+                <NavButton id="applications" icon={FileText} label="My Applications" />
+                <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" />
+                <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" />
+                <NavButton id="notifications" icon={Bell} label="Alerts" isBadge={true} count={unreadMsgCount} />
               </>
             )}
 
-            {/* Partner specific tabs */}
             {isPartner && (
               <>
-                <NavButton id="register-student" icon={User} label="Register New Student" />
-                <NavButton id="students-list" icon={Users} label="Students List" />
-                <NavButton id="course-finder" icon={Search} label="Search Program" />
-                <NavButton id="partner-applications" icon={FileText} label="Applied Applications" />
-                <NavButton id="student-documents" icon={UploadCloud} label="Student Documents" />
-                <NavButton id="learning" icon={MonitorPlay} label="Learning Resource" />
-                <NavButton id="notifications" icon={Bell} label="Notifications" />
-                <NavButton id="counselors" icon={Briefcase} label="Manage Counselors" />
-                <NavButton id="profile" icon={User} label="My Account" />
+                <NavButton id="register-student" icon={User} label="Register New" />
+                <NavButton id="students-list" icon={Users} label="My Students" />
+                <NavButton id="course-finder" icon={Search} label="Program Finder" />
+                <NavButton id="partner-applications" icon={FileText} label="Track Records" />
+                <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
+                <NavButton id="learning" icon={MonitorPlay} label="Resources" />
+                <NavButton id="notifications" icon={Bell} label="Alerts" />
+                <NavButton id="counselors" icon={Briefcase} label="Manage Team" />
               </>
             )}
 
-            {/* Counselor specific tabs */}
             {isCounselor && (
               <>
-                <NavButton id="register-student" icon={User} label="Register New Student" />
-                <NavButton id="students-list" icon={Users} label="My Students" />
-                <NavButton id="course-finder" icon={Search} label="Search Program" />
-                <NavButton id="partner-applications" icon={FileText} label="Applied Applications" />
-                <NavButton id="student-documents" icon={UploadCloud} label="Student Documents" />
-                <NavButton id="profile" icon={User} label="My Account" />
+                <NavButton id="register-student" icon={User} label="Register New" />
+                <NavButton id="students-list" icon={Users} label="Student List" />
+                <NavButton id="course-finder" icon={Search} label="Finder" />
+                <NavButton id="partner-applications" icon={FileText} label="Track Apps" />
+                <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
               </>
             )}
 
-            {/* Freelancer specific tabs */}
             {isFreelancer && (
               <>
-                <NavButton id="register-student" icon={User} label="Register New Student" />
-                <NavButton id="students-list" icon={Users} label="My Students" />
-                <NavButton id="course-finder" icon={Search} label="Search Program" />
-                <NavButton id="partner-applications" icon={FileText} label="Applied Applications" />
-                <NavButton id="student-documents" icon={UploadCloud} label="Student Documents" />
-                <NavButton id="profile" icon={User} label="My Account" />
+                <NavButton id="register-student" icon={User} label="Register New" />
+                <NavButton id="students-list" icon={Users} label="Clients" />
+                <NavButton id="course-finder" icon={Search} label="Finder" />
+                <NavButton id="partner-applications" icon={FileText} label="Applications" />
+                <NavButton id="student-documents" icon={UploadCloud} label="Docs" />
               </>
             )}
 
+            <div className="nav-divider" />
+            <NavButton id="profile" icon={User} label="Account Profile" />
           </nav>
 
-          <div style={{ marginTop: 'auto', padding: '10px 0' }}>
+          {/* Sidebar Footer Widget Area (Theme, User info, Logout) */}
+          <div className="sidebar-footer" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {/* Elegant Theme Toggle Pillar */}
+            <div style={{ 
+              display: 'flex', 
+              background: 'rgba(255,255,255,0.03)', 
+              padding: '4px', 
+              borderRadius: '10px', 
+              border: '1px solid var(--glass-border)',
+              justifyContent: isSidebarActuallyCollapsed ? 'center' : 'space-between',
+              alignItems: 'center'
+            }}>
+              <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', flex: isSidebarActuallyCollapsed ? 'none' : 1, display: 'flex', justifyContent: 'center' }} title="Light Mode"><Sun size={14} /></button>
+              <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', flex: isSidebarActuallyCollapsed ? 'none' : 1, display: 'flex', justifyContent: 'center' }} title="Dark Mode"><Moon size={14} /></button>
+              {!isSidebarActuallyCollapsed && <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', flex: 1, display: 'flex', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>}
+            </div>
+
+            {/* Mini User Identification Cell */}
+            <div className="sidebar-user">
+              <div className="avatar">
+                {profile.avatarUrl
+                  ? <img src={profile.avatarUrl} alt="U" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span>{(profile.firstName || 'U')[0].toUpperCase()}</span>
+                }
+              </div>
+              <div className="user-info nav-label" style={{ opacity: isSidebarActuallyCollapsed ? 0 : 1, transition: 'opacity 0.2s' }}>
+                <div className="name">{profile.firstName} {profile.lastName || ''}</div>
+                <div className="role">{isPartner ? profile.companyName || 'Partner' : 'Authenticated'}</div>
+              </div>
+            </div>
+
+            {/* Integrated Session Termination */}
             <button
               onClick={handleLogout}
               className="nav-item logout-btn"
-              style={{ 
-                color: '#ef4444', 
-                background: 'rgba(239, 68, 68, 0.05)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '12px 14px',
-                width: '100%',
-                border: 'none',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '0.9rem',
-                justifyContent: !isSidebarOpen ? 'center' : 'flex-start'
-              }}
+              style={{ justifyContent: isSidebarActuallyCollapsed ? 'center' : 'flex-start' }}
             >
-              <LogOut size={18} style={{ minWidth: '18px' }} />
-              <span style={{ opacity: !isSidebarOpen ? 0 : 1, width: !isSidebarOpen ? 0 : 'auto', transition: 'opacity 0.2s' }}>Secure Logout</span>
+              <LogOut size={16} />
+              <span className="nav-label" style={{ opacity: isSidebarActuallyCollapsed ? 0 : 1, transition: 'opacity 0.2s' }}>Sign Out</span>
             </button>
           </div>
-
-          <div className="sidebar-footer" style={{ marginTop: '8px', opacity: !isSidebarOpen ? 0 : 1, transition: 'opacity 0.2s' }}>
-            <div className="sidebar-user">
-              <div className="avatar">
-                <div className="avatar-inner">{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</div>
-              </div>
-              <div className="user-info">
-                <span className="name">{profile.firstName} {profile.lastName || ''}</span>
-                <span className="role">{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'}</span>
-              </div>
-            </div>
-          </div>
-          <DesignerTag isSidebarOpen={isSidebarOpen} />
         </aside>
 
-        {/* ================================== */}
-        {/* MAIN CONTENT AREA                  */}
-        {/* ================================== */}
-        <main className="dash-main" data-lenis-prevent>
-
-          {/* TOP HEADER WITH HAMBURGER & THEME TOGGLE */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 1.5rem', background: 'var(--card-bg-solid)', borderBottom: '1px solid var(--glass-border)', position: 'sticky', top: 0, zIndex: 11 }}>
-            <button
-              className="hamburger-btn"
-              onClick={() => {
-                const nextLock = !isSidebarLocked;
-                setIsSidebarLocked(nextLock);
-                setIsSidebarOpen(nextLock);
-              }}
-              style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-            >
-              <Menu size={24} />
-            </button>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              {/* THEME TOGGLE (Relocated) */}
-              <div style={{ display: 'flex', background: 'var(--table-header-bg)', padding: '5px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
-                <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Light Mode"><Sun size={14} /></button>
-                <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Dark Mode"><Moon size={14} /></button>
-                <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>
-              </div>
-
-            </div>
-          </div>
-
-          {/* STUDENT GLOBAL PROGRESS TRACKER (COMPACT PILL) */}
-          {isStudent && (() => {
-            const fields = [
-              'firstName', 'lastName', 'email', 'phone', 'dob', 'gender',
-              'nationality', 'passportNo', 'issueDate', 'expiryDate',
-              'mailingAddress1', 'mailingCity', 'mailingState', 'mailingPincode',
-              'highestLevelOfEducation'
-            ];
-            
-            let points = 0;
-            fields.forEach(f => { if (profile?.[f]) points++; });
-            
-            // Special checks for arrays and nested objects
-            if (profile?.documents?.length > 0) points++;
-            if (profile?.appliedUniversities?.length > 0) points++;
-            if (profile?.secondaryEducation) points++;
-            if (profile?.graduation) points++;
-            if (profile?.applicationStatus === 'submitted' || profile?.applicationStatus === 'approved') points++;
-
-            const p = Math.round((points / 20) * 100);
-
-            return (
-              <div style={{ padding: '15px 1.5rem 0', animation: 'fadeUp 0.5s ease', zIndex: 10, position: 'relative' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', background: 'var(--card-bg-solid)', backdropFilter: 'blur(36px) saturate(180%)', WebkitBackdropFilter: 'blur(36px) saturate(180%)', border: '1px solid var(--glass-border)', borderRadius: '30px', padding: '12px 25px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
-                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: '0.5px' }}><CheckSquare size={14} style={{ display: 'inline', marginRight: '6px', verticalAlign: '-2px' }}/>App Progress</div>
-                  <div style={{ flex: 1, position: 'relative', height: '6px', background: 'color-mix(in srgb, var(--glass-border) 60%, transparent)', borderRadius: '10px', overflow: 'hidden' }}>
-                    <div style={{ 
-                      position: 'absolute', top: 0, left: 0, height: '100%', width: `${p}%`, 
-                      background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))', 
-                      borderRadius: '10px', transition: 'width 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                      boxShadow: '0 0 10px var(--accent-primary)'
-                    }}></div>
-                  </div>
-                  <div style={{ fontWeight: 900, fontSize: '0.9rem', color: 'var(--accent-primary)', whiteSpace: 'nowrap' }}>{p}%</div>
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* COMMON HEADER LOGIC */}
+        {/* 💻 MAIN CANVAS CONTAINER */}
+        <main className="dash-main" style={{ flex: 1, minWidth: 0, position: 'relative', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          {/* Contextual Breadcrumb/Header Bar */}
+          <header style={{ 
+             padding: '1.2rem 1.5rem', borderBottom: '1px solid var(--glass-border)', 
+             display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 
+          }}>
+             <div>
+               <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', textTransform: 'capitalize' }}>
+                 {activeTab.replace(/-/g, ' ')}
+               </h2>
+               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Welcome back, {profile.firstName}</p>
+             </div>
+          </header>
           {activeTab === 'profile' && (
-            <header className="dash-header">
-              <div>
-                <h1>Profile Management</h1>
-                <p>Manage your account credentials and contact data.</p>
+            <header className="dash-header" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <h1 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>Profile Management</h1>
+                {!editMode ? (
+                  <button className="btn-edit" onClick={() => setEditMode(true)} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--accent-glow)', color: 'var(--accent-secondary)', padding: '4px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}><Edit2 size={12} /> Edit</button>
+                ) : (
+                  <button className="btn-cancel" onClick={() => { setEditMode(false); setFormData(profile); setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); setMessage({ text: '', type: '' }); }} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '4px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}><X size={12} /> Cancel</button>
+                )}
               </div>
-              {!editMode ? (
-                <button className="btn-edit" onClick={() => setEditMode(true)}><Edit2 size={16} /> Edit Profile</button>
-              ) : (
-                <button className="btn-cancel" onClick={() => { setEditMode(false); setFormData(profile); setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); setMessage({ text: '', type: '' }); }}><X size={16} /> Cancel</button>
-              )}
             </header>
           )}
 
-          <div className="dash-content-area">
+          <div className="dash-content-area" style={{ 
+            flex: 1, 
+            padding: '16px', 
+            minHeight: 0, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            overflowY: (activeTab === 'applications' || activeTab === 'course-finder' || activeTab === 'students-list' || activeTab === 'profile') ? 'hidden' : 'auto' 
+          }}>
             {message.text && (
-              <div className={`dash-message ${message.type}`}>
+              <div className={`dash-message ${message.type}`} style={{ padding: '12px 20px', borderRadius: '12px', marginBottom: '20px', background: message.type === 'error' ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)', color: message.type === 'error' ? '#ef4444' : '#22c55e', fontWeight: 600 }}>
                 {message.text}
               </div>
             )}
 
-            {/* ================================== */}
-            {/* VIEW: HOME OVERVIEW                */}
-            {/* ================================== */}
             {activeTab === 'home' && (
               <DashboardHome
                 profile={profile}
                 isPartner={isPartner}
+                isCounselor={isCounselor}
+                isFreelancer={isFreelancer}
                 setActiveTab={setActiveTab}
                 stats={stats}
                 fetchStats={fetchStats}
@@ -562,315 +618,131 @@ const Dashboard = () => {
               />
             )}
 
-            {/* ================================== */}
-            {/* VIEW: STUDENTS LIST                */}
-            {/* ================================== */}
             {activeTab === 'students-list' && (
-              <StudentsList
-                profile={profile}
-                setMessage={setMessage}
-                fetchStats={fetchStats}
-                pendingApplications={pendingApplications}
-                setPendingApplications={setPendingApplications}
-              />
+              <StudentsList profile={profile} setMessage={setMessage} fetchStats={fetchStats} pendingApplications={pendingApplications} setPendingApplications={setPendingApplications} />
             )}
-
-            {/* ================================== */}
-            {/* VIEW: REGISTER STUDENT              */}
-            {/* ================================== */}
             {activeTab === 'register-student' && <RegisterStudent profile={profile} setMessage={setMessage} />}
-
-
-            {/* ================================== */}
-            {/* VIEW: APPLICATIONS                 */}
-            {/* ================================== */}
-            {activeTab === 'applications' && (
-              isStudent && (
-                <StudentDetails
-                  student={profile}
-                  goBack={() => setActiveTab('home')}
-                  pendingApplications={pendingApplications}
-                  setPendingApplications={setPendingApplications}
-                  refreshProfile={fetchProfile}
-                />
-              )
+            {activeTab === 'applications' && isStudent && (
+              <StudentDetails student={profile} goBack={() => setActiveTab('home')} pendingApplications={pendingApplications} setPendingApplications={setPendingApplications} refreshProfile={fetchProfile} />
             )}
-
-            {/* ================================== */}
-            {/* VIEW: APPLIED UNIVERSITIES         */}
-            {/* ================================== */}
-            {activeTab === 'applied-universities' && (
-              <AppliedUniversities profile={profile} />
-            )}
-
-            {/* ================================== */}
-            {/* VIEW: PARTNER APPLICATIONS         */}
-            {/* ================================== */}
-            {activeTab === 'partner-applications' && (isPartner || isCounselor || isFreelancer) && (
-              <PartnerApplications profile={profile} setMessage={setMessage} />
-            )}
-
-            {/* ================================== */}
-            {/* VIEW: STUDENT DOCUMENTS            */}
-            {/* ================================== */}
-            {activeTab === 'student-documents' && (isPartner || isCounselor || isFreelancer) && (
-              <StudentDocuments />
-            )}
-
-            {/* ================================== */}
-            {/* VIEW: MANAGE COUNSELORS            */}
-            {/* ================================== */}
+            {activeTab === 'applied-universities' && <AppliedUniversities profile={profile} />}
+            {activeTab === 'partner-applications' && (isPartner || isCounselor || isFreelancer) && <PartnerApplications profile={profile} setMessage={setMessage} />}
+            {activeTab === 'student-documents' && (isPartner || isCounselor || isFreelancer) && <StudentDocuments />}
             {activeTab === 'counselors' && <ManageCounselors setMessage={setMessage} />}
-
-            {/* ================================== */}
-            {/* VIEW: NOTIFICATIONS                */}
-            {/* ================================== */}
             {activeTab === 'notifications' && <Notifications profile={profile} />}
-
-            {/* ================================== */}
-            {/* VIEW: LEARNING RESOURCES           */}
-            {/* ================================== */}
             {activeTab === 'learning' && <LearningResources />}
-
-            {/* ================================== */}
-            {/* VIEW: SEARCH PROGRAM               */}
-            {/* ================================== */}
             {activeTab === 'course-finder' && (
-              <SearchProgram
-                preselectedUnis={pendingApplications}
-                onProceed={(selected) => {
-                  setPendingApplications(selected);
-                  if (isPartner || isCounselor || isFreelancer) {
-                    setActiveTab('students-list');
-                  } else {
-                    setActiveTab('applications');
-                  }
-                }}
-              />
+              <SearchProgram preselectedUnis={pendingApplications} onProceed={(selected) => { setPendingApplications(selected); if (isPartner || isCounselor || isFreelancer) { setActiveTab('students-list'); } else { setActiveTab('applications'); } }} />
             )}
 
-            {/* ================================== */}
-            {/* VIEW: PROFILE MANAGEMENT           */}
-            {/* ================================== */}
             {activeTab === 'profile' && (
               <>
                 {!editMode ? (
+                  <div className="profile-page-wrap">
                   <div className="profile-grid">
+                    <div className="profile-card full-width" style={{ gridColumn: '1/-1', display: 'flex', alignItems: 'center', gap: '1rem', padding: '10px 15px' }}>
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{ width: '60px', height: '60px', borderRadius: '15px', overflow: 'hidden', border: '2px solid rgba(167,139,250,0.5)', background: 'linear-gradient(135deg,#6366f1,#a78bfa)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 16px rgba(167,139,250,0.3)' }}>
+                          {profile.avatarUrl
+                            ? <img src={profile.avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            : <span style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 800 }}>{(profile.firstName || 'U')[0].toUpperCase()}</span>
+                          }
+                        </div>
+                        {avatarUploading && <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: '#fff', fontSize: '0.6rem', fontWeight: 700 }}>Saving…</span></div>}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '2px' }}>Profile Photo</div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px' }}>Auto-compressed storage active</div>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          <label htmlFor="profile-avatar-input" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'linear-gradient(135deg,#6366f1,#a78bfa)', color: '#fff', borderRadius: '8px', padding: '6px 12px', fontSize: '0.75rem', fontWeight: 600, cursor: avatarUploading ? 'not-allowed' : 'pointer', opacity: avatarUploading ? 0.6 : 1 }}>
+                            <Camera size={12} /> Change
+                          </label>
+                          {profile.avatarUrl && (
+                            <button 
+                              type="button"
+                              onClick={handleRemoveAvatar}
+                              disabled={avatarUploading}
+                              style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
+                            >
+                              <Trash2 size={12} /> Remove
+                            </button>
+                          )}
+                        </div>
+                        <input id="profile-avatar-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarUpload} disabled={avatarUploading} />
+                      </div>
+                    </div>
+
                     <div className="profile-card">
                       <h3>Core Identification</h3>
-                      <div className="data-row">
-                        <span className="label">Full Name</span>
-                        <span className="value">{profile.firstName} {profile.lastName || ''}</span>
-                      </div>
-                      <div className="data-row">
-                        <span className="label">Email Address</span>
-                        <span className="value">{profile.email}</span>
-                      </div>
+                      <div className="data-row"><span className="label">Full Name</span><span className="value">{profile.firstName} {profile.lastName || ''}</span></div>
+                      <div className="data-row"><span className="label">Email Address</span><span className="value">{profile.email}</span></div>
                     </div>
-
                     <div className="profile-card">
                       <h3>Geospatial Data</h3>
-                      <div className="data-row">
-                        <Globe size={16} className="data-icon" />
-                        <div>
-                          <span className="label">Country</span>
-                          <span className="value">{profile.country}</span>
-                        </div>
-                      </div>
-                      <div className="data-row">
-                        <MapPin size={16} className="data-icon" />
-                        <div>
-                          <span className="label">State / Region</span>
-                          <span className="value">{profile.state}</span>
-                        </div>
-                      </div>
-                      <div className="data-row">
-                        <MapPin size={16} className="data-icon" />
-                        <div>
-                          <span className="label">City</span>
-                          <span className="value">{profile.city}</span>
-                        </div>
-                      </div>
+                      <div className="data-row"><Globe size={16} className="data-icon" /><div><span className="label">Country</span><span className="value">{profile.country}</span></div></div>
+                      <div className="data-row"><MapPin size={16} className="data-icon" /><div><span className="label">State / Region</span><span className="value">{profile.state}</span></div></div>
+                      <div className="data-row"><MapPin size={16} className="data-icon" /><div><span className="label">City</span><span className="value">{profile.city}</span></div></div>
                     </div>
-
                     <div className={`profile-card ${!isPartner ? 'full-width' : ''}`}>
                       <h3>Contact Details</h3>
-                      <div className="data-row">
-                        <Phone size={16} className="data-icon" />
-                        <div>
-                          <span className="label">Phone</span>
-                          <span className="value">{profile.phoneCode} {profile.phone}</span>
-                        </div>
-                      </div>
-                      <div className="data-row">
-                        <Smartphone size={16} className="data-icon" />
-                        <div>
-                          <span className="label">WhatsApp</span>
-                          <span className="value">{profile.whatsapp ? `${profile.whatsappCode} ${profile.whatsapp}` : 'Not Configured'}</span>
-                        </div>
-                      </div>
+                      <div className="data-row"><Phone size={16} className="data-icon" /><div><span className="label">Phone</span><span className="value">{profile.phoneCode} {profile.phone}</span></div></div>
+                      <div className="data-row"><Smartphone size={16} className="data-icon" /><div><span className="label">WhatsApp</span><span className="value">{profile.whatsapp ? `${profile.whatsappCode} ${profile.whatsapp}` : 'Not Configured'}</span></div></div>
                     </div>
 
                     {isPartner && (
                       <div className="profile-card">
                         <h3>Business Details</h3>
-                        <div className="data-row">
-                          <Building2 size={16} className="data-icon" />
-                          <div>
-                            <span className="label">Company Name</span>
-                            <span className="value">{profile.companyName || 'N/A'}</span>
-                          </div>
-                        </div>
-                        <div className="data-row">
-                          <MapPin size={16} className="data-icon" />
-                          <div>
-                            <span className="label">Company Address</span>
-                            <span className="value">{profile.companyAddress || 'N/A'}</span>
-                          </div>
-                        </div>
-                        <div className="data-row">
-                          <Users size={16} className="data-icon" />
-                          <div>
-                            <span className="label">Team Size</span>
-                            <span className="value">{profile.teamSize || 'N/A'}</span>
-                          </div>
-                        </div>
-                        <div className="data-row">
-                          <Briefcase size={16} className="data-icon" />
-                          <div>
-                            <span className="label">Designation</span>
-                            <span className="value">{profile.designation || 'N/A'}</span>
-                          </div>
-                        </div>
-                        <div className="data-row">
-                          <KeyRound size={16} className="data-icon" />
-                          <div>
-                            <span className="label">Student Unique ID</span>
-                            <span className="value">{profile.studentUniqueId || 'N/A'}</span>
-                          </div>
-                        </div>
-                        <div className="data-row">
-                          <CheckSquare size={16} className="data-icon" />
-                          <div>
-                            <span className="label">Prior Experience</span>
-                            <span className="value">{profile.priorExperience ? 'Yes' : 'No'}</span>
-                          </div>
-                        </div>
+                        <div className="data-row"><Building2 size={16} className="data-icon" /><div><span className="label">Company Name</span><span className="value">{profile.companyName || 'N/A'}</span></div></div>
+                        <div className="data-row"><MapPin size={16} className="data-icon" /><div><span className="label">Company Address</span><span className="value">{profile.companyAddress || 'N/A'}</span></div></div>
+                        <div className="data-row"><Users size={16} className="data-icon" /><div><span className="label">Team Size</span><span className="value">{profile.teamSize || 'N/A'}</span></div></div>
+                        <div className="data-row"><Briefcase size={16} className="data-icon" /><div><span className="label">Designation</span><span className="value">{profile.designation || 'N/A'}</span></div></div>
+                        <div className="data-row"><KeyRound size={16} className="data-icon" /><div><span className="label">Student Unique ID</span><span className="value">{profile.studentUniqueId || 'N/A'}</span></div></div>
+                        <div className="data-row"><CheckSquare size={16} className="data-icon" /><div><span className="label">Prior Experience</span><span className="value">{profile.priorExperience ? 'Yes' : 'No'}</span></div></div>
                       </div>
                     )}
                   </div>
+                  </div>
                 ) : (
-                  <>
-                  <form onSubmit={handleUpdate} className="edit-form-grid">
-                    <div className="profile-card full-width edit-card">
-                      <div className="dash-input-group">
-                        <label>Email Address</label>
-                        <input type="email" name="email" value={formData.email || ''} onChange={handleChange} required className="dash-input" />
+                  <div className="profile-page-wrap">
+                    <form onSubmit={handleUpdate} className="edit-form-grid">
+                      <div className="profile-card full-width edit-card">
+                        <div className="dash-input-group"><label>Email Address</label><input type="email" name="email" value={formData.email || ''} onChange={handleChange} required className="dash-input" /></div>
+                        <div className="dash-input-group"><label>First Name</label><input type="text" name="firstName" value={formData.firstName || ''} onChange={handleChange} required className="dash-input" /></div>
+                        <div className="dash-input-group"><label>Last Name</label><input type="text" name="lastName" value={formData.lastName || ''} onChange={handleChange} className="dash-input" /></div>
+                        <div className="dash-input-group"><label>Country</label><input type="text" name="country" value={formData.country || ''} onChange={handleChange} required className="dash-input" /></div>
+                        <div className="dash-input-group"><label>State</label><input type="text" name="state" value={formData.state || ''} onChange={handleChange} required className="dash-input" /></div>
+                        <div className="dash-input-group"><label>City</label><input type="text" name="city" value={formData.city || ''} onChange={handleChange} required className="dash-input" /></div>
+                        <div className="dash-input-group"><label>Phone Number *</label><input type="tel" name="phone" value={formData.phone || ''} onChange={(e) => setFormData({ ...formData, phone: e.target.value.slice(0, 10) })} required className="dash-input" /></div>
+                        <div className="dash-input-group"><label>WhatsApp Number</label><input type="tel" name="whatsapp" value={formData.whatsapp || ''} onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value.slice(0, 10) })} className="dash-input" /></div>
+                        
+                        {isPartner && (
+                          <>
+                            <div className="dash-input-group"><label>Company Name</label><input type="text" name="companyName" value={formData.companyName || ''} onChange={handleChange} required className="dash-input" /></div>
+                            <div className="dash-input-group"><label>Company Address</label><input type="text" name="companyAddress" value={formData.companyAddress || ''} onChange={handleChange} required className="dash-input" /></div>
+                            <div className="dash-input-group"><label>Team Size</label><input type="text" name="teamSize" value={formData.teamSize || ''} onChange={handleChange} required className="dash-input" /></div>
+                            <div className="dash-input-group"><label>Designation</label><input type="text" name="designation" value={formData.designation || ''} onChange={handleChange} required className="dash-input" /></div>
+                            <div className="input-group col-span-2" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginTop: '10px', gridColumn: '1 / -1' }}>
+                              <input type="checkbox" name="priorExperience" id="priorExperience" checked={formData.priorExperience || false} onChange={(e) => setFormData({ ...formData, priorExperience: e.target.checked })} style={{ width: 'auto', cursor: 'pointer' }} />
+                              <label htmlFor="priorExperience" style={{ cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)', margin: 0 }}> Prior experience in study abroad?</label>
+                            </div>
+                          </>
+                        )}
+                        <div className="edit-actions" style={{ gridColumn: '1 / -1', marginTop: '15px' }}><button type="submit" className="btn-save" style={{ background: 'var(--accent-primary)', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '10px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}><Save size={16} /> Save Changes</button></div>
                       </div>
-
-                      <div className="dash-input-group">
-                        <label>First Name</label>
-                        <input type="text" name="firstName" value={formData.firstName || ''} onChange={handleChange} required className="dash-input" />
+                    </form>
+                    <form onSubmit={handlePasswordUpdate} className="edit-form-grid" style={{ marginTop: '20px' }}>
+                      <div className="profile-card full-width edit-card">
+                        <h3 style={{ gridColumn: '1 / -1', marginBottom: '15px', color: 'var(--text-main)', fontWeight: 700, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px' }}><KeyRound size={18} /> Security Settings</h3>
+                        <div className="dash-input-group" style={{ gridColumn: '1 / -1' }}><label>Current Password</label><input type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} required className="dash-input" /></div>
+                        <div className="dash-input-group"><label>New Password</label><input type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} required className="dash-input" /><span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Must be 8+ chars, with upper, lower, number & special char.</span></div>
+                        <div className="dash-input-group"><label>Confirm New Password</label><input type="password" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} required className="dash-input" /></div>
+                        <div className="edit-actions" style={{ gridColumn: '1 / -1', marginTop: '15px' }}><button type="submit" className="btn-save" style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '10px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}><Save size={16} /> Update Password</button></div>
                       </div>
-
-                      <div className="dash-input-group">
-                        <label>Last Name</label>
-                        <input type="text" name="lastName" value={formData.lastName || ''} onChange={handleChange} className="dash-input" />
-                      </div>
-
-                      <div className="dash-input-group">
-                        <label>Country</label>
-                        <input type="text" name="country" value={formData.country || ''} onChange={handleChange} required className="dash-input" />
-                      </div>
-
-                      <div className="dash-input-group">
-                        <label>State</label>
-                        <input type="text" name="state" value={formData.state || ''} onChange={handleChange} required className="dash-input" />
-                      </div>
-
-                      <div className="dash-input-group">
-                        <label>City</label>
-                        <input type="text" name="city" value={formData.city || ''} onChange={handleChange} required className="dash-input" />
-                      </div>
-
-                      <div className="dash-input-group">
-                        <label>Phone Number *</label>
-                        <input type="tel" name="phone" value={formData.phone || ''} onChange={(e) => setFormData({ ...formData, phone: e.target.value.slice(0, 10) })} required className="dash-input" />
-                      </div>
-                      <div className="dash-input-group">
-                        <label>WhatsApp Number</label>
-                        <input type="tel" name="whatsapp" value={formData.whatsapp || ''} onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value.slice(0, 10) })} className="dash-input" />
-                      </div>
-
-                      {isPartner && (
-                        <>
-                          <div className="dash-input-group">
-                            <label>Company Name</label>
-                            <input type="text" name="companyName" value={formData.companyName || ''} onChange={handleChange} required className="dash-input" />
-                          </div>
-                          <div className="dash-input-group">
-                            <label>Company Address</label>
-                            <input type="text" name="companyAddress" value={formData.companyAddress || ''} onChange={handleChange} required className="dash-input" />
-                          </div>
-                          <div className="dash-input-group">
-                            <label>Team Size</label>
-                            <input type="text" name="teamSize" value={formData.teamSize || ''} onChange={handleChange} required className="dash-input" />
-                          </div>
-                          <div className="dash-input-group">
-                            <label>Designation</label>
-                            <input type="text" name="designation" value={formData.designation || ''} onChange={handleChange} required className="dash-input" />
-                          </div>
-
-                          <div className="input-group col-span-2" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginTop: '10px', gridColumn: '1 / -1' }}>
-                            <input
-                              type="checkbox"
-                              name="priorExperience"
-                              id="priorExperience"
-                              checked={formData.priorExperience || false}
-                              onChange={(e) => setFormData({ ...formData, priorExperience: e.target.checked })}
-                              style={{ width: 'auto', cursor: 'pointer' }}
-                            />
-                            <label htmlFor="priorExperience" style={{ cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)', margin: 0 }}> Prior experience in study abroad?</label>
-                          </div>
-                        </>
-                      )}
-
-                      <div className="edit-actions">
-                        <button type="submit" className="btn-save"><Save size={16} /> Save Changes</button>
-                      </div>
-                    </div>
-                  </form>
-                  
-                  <form onSubmit={handlePasswordUpdate} className="edit-form-grid" style={{ marginTop: '20px' }}>
-                    <div className="profile-card full-width edit-card">
-                      <h3 style={{ gridColumn: '1 / -1', marginBottom: '15px' }}><KeyRound size={18} style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Security Settings</h3>
-                      
-                      <div className="dash-input-group" style={{ gridColumn: '1 / -1' }}>
-                        <label>Current Password</label>
-                        <input type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} required className="dash-input" />
-                      </div>
-
-                      <div className="dash-input-group">
-                        <label>New Password</label>
-                        <input type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} required className="dash-input" />
-                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Must be 8+ chars, with upper, lower, number & special char.</span>
-                      </div>
-
-                      <div className="dash-input-group">
-                        <label>Confirm New Password</label>
-                        <input type="password" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} required className="dash-input" />
-                      </div>
-
-                      <div className="edit-actions" style={{ gridColumn: '1 / -1', marginTop: '15px' }}>
-                        <button type="submit" className="btn-save" style={{ background: '#ef4444' }}><Save size={16} /> Update Password</button>
-                      </div>
-                    </div>
-                  </form>
-                  </>
+                    </form>
+                  </div>
                 )}
               </>
             )}
-
           </div>
         </main>
       </div>
@@ -1204,8 +1076,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-      </div>
-    </>
+    </div>
   );
 };
 

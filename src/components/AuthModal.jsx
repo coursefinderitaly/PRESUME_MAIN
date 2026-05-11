@@ -209,7 +209,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-hidden"
       onClick={onClose}
     >
       {/* CSS keyframes - must live outside overflow:hidden */}
@@ -298,7 +298,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-6 right-6 z-[70] text-white/40 hover:text-white hover:rotate-90 transition-all duration-300 p-2 rounded-full hover:bg-white/10"
+          className="absolute top-6 right-6 z-[70] text-slate-500 hover:text-white hover:rotate-90 transition-all duration-300 p-2 rounded-full hover:bg-white/10"
         >
           <X size={24} />
         </button>
@@ -407,7 +407,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                   <div className="space-y-2 group">
                     <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1 group-focus-within:text-cyan-400 transition-colors">Identifier</label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-cyan-400 transition-colors w-5 h-5" />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition-colors w-5 h-5" />
                       <input type="text" required value={identifier} onChange={e => setIdentifier(e.target.value)} className="w-full pl-12 pr-4 py-5 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all" placeholder="Enter Your Email" />
                     </div>
                   </div>
@@ -417,9 +417,9 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                       <button type="button" className="text-[10px] font-black text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-widest">Recovery</button>
                     </div>
                     <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-cyan-400 transition-colors w-5 h-5" />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition-colors w-5 h-5" />
                       <input type={showPassword ? 'text' : 'password'} required value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="w-full pl-12 pr-12 py-5 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all font-mono" placeholder="••••••••" />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors">
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
@@ -508,15 +508,20 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Create Secure Password</label>
                           <div className="relative">
-                            <input type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={e => handleInputChange('password', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
-                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20">
+                            <input type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={e => handleInputChange('password', e.target.value)} className="w-full px-5 pr-12 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
                               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
                           </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Confirm Password</label>
-                          <input type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={e => handleInputChange('confirmPassword', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
+                          <div className="relative">
+                            <input type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={e => handleInputChange('confirmPassword', e.target.value)} className="w-full px-5 pr-12 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
+                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
+                              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}
