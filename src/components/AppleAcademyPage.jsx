@@ -7,11 +7,12 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence } from 'framer-motion';
 import AuthModal from './AuthModal';
 
-import pastedImage from '../SuccessStories/Pasted image.png';
-import pastedImage2 from '../SuccessStories/Pasted image (2).png';
-import pastedImage3 from '../SuccessStories/Pasted image (3).png';
-import pastedImage4 from '../SuccessStories/Pasted image (4).png';
-import pastedImage5 from '../SuccessStories/Pasted image (5).png';
+import pastedImage from '../SuccessStories/success-1.jpeg';
+import pastedImage2 from '../SuccessStories/success-2.jpeg';
+import pastedImage3 from '../SuccessStories/success-3.jpeg';
+import pastedImage4 from '../SuccessStories/success-4.jpeg';
+import pastedImage5 from '../SuccessStories/success-5.jpeg';
+import pastedImage6 from '../SuccessStories/success-6.jpeg';
 
 import binusLogo from '../unilogo/binus.png';
 import federicoLogo from '../unilogo/federico.png';
@@ -420,7 +421,8 @@ const AppleAcademyPage = () => {
              <img src={pastedImage2} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 2" />
              <img src={pastedImage3} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 3" />
              <img src={pastedImage4} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 4" />
-             <img src={pastedImage5} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500 lg:col-span-2" alt="Success Story 5" />
+             <img src={pastedImage5} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 5" />
+             <img src={pastedImage6} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 6" />
           </div>
         </section>
 

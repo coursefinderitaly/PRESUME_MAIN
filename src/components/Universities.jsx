@@ -38,8 +38,9 @@ const universities = [
 
 
 const VerticalMarquee = ({ images, align, direction = -1, speed = 30, isVisible }) => {
-  // Duplicate array exactly twice so -50% is a perfect loop
-  const loopImages = [...images, ...images, ...images, ...images, ...images, ...images, ...images, ...images];
+  // Duplicate array 4 times to ensure it covers even the tallest monitors
+  // -50% translation will shift exactly 2 copies, creating a seamless loop
+  const loopImages = [...images, ...images, ...images, ...images];
 
   return (
     <motion.div
@@ -47,25 +48,28 @@ const VerticalMarquee = ({ images, align, direction = -1, speed = 30, isVisible 
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-      className={`absolute ${align === 'left' ? 'left-3 sm:left-6 lg:left-8' : 'right-3 sm:right-6 lg:right-8'} top-32 bottom-10 w-[120px] sm:w-[140px] lg:w-[180px] overflow-hidden z-30 pointer-events-none hidden md:flex flex-col`}
+      className={`absolute ${align === 'left' ? 'left-8 sm:left-12 lg:left-24' : 'right-8 sm:right-12 lg:right-24'} top-0 bottom-0 my-auto -translate-y-12 h-[420px] lg:h-[510px] w-[130px] lg:w-[170px] overflow-hidden z-30 pointer-events-none hidden md:flex flex-col justify-center`}
     >
       {/* Top and Bottom faded mask */}
-      <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#0a0d18] to-transparent z-20 pointer-events-none" />
-      <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#0a0d18] to-transparent z-20 pointer-events-none" />
+      <div className="absolute top-0 inset-x-0 h-16 lg:h-20 bg-gradient-to-b from-[#0a0d18] via-[#0a0d18]/80 to-transparent z-20 pointer-events-none" />
+      <div className="absolute bottom-0 inset-x-0 h-16 lg:h-20 bg-gradient-to-t from-[#0a0d18] via-[#0a0d18]/80 to-transparent z-20 pointer-events-none" />
 
       <motion.div
-        className="flex flex-col gap-5 pt-5"
+        className="flex flex-col"
         animate={isVisible ? { y: direction === -1 ? ['0%', '-50%'] : ['-50%', '0%'] } : {}}
         transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
       >
         {loopImages.map((uni, idx) => (
-          <div key={idx} className="relative flex-shrink-0 w-full h-[85px] sm:h-[100px] lg:h-[125px] rounded-[20px] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.4)] border border-white/[0.08]  transform-gpu">
-            <img src={uni.image} alt={uni.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover will-change-transform transform-gpu" />
-            <div className="absolute bottom-0 left-0 w-full p-2.5 sm:p-3 z-10 bg-black/40  border-t border-white/10 will-change-[backdrop-filter]">
-              <h3 className="text-[9px] sm:text-[10px] lg:text-xs font-black text-white leading-tight drop-shadow-md">
-                {uni.name}
-              </h3>
-              <div className="w-5 h-0.5 bg-[#f8d991] mt-1.5 rounded-full" />
+          <div key={idx} className="pb-6">
+            <div className="relative flex-shrink-0 w-full h-[110px] lg:h-[140px] rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.6)] border border-white/[0.08] transform-gpu">
+              <img src={uni.image} alt={uni.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover will-change-transform transform-gpu" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-full p-4 z-10 will-change-[backdrop-filter]">
+                <h3 className="text-[10px] lg:text-xs font-black text-white leading-tight drop-shadow-lg">
+                  {uni.name}
+                </h3>
+                <div className="w-6 h-[3px] bg-[#f8d991] mt-2 rounded-full shadow-[0_0_10px_rgba(248,217,145,0.8)]" />
+              </div>
             </div>
           </div>
         ))}
@@ -138,7 +142,7 @@ export const Universities = () => {
       />
 
       {/* ── SECTION HEADER ── */}
-      <div className="flex-none pb-1 px-4 z-10 text-center relative" style={{ paddingTop: 'calc(var(--section-header-offset) + 8px)' }}>
+      <div className="flex-none pb-1 px-4 z-50 text-center relative" style={{ paddingTop: 'calc(var(--section-header-offset) + 8px)' }}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}

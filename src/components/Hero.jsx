@@ -191,15 +191,6 @@ export const Hero = () => {
                 >
                   Book Your University <ArrowRight size={20} />
                 </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/map')}
-                  className="bg-white/5 backdrop-blur-md text-white border border-white/10 px-10 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-white/10 transition-all w-full sm:w-auto justify-center"
-                >
-                  Where to Study <Globe size={20} />
-                </motion.button>
               </div>
             </motion.div>
 
