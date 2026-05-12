@@ -34,14 +34,14 @@
                                                 [data-theme='light'] .dash-universe {
                                                   /* ── Milky Soft Light Palette ── */
                                                   --bg-primary: #f8fafc;
-                                                  --bg-secondary: #ffffff;
-                                                  --bg-tertiary: #f1f5f9;
-                                                  --card-bg-solid: rgba(255, 255, 255, 0.9);
-                                                  --table-header-bg: rgba(0, 0, 0, 0.02);
-                                                  --glass-bg: rgba(255, 255, 255, 0.8);
-                                                  --glass-border: rgba(0, 0, 0, 0.04);
+                                                  --bg-secondary: #f1f5f9;
+                                                  --bg-tertiary: #e2e8f0;
+                                                  --card-bg-solid: rgba(255, 255, 255, 0.95);
+                                                  --table-header-bg: rgba(0, 0, 0, 0.03);
+                                                  --glass-bg: rgba(255, 255, 255, 0.9);
+                                                  --glass-border: rgba(0, 0, 0, 0.08);
                                                   --glass-highlight: rgba(0, 0, 0, 0.02);
-                                                  --card-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.06);
+                                                  --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.1);
 
                                                   --accent-primary: #6366f1;
                                                   --accent-secondary: #4f46e5;
@@ -380,7 +380,8 @@
                                                   flex: 1;
                                                   display: flex;
                                                   flex-direction: column;
-                                                  gap: 2px;
+                                                  gap: 12px;
+                                                  padding: 16px 10px !important;
                                                   overflow-y: auto;
                                                   overflow-x: hidden;
                                                   scrollbar-width: none;
@@ -394,17 +395,17 @@
                                                   display: flex;
                                                   align-items: center;
                                                   gap: 12px;
-                                                  padding: 10px 12px;
+                                                  padding: 10px 14px;
                                                   width: 100%;
                                                   text-align: left;
                                                   background: transparent;
-                                                  border: none;
+                                                  border: 1px solid transparent;
                                                   border-radius: 12px;
                                                   color: var(--text-muted);
-                                                  font-size: 0.875rem;
-                                                  font-weight: 500;
+                                                  font-size: 0.85rem;
+                                                  font-weight: 600;
                                                   cursor: pointer;
-                                                  transition: background 0.2s ease, color 0.2s ease;
+                                                  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
                                                   white-space: nowrap;
                                                   overflow: hidden;
                                                   position: relative;
@@ -412,23 +413,27 @@
 
                                                 .nav-item svg {
                                                   flex-shrink: 0;
-                                                  opacity: 0.6;
-                                                  transition: opacity 0.2s;
+                                                  opacity: 0.7;
+                                                  transition: all 0.2s;
                                                 }
 
-                                                .nav-item:hover {
+                                                .nav-item:hover:not(:disabled) {
                                                   background: var(--glass-highlight);
                                                   color: var(--text-main);
+                                                  border-color: var(--glass-border);
+                                                  transform: translateX(4px);
                                                 }
 
-                                                .nav-item:hover svg {
+                                                .nav-item:hover:not(:disabled) svg {
                                                   opacity: 1;
+                                                  transform: scale(1.1);
                                                 }
 
                                                 .nav-item.active {
-                                                  background: var(--accent-glow);
-                                                  color: var(--accent-secondary);
-                                                  font-weight: 600;
+                                                  background: var(--accent-glow) !important;
+                                                  color: var(--accent-secondary) !important;
+                                                  border-color: rgba(88, 166, 255, 0.2);
+                                                  font-weight: 700;
                                                 }
 
                                                 .nav-item.active svg {
@@ -436,17 +441,27 @@
                                                   color: var(--accent-secondary);
                                                 }
 
-                                                .nav-item.active::after {
-                                                  content: '';
-                                                  position: absolute;
-                                                  right: 10px;
-                                                  top: 50%;
-                                                  transform: translateY(-50%);
-                                                  width: 5px;
-                                                  height: 5px;
-                                                  border-radius: 50%;
-                                                  background: var(--accent-primary);
-                                                  opacity: 0.8;
+                                                .nav-item.locked {
+                                                  opacity: 0.6;
+                                                  cursor: not-allowed;
+                                                }
+
+                                                .nav-item.locked:hover {
+                                                  transform: none;
+                                                  background: transparent;
+                                                }
+
+                                                .badge-soon {
+                                                  background: rgba(245, 158, 11, 0.1);
+                                                  color: #f59e0b;
+                                                  font-size: 0.55rem;
+                                                  font-weight: 800;
+                                                  padding: 2px 6px;
+                                                  border-radius: 5px;
+                                                  text-transform: uppercase;
+                                                  letter-spacing: 0.05em;
+                                                  border: 1px solid rgba(245, 158, 11, 0.2);
+                                                  margin-left: auto;
                                                 }
 
                                                 .nav-divider {
@@ -455,16 +470,40 @@
                                                   margin: 6px 4px;
                                                 }
 
-                                                /* ── Logout ── */
-                                                .logout-btn {
-                                                  color: var(--text-muted);
-                                                  margin-top: 4px;
-                                                  opacity: 0.7;
+                                                .logout-btn-footer {
+                                                  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                                                  display: flex;
+                                                  align-items: center;
+                                                  justify-content: center;
+                                                  gap: 0;
+                                                  overflow: hidden;
+                                                  white-space: nowrap;
+                                                  cursor: pointer;
                                                 }
 
-                                                .logout-btn:hover {
-                                                  background: rgba(239, 68, 68, 0.08);
-                                                  color: #f87171;
+                                                .logout-text {
+                                                  max-width: 0;
+                                                  opacity: 0;
+                                                  font-size: 0.8rem;
+                                                  font-weight: 700;
+                                                  transition: all 0.3s ease;
+                                                  display: inline-block;
+                                                  vertical-align: middle;
+                                                }
+
+                                                .logout-btn-footer:hover {
+                                                  transform: scale(1.1);
+                                                  gap: 8px;
+                                                  padding-left: 16px !important;
+                                                  padding-right: 16px !important;
+                                                  opacity: 1 !important;
+                                                  background: rgba(239, 68, 68, 0.15) !important;
+                                                  color: #ff0000 !important;
+                                                  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+                                                }
+
+                                                .logout-btn-footer:hover .logout-text {
+                                                  max-width: 70px;
                                                   opacity: 1;
                                                 }
 
@@ -693,9 +732,10 @@
                                                   -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
                                                   border: 1px solid var(--glass-border) !important;
                                                   border-radius: 18px !important;
-                                                  box-shadow:
-                                                    inset 0 1px 1px var(--glass-highlight),
-                                                    0 10px 30px -10px rgba(0, 0, 0, 0.3) !important;
+                                                  box-shadow: 
+                                                    0 30px 60px -12px rgba(0, 0, 0, 0.25), 
+                                                    0 18px 36px -18px rgba(0, 0, 0, 0.3),
+                                                    inset 0 1px 1px var(--glass-highlight) !important;
                                                   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
                                                   animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
                                                   color: var(--text-main);
@@ -1524,51 +1564,66 @@
                                                 }
 
                                                 .profile-card h3 {
-                                                  font-size: 0.8rem;
-                                                  color: var(--accent-secondary);
-                                                  text-transform: uppercase;
-                                                  letter-spacing: 0.07em;
-                                                  margin-bottom: 8px;
-                                                  padding-bottom: 6px;
-                                                  border-bottom: 1px solid var(--glass-border);
-                                                  font-weight: 700;
-                                                }
+  font-size: 0.75rem;
+  color: var(--accent-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  opacity: 0.8;
+}
 
-                                                .data-row {
-                                                  display: flex;
-                                                  align-items: center;
-                                                  gap: 10px;
-                                                  margin-bottom: 8px;
-                                                  padding-bottom: 8px;
-                                                  border-bottom: 1px solid rgba(255,255,255,0.03);
-                                                }
+.data-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
 
-                                                .data-row:last-child {
-                                                  margin-bottom: 0;
-                                                  padding-bottom: 0;
-                                                  border-bottom: none;
-                                                }
+.data-row:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
 
-                                                .data-icon {
-                                                  color: var(--text-muted);
-                                                  margin-top: 2px;
-                                                  flex-shrink: 0;
-                                                }
+.data-icon {
+  color: var(--text-muted);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
 
-                                                .label {
-                                                  display: block;
-                                                  font-size: 0.72rem;
-                                                  color: var(--text-muted);
-                                                  text-transform: uppercase;
-                                                  letter-spacing: 0.05em;
-                                                  margin-bottom: 2px;
-                                                }
+.label {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  margin-bottom: 1px;
+}
 
-                                                .value {
-                                                  display: block;
-                                                  font-size: 0.92rem;
-                                                  font-weight: 500;
-                                                }
+.value {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.profile-main-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.profile-card.full-width {
+  grid-column: 1 / -1;
+}
 
                                                 .edit-form-grid {
                                                   display: flex;
@@ -2793,64 +2848,94 @@
                                                 }
 
                                                 /* ── PHASE 4: Profile section — screen fit ── */
-                                                .profile-page-wrap {
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  height: 100%;
-                                                  max-height: 100%;
-                                                  flex: 1;
-                                                  overflow-y: auto;
-                                                  scrollbar-width: thin;
-                                                  scrollbar-color: var(--accent-primary) transparent;
-                                                  gap: 16px;
-                                                  padding-right: 6px;
-                                                }
+.profile-page-wrap {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  height: 100%;
+  max-height: 100%;
+  flex: 1;
+  overflow: hidden;
+}
 
-                                                .profile-grid {
-                                                  display: grid;
-                                                  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-                                                  gap: 1.5rem;
-                                                  width: 100%;
-                                                }
-                                                .profile-page-wrap::-webkit-scrollbar {
-                                                  width: 5px;
-                                                }
+.profile-sidebar {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
 
-                                                .profile-page-wrap::-webkit-scrollbar-thumb {
-                                                  background: var(--accent-primary);
-                                                  border-radius: 10px;
-                                                }
+.profile-main {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-primary) transparent;
+}
 
-                                                /* Profile cards glassmorphic */
-                                                .profile-card {
-                                                  background: rgba(255, 255, 255, 0.04) !important;
-                                                  backdrop-filter: blur(20px) saturate(160%) !important;
-                                                  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-                                                  border: 1px solid rgba(255, 255, 255, 0.09) !important;
-                                                  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 20px rgba(0, 0, 0, 0.15) !important;
-                                                  transition: border-color 0.2s, box-shadow 0.2s;
-                                                }
+.profile-main::-webkit-scrollbar {
+  width: 5px;
+}
 
-                                                .profile-card:hover {
-                                                  border-color: rgba(129, 140, 248, 0.25) !important;
-                                                  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 28px rgba(0, 0, 0, 0.2) !important;
-                                                }
+.profile-main::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 10px;
+}
 
-                                                [data-theme='light'] .profile-card {
-                                                  background: rgba(255, 255, 255, 0.78) !important;
-                                                  border-color: rgba(0, 0, 0, 0.07) !important;
-                                                }
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
 
-                                                /* Notification responsive */
-                                                @media (max-width: 900px) {
-                                                  .notif-body-grid {
-                                                    grid-template-columns: 1fr !important;
-                                                  }
+/* Profile cards glassmorphic */
+.profile-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(20px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  padding: 16px !important;
+  border-radius: 16px;
+}
 
-                                                  .notif-side-panel {
-                                                    max-height: 220px;
-                                                  }
-                                                }
+.profile-card:hover {
+  border-color: rgba(129, 140, 248, 0.25) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 28px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme='light'] .profile-card {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(0, 0, 0, 0.07) !important;
+}
+
+@media (max-width: 1024px) {
+  .profile-page-wrap {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .profile-sidebar {
+    flex: none;
+    width: 100%;
+  }
+}
+
+/* Notification responsive */
+@media (max-width: 900px) {
+  .notif-body-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .notif-side-panel {
+    max-height: 220px;
+  }
+}
 
                                                 /* ── PHASE 5: Compact Wizard Application Container ── */
                                                 .student-details-wrapper .widget {
