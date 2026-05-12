@@ -212,11 +212,8 @@ export const Hero = () => {
               <div
                 className="relative z-10 w-[500px] h-[500px] rounded-full p-3 bg-white/5 border border-white/20 shadow-[0_0_100px_-20px_rgba(197,168,128,0.2)] overflow-hidden group transform-gpu"
               >
-                <a 
-                  href={universities[currentIndex].link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative h-full w-full rounded-full overflow-hidden bg-[#020817] block cursor-pointer group/link"
+                <div 
+                  className="relative h-full w-full rounded-full overflow-hidden bg-[#020817] block"
                 >
                   <AnimatePresence>
                     <motion.div
@@ -263,7 +260,7 @@ export const Hero = () => {
                       </div>
                     </motion.div>
                   </AnimatePresence>
-                </a>
+                </div>
               </div>
 
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-accent-gold rounded-full shadow-[0_0_20px_#C5A880] animate-pulse"></div>

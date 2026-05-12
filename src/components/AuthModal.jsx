@@ -42,7 +42,12 @@ const AuthModal = ({ type: initialProp, onClose }) => {
     whatsapp: '',
     password: '',
     confirmPassword: '',
-    role: initialRole || 'student'
+    role: initialRole || 'student',
+    // Freelancer specific fields
+    currentCountry: null,
+    passportCountry: null,
+    occupation: '',
+    registeredService: ''
   });
 
   // Country/State/City Data
@@ -131,7 +136,14 @@ const AuthModal = ({ type: initialProp, onClose }) => {
           phone: `+${formData.country?.phonecode || '91'}${formData.phone}`,
           whatsapp: `+${formData.country?.phonecode || '91'}${formData.whatsapp}`,
           password: formData.password,
-          role: formData.role
+          role: formData.role,
+          // Freelancer fields
+          ...(formData.role === 'freelancer' ? {
+            currentCountry: formData.country?.name, // Re-using step 2 country as current
+            passportCountry: formData.passportCountry?.name,
+            occupation: formData.occupation,
+            registeredService: formData.registeredService
+          } : {})
         })
       });
       const data = await res.json();
@@ -444,6 +456,38 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Email Address</label>
                           <input type="email" required value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="john@example.com" />
                         </div>
+                        {formData.role === 'freelancer' && (
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Occupation</label>
+                              <select 
+                                value={formData.occupation} 
+                                onChange={e => handleInputChange('occupation', e.target.value)}
+                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all appearance-none"
+                                style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+                              >
+                                <option value="" disabled style={{ background: '#0a0d18' }}>Select Occupation</option>
+                                <option value="work" style={{ background: '#0a0d18' }}>Work</option>
+                                <option value="student" style={{ background: '#0a0d18' }}>Student</option>
+                                <option value="freelancer" style={{ background: '#0a0d18' }}>Freelancer</option>
+                              </select>
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Registered Service</label>
+                              <select 
+                                value={formData.registeredService} 
+                                onChange={e => handleInputChange('registeredService', e.target.value)}
+                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all appearance-none"
+                                style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+                              >
+                                <option value="" disabled style={{ background: '#0a0d18' }}>Select Service</option>
+                                <option value="work visa" style={{ background: '#0a0d18' }}>Work Visa</option>
+                                <option value="study visa" style={{ background: '#0a0d18' }}>Study Visa</option>
+                                <option value="tourist visa" style={{ background: '#0a0d18' }}>Tourist Visa</option>
+                              </select>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -461,6 +505,12 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Select City</label>
                           <Select options={cities} value={formData.city} onChange={v => handleInputChange('city', v)} styles={selectStyles} isDisabled={!formData.state} placeholder="Select city..." />
                         </div>
+                        {formData.role === 'freelancer' && (
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Passport Issued Country</label>
+                            <Select options={countries} value={formData.passportCountry} onChange={v => handleInputChange('passportCountry', v)} styles={selectStyles} placeholder="Search countries..." />
+                          </div>
+                        )}
                       </div>
                     )}
 

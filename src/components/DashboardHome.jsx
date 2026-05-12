@@ -19,13 +19,13 @@ const LiveClock = () => {
 };
 
 /* ── Metric Card ── */
-const MetricCard = ({ icon: Icon, label, value, color, onClick }) => {
+const MetricCard = ({ icon: Icon, label, value, color, onClick, locked }) => {
   const [hov, setHov] = useState(false);
   return (
     <div
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
+      onClick={locked ? undefined : onClick}
+      onMouseEnter={() => !locked && setHov(true)}
+      onMouseLeave={() => !locked && setHov(false)}
       style={{
         padding: '1.2rem',
         borderRadius: '16px',
@@ -33,13 +33,15 @@ const MetricCard = ({ icon: Icon, label, value, color, onClick }) => {
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         border: `1px solid ${hov ? color + '40' : 'var(--glass-border)'}`,
-        cursor: onClick ? 'pointer' : 'default',
+        cursor: locked ? 'not-allowed' : onClick ? 'pointer' : 'default',
         transition: 'all 0.25s ease',
         transform: hov ? 'translateY(-3px)' : 'none',
         boxShadow: hov ? `0 12px 24px -8px ${color}20` : '0 4px 12px rgba(0,0,0,0.05)',
         display: 'flex',
         alignItems: 'center',
-        gap: '16px'
+        gap: '16px',
+        position: 'relative',
+        opacity: locked ? 0.7 : 1
       }}
     >
       <div style={{
@@ -55,30 +57,42 @@ const MetricCard = ({ icon: Icon, label, value, color, onClick }) => {
           {label}
         </div>
         <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-main)', lineHeight: 1.1, marginTop: '4px' }}>
-          {value}
+          {locked ? '...' : value}
         </div>
       </div>
+      {locked && (
+        <span style={{
+          position: 'absolute', top: '10px', right: '10px',
+          background: 'transparent',
+          color: '#f59e0b', fontSize: '0.5rem', fontWeight: 900,
+          padding: '2px 6px',
+          textTransform: 'uppercase', letterSpacing: '1px',
+        }}>Soon</span>
+      )}
     </div>
   );
 };
 
 /* ── Action Tile ── */
-const ActionTile = ({ icon: Icon, label, sub, color, onClick }) => {
+const ActionTile = ({ icon: Icon, label, sub, color, onClick, locked }) => {
   const [h, setH] = useState(false);
   return (
     <button
-      onClick={onClick}
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
+      onClick={locked ? undefined : onClick}
+      onMouseEnter={() => !locked && setH(true)}
+      onMouseLeave={() => !locked && setH(false)}
+      disabled={locked}
       style={{
         display: 'flex', alignItems: 'center', gap: '14px', padding: '16px',
         background: h ? 'var(--glass-highlight)' : 'rgba(255,255,255,0.01)',
         border: h ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)',
-        borderRadius: '16px', cursor: 'pointer', width: '100%',
+        borderRadius: '16px', cursor: locked ? 'not-allowed' : 'pointer', width: '100%',
         transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
         textAlign: 'left',
         boxShadow: h ? '0 10px 20px -10px rgba(0,0,0,0.3)' : 'none',
-        transform: h ? 'translateY(-2px)' : 'none'
+        transform: h ? 'translateY(-2px)' : 'none',
+        position: 'relative',
+        opacity: locked ? 0.7 : 1
       }}
     >
       <div style={{
@@ -92,7 +106,16 @@ const ActionTile = ({ icon: Icon, label, sub, color, onClick }) => {
         <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-main)', letterSpacing: '-0.01em' }}>{label}</div>
         {sub && <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{sub}</div>}
       </div>
-      <ChevronRight size={14} style={{ color: 'var(--text-muted)', opacity: h ? 1 : 0.5, transition: 'opacity 0.2s' }} />
+      {!locked && <ChevronRight size={14} style={{ color: 'var(--text-muted)', opacity: h ? 1 : 0.5, transition: 'opacity 0.2s' }} />}
+      {locked && (
+        <span style={{
+          position: 'absolute', top: '10px', right: '10px',
+          background: 'transparent',
+          color: '#f59e0b', fontSize: '0.5rem', fontWeight: 900,
+          padding: '2px 6px',
+          textTransform: 'uppercase', letterSpacing: '1px',
+        }}>Soon</span>
+      )}
     </button>
   );
 };
@@ -114,9 +137,9 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
   // ── PROFILE PHOTO CONFIG ───────────────────
   // Adjust these variables easily to control the size and position
   const avatarConfig = {
-    size: '150px',        // Square size dimension
-    top: '50px',         // Distance from Top edge 
-    right: '40px',       // Distance from Right edge
+    size: '110px',        // Square size dimension
+    top: '20px',         // Distance from Top edge 
+    right: '20px',       // Distance from Right edge
   };
   // ────────────────────────────────────────────
 
@@ -154,10 +177,10 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
 
   const quickActions = [
     { icon: Globe, label: 'Find Courses', sub: 'Explore global programs', color: COLORS.blue, tab: 'course-finder' },
-    { icon: FileText, label: isStudent ? 'My Applications' : 'Applications', sub: 'Track submissions', color: COLORS.purple, tab: isStudent ? 'applications' : 'partner-applications' },
-    { icon: Building2, label: 'Universities', sub: 'View target institutions', color: COLORS.teal, tab: 'applied-universities' },
-    { icon: BookOpen, label: 'Learning Hub', sub: 'Access digital resources', color: COLORS.rose, tab: 'learning' },
-    { icon: Bell, label: 'Notifications', sub: unreadMsgCount > 0 ? `${unreadMsgCount} unread` : 'Recent events', color: COLORS.amber, tab: 'notifications' },
+    { icon: FileText, label: isStudent ? 'My Applications' : 'Applications', sub: 'Track submissions', color: COLORS.purple, tab: isStudent ? 'applications' : 'partner-applications', locked: true },
+    { icon: Building2, label: 'Universities', sub: 'View target institutions', color: COLORS.teal, tab: 'applied-universities', locked: true },
+    { icon: BookOpen, label: 'Learning Hub', sub: 'Access digital resources', color: COLORS.rose, tab: 'learning', locked: true },
+    { icon: Bell, label: 'Notifications', sub: unreadMsgCount > 0 ? `${unreadMsgCount} unread` : 'Recent events', color: COLORS.amber, tab: 'notifications', locked: true },
     ...(!isStudent ? [{ icon: Users, label: 'Students', sub: 'Manage pipeline', color: COLORS.indigo, tab: 'students-list' }] : []),
     { icon: GraduationCap, label: 'My Profile', sub: 'Access user settings', color: COLORS.indigo, tab: 'profile' },
   ];
@@ -165,8 +188,9 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
   const partnerTotal = (stats.studentsActive || 0) + (stats.studentsHold || 0) + (stats.studentsBackout || 0) + (stats.studentsReceived || 0) || 1;
 
   return (
-    <div className="dash-home-wrap" style={{ height: '100%', overflowY: 'auto', paddingRight: '4px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', animation: 'fadeIn 0.4s ease' }}>
+    <div className="dash-home-wrap" style={{ height: '100%', overflowY: 'auto', paddingRight: '4px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <style>{`.dash-home-wrap::-webkit-scrollbar { display: none; }`}</style>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.4s ease', paddingTop: '50px' }}>
 
         {/* ── Top Row: Header & Metrics ── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1.2fr) minmax(450px, 2fr)', gap: '16px' }}>
@@ -216,7 +240,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
               </div>
             )}
 
-            <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
+            <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%', paddingRight: '120px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-start', gap: '12px' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--glass-bg)', padding: '4px 12px', borderRadius: '100px', border: '1px solid var(--glass-border)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', width: 'fit-content' }}>
@@ -230,7 +254,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
                 </div>
 
               </div>
-              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem', maxWidth: '300px', lineHeight: 1.4 }}>
+              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.4 }}>
                 {isPartner ? 'Overview of your student pipeline. Ready to manage your leads?' : isCounselor ? 'Monitor your active students and applications.' : isFreelancer ? 'Track referred students and view progress.' : 'Welcome to your academic journey portal. Your next big step starts here.'}
               </p>
             </div>
@@ -259,8 +283,8 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
             {isStudent ? (
               <>
                 <MetricCard icon={BookOpen} label="Saved Courses" value={profile?.savedUniversitiesCart?.length || 0} color={COLORS.blue} onClick={() => setActiveTab('course-finder')} />
-                <MetricCard icon={Building2} label="Applied Unis" value={applied} color={COLORS.purple} onClick={() => setActiveTab('applied-universities')} />
-                <MetricCard icon={CheckCircle2} label="Documents" value={profile?.documentZip ? 'Uploaded' : 'Pending'} color={COLORS.teal} onClick={() => setActiveTab('applications')} />
+                <MetricCard icon={Building2} label="Applied Universities" value={applied} color={COLORS.purple} onClick={() => setActiveTab('applied-universities')} locked />
+                <MetricCard icon={CheckCircle2} label="Documents" value={profile?.documentZip ? 'Uploaded' : 'Pending'} color={COLORS.teal} onClick={() => setActiveTab('applications')} locked />
                 <MetricCard icon={Shield} label="Account Status" value="Active" color={COLORS.green} />
               </>
             ) : (
@@ -286,7 +310,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
               </h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', overflowY: 'auto', paddingRight: '4px' }}>
                 {quickActions.map((a, i) => (
-                  <ActionTile key={a.tab} icon={a.icon} label={a.label} sub={a.sub} color={a.color} onClick={() => setActiveTab(a.tab)} />
+                  <ActionTile key={a.tab} icon={a.icon} label={a.label} sub={a.sub} color={a.color} onClick={() => setActiveTab(a.tab)} locked={a.locked} />
                 ))}
               </div>
             </div>

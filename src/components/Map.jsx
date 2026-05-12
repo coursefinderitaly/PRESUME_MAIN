@@ -234,12 +234,14 @@ const ItalyMap = ({ isEmbedded = false }) => {
 
             <ComposableMap
               projection="geoMercator"
+              width={800}
+              height={800}
               projectionConfig={{
-                scale: 3000, // Increased scale for more prominence
+                scale: 2600, // Tightly tuned scale to ensure fit
                 center: [12.6, 41.8],
               }}
-              className="w-full h-auto outline-none drop-shadow-[0_20px_35px_rgba(0,0,0,0.3)] mt-12"
-              style={{ maxWidth: '100%', maxHeight: '750px', margin: '0 auto' }}
+              className="w-full h-auto outline-none drop-shadow-[0_20px_35px_rgba(0,0,0,0.3)] mt-4"
+              style={{ maxWidth: '100%', maxHeight: '800px', margin: '0 auto' }}
             >
               <Geographies geography={geoUrl}>
                 {({ geographies }) =>

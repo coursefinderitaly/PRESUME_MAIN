@@ -1,12 +1,6 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-const CloseIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-);
+import React from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const ExpandIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -30,9 +24,7 @@ interface InteractiveAccordionGalleryProps {
 }
 
 const InteractiveAccordionGallery: React.FC<InteractiveAccordionGalleryProps> = ({ items = [] }) => {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  const selectedItem = items.find((item) => item.id === selectedId);
+  const navigate = useNavigate();
 
   return (
     <div className="relative w-full h-[320px] md:h-[400px] flex items-center justify-center px-4 z-10 pointer-events-auto">
@@ -43,7 +35,7 @@ const InteractiveAccordionGallery: React.FC<InteractiveAccordionGalleryProps> = 
           return (
             <motion.div
               key={item.id}
-              onClick={() => setSelectedId(item.id)}
+              onClick={() => navigate('/login')}
               whileHover="hover"
               initial="initial"
               variants={{
@@ -100,7 +92,7 @@ const InteractiveAccordionGallery: React.FC<InteractiveAccordionGalleryProps> = 
                     {item.subtitle}
                   </p>
                   <div className="mt-4 flex items-center gap-2 text-[#f8d991] font-black text-[9px] uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    EXPLORE <ExpandIcon />
+                    APPLY NOW <ExpandIcon />
                   </div>
                 </div>
               </motion.div>
@@ -111,63 +103,6 @@ const InteractiveAccordionGallery: React.FC<InteractiveAccordionGalleryProps> = 
           );
         })}
       </div>
-
-      <AnimatePresence>
-        {selectedItem && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/95 backdrop-blur-2xl p-4 md:p-8 pointer-events-auto"
-            onClick={() => setSelectedId(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: 50 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0, y: 50 }}
-              className="relative w-full max-w-[1100px] h-[80vh] max-h-[750px] bg-[#0a0d18] rounded-[40px] overflow-hidden flex flex-col md:flex-row shadow-[0_50px_150px_rgba(0,0,0,1)] border border-white/10"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="relative w-full md:w-[60%] h-[40%] md:h-full overflow-hidden">
-                <img 
-                  src={selectedItem.url} 
-                  alt={selectedItem.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#0a0d18] hidden md:block" />
-              </div>
-
-              <div className="relative w-full md:w-[40%] p-10 md:p-16 flex flex-col justify-center bg-[#0a0d18]">
-                <div className="flex items-center gap-3 text-[#f8d991] font-black text-xs tracking-widest uppercase mb-6">
-                  <span className="w-10 h-px bg-[#f8d991]/40" />
-                  {selectedItem.city}
-                </div>
-                <h3 className="text-4xl md:text-6xl font-black text-white mb-8 leading-tight tracking-tighter">
-                  {selectedItem.title}
-                </h3>
-                <p className="text-white/60 text-lg md:text-xl mb-12 leading-relaxed">
-                  {selectedItem.subtitle}
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="px-10 py-5 bg-[#f8d991] text-[#0a0d18] rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white transition-all shadow-[0_20px_40px_rgba(248,217,145,0.2)] active:scale-95">
-                    Apply Now
-                  </button>
-                  <button className="px-10 py-5 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-black text-sm uppercase tracking-widest border border-white/10 transition-all active:scale-95">
-                    Brochure
-                  </button>
-                </div>
-              </div>
-
-              <button 
-                onClick={() => setSelectedId(null)} 
-                className="absolute top-8 right-8 w-14 h-14 bg-white/5 hover:bg-red-500 transition-all rounded-full flex items-center justify-center text-white z-50 shadow-2xl border border-white/10 active:scale-90"
-              >
-                <CloseIcon />
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlaneTakeoff, GraduationCap, Coins, BookOpen, MapPin, Landmark, ArrowRight, ShieldCheck, ChevronDown, Euro, Briefcase, HeartHandshake, Building2, Stethoscope, FileText, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
+import { PlaneTakeoff, GraduationCap, Coins, BookOpen, MapPin, Landmark, ArrowRight, ShieldCheck, ChevronDown, Euro, Briefcase, HeartHandshake, Building2, Stethoscope, FileText, CheckCircle2, ChevronRight, Sparkles, Search, FileCheck, ClipboardList, MailOpen, Award, FileEdit, Globe, CheckCircle, Plane, Fingerprint, Home } from 'lucide-react';
 import { Header } from './Header';
 import FeesTable from './FeesTable';
 import MinimalFooter from './MinimalFooter';
@@ -52,16 +52,18 @@ const ItalyStudyPage = () => {
     ];
 
     const journeySteps = [
-        { step: "01", title: "Find a programme", desc: "Search and select the right course across leading Italian universities." },
-        { step: "02", title: "Verify entry requirements", desc: "Check academic eligibility, GPA thresholds, and specific prerequisites." },
-        { step: "03", title: "Italian language skills", desc: "Verify language requirements for your chosen English or Italian course." },
-        { step: "04", title: "Check student visa", desc: "Confirm your eligibility status and necessary visa requirements based on residency." },
-        { step: "05", title: "Contact institution", desc: "Reach out to the university for acceptance protocols and course details." },
-        { step: "06", title: "Start pre-enrollment", desc: "Begin mandatory online pre-enrollment via the Universitaly official platform." },
-        { step: "07", title: "Apply for visa", desc: "Submit your application and book an appointment at the local VFS Global center." },
-        { step: "08", title: "Contact Embassy", desc: "Liaise with the competent Italian Diplomatic Consular Mission for final checks." },
-        { step: "09", title: "Request Permit of Stay", desc: "Apply for Permesso di Soggiorno within 8 days of your arrival in Italy." },
-        { step: "10", title: "Finalise enrolment", desc: "Pay initial fees and complete your formal registration with the university." }
+        { step: "01", title: "Find a Program", icon: <Search size={18} /> },
+        { step: "02", title: "Verify Requirements", icon: <FileCheck size={18} /> },
+        { step: "03", title: "Admission Process", icon: <ClipboardList size={18} /> },
+        { step: "04", title: "Receive Offer Letter", icon: <MailOpen size={18} /> },
+        { step: "05", title: "Scholarship & Docs", icon: <Award size={18} /> },
+        { step: "06", title: "Pre-Enrollment", icon: <FileEdit size={18} /> },
+        { step: "07", title: "Apply for Visa", icon: <Globe size={18} /> },
+        { step: "08", title: "Visa Granted", icon: <CheckCircle size={18} /> },
+        { step: "09", title: "Fly to Italy", icon: <Plane size={18} /> },
+        { step: "10", title: "Apply Tax Code", icon: <Fingerprint size={18} /> },
+        { step: "11", title: "University Enroll", icon: <GraduationCap size={18} /> },
+        { step: "12", title: "Residence Permit", icon: <Home size={18} /> }
     ];
 
     const mbbsCosts = [
@@ -510,60 +512,127 @@ const ItalyStudyPage = () => {
 
                     <FeesTable />
 
-                    {/* Vertical Journey Timeline */}
-                    <div className="relative py-24 rounded-[48px] bg-white/[0.02] border border-white/10 backdrop-blur-[40px] px-6 md:px-20 shadow-2xl z-20 will-change-[transform,filter] transform-gpu">
-                        <div className="text-center mb-20 relative z-10">
-                            <h2 className="text-4xl md:text-5xl font-black mb-6 text-white tracking-tight">Your Road to Italy</h2>
-                            <p className="text-gray-400 text-lg font-medium max-w-2xl mx-auto">From application to arrival, we guide you every step of the way.</p>
+                    {/* THE WINDING ROADWAY PATHWAY - CUSTOM BUILT TO MATCH USER REFERENCE IMAGE */}
+                    <div className="relative py-20 px-4 overflow-hidden rounded-[48px] bg-[#0b1120]/60 backdrop-blur-2xl border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.6)]">
+                        
+                        <div className="text-center mb-12 relative z-20">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-4 backdrop-blur-md">
+                                <span className="w-2 h-2 rounded-full bg-accent-gold animate-pulse"></span>
+                                <span className="text-xs font-black tracking-widest text-white/80 uppercase">The Highway to Success</span>
+                            </div>
+                            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter">Your Road to Italy</h2>
+                            <p className="text-white/40 font-medium max-w-xl mx-auto mt-2">Follow the direct route from starting your search to arriving at your dream university.</p>
                         </div>
 
-                        <div className="max-w-4xl mx-auto relative">
-                            {/* Vertical connecting line */}
-                            <div className="absolute left-[28px] md:left-1/2 top-0 bottom-[100px] w-[2px] bg-gradient-to-b from-accent-gold via-white/10 to-transparent md:-translate-x-1/2"></div>
+                        {/* ROADWAY CANVAS - UNIFIED CONTAINER FOR 100% MATH ALIGNMENT */}
+                        <div className="relative mx-auto h-[1200px] w-full max-w-[500px] mt-12">
+                            
+                            {(() => {
+                                const height = 1200;
+                                const frequency = 2.5; 
+                                const amplitude = 35; 
+                                
+                                let pathData = "M 50 0";
+                                for(let currY = 10; currY <= height; currY += 10) {
+                                    const currX = 50 + Math.sin((currY / height) * Math.PI * 2 * frequency) * amplitude;
+                                    pathData += ` L ${currX.toFixed(2)} ${currY}`;
+                                }
 
-                            <div className="space-y-12 relative z-10">
-                                {journeySteps.map((item, idx) => (
-                                    <motion.div
-                                        key={idx}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true, margin: "-100px" }}
-                                        className={`flex flex-col md:flex-row gap-6 md:gap-12 items-start md:items-center ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
-                                    >
-                                        <div className="flex-1 w-full md:text-right">
-                                            {/* Content shifts side based on index on desktop */}
-                                            <div className={`p-8 rounded-[32px] bg-white/5 border border-white/10  hover:bg-white/10 transition-colors ${idx % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
-                                                <h3 className="text-xl font-black text-white mb-2">{item.title}</h3>
-                                                <p className="text-sm text-gray-400 leading-relaxed font-medium">{item.desc}</p>
-                                            </div>
+                                return (
+                                    <>
+                                        {/* THE SVG ASSET - Matches Parent Container Width 1:1 */}
+                                        <div className="absolute inset-0 z-0 pointer-events-none">
+                                            <svg className="w-full h-full" viewBox={`0 0 100 ${height}`} preserveAspectRatio="none">
+                                                <defs>
+                                                    <linearGradient id="roadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                        <stop offset="0%" stopColor="#1e293b" />
+                                                        <stop offset="50%" stopColor="#334155" />
+                                                        <stop offset="100%" stopColor="#0f172a" />
+                                                    </linearGradient>
+                                                    <filter id="glowRoad">
+                                                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                                    </filter>
+                                                </defs>
+                                                <path d={pathData} fill="none" stroke="url(#roadGrad)" strokeWidth="22" strokeLinecap="round" opacity="0.9" />
+                                                <path d={pathData} fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="24" strokeLinecap="round" />
+                                                <path d={pathData} fill="none" stroke="#f8d991" strokeWidth="1" strokeDasharray="8, 16" opacity="0.8" filter="url(#glowRoad)" />
+                                            </svg>
                                         </div>
 
-                                        {/* Center Node */}
-                                        <div className="w-14 h-14 rounded-full bg-[#0a0d18] border-4 border-accent-gold flex items-center justify-center shrink-0 z-10 shadow-[0_0_20px_rgba(197,168,128,0.3)] relative ml-1 md:ml-0">
-                                            <span className="text-xs font-black text-accent-gold">{item.step}</span>
-                                        </div>
+                                        {/* ATOMIC ANCHOR SYSTEM - ZERO DIMENSIONS PREVENT BROWSER LAYOUT SHIFTS */}
+                                        {journeySteps.map((item, idx) => {
+                                            const stepY = 40 + (idx * ((height - 100) / (journeySteps.length - 1)));
+                                            const stepX = 50 + Math.sin((stepY / height) * Math.PI * 2 * frequency) * amplitude;
+                                            
+                                            // Alternate align perfectly every step for pristine balance
+                                            const align = idx % 2 === 0 ? 'right' : 'left';
 
-                                        <div className="flex-1 hidden md:block"></div>
-                                    </motion.div>
-                                ))}
+                                            return (
+                                                <motion.div
+                                                    key={idx}
+                                                    initial={{ opacity: 0, scale: 0.5 }}
+                                                    whileInView={{ opacity: 1, scale: 1 }}
+                                                    viewport={{ once: true, margin: "-50px" }}
+                                                    transition={{ delay: idx * 0.05, duration: 0.5, type: "spring" }}
+                                                    // THE CRITICAL FIX: w-0 h-0 means the element has ZERO SIZE. 
+                                                    // Browser can NEVER stretch or push it! It is mathematically a SINGLE POINT.
+                                                    className="absolute z-10 w-0 h-0 overflow-visible"
+                                                    style={{ 
+                                                        top: `${stepY}px`, 
+                                                        left: `${stepX}%`, 
+                                                    }}
+                                                >
+                                                    {/* ALL CONTENT POSITIONED ABSOLUTELY RELATIVE TO THE 0,0 CENTER POINT */}
+                                                    
+                                                    {/* THE PIN - Centered perfectly on the point */}
+                                                    <div className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none z-20">
+                                                        <div className="absolute inset-0 rounded-full bg-accent-gold/40 scale-125 animate-pulse"></div>
+                                                        <div className="w-10 h-10 rounded-full bg-gradient-to-b from-accent-gold to-yellow-600 border-2 border-white shadow-[0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-primary-blue relative z-20 pointer-events-auto">
+                                                            <span className="font-black text-sm">{idx + 1}</span>
+                                                        </div>
+                                                        <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-yellow-600 -mt-0.5 z-10"></div>
+                                                    </div>
+
+                                                    {/* LABELS - Floating in relation to point */}
+                                                    {align === 'left' ? (
+                                                        <div className="absolute top-0 right-[36px] -translate-y-1/2 text-right w-[180px] md:w-[240px] pointer-events-none flex flex-col items-end">
+                                                            <span className="block text-[10px] font-black text-accent-gold tracking-widest mb-1 uppercase whitespace-nowrap" style={{ textShadow: '0 2px 4px rgba(0,0,0,1)' }}>Point {item.step}</span>
+                                                            <h4 className="text-sm md:text-lg font-black text-white tracking-tight leading-tight" style={{ textShadow: '0 2px 10px rgba(0,0,0,1), 0 1px 3px rgba(0,0,0,1)' }}>{item.title}</h4>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="absolute top-0 left-[36px] -translate-y-1/2 text-left w-[180px] md:w-[240px] pointer-events-none flex flex-col items-start">
+                                                            <span className="block text-[10px] font-black text-accent-gold tracking-widest mb-1 uppercase whitespace-nowrap" style={{ textShadow: '0 2px 4px rgba(0,0,0,1)' }}>Point {item.step}</span>
+                                                            <h4 className="text-sm md:text-lg font-black text-white tracking-tight leading-tight" style={{ textShadow: '0 2px 10px rgba(0,0,0,1), 0 1px 3px rgba(0,0,0,1)' }}>{item.title}</h4>
+                                                        </div>
+                                                    )}
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </>
+                                );
+                            })()}
+
+                            {/* DYNAMIC FINAL DESTINATION FLAG */}
+                            <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
+                                <div className="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(248,217,145,0.5)] border-4 border-white">
+                                    <Plane className="text-primary-blue w-8 h-8" />
+                                </div>
+                                <span className="mt-2 text-xs font-black tracking-widest uppercase text-accent-gold bg-[#0b1120] px-3 py-1 rounded-full border border-accent-gold/30">Benvenuto!</span>
                             </div>
 
-                            {/* Call to Action Button */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="flex justify-center mt-20 relative z-10"
-                            >
-                                <button
-                                    onClick={() => setModalOpen('signup')}
-                                    className="group relative px-10 py-5 bg-gradient-to-r from-accent-gold to-yellow-500 rounded-full text-primary-blue text-sm font-black uppercase tracking-[0.2em] hover:shadow-[0_0_40px_rgba(250,204,21,0.5)] transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
-                                >
-                                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                                    <span className="relative z-10 flex items-center gap-2">Start Your Application <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></span>
-                                </button>
-                            </motion.div>
                         </div>
+
+                        {/* Action Prompt */}
+                        <div className="mt-32 flex justify-center relative z-30">
+                            <button
+                                onClick={() => setModalOpen('signup')}
+                                className="group relative px-12 py-5 bg-gradient-to-r from-accent-gold to-yellow-500 rounded-2xl text-primary-blue text-sm font-black uppercase tracking-[0.2em] hover:shadow-[0_0_50px_rgba(250,204,21,0.4)] transition-all duration-300 transform hover:-translate-y-2 shadow-2xl flex items-center gap-3"
+                            >
+                                Start Your Application <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </main>

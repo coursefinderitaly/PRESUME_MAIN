@@ -9,9 +9,9 @@ const FeesTable = () => {
     const [selectedLevel, setSelectedLevel] = useState('Bachelors');
 
     const pricing = {
-        'Bachelors': [30000, 15000, 40000, 35000],
-        'Masters': [30000, 15000, 40000, 35000],
-        'MBBS': [0, 35000, 65000, 60000]
+        'Bachelors': [35000, 0, 40000, 35000],
+        'Masters': [35000, 0, 40000, 35000],
+        'MBBS': [35000, 0, 65000, 60000]
     };
 
     const currentPhases = pricing[selectedLevel];
@@ -29,16 +29,7 @@ const FeesTable = () => {
                 "Assessment of profile",
                 "Full assistentace for profile building",
                 "Require Documents sample will be provided",
-                "Top universities Shortlisting"
-            ]
-        },
-        {
-            title: "After Admission",
-            price: `₹ ${currentPhases[1].toLocaleString('en-IN')}`,
-            icon: <CheckCircle2 className="text-indigo-400" size={18} />,
-            color: "from-indigo-500/10 to-purple-500/10 hover:border-indigo-400/40",
-            glow: "bg-indigo-500/10",
-            items: [
+                "Top universities Shortlisting",
                 "University Acceptance Letter",
                 "Interview Guidence",
                 "Pre Enrollment Assistance",
@@ -100,7 +91,7 @@ const FeesTable = () => {
                         <span className="text-[10px] text-gray-400 ml-2 font-bold uppercase tracking-widest block md:inline-block mt-2 md:mt-0 opacity-60">(18% GST applicable)</span>
                     </h2>
                     <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
-                        {applied ? 'Flash Offer: Specialized Combined Packages' : 'Perfectly divided among 4 phases'}
+                        {applied ? 'Flash Offer: Specialized Combined Packages' : 'Perfectly divided among 3 phases'}
                     </p>
                 </motion.div>
 
@@ -124,11 +115,11 @@ const FeesTable = () => {
             {/* Two Column Side-By-Side Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-                {/* Left Column (2/3 width): 4 Phase Cards OR Two Merged Cards */}
+                {/* Left Column (2/3 width): 3 Phase Cards OR Two Merged Cards */}
                 <div className="lg:col-span-2 flex flex-col gap-4">
                     {applied ? (
                         <>
-                            {/* Card 1: Admission + After Admission */}
+                            {/* Card 1: Admission Process */}
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -141,18 +132,18 @@ const FeesTable = () => {
                                             <FileText size={22} />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-black text-white tracking-tight">Admission + After Admission</h3>
-                                            <p className="text-cyan-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 01 & 02 Combined</p>
+                                            <h3 className="text-lg font-black text-white tracking-tight">Admission Process</h3>
+                                            <p className="text-cyan-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phase 01 Complete</p>
                                         </div>
                                     </div>
                                     <div className="shrink-0">
                                         <div className="px-5 py-2 rounded-xl bg-black/60 border border-cyan-500/30 text-center">
-                                            <span className="text-xl font-black text-white tracking-tighter">₹ 30,000</span>
+                                            <span className="text-xl font-black text-white tracking-tighter">₹ 35,000</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
-                                    {[...feeStructure[0].items, ...feeStructure[1].items].map((item, i) => (
+                                    {feeStructure[0].items.map((item, i) => (
                                         <div key={i} className="flex items-start gap-2.5">
                                             <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 mt-1 shrink-0" />
                                             <span className="text-xs text-gray-300 font-medium leading-relaxed">{item}</span>
@@ -176,17 +167,17 @@ const FeesTable = () => {
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-black text-white tracking-tight">Pre-enrollment, Scholarship & Visa</h3>
-                                            <p className="text-emerald-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 03 & 04 Combined</p>
+                                            <p className="text-emerald-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 02 & 03 Combined</p>
                                         </div>
                                     </div>
                                     <div className="shrink-0">
                                         <div className="px-5 py-2 rounded-xl bg-black/60 border border-emerald-500/30 text-center">
-                                            <span className="text-xl font-black text-white tracking-tighter">₹ 30,000</span>
+                                            <span className="text-xl font-black text-white tracking-tighter">₹ 25,000</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
-                                    {[...feeStructure[2].items, ...feeStructure[3].items].map((item, i) => (
+                                    {[...feeStructure[1].items, ...feeStructure[2].items].map((item, i) => (
                                         <div key={i} className="flex items-start gap-2.5">
                                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 mt-1 shrink-0" />
                                             <span className="text-xs text-gray-300 font-medium leading-relaxed">{item}</span>
@@ -225,15 +216,9 @@ const FeesTable = () => {
                                         </div>
                                     </div>
                                     <div className="shrink-0 w-full sm:w-auto">
-                                        {applied && idx < 2 ? (
-                                            <span className="px-5 py-2.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-sm font-black text-emerald-400 tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] block text-center min-w-[110px]">
-                                                <span className="line-through text-emerald-200/40 mr-2">{item.price}</span> WAIVED
-                                            </span>
-                                        ) : (
-                                            <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
-                                                {item.price}
-                                            </span>
-                                        )}
+                                        <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
+                                            {item.price}
+                                        </span>
                                     </div>
                                 </div>
 
@@ -243,9 +228,9 @@ const FeesTable = () => {
                                 {/* Deliverables checklist inside card */}
                                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 md:px-2">
                                     {item.items.map((lineItem, lIdx) => (
-                                        <div key={lIdx} className={`flex items-start gap-2 shrink-0 ${applied && idx < 2 ? 'opacity-40' : ''}`}>
+                                        <div key={lIdx} className="flex items-start gap-2 shrink-0">
                                             <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 opacity-90 group-hover:scale-110 transition-transform shrink-0" />
-                                            <span className={`text-sm text-gray-300 transition-colors font-medium leading-relaxed ${applied && idx < 2 ? 'line-through' : 'group-hover:text-gray-100'}`}>{lineItem}</span>
+                                            <span className="text-sm text-gray-300 transition-colors font-medium leading-relaxed group-hover:text-gray-100">{lineItem}</span>
                                         </div>
                                     ))}
                                 </div>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
   LogOut, User, MapPin, Globe, Phone, Smartphone, Edit2, Save, X,
   Home, Search, Users, Briefcase, FileText, Bell, MonitorPlay, Building2, CheckSquare, KeyRound,
-  Sun, Moon, Monitor, Menu, UploadCloud, MessageSquare, ChevronRight, Camera, Trash2
+  Sun, Moon, Monitor, Menu, UploadCloud, MessageSquare, ChevronRight, ChevronLeft, Camera, Trash2
 } from 'lucide-react';
 import './Dashboard.css';
 import { useTheme } from './ThemeContext';
@@ -57,6 +58,9 @@ const Dashboard = () => {
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [message, setMessage] = useState({ text: '', type: '' });
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const expanded = isSidebarExpanded || isHovered;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarLocked, setIsSidebarLocked] = useState(true);
@@ -378,127 +382,169 @@ const Dashboard = () => {
   const isStudent = profile.role === 'student';
 
   // Sidebar link generator
-  const NavButton = ({ id, icon: Icon, label }) => {
+  const NavButton = ({ id, icon: Icon, label, locked }) => {
     return (
-      <button
-        className={`nav-item ${activeTab === id ? 'active' : ''}`}
-        onClick={() => { setActiveTab(id); setMessage({ text: '', type: '' }); setEditMode(false); }}
-        style={{
-          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', borderRadius: '100px',
-          border: '1px solid transparent',
-          background: activeTab === id ? 'var(--accent-glow)' : 'transparent',
-          color: activeTab === id ? 'var(--accent-secondary)' : 'var(--text-muted)',
-          fontWeight: 700,
-          fontSize: '0.75rem',
-          letterSpacing: '0.05em',
-          textTransform: 'uppercase',
-          cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s'
-        }}
-      >
-        <Icon size={16} />
-        <span>{label}</span>
-      </button>
+      <div style={{ position: 'relative', width: '100%' }}>
+        <button
+          className={`nav-item ${activeTab === id ? 'active' : ''} ${locked ? 'locked' : ''}`}
+          onClick={() => { 
+            if (locked) return;
+            setActiveTab(id); 
+            setMessage({ text: '', type: '' }); 
+            setEditMode(false); 
+          }}
+          disabled={locked}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px', borderRadius: '14px',
+            border: '1px solid transparent',
+            background: activeTab === id ? 'var(--accent-glow)' : 'transparent',
+            color: activeTab === id ? 'var(--accent-secondary)' : 'var(--text-muted)',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            justifyContent: 'center',
+            cursor: locked ? 'not-allowed' : 'pointer', 
+            whiteSpace: 'nowrap', transition: 'all 0.2s',
+            opacity: locked ? 0.6 : 1,
+            width: '100%',
+            textAlign: 'center'
+          }}
+        >
+          <Icon size={18} />
+          {expanded && <span>{label}</span>}
+        </button>
+        {locked && expanded && (
+          <span style={{
+            position: 'absolute', top: '4px', right: '10px',
+            background: 'transparent',
+            color: '#f59e0b', fontSize: '0.5rem', fontWeight: 900,
+            padding: '2px 6px',
+            textTransform: 'uppercase', letterSpacing: '1px',
+            zIndex: 10
+          }}>Soon</span>
+        )}
+      </div>
     );
   };
 
   return (
     <>
       <div className="dash-universe" style={{ 
-        height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', 
+        height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'row', 
         background: 'var(--bg-primary)', boxSizing: 'border-box'
       }}>
 
         {/* ================================== */}
-        {/* HEADER CARD                        */}
+        {/* FLOATING SIDEBAR PANEL             */}
         {/* ================================== */}
-        <header style={{ 
-          display: 'flex', flexDirection: 'column', 
-          background: 'var(--glass-bg)', borderBottom: '1px solid var(--glass-border)',
-          flexShrink: 0, boxShadow: 'var(--card-shadow)',
-          backdropFilter: 'blur(36px) saturate(160%)', WebkitBackdropFilter: 'blur(36px) saturate(160%)',
-          position: 'sticky', top: 0, zIndex: 100
-        }}>
-          {/* Top Row */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 1.5rem', borderBottom: '1px solid var(--glass-border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              <img
-                src="/logo.png"
-                alt="Company Logo"
-                style={{ height: '32px', objectFit: 'contain', filter: activeTheme === 'light' ? 'invert(1) hue-rotate(180deg) contrast(1.2)' : 'none' }}
-              />
-              <span className="portal-badge" style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '100px' }}>
-                {isPartner ? 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Student'} Portal
-              </span>
-            </div>
-            
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
-              <div style={{ display: 'flex', background: 'var(--table-header-bg)', padding: '5px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
-                <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Light Mode"><Sun size={14} /></button>
-                <button onClick={() => setTheme('dark')} style={{ background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Dark Mode"><Moon size={14} /></button>
-                <button onClick={() => setTheme('system')} style={{ background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>
-              </div>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>{profile.firstName} {profile.lastName || ''}</span>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{isPartner ? profile.companyName || 'Partner' : isCounselor ? 'Counselor' : isFreelancer ? 'Freelancer' : 'Active Student'}</span>
-                </div>
-                <div style={{ position: 'relative', width: '38px', height: '38px', flexShrink: 0 }}>
-                  <div className="avatar" style={{ width: '38px', height: '38px', fontSize: '1rem', overflow: 'hidden', border: '2px solid rgba(167,139,250,0.4)', padding: 0, borderRadius: '10px' }}>
-                    {profile.avatarUrl
-                      ? <img src={profile.avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', fontWeight: 800, background: 'var(--accent-primary)', color: '#fff' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</span>
-                    }
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={handleLogout}
-                style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '8px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
+        <motion.aside
+          initial={false}
+          animate={{ 
+            width: expanded ? '240px' : '80px',
+            x: 0
+          }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 300, 
+            damping: 30, 
+            mass: 1,
+            restDelta: 0.5 
+          }}
+          style={{ 
+            height: 'calc(100vh - 32px)',
+            margin: '16px',
+            background: 'var(--glass-bg)', 
+            border: '1px solid var(--glass-border)',
+            borderRadius: '24px',
+            display: 'flex', 
+            flexDirection: 'column', 
+            zIndex: 100,
+            backdropFilter: 'blur(36px) saturate(160%)', 
+            WebkitBackdropFilter: 'blur(36px) saturate(160%)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+            overflow: 'visible',
+            position: 'relative'
+          }}
+        >
+          {/* Inner Wrapper for Clipping */}
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', borderRadius: '24px' }}>
+            {/* Sidebar Header / Logo */}
+            <div style={{ padding: '24px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', borderBottom: '1px solid var(--glass-border)', overflow: 'hidden' }}>
+            <img
+              src="/logo.png"
+              alt="Logo"
+              style={{ height: '100px', minWidth: '100px', objectFit: 'contain', filter: activeTheme === 'light' ? 'invert(1) hue-rotate(180deg) contrast(1.2)' : 'none' }}
+            />
+            {expanded && (
+              <motion.span 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{ fontWeight: 800, color: 'var(--text-main)', fontSize: '0.8rem', whiteSpace: 'nowrap', textAlign: 'center', letterSpacing: '1px' }}
               >
-                <LogOut size={16} /> Logout
-              </button>
-            </div>
+                {isStudent ? 'STUDENT PORTAL' : isPartner ? 'PARTNER PORTAL' : isCounselor ? 'COUNSELOR PORTAL' : 'FREELANCER PORTAL'}
+              </motion.span>
+            )}
           </div>
 
-          {/* Bottom Row - Navigation */}
-          <nav style={{ display: 'flex', justifyContent: 'center', gap: '10px', padding: '10px 1.5rem', overflowX: 'auto', scrollbarWidth: 'none' }}>
-            <style>{`nav::-webkit-scrollbar { display: none; }`}</style>
+          {/* Navigation Items */}
+          <div className="sidebar-nav" style={{ 
+            flex: 1, padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '6px', 
+            overflowY: 'auto', overflowX: 'hidden', scrollbarWidth: 'none', msOverflowStyle: 'none' 
+          }}>
+            <style>{`.sidebar-nav::-webkit-scrollbar { display: none; }`}</style>
             <NavButton id="home" icon={Home} label="Dashboard" />
+            
             {isStudent && (
               <>
                 <NavButton id="course-finder" icon={Search} label="Search Programs" />
-                <NavButton id="applications" icon={FileText} label="Applications" />
-                <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" />
-                <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" />
-                <button
-                  className={`nav-item ${activeTab === 'notifications' ? 'active' : ''}`}
-                  onClick={() => { setActiveTab('notifications'); setMessage({ text: '', type: '' }); setEditMode(false); setShowMsgAlert(false); setAlertDismissed(true); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', borderRadius: '100px', border: '1px solid transparent', background: activeTab === 'notifications' ? 'var(--accent-glow)' : 'transparent', color: activeTab === 'notifications' ? 'var(--accent-secondary)' : 'var(--text-muted)', fontWeight: 700, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s', position: 'relative' }}
-                >
-                  <Bell size={16} /> Alerts
-                  {unreadMsgCount > 0 && (
-                    <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#ef4444', color: '#fff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '0.65rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, animation: 'pulse 2s infinite', textTransform: 'none', letterSpacing: 'normal' }}>
-                      {unreadMsgCount > 9 ? '9+' : unreadMsgCount}
-                    </span>
+                <NavButton id="applications" icon={FileText} label="Applications" locked />
+                <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" locked />
+                <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" locked />
+                
+                <div style={{ position: 'relative' }}>
+                  <button
+                    className={`nav-item locked`}
+                    disabled
+                    style={{ 
+                      display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 18px', borderRadius: '14px', 
+                      border: '1px solid transparent', background: 'transparent', color: 'var(--text-muted)', 
+                      fontWeight: 700, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', 
+                      cursor: 'not-allowed', whiteSpace: 'nowrap', transition: 'all 0.2s', opacity: 0.6,
+                      width: '100%', textAlign: 'left'
+                    }}
+                  >
+                    <Bell size={18} /> {expanded && <span>Alerts</span>}
+                  </button>
+                  {expanded && (
+                    <span style={{
+                      position: 'absolute', top: '4px', right: '10px',
+                      background: 'transparent',
+                      color: '#f59e0b', fontSize: '0.5rem', fontWeight: 900,
+                      padding: '2px 6px',
+                      textTransform: 'uppercase', letterSpacing: '1px',
+                      zIndex: 10
+                    }}>Soon</span>
                   )}
-                </button>
+                </div>
                 <NavButton id="profile" icon={User} label="Account Profile" />
               </>
             )}
+
             {isPartner && (
               <>
                 <NavButton id="register-student" icon={User} label="Register New" />
                 <NavButton id="students-list" icon={Users} label="My Students" />
                 <NavButton id="course-finder" icon={Search} label="Prog. Finder" />
-                <NavButton id="partner-applications" icon={FileText} label="Applications" />
+                <NavButton id="partner-applications" icon={FileText} label="Applications" locked />
                 <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
-                <NavButton id="learning" icon={MonitorPlay} label="Resources" />
-                <NavButton id="notifications" icon={Bell} label="Alerts" />
+                <NavButton id="learning" icon={MonitorPlay} label="Resources" locked />
+                <NavButton id="notifications" icon={Bell} label="Alerts" locked />
                 <NavButton id="counselors" icon={Briefcase} label="Manage Team" />
                 <NavButton id="profile" icon={User} label="Account" />
               </>
             )}
+
             {isCounselor && (
               <>
                 <NavButton id="register-student" icon={User} label="Register New" />
@@ -509,6 +555,7 @@ const Dashboard = () => {
                 <NavButton id="profile" icon={User} label="Account" />
               </>
             )}
+
             {isFreelancer && (
               <>
                 <NavButton id="register-student" icon={User} label="Register New" />
@@ -519,14 +566,75 @@ const Dashboard = () => {
                 <NavButton id="profile" icon={User} label="Profile" />
               </>
             )}
-          </nav>
-        </header>
+          </div>
+
+          {/* Sidebar Footer: Theme & Profile */}
+          <div style={{ padding: '16px', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            
+            {/* Theme Toggle */}
+            <div style={{ display: 'flex', background: 'var(--table-header-bg)', padding: '4px', borderRadius: '12px', border: '1px solid var(--glass-border)', justifyContent: expanded ? 'space-between' : 'center' }}>
+              <button onClick={() => setTheme('light')} style={{ flex: expanded ? 1 : 'none', background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Light Mode"><Sun size={14} /></button>
+              <button onClick={() => setTheme('dark')} style={{ flex: expanded ? 1 : 'none', background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Dark Mode"><Moon size={14} /></button>
+              {expanded && <button onClick={() => setTheme('system')} style={{ flex: 1, background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="System Auto"><Monitor size={14} /></button>}
+            </div>
+
+            {/* Profile Brief (Centered Row) */}
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', maxWidth: '100%' }}>
+                <div style={{ position: 'relative', width: '38px', height: '38px', flexShrink: 0 }}>
+                  <div className="avatar" style={{ width: '38px', height: '38px', fontSize: '1rem', overflow: 'hidden', border: '2px solid rgba(167,139,250,0.4)', borderRadius: '12px' }}>
+                    {profile.avatarUrl
+                      ? <img src={profile.avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', fontWeight: 800, background: 'var(--accent-primary)', color: '#fff' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</span>
+                    }
+                  </div>
+                </div>
+                {expanded && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ minWidth: 0, textAlign: 'left' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.firstName}</div>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.email}</div>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              style={{ 
+                background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', 
+                padding: '12px', borderRadius: '12px', display: 'flex', alignItems: 'center', 
+                justifyContent: 'center', gap: '12px', cursor: 'pointer', 
+                fontWeight: 700, fontSize: '0.85rem', width: '100%', transition: 'all 0.2s'
+              }}
+            >
+              <LogOut size={18} /> {expanded && <span>Logout</span>}
+            </button>
+          </div>
+          {/* End Inner Wrapper */}
+          </div>
+            
+          {/* Manual Toggle Button (Outside Inner Wrapper so it doesn't get clipped) */}
+          <button 
+            onClick={(e) => { e.stopPropagation(); setIsSidebarExpanded(!isSidebarExpanded); }}
+            style={{ 
+              position: 'absolute', top: '50%', right: '-16px', transform: 'translateY(-50%)',
+              width: '32px', height: '32px', borderRadius: '50%', background: 'var(--glass-bg)',
+              backdropFilter: 'blur(10px)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 101, 
+              boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+            }}
+          >
+            {isSidebarExpanded ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+          </button>
+        </motion.aside>
 
         {/* ================================== */}
         {/* MAIN CONTENT CARD                  */}
         {/* ================================== */}
         <main className="dash-main" style={{ 
-          flex: 1, minHeight: 0, background: 'transparent', display: 'flex', flexDirection: 'column'
+          flex: 1, minHeight: 0, background: 'transparent', display: 'flex', flexDirection: 'column',
+          margin: '16px 16px 16px 0'
         }}>
           {activeTab === 'profile' && (
             <header className="dash-header" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', marginBottom: '10px' }}>

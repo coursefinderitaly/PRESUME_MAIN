@@ -43,7 +43,7 @@
   }
 
   :root[data-theme='light'] {
-    --bg-body: #f8fafc;
+    --bg-body: #cbd5e1;
     --text-body: #0f172a;
   }
 
@@ -618,10 +618,10 @@
 }
 
 :root[data-theme='light'] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: rgba(255, 255, 255, 0.8);
-  --bg-tertiary: rgba(255, 255, 255, 0.7);
-  --glass-bg: rgba(255, 255, 255, 0.5);
+  --bg-primary: #cbd5e1;
+  --bg-secondary: rgba(255, 255, 255, 0.95);
+  --bg-tertiary: rgba(255, 255, 255, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.8);
   --glass-border: rgba(0, 0, 0, 0.08);
   --accent-primary: #4f46e5;
   --accent-secondary: #6366f1;
@@ -804,4 +804,49 @@ html.lenis body {
 .presume-advantage-blur-bg {
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+/* === PERFORMANCE MODE: AUTO-SCALING FOR LOW-END DEVICES === */
+body.perf-low * {
+  /* Disable expensive backdrop blurs globally */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.perf-low .backdrop-blur-2xl,
+body.perf-low .backdrop-blur-xl,
+body.perf-low .backdrop-blur-lg,
+body.perf-low .backdrop-blur-md,
+body.perf-low .backdrop-blur-sm,
+body.perf-low [style*="backdrop-filter"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  /* Add a slightly opaque fallback background since blur is gone */
+  background-color: rgba(10, 15, 25, 0.95) !important;
+}
+
+body.perf-low .drop-shadow-2xl,
+body.perf-low .drop-shadow-xl,
+body.perf-low [style*="drop-shadow"] {
+  filter: none !important;
+}
+
+body.perf-low .shadow-2xl,
+body.perf-low .shadow-xl {
+  box-shadow: none !important;
+}
+
+/* Pause massive animated backgrounds to save CPU */
+body.perf-low .fixed.inset-0.z-0 > motion\.div,
+body.perf-low .absolute.inset-0 > motion\.div,
+body.perf-low .animate-pulse,
+body.perf-low .animate-ping,
+body.perf-low .bg-\[length\:400\%_400\%\] {
+  animation: none !important;
+  display: none !important;
+}
+
+body.perf-low .transform-gpu {
+  transform: none !important;
+  will-change: auto !important;
 }
