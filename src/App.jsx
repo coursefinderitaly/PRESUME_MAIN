@@ -16,7 +16,7 @@ import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
 import NotFound from './components/NotFound';
-import FPSMeter from './components/FPSMeter';
+
 import './index.css';
 
 import AuthModal from './components/AuthModal';
@@ -30,7 +30,7 @@ function App() {
         <Router>
           <SmoothScrollLayout>
             <ScrollToTop />
-            <FPSMeter />
+
             <IdleTimeout>
             <Routes>
               <Route path="/" element={<LandingPage />} />
