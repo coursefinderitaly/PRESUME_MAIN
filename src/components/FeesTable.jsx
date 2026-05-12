@@ -9,8 +9,8 @@ const FeesTable = () => {
     const [selectedLevel, setSelectedLevel] = useState('Bachelors');
 
     const pricing = {
-        'Bachelors': [35000, 0, 40000, 35000],
-        'Masters': [35000, 0, 40000, 35000],
+        'Bachelors': [30000, 15000, 40000, 35000],
+        'Masters': [30000, 15000, 40000, 35000],
         'MBBS': [35000, 0, 65000, 60000]
     };
 
@@ -27,15 +27,24 @@ const FeesTable = () => {
             glow: "bg-cyan-500/10",
             items: [
                 "Assessment of profile",
-                "Full assistentace for profile building",
+                "Full assistance for profile building",
                 "Require Documents sample will be provided",
-                "Top universities Shortlisting",
+                "Top universities Shortlisting"
+            ]
+        },
+        ...(currentPhases[1] > 0 ? [{
+            title: "After Admission",
+            price: `₹ ${currentPhases[1].toLocaleString('en-IN')}`,
+            icon: <CheckCircle2 className="text-indigo-400" size={18} />,
+            color: "from-indigo-500/10 to-purple-500/10 hover:border-indigo-400/40",
+            glow: "bg-indigo-500/10",
+            items: [
                 "University Acceptance Letter",
-                "Interview Guidence",
+                "Interview Guidance",
                 "Pre Enrollment Assistance",
                 "Documents Verification"
             ]
-        },
+        }] : []),
         {
             title: "Pre-enrollment & Scholarship Docs",
             price: `₹ ${currentPhases[2].toLocaleString('en-IN')}`,
@@ -48,7 +57,7 @@ const FeesTable = () => {
                 "Courier charges",
                 "Pre-enrollment filing",
                 "DOV process assistance",
-                "Financial Guidence"
+                "Financial Guidance"
             ]
         },
         {
@@ -60,7 +69,7 @@ const FeesTable = () => {
             items: [
                 "Scholarship application & submission",
                 "Visa application assistance",
-                "Visa/Scholarship Documents Assistence",
+                "Visa/Scholarship Documents Assistance",
                 "1-year travel insurance & itinerary",
                 "Accommodation proof assistance",
                 "Mock interview prep"
@@ -91,7 +100,7 @@ const FeesTable = () => {
                         <span className="text-[10px] text-gray-400 ml-2 font-bold uppercase tracking-widest block md:inline-block mt-2 md:mt-0 opacity-60">(18% GST applicable)</span>
                     </h2>
                     <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
-                        {applied ? 'Flash Offer: Specialized Combined Packages' : 'Perfectly divided among 3 phases'}
+                        {applied ? 'Flash Offer: Specialized Combined Packages' : 'Perfectly divided among phases'}
                     </p>
                 </motion.div>
 
@@ -115,11 +124,11 @@ const FeesTable = () => {
             {/* Two Column Side-By-Side Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-                {/* Left Column (2/3 width): 3 Phase Cards OR Two Merged Cards */}
+                {/* Left Column (2/3 width): Phase Cards */}
                 <div className="lg:col-span-2 flex flex-col gap-4">
                     {applied ? (
                         <>
-                            {/* Card 1: Admission Process */}
+                            {/* Card 1: Admission & Post-Admission */}
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -132,8 +141,8 @@ const FeesTable = () => {
                                             <FileText size={22} />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-black text-white tracking-tight">Admission Process</h3>
-                                            <p className="text-cyan-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phase 01 Complete</p>
+                                            <h3 className="text-lg font-black text-white tracking-tight">Admission & Post-Admission</h3>
+                                            <p className="text-cyan-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 01 & 02 Combined</p>
                                         </div>
                                     </div>
                                     <div className="shrink-0">
@@ -143,7 +152,7 @@ const FeesTable = () => {
                                     </div>
                                 </div>
                                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
-                                    {feeStructure[0].items.map((item, i) => (
+                                    {[...feeStructure[0].items, ...(feeStructure[1].title === "After Admission" ? feeStructure[1].items : [])].map((item, i) => (
                                         <div key={i} className="flex items-start gap-2.5">
                                             <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 mt-1 shrink-0" />
                                             <span className="text-xs text-gray-300 font-medium leading-relaxed">{item}</span>
@@ -152,7 +161,7 @@ const FeesTable = () => {
                                 </div>
                             </motion.div>
 
-                            {/* Card 2: Pre-enrollment & Scholarship Docs + Scholarship application & Visa process */}
+                            {/* Card 2: Pre-enrollment, Scholarship & Visa */}
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -167,7 +176,7 @@ const FeesTable = () => {
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-black text-white tracking-tight">Pre-enrollment, Scholarship & Visa</h3>
-                                            <p className="text-emerald-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 02 & 03 Combined</p>
+                                            <p className="text-emerald-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 03 & 04 Combined</p>
                                         </div>
                                     </div>
                                     <div className="shrink-0">
@@ -177,7 +186,7 @@ const FeesTable = () => {
                                     </div>
                                 </div>
                                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
-                                    {[...feeStructure[1].items, ...feeStructure[2].items].map((item, i) => (
+                                    {[...feeStructure[feeStructure.length - 2].items, ...feeStructure[feeStructure.length - 1].items].map((item, i) => (
                                         <div key={i} className="flex items-start gap-2.5">
                                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 mt-1 shrink-0" />
                                             <span className="text-xs text-gray-300 font-medium leading-relaxed">{item}</span>
