@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { Send, X, MessageSquare } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 // --- CENTRAL POSITIONING CONFIG ---
 // Manually adjust these values to change the mascot's position across all portals
@@ -236,7 +237,6 @@ export const AIPetMascot = ({ position = 'landing' }) => {
       setChatInput('');
       setIsThinking(true);
 
-      const apiKey = 'AIzaSyAlQlBY9x8ZgLPRByye_UPxXV6B1c8hwyA';
 
       // Bulletproof history construction for Gemini (Strict alternating roles required)
       let compressedHistory = [];
@@ -311,9 +311,12 @@ ${position === 'portal' ? '\nCRITICAL ADMIN OVERRIDE:\n- You are currently in th
       }
 
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`${API_BASE_URL}/ai/chat`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-csrf-protected': '1'
+          },
           body: JSON.stringify({ contents: compressedHistory })
         });
 

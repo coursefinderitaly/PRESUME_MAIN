@@ -2864,12 +2864,29 @@
   flex-direction: column;
   gap: 16px;
   height: 100%;
+  overflow-y: auto;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-primary) transparent;
+}
+
+.profile-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.profile-sidebar::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 10px;
 }
 
 .profile-main {
   flex: 1;
+  height: 100%;
   overflow-y: auto;
   padding-right: 8px;
+  padding-bottom: 20px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 16px;

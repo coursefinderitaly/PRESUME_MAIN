@@ -138,6 +138,7 @@ app.use('/api/send-student-docs', require('./src/routes/studentDocs'));
 app.use('/api/admin', require('./src/routes/admin'));
 app.use('/api/sheets', require('./src/routes/sheets'));
 app.use('/api/contact', require('./src/routes/contact'));
+app.use('/api/ai', require('./src/routes/ai'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'up', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });

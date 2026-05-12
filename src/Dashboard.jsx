@@ -737,7 +737,7 @@ const Dashboard = () => {
                         <input id="profile-avatar-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarUpload} disabled={avatarUploading} />
                       </div>
 
-                      <div className="profile-card" style={{ flex: 1 }}>
+                      <div className="profile-card">
                         <h3><User size={14} /> Account Bio</h3>
                         <div className="data-row"><span className="label">Email Address</span><span className="value" style={{ fontSize: '0.75rem' }}>{profile.email}</span></div>
                         <div className="data-row"><span className="label">Member Since</span><span className="value">{new Date(profile.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</span></div>
