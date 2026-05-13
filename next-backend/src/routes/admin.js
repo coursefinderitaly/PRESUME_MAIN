@@ -406,13 +406,13 @@ router.get('/unread-summary', async (req, res) => {
     const unreadAppointments = await Appointment.countDocuments({ status: 'unread' });
     
     // 3. Applications
-    const unreadApplications = await Application.countDocuments({ adminViewed: false });
+    const unreadApplications = await Application.countDocuments({ adminViewed: { $ne: true } });
     
     // 4. Direct Students (student role and adminViewed false)
-    const unreadDirectStudents = await User.countDocuments({ role: 'student', adminViewed: false });
+    const unreadDirectStudents = await User.countDocuments({ role: 'student', adminViewed: { $ne: true } });
     
     // 5. Freelancers (freelancer role and adminViewed false)
-    const unreadFreelancers = await User.countDocuments({ role: 'freelancer', adminViewed: false });
+    const unreadFreelancers = await User.countDocuments({ role: 'freelancer', adminViewed: { $ne: true } });
 
     // 6. Chats (already handled but good to have here too)
     const students = await User.find({ role: 'student' }, 'adminMessages');
@@ -446,11 +446,11 @@ router.post('/mark-category-read', async (req, res) => {
     const Contact = require('../models/Contact');
 
     if (category === 'applications') {
-      await Application.updateMany({ adminViewed: false }, { adminViewed: true });
+      await Application.updateMany({ adminViewed: { $ne: true } }, { adminViewed: true });
     } else if (category === 'direct_students') {
-      await User.updateMany({ role: 'student', adminViewed: false }, { adminViewed: true });
+      await User.updateMany({ role: 'student', adminViewed: { $ne: true } }, { adminViewed: true });
     } else if (category === 'freelancers') {
-      await User.updateMany({ role: 'freelancer', adminViewed: false }, { adminViewed: true });
+      await User.updateMany({ role: 'freelancer', adminViewed: { $ne: true } }, { adminViewed: true });
     } else if (category === 'appointments') {
       await Appointment.updateMany({ status: 'unread' }, { status: 'read' });
     } else if (category === 'contact_forms') {

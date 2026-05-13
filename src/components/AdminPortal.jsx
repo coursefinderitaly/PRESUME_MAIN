@@ -703,7 +703,7 @@ const AdminPortal = () => {
           >
             <MessageSquare size={18} /> Student Chats
             {totalUnreadChats > 0 && (
-              <span style={{ position: 'absolute', top: '8px', right: '12px', background: '#ef4444', color: '#fff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '0.65rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
+              <span className="nav-badge">
                 {totalUnreadChats > 9 ? '9+' : totalUnreadChats}
               </span>
             )}

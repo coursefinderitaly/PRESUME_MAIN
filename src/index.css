@@ -638,7 +638,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  fontWeight: 800;
+  font-weight: 800;
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
 }
 
