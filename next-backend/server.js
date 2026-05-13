@@ -100,7 +100,10 @@ const authLimiter = rateLimit({
 app.use('/api/auth/login', authLimiter);
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI || '', { 
+const dbUri = process.env.MONGO_URI || process.env.MONGODB_URI || '';
+const maskedUri = dbUri.replace(/:([^@]+)@/, ':****@');
+console.log('Attempting to connect to MongoDB with URI:', maskedUri);
+mongoose.connect(dbUri, { 
   serverSelectionTimeoutMS: 5000,
   family: 4
 }).then(async () => {
