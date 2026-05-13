@@ -3,10 +3,10 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const nodemailer = require('nodemailer');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const { sendStudentEmail } = require('../utils/mailer');
+const { sendStudentEmail, sendAdminEmail } = require('../utils/mailer');
+const { getWelcomeEmailHTML, getPartnerRequestEmailHTML } = require('../utils/emailTemplates');
 
 // 1. SIGNUP ROUTE
 router.post('/signup', async (req, res) => {
@@ -44,22 +44,10 @@ router.post('/signup', async (req, res) => {
     
     // Send Welcome Email if user is a student
     if (newUser.role === 'student' && email) {
-      const subject = 'Welcome to Presume Overseas Education – Let’s Begin Your Journey';
-      const html = `
-        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #0284c7;">Welcome to Presume Overseas Education!</h2>
-          <p>Dear <strong>${firstName} ${lastName || ''}</strong>,</p>
-          <p>Thank you for registering with Presume Overseas Education. We are excited to assist you in your journey toward studying abroad.</p>
-          <p>Our team will guide you through every step — from selecting the right course and university to securing your visa.</p>
-          <p>You can now proceed to explore courses and begin your profile assessment.</p>
-          <p>If you have any queries, feel free to reach out to us.</p>
-          <br/>
-          <p>Warm regards,</p>
-          <p><strong>Team Presume Overseas Education</strong></p>
-        </div>
-      `;
-      // Send asynchronously without awaiting to not block the request
-      sendStudentEmail(email, subject, html).catch(err => console.error("Welcome email failed", err));
+      const subject = '🎓 Welcome to Presume Overseas — Your Journey Begins!';
+      const html = getWelcomeEmailHTML(firstName, lastName);
+      // Fire-and-forget — never block the signup response
+      sendStudentEmail(email, subject, html).catch(err => console.error('[Auth] Welcome email failed:', err.message));
     }
 
     res.status(201).json({ message: "User created successfully" });
@@ -254,52 +242,17 @@ router.post('/partner-request', async (req, res) => {
       return res.status(400).json({ error: "Email already registered" });
     }
 
-    // Configure Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
-
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: process.env.EMAIL_USER, // Send to admin
-        subject: `New Partner Registration Request - ${companyName || firstName}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-            <h2 style="color: #0284c7; border-bottom: 2px solid #e0f2fe; padding-bottom: 10px;">New Partner Request</h2>
-            <p><strong>Name:</strong> ${firstName} ${lastName || ''}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Phone:</strong> ${phoneCode} ${phone}</p>
-            <p><strong>WhatsApp:</strong> ${whatsappCode} ${whatsapp}</p>
-            <p><strong>Location:</strong> ${city}, ${state}, ${country}</p>
-            <h3 style="color: #0f172a; margin-top: 20px;">Company Details</h3>
-            <p><strong>Company Name:</strong> ${companyName}</p>
-            <p><strong>Company Address:</strong> ${companyAddress}</p>
-            <p><strong>Designation:</strong> ${designation}</p>
-            <p><strong>Team Size:</strong> ${teamSize}</p>
-            <p><strong>Prior Experience:</strong> ${priorExperience ? 'Yes' : 'No'}</p>
-            <p><strong>Student Unique ID:</strong> ${studentUniqueId || 'N/A'}</p>
-            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;"/>
-            <p style="color: #64748b;">Please review and manually create an account for this partner.</p>
-          </div>
-        `
-    };
-
-    const storageEmail = process.env.STORAGE_EMAIL || process.env.EMAIL_USER;
+    const adminEmail = process.env.STORAGE_EMAIL || process.env.EMAIL_USER;
+    const partnerSubject = `🤝 New Partner Registration Request — ${companyName || firstName} ${lastName || ''}`;
+    const partnerHTML = getPartnerRequestEmailHTML(req.body);
 
     // Send the email
     try {
-        await transporter.sendMail({
-            ...mailOptions,
-            to: storageEmail
-        });
-        console.log(`Successfully sent partner request email for: ${email}`);
+        await sendAdminEmail(adminEmail, partnerSubject, partnerHTML);
+        console.log(`[Auth] Partner request email sent for: ${email}`);
         res.status(200).json({ message: "Partner registration request received and forwarded to administration." });
     } catch (sendErr) {
-        console.error("Failed to send partner request email:", sendErr);
+        console.error('[Auth] Failed to send partner request email:', sendErr.message);
         res.status(500).json({ error: "Failed to send registration request: " + sendErr.message });
     }
   } catch (err) {

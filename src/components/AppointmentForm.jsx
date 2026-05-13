@@ -7,6 +7,7 @@ import {
     CheckCircle2, ChevronLeft
 } from 'lucide-react';
 import { Header } from './Header';
+import { API_BASE_URL } from '../config';
 
 /* ─── Canvas Aurora + Particle Background ────────────────────────────────── */
 const AnimatedBg = () => {
@@ -250,21 +251,44 @@ const AppointmentForm = () => {
         setStep('CALENDAR');
     };
 
-    const handleFinalBook = () => {
-        setIsConfirmed(true);
-        setTimeout(() => {
-            setIsConfirmed(false);
-            setStep('SERVICES');
-            setFormData({
-                consultancyType: 'Study Visa Consultancy',
-                subOption: '',
-                date: '',
-                time: '',
-                fullname: '',
-                email: '',
-                phone: ''
+    const handleFinalBook = async () => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/appointments/book`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-csrf-protected': '1'
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    country: selectedCountry.name
+                })
             });
-        }, 4000);
+
+            if (!res.ok) {
+                const data = await res.json();
+                alert(data.error || 'Failed to book appointment');
+                return;
+            }
+
+            setIsConfirmed(true);
+            setTimeout(() => {
+                setIsConfirmed(false);
+                setStep('SERVICES');
+                setFormData({
+                    consultancyType: 'Study Visa Consultancy',
+                    subOption: '',
+                    date: '',
+                    time: '',
+                    fullname: '',
+                    email: '',
+                    phone: ''
+                });
+            }, 4000);
+        } catch (err) {
+            console.error("Booking error:", err);
+            alert('Server error. Please try again later.');
+        }
     };
 
     const activeType = consultancyTypes.find(t => t.label === formData.consultancyType);

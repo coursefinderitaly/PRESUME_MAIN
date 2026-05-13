@@ -221,7 +221,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-hidden"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto"
       onClick={onClose}
     >
       {/* CSS keyframes - must live outside overflow:hidden */}
@@ -303,8 +303,17 @@ const AuthModal = ({ type: initialProp, onClose }) => {
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(2px)', zIndex: 1 }} />
       <motion.div
         initial={{ scale: 0.95, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 30 }}
-        className="relative border border-white/10 rounded-[2.5rem] shadow-[0_0_120px_rgba(0,0,0,0.9)] flex flex-col md:flex-row w-full max-w-5xl h-auto max-h-[90vh] overflow-hidden z-10"
-        style={{ background: 'rgba(5,8,20,0.72)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', position: 'relative', zIndex: 2 }}
+        className="relative border border-white/10 rounded-[2.5rem] shadow-[0_0_120px_rgba(0,0,0,0.9)] flex flex-col md:flex-row w-full max-w-6xl h-auto max-h-[90vh] overflow-hidden z-10"
+        style={{ 
+          background: 'rgba(5,8,20,0.72)', 
+          backdropFilter: 'blur(24px)', 
+          WebkitBackdropFilter: 'blur(24px)', 
+          position: 'relative', 
+          zIndex: 2,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'stretch'
+        }}
         onClick={e => e.stopPropagation()}
       >
         <button
@@ -334,8 +343,8 @@ const AuthModal = ({ type: initialProp, onClose }) => {
         </div>
 
         {/* Progress Sidebar */}
-        <div className="hidden md:flex flex-col justify-between p-12 w-1/3 border-r border-white/5 relative z-10"
-          style={{ background: 'linear-gradient(145deg, rgba(30,27,75,0.85) 0%, rgba(5,8,20,0.7) 100%)' }}>
+        <div className="hidden md:flex flex-col justify-between p-12 w-1/3 border-r border-white/5 relative z-10 overflow-y-auto"
+          style={{ background: 'linear-gradient(145deg, rgba(30,27,75,0.85) 0%, rgba(5,8,20,0.7) 100%)', flexShrink: 0 }}>
           <div>
             <div className="w-12 h-12 bg-cyan-500/20 rounded-2xl flex items-center justify-center mb-8 border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
               <GraduationCap className="text-cyan-400 w-6 h-6" />
@@ -376,14 +385,14 @@ const AuthModal = ({ type: initialProp, onClose }) => {
         </div>
 
         {/* Content Section */}
-        <div className="flex-1 p-8 md:p-14 flex flex-col relative z-10 bg-black/20 overflow-y-auto">
+        <div className="flex-1 p-6 md:p-10 flex flex-col relative z-10 bg-black/20 overflow-y-auto min-h-0 pb-10 rounded-r-[2.5rem]">
 
           <div className="max-w-xl mx-auto w-full">
-            <div className="mb-10 text-center md:text-left">
-              <span className="text-cyan-400 text-xs font-black tracking-[0.3em] uppercase mb-2 block">
+            <div className="mb-6 text-center md:text-left">
+              <span className="text-cyan-400 text-[10px] font-black tracking-[0.3em] uppercase mb-1 block">
                 {type === 'login' ? 'Authentication' : `Step ${step} of 3`}
               </span>
-              <h3 className="text-3xl font-black text-white">
+              <h3 className="text-2xl font-black text-white">
                 {type === 'login' ? 'Sign In' : step === 1 ? 'Personal Info' : step === 2 ? 'Where are you from?' : 'Secure Your Identity'}
               </h3>
             </div>
@@ -396,31 +405,31 @@ const AuthModal = ({ type: initialProp, onClose }) => {
             )}
 
             {/* Role Selection Toggle */}
-            <div className="flex bg-white/5 border border-white/10 p-1.5 rounded-2xl gap-2 mb-8">
+            <div className="flex bg-white/5 border border-white/10 p-1 rounded-xl gap-2 mb-6">
               <button
                 type="button"
                 onClick={() => handleInputChange('role', 'student')}
-                className={`flex-1 py-3.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${formData.role === 'student' ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                className={`flex-1 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${formData.role === 'student' ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
               >
                 Student
               </button>
               <button
                 type="button"
                 onClick={() => handleInputChange('role', 'freelancer')}
-                className={`flex-1 py-3.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${formData.role === 'freelancer' ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                className={`flex-1 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${formData.role === 'freelancer' ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
               >
                 Freelancer
               </button>
             </div>
 
-            <form onSubmit={type === 'login' ? handleLogin : (e) => e.preventDefault()} className="space-y-6">
+            <form onSubmit={type === 'login' ? handleLogin : (e) => e.preventDefault()} className="space-y-4">
               {type === 'login' ? (
                 <div className="space-y-6">
                   <div className="space-y-2 group">
                     <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1 group-focus-within:text-cyan-400 transition-colors">Identifier</label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition-colors w-5 h-5" />
-                      <input type="text" required value={identifier} onChange={e => setIdentifier(e.target.value)} className="w-full pl-12 pr-4 py-5 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all" placeholder="Enter Your Email" />
+                      <input type="text" required value={identifier} onChange={e => setIdentifier(e.target.value)} className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all" placeholder="Enter Your Email" />
                     </div>
                   </div>
                   <div className="space-y-2 group">
@@ -430,7 +439,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                     </div>
                     <div className="relative">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition-colors w-5 h-5" />
-                      <input type={showPassword ? 'text' : 'password'} required value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="w-full pl-12 pr-12 py-5 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all font-mono" placeholder="••••••••" />
+                      <input type={showPassword ? 'text' : 'password'} required value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="w-full pl-12 pr-12 py-4 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all font-mono" placeholder="••••••••" />
                       <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
@@ -439,22 +448,22 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                 </div>
               ) : (
                 <AnimatePresence mode="wait">
-                  <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }} className="space-y-6">
+                  <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }} className="space-y-4">
                     {step === 1 && (
-                      <div className="space-y-6">
+                      <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">First Name</label>
-                            <input type="text" required value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="John" />
+                            <input type="text" required value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all text-sm" placeholder="John" />
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Last Name</label>
-                            <input type="text" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="Doe" />
+                            <input type="text" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all text-sm" placeholder="Doe" />
                           </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Email Address</label>
-                          <input type="email" required value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all" placeholder="john@example.com" />
+                          <input type="email" required value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all text-sm" placeholder="john@example.com" />
                         </div>
                         {formData.role === 'freelancer' && (
                           <div className="grid grid-cols-2 gap-4">
@@ -463,7 +472,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                               <select 
                                 value={formData.occupation} 
                                 onChange={e => handleInputChange('occupation', e.target.value)}
-                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all appearance-none"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all appearance-none text-sm"
                                 style={{ background: 'rgba(255, 255, 255, 0.05)' }}
                               >
                                 <option value="" disabled style={{ background: '#0a0d18' }}>Select Occupation</option>
@@ -477,7 +486,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                               <select 
                                 value={formData.registeredService} 
                                 onChange={e => handleInputChange('registeredService', e.target.value)}
-                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all appearance-none"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all appearance-none text-sm"
                                 style={{ background: 'rgba(255, 255, 255, 0.05)' }}
                               >
                                 <option value="" disabled style={{ background: '#0a0d18' }}>Select Service</option>
@@ -492,7 +501,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                     )}
 
                     {step === 2 && (
-                      <div className="space-y-6">
+                      <div className="space-y-4">
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Select Country</label>
                           <Select options={countries} value={formData.country} onChange={v => handleInputChange('country', v)} styles={selectStyles} placeholder="Search countries..." />
@@ -515,12 +524,12 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                     )}
 
                     {step === 3 && (
-                      <div className="space-y-6">
+                      <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Phone</label>
                             <div className="flex gap-2">
-                              <div className="w-16 px-2 py-4 bg-white/5 border border-white/10 rounded-2xl text-white/40 flex items-center justify-center font-bold text-xs shrink-0">
+                              <div className="w-16 px-2 py-3 bg-white/5 border border-white/10 rounded-xl text-white/40 flex items-center justify-center font-bold text-xs shrink-0">
                                 +{formData.country?.phonecode || '91'}
                               </div>
                               <input
@@ -531,7 +540,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                                   const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                                   handleInputChange('phone', val);
                                 }}
-                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all text-sm"
                                 placeholder="0000000000"
                               />
                             </div>
@@ -539,7 +548,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">WhatsApp</label>
                             <div className="flex gap-2">
-                              <div className="w-16 px-2 py-4 bg-white/5 border border-white/10 rounded-2xl text-white/40 flex items-center justify-center font-bold text-xs shrink-0">
+                              <div className="w-16 px-2 py-3 bg-white/5 border border-white/10 rounded-xl text-white/40 flex items-center justify-center font-bold text-xs shrink-0">
                                 +{formData.country?.phonecode || '91'}
                               </div>
                               <input
@@ -549,7 +558,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                                   const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                                   handleInputChange('whatsapp', val);
                                 }}
-                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all text-sm"
                                 placeholder="0000000000"
                               />
                             </div>
@@ -558,7 +567,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Create Secure Password</label>
                           <div className="relative">
-                            <input type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={e => handleInputChange('password', e.target.value)} className="w-full px-5 pr-12 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
+                            <input type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={e => handleInputChange('password', e.target.value)} className="w-full px-4 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono text-sm" placeholder="••••••••" />
                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
                               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
@@ -567,7 +576,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Confirm Password</label>
                           <div className="relative">
-                            <input type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={e => handleInputChange('confirmPassword', e.target.value)} className="w-full px-5 pr-12 py-4 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono" placeholder="••••••••" />
+                            <input type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={e => handleInputChange('confirmPassword', e.target.value)} className="w-full px-4 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-cyan-400/50 transition-all font-mono text-sm" placeholder="••••••••" />
                             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
                               {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
@@ -596,7 +605,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                     }
                   }}
                   disabled={loading}
-                  className="flex-[2] py-5 bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(6,182,212,0.3)] hover:shadow-[0_15px_40px_rgba(6,182,212,0.5)] hover:-translate-y-0.5 transition-all active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3"
+                  className="flex-[2] py-4 bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl text-white font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(6,182,212,0.3)] hover:shadow-[0_15px_40px_rgba(6,182,212,0.5)] hover:-translate-y-0.5 transition-all active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3"
                 >
                   {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (
                     <>
@@ -608,7 +617,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
               </div>
             </form>
 
-            <div className="mt-8 text-center">
+            <div className="mt-8 text-center pb-12">
               <button
                 type="button"
                 onClick={() => { setType(type === 'login' ? 'signup' : 'login'); setError(''); setStep(1); }}

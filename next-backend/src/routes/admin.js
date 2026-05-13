@@ -392,4 +392,76 @@ router.delete('/contacts/:id', async (req, res) => {
   }
 });
 
+// GET unread counts summary for all sections
+router.get('/unread-summary', async (req, res) => {
+  try {
+    const Contact = require('../models/Contact');
+    const Appointment = require('../models/Appointment');
+    const Application = require('../models/Application');
+    
+    // 1. Enquiries
+    const unreadEnquiries = await Contact.countDocuments({ isRead: false });
+    
+    // 2. Appointments
+    const unreadAppointments = await Appointment.countDocuments({ status: 'unread' });
+    
+    // 3. Applications
+    const unreadApplications = await Application.countDocuments({ adminViewed: false });
+    
+    // 4. Direct Students (student role and adminViewed false)
+    const unreadDirectStudents = await User.countDocuments({ role: 'student', adminViewed: false });
+    
+    // 5. Freelancers (freelancer role and adminViewed false)
+    const unreadFreelancers = await User.countDocuments({ role: 'freelancer', adminViewed: false });
+
+    // 6. Chats (already handled but good to have here too)
+    const students = await User.find({ role: 'student' }, 'adminMessages');
+    let unreadChats = 0;
+    students.forEach(s => {
+      (s.adminMessages || []).forEach(m => {
+        if (m.sender === 'student' && !m.read) unreadChats++;
+      });
+    });
+
+    res.json({
+      enquiries: unreadEnquiries,
+      appointments: unreadAppointments,
+      applications: unreadApplications,
+      directStudents: unreadDirectStudents,
+      freelancers: unreadFreelancers,
+      chats: unreadChats
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error fetching unread summary' });
+  }
+});
+
+// Mark a whole category as read
+router.post('/mark-category-read', async (req, res) => {
+  try {
+    const { category } = req.body;
+    const Application = require('../models/Application');
+    const Appointment = require('../models/Appointment');
+    const Contact = require('../models/Contact');
+
+    if (category === 'applications') {
+      await Application.updateMany({ adminViewed: false }, { adminViewed: true });
+    } else if (category === 'direct_students') {
+      await User.updateMany({ role: 'student', adminViewed: false }, { adminViewed: true });
+    } else if (category === 'freelancers') {
+      await User.updateMany({ role: 'freelancer', adminViewed: false }, { adminViewed: true });
+    } else if (category === 'appointments') {
+      await Appointment.updateMany({ status: 'unread' }, { status: 'read' });
+    } else if (category === 'contact_forms') {
+      await Contact.updateMany({ isRead: false }, { isRead: true });
+    }
+
+    res.json({ message: `Category ${category} marked as read` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error marking read' });
+  }
+});
+
 module.exports = router;

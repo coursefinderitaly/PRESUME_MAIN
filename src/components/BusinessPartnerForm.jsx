@@ -46,7 +46,7 @@ const BusinessPartnerForm = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#0a0d18] text-white font-sans flex flex-col relative overflow-hidden">
+        <div className="min-h-screen bg-[#0a0d18] text-white font-sans flex flex-col relative">
             {/* Background Effects */}
             <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
                 <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-blue-600/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3"></div>
@@ -55,7 +55,7 @@ const BusinessPartnerForm = () => {
 
             <Header compact={false} />
 
-            <main className="flex-1 relative z-10 pt-32 pb-20 px-6 sm:px-12 flex items-center justify-center">
+            <main className="flex-1 relative z-10 pt-32 pb-40 px-6 sm:px-12 flex justify-center">
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

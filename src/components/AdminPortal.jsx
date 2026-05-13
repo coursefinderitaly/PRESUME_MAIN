@@ -4,7 +4,7 @@ import {
   Users, Trash2, LogOut, ShieldAlert, Edit2, ChevronLeft, Save, Plus,
   MapPin, Phone, Briefcase, GraduationCap, Building2, UserCircle, KeyRound,
   Database, Server, ShieldCheck, Mail, Sun, Moon, Monitor, Globe, FileText, Unlock, Ban,
-  MessageSquare, Send, X, AlertTriangle, Search, CheckSquare
+  MessageSquare, Send, X, AlertTriangle, Search, CheckSquare, Calendar
 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { useTheme } from '../ThemeContext';
@@ -17,6 +17,8 @@ import SearchableSelect from './SearchableSelect';
 import ApplicationTracking from './ApplicationTracking';
 
 import UniversityDataManagement from './UniversityDataManagement';
+import AppointmentsManagement from './AppointmentsManagement';
+
 
 const AdminPortal = () => {
   const [users, setUsers] = useState([]);
@@ -50,6 +52,14 @@ const AdminPortal = () => {
   const [openChat, setOpenChat] = useState(null);
   const [chatSending, setChatSending] = useState(false);
   const [totalUnreadChats, setTotalUnreadChats] = useState(0);
+  const [unreadCounts, setUnreadCounts] = useState({
+    enquiries: 0,
+    appointments: 0,
+    applications: 0,
+    directStudents: 0,
+    freelancers: 0,
+    chats: 0
+  });
   const [chatEditorHeight, setChatEditorHeight] = useState(85);
 
   // Contacts state
@@ -223,23 +233,44 @@ const AdminPortal = () => {
     setChatSending(false);
   };
 
+  const markCategoryRead = async (category) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/admin/mark-category-read`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-csrf-protected': '1'
+        },
+        body: JSON.stringify({ category })
+      });
+      if (res.ok) {
+        setUnreadCounts(prev => ({ ...prev, [category]: 0 }));
+      }
+    } catch (err) {
+      console.error('Error marking read:', err);
+    }
+  };
+
   useEffect(() => {
     checkAdminAccess();
   }, []);
 
-  // Poll for new student messages every 20 seconds (admin side)
+  // Poll for new notifications every 20 seconds
   useEffect(() => {
     const poll = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/admin/chats/unread-count`, { credentials: 'include' });
+        const res = await fetch(`${API_BASE_URL}/admin/unread-summary`, { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
-          if (data.unread > 0 && data.unread !== adminAlertUnread) {
-            setAdminAlertUnread(data.unread);
-            setTotalUnreadChats(data.unread);
+          setUnreadCounts(data);
+          setTotalUnreadChats(data.chats);
+          
+          if (data.chats > 0 && data.chats !== adminAlertUnread) {
+            setAdminAlertUnread(data.chats);
             setAdminAlertDismissed(false);
             setShowAdminAlert(true);
-            // Fetch preview of latest student message
+            // Fetch preview
             try {
               const chatsRes = await fetch(`${API_BASE_URL}/admin/chats`, { credentials: 'include' });
               if (chatsRes.ok) {
@@ -250,10 +281,10 @@ const AdminPortal = () => {
                 }
               }
             } catch (e) {}
-          } else {
-            setAdminAlertUnread(data.unread);
-            setTotalUnreadChats(data.unread);
-            if (data.unread === 0) { setShowAdminAlert(false); setAdminAlertMsg(null); }
+          } else if (data.chats === 0) {
+            setShowAdminAlert(false);
+            setAdminAlertMsg(null);
+            setAdminAlertUnread(0);
           }
         }
       } catch (err) {}
@@ -616,8 +647,18 @@ const AdminPortal = () => {
             <Database size={18} /> Global Overview
           </button>
           <div className="nav-divider" style={{ background: 'var(--glass-border)', margin: '8px 0' }}></div>
-          <button className={`nav-item ${activeTab === 'direct_students' ? 'active' : ''}`} onClick={() => { setActiveTab('direct_students'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
+          <button 
+            className={`nav-item ${activeTab === 'direct_students' ? 'active' : ''}`} 
+            onClick={() => { 
+              setActiveTab('direct_students'); 
+              cancelEdit(); 
+              markCategoryRead('direct_students');
+              if(window.innerWidth<=768) setIsSidebarOpen(false); 
+            }}
+            style={{ position: 'relative' }}
+          >
             <GraduationCap size={18} /> Direct Students
+            {unreadCounts.directStudents > 0 && <span className="nav-badge">{unreadCounts.directStudents}</span>}
           </button>
           <button className={`nav-item ${activeTab === 'partner_students' ? 'active' : ''}`} onClick={() => { setActiveTab('partner_students'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <Users size={18} /> Partner Students
@@ -625,12 +666,32 @@ const AdminPortal = () => {
           <button className={`nav-item ${activeTab === 'partners' ? 'active' : ''}`} onClick={() => { setActiveTab('partners'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <Briefcase size={18} /> Business Partners
           </button>
-          <button className={`nav-item ${activeTab === 'freelancers' ? 'active' : ''}`} onClick={() => { setActiveTab('freelancers'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
+          <button 
+            className={`nav-item ${activeTab === 'freelancers' ? 'active' : ''}`} 
+            onClick={() => { 
+              setActiveTab('freelancers'); 
+              cancelEdit(); 
+              markCategoryRead('freelancers');
+              if(window.innerWidth<=768) setIsSidebarOpen(false); 
+            }}
+            style={{ position: 'relative' }}
+          >
             <Briefcase size={18} /> Freelancers
+            {unreadCounts.freelancers > 0 && <span className="nav-badge">{unreadCounts.freelancers}</span>}
           </button>
           <div className="nav-divider" style={{ background: 'var(--glass-border)', margin: '8px 0' }}></div>
-          <button className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`} onClick={() => { setActiveTab('applications'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
+          <button 
+            className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`} 
+            onClick={() => { 
+              setActiveTab('applications'); 
+              cancelEdit(); 
+              markCategoryRead('applications');
+              if(window.innerWidth<=768) setIsSidebarOpen(false); 
+            }}
+            style={{ position: 'relative' }}
+          >
             <FileText size={18} /> Applied Applications
+            {unreadCounts.applications > 0 && <span className="nav-badge">{unreadCounts.applications}</span>}
           </button>
           <button className={`nav-item ${activeTab === 'uploaded_documents' ? 'active' : ''}`} onClick={() => { setActiveTab('uploaded_documents'); fetchDocuments(); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <Database size={18} /> Uploaded Documents
@@ -656,9 +717,30 @@ const AdminPortal = () => {
           </button>
           <button 
             className={`nav-item ${activeTab === 'contact_forms' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('contact_forms'); fetchContacts(); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}
+            onClick={() => { 
+              setActiveTab('contact_forms'); 
+              fetchContacts(); 
+              cancelEdit(); 
+              markCategoryRead('contact_forms');
+              if(window.innerWidth<=768) setIsSidebarOpen(false); 
+            }}
+            style={{ position: 'relative' }}
           >
             <Mail size={18} /> Enquiries
+            {unreadCounts.enquiries > 0 && <span className="nav-badge">{unreadCounts.enquiries}</span>}
+          </button>
+          <button 
+            className={`nav-item ${activeTab === 'appointments' ? 'active' : ''}`} 
+            onClick={() => { 
+              setActiveTab('appointments'); 
+              cancelEdit(); 
+              markCategoryRead('appointments');
+              if(window.innerWidth<=768) setIsSidebarOpen(false); 
+            }}
+            style={{ position: 'relative' }}
+          >
+            <Calendar size={18} /> Appointments
+            {unreadCounts.appointments > 0 && <span className="nav-badge">{unreadCounts.appointments}</span>}
           </button>
         </nav>
         <div style={{ marginTop: 'auto', padding: '0.5rem 0' }}>
@@ -737,7 +819,7 @@ const AdminPortal = () => {
         {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: LEDGER TABLE */}
         {/* -------------------------------------------------------------------------------- */}
-        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms') && (
+        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments') && (
           <div className="animate-fade-in" style={{ display: activeTab === 'overview' ? 'flex' : 'block', flexDirection: 'column', flex: activeTab === 'overview' ? 1 : 'none', minHeight: 0 }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexShrink: 0 }}>
               <div>
@@ -1419,6 +1501,13 @@ const AdminPortal = () => {
         )}
 
         {/* -------------------------------------------------------------------------------- */}
+        {/* VIEW: APPOINTMENTS                                                               */}
+        {/* -------------------------------------------------------------------------------- */}
+        {(!selectedUser && !isAdding && activeTab === 'appointments') && (
+          <AppointmentsManagement />
+        )}
+
+        {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: CONTACT FORMS                                                              */}
         {/* -------------------------------------------------------------------------------- */}
         {(!selectedUser && !isAdding && activeTab === 'contact_forms') && (
@@ -1444,7 +1533,7 @@ const AdminPortal = () => {
                           setSelectedEnquiries(contactForms.map(c => c._id));
                         }
                       }} 
-                      style={{ background: selectedEnquiries.length === contactForms.length ? 'rgba(59, 130, 246, 0.2)' : 'var(--input-bg)', border: '1px solid rgba(59, 130, 246, 0.5)', color: '#3b82f6', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+                      style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}
                     >
                       <CheckSquare size={16} /> {selectedEnquiries.length === contactForms.length ? 'Deselect All' : 'Select All'}
                     </button>
@@ -1452,13 +1541,14 @@ const AdminPortal = () => {
                   {selectedEnquiries.length > 0 && (
                     <button 
                       onClick={handleBulkDeleteEnquiriesClick}
-                      style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}
+                      style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}
                     >
                       <Trash2 size={16} /> Delete Selected ({selectedEnquiries.length})
                     </button>
                   )}
                 </div>
               </header>
+
               <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '20px', background: 'var(--card-bg-solid)', padding: '12px 18px', borderRadius: '12px', border: '1px solid var(--glass-border)', flexShrink: 0 }}>
                 <input
                   type="text"
@@ -1469,18 +1559,20 @@ const AdminPortal = () => {
                 />
 
               <select
+                className="theme-select"
                 value={contactsFilter.status}
                 onChange={(e) => setContactsFilter({ ...contactsFilter, status: e.target.value })}
-                style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
+                style={{ border: '1px solid var(--glass-border)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
               >
                 <option value="all">All Status</option>
                 <option value="unread">Unread Only</option>
                 <option value="read">Read Only</option>
               </select>
               <select
+                className="theme-select"
                 value={contactsFilter.type}
                 onChange={(e) => setContactsFilter({ ...contactsFilter, type: e.target.value })}
-                style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
+                style={{ border: '1px solid var(--glass-border)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
               >
                 <option value="all">All Inquiry Types</option>
                 <option value="study">Study Visa</option>
@@ -1489,9 +1581,10 @@ const AdminPortal = () => {
                 <option value="other">General / Other</option>
               </select>
               <select
+                className="theme-select"
                 value={contactsFilter.sort}
                 onChange={(e) => setContactsFilter({ ...contactsFilter, sort: e.target.value })}
-                style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
+                style={{ border: '1px solid var(--glass-border)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', cursor: 'pointer' }}
               >
                 <option value="desc">Newest First</option>
                 <option value="asc">Oldest First</option>

@@ -152,7 +152,8 @@ const UserSchema = new mongoose.Schema({
   // Security & Lockout Mechanisms
   loginAttempts: { type: Number, default: 0 },
   lockUntil: { type: Date },
-  isBlocked: { type: Boolean, default: false }
+  isBlocked: { type: Boolean, default: false },
+  adminViewed: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

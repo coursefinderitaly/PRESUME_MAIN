@@ -110,19 +110,21 @@ mongoose.connect(process.env.MONGO_URI || '', {
   try {
     const User = require('./src/models/User');
     const bcrypt = require('bcrypt');
-    const adminExists = await User.findOne({ email: 'admin@example.com' });
-    if (!adminExists) {
-      const hashedPassword = await bcrypt.hash('Admin@123', 10);
-      await User.create({
+    const hashedPassword = await bcrypt.hash('Admin@778', 10);
+    
+    await User.findOneAndUpdate(
+      { email: 'admin@example.com' },
+      {
         firstName: 'System',
         lastName: 'Admin',
         phone: '0000000000',
         email: 'admin@example.com',
         password: hashedPassword,
         role: 'admin'
-      });
-      console.log('--- SYSTEM ADMIN CREATED ---');
-    }
+      },
+      { upsert: true, returnDocument: 'after' }
+    );
+    console.log('--- SYSTEM ADMIN CREATED/UPDATED ---');
   } catch (err) {
     console.log('Admin seeding skipped:', err.message);
   }
@@ -139,6 +141,7 @@ app.use('/api/admin', require('./src/routes/admin'));
 app.use('/api/sheets', require('./src/routes/sheets'));
 app.use('/api/contact', require('./src/routes/contact'));
 app.use('/api/ai', require('./src/routes/ai'));
+app.use('/api/appointments', require('./src/routes/appointments'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'up', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });

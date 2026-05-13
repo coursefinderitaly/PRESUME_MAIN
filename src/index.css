@@ -600,6 +600,14 @@
 
 /* --- PORTAL STYLES --- */
 :root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --glass-bg: rgba(15, 23, 42, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #a78bfa;
+  --accent-tertiary: #c4b5fd;
   --input-bg: rgba(255, 255, 255, 0.05);
   --input-border: rgba(255, 255, 255, 0.15);
   --input-focus: #8b5cf6;
@@ -615,6 +623,23 @@
   --scrollbar-track: #020617;
   --scrollbar-thumb: rgba(255, 255, 255, 0.1);
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
+}
+
+.nav-badge {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fontWeight: 800;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
 }
 
 :root[data-theme='light'] {
@@ -676,8 +701,8 @@
 }
 
 .theme-select option {
-  color: #000;
-  background: #fff;
+  color: var(--text-main);
+  background: var(--bg-primary);
 }
 
 .theme-row-border {

@@ -23,6 +23,14 @@ import campus3 from '../uni/campus3.jpg';
 import campus4 from '../uni/campus4.jpg';
 import campus5 from '../uni/campus5.jpg';
 
+// Import success images for marquee
+import success1 from '../SuccessStories/success-1.jpeg';
+import success2 from '../SuccessStories/success-2.jpeg';
+import success3 from '../SuccessStories/success-3.jpeg';
+import success4 from '../SuccessStories/success-4.jpeg';
+import success5 from '../SuccessStories/success-5.jpeg';
+import success6 from '../SuccessStories/success-6.jpeg';
+
 const universities = [
   { id: 1, name: 'Sapienza University of Rome', image: sapienza, rank: '#140' },
   { id: 2, name: 'University of Bologna', image: bologna, rank: '#130' },
@@ -34,6 +42,15 @@ const universities = [
   { id: 8, name: 'Politecnico di Milano', image: campus1, rank: '#317' },
   { id: 9, name: 'University of Naples Federico II', image: campus2, rank: '#192' },
   { id: 10, name: 'University of Turin', image: campus3, rank: '#221' },
+];
+
+const visaSuccessStories = [
+  { id: 1, name: 'Visa Granted', image: success1 },
+  { id: 2, name: 'Visa Granted', image: success2 },
+  { id: 3, name: 'Visa Granted', image: success3 },
+  { id: 4, name: 'Visa Granted', image: success4 },
+  { id: 5, name: 'Visa Granted', image: success5 },
+  { id: 6, name: 'Visa Granted', image: success6 },
 ];
 
 
@@ -164,8 +181,8 @@ export const Universities = () => {
 
       {/* ── DOME GALLERY ── */}
       <div className="relative flex-1 w-full flex items-center justify-center" style={{ minHeight: 'min(500px, calc(100svh - 200px))' }}>
-        <VerticalMarquee images={universities} align="left" direction={-1} speed={MARQUEE_SPEED} isVisible={isVisible} />
-        <VerticalMarquee images={universities} align="right" direction={1} speed={MARQUEE_SPEED} isVisible={isVisible} />
+        <VerticalMarquee images={visaSuccessStories} align="left" direction={-1} speed={MARQUEE_SPEED} isVisible={isVisible} />
+        <VerticalMarquee images={visaSuccessStories} align="right" direction={1} speed={MARQUEE_SPEED} isVisible={isVisible} />
 
         <div
           className="absolute inset-x-3 sm:inset-x-8 inset-y-2 z-0 rounded-[24px] pointer-events-none"

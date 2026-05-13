@@ -9,6 +9,7 @@ const User = require('../models/User');
 const Application = require('../models/Application');
 const auth = require('../middleware/auth');
 const { sendStudentEmail, sendAdminEmail } = require('../utils/mailer');
+const { getSubmissionEmailHTML, getExportEmailHTML } = require('../utils/emailTemplates');
 const { uploadZipStream, generateSignedUrl, getLocalFilePath } = require('../utils/storage');
 
 // Set up Multer for memory storage (no files saved to disk)
@@ -297,18 +298,7 @@ router.post('/email-zip', auth, upload.array('documents'), async (req, res) => {
         // Send Notification to Student via RESEND
         if (studentEmail) {
             const studentSubject = 'Congratulations! Your Application Has Been Submitted';
-            const studentHtml = `
-              <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #0284c7;">Application Submitted Successfully</h2>
-                <p>Dear <strong>${candidateName}</strong>,</p>
-                <p>Congratulations! Your application has been successfully submitted to the university.</p>
-                <p>You can now sit back while we track your application status and keep you informed about any updates.</p>
-                <p>Wishing you the best for a positive outcome.</p>
-                <br/>
-                <p>Warm regards,</p>
-                <p><strong>Team Presume Overseas Education</strong></p>
-              </div>
-            `;
+            const studentHtml = getSubmissionEmailHTML(candidateName);
             sendStudentEmail(studentEmail, studentSubject, studentHtml)
                 .catch(err => console.error("Failed to send submission email to student via Resend", err));
         }
@@ -345,18 +335,7 @@ router.post('/email-excel', auth, upload.single('excelFile'), async (req, res) =
         }
 
         const subject = 'Your Selected Courses Export - Presume Overseas Education';
-        const html = `
-          <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #0284c7;">Your Selected Courses Export</h2>
-            <p>Dear <strong>${candidateName || 'Student'}</strong>,</p>
-            <p>You recently downloaded your selected courses from the Course Finder portal.</p>
-            <p>For your convenience, we have attached a copy of the Excel sheet to this email.</p>
-            <p>Please review the courses, and feel free to reach out to your counselor to proceed with your application.</p>
-            <br/>
-            <p>Warm regards,</p>
-            <p><strong>Team Presume Overseas Education</strong></p>
-          </div>
-        `;
+        const html = getExportEmailHTML(candidateName || 'Student');
 
         const attachments = [
             {

@@ -6,7 +6,8 @@ const ApplicationSchema = new mongoose.Schema({
   destinationCountry: { type: String, required: true },
   intake: { type: String },
   status: { type: String, enum: ['Under Review', 'Accepted', 'Rejected', 'Document Pending'], default: 'Under Review' },
-  submittedAt: { type: Date, default: Date.now }
+  submittedAt: { type: Date, default: Date.now },
+  adminViewed: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Application', ApplicationSchema);
