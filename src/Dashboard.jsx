@@ -45,7 +45,6 @@ const AnimatedBackground = () => (
         scale: [1.1, 0.9, 1.2, 1, 1.1],
         rotate: [360, 270, 180, 90, 0],
         x: [0, -40, 20, -50, 0],
-        x: [0, -40, 20, -50, 0],
         y: [0, -20, -60, 30, 0]
       }}
       transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
