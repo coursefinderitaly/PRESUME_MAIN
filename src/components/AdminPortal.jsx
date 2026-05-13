@@ -270,7 +270,6 @@ const AdminPortal = () => {
             setAdminAlertUnread(data.chats);
             setAdminAlertDismissed(false);
             setShowAdminAlert(true);
-            // Fetch preview
             try {
               const chatsRes = await fetch(`${API_BASE_URL}/admin/chats`, { credentials: 'include' });
               if (chatsRes.ok) {
@@ -290,7 +289,7 @@ const AdminPortal = () => {
       } catch (err) {}
     };
     poll();
-    const interval = setInterval(poll, 20000);
+    const interval = setInterval(poll, 30000); // 30 seconds is safer for background updates
     return () => clearInterval(interval);
   }, [adminAlertUnread]);
 
@@ -734,7 +733,6 @@ const AdminPortal = () => {
             onClick={() => { 
               setActiveTab('appointments'); 
               cancelEdit(); 
-              markCategoryRead('appointments');
               if(window.innerWidth<=768) setIsSidebarOpen(false); 
             }}
             style={{ position: 'relative' }}

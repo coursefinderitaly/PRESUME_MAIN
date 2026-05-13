@@ -151,7 +151,6 @@ const Dashboard = () => {
           setUnreadMsgCount(data.unread);
           setAlertDismissed(false);
           setShowMsgAlert(true);
-          // Fetch latest message for preview
           try {
             const msgRes = await fetch(`${API_BASE_URL}/erp/my-messages`, { 
               credentials: 'include',
@@ -191,11 +190,11 @@ const Dashboard = () => {
     if (profile) fetchStats();
   }, [profile]);
 
-  // Start polling for student unread messages once profile loads
+  // Start polling for updates every 30 seconds
   useEffect(() => {
-    if (profile && profile.role === 'student') {
+    if (profile) {
       pollUnreadMessages();
-      const interval = setInterval(pollUnreadMessages, 20000);
+      const interval = setInterval(pollUnreadMessages, 30000);
       return () => clearInterval(interval);
     }
   }, [profile]);
