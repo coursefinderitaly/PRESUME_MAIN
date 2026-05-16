@@ -21,14 +21,44 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
         program: ''
     });
 
+    // Helper to reliably find object properties regardless of case/spacing
+    const getFieldValue = (item, possibleKeys) => {
+        if (!item) return null;
+        const itemKeys = Object.keys(item);
+        const normalizedPossibles = possibleKeys.map(k => k.toLowerCase().replace(/[\s_.-]+/g, ''));
+
+        for (let key of itemKeys) {
+            const normalizedKey = key.toLowerCase().replace(/[\s_.-]+/g, '');
+            if (normalizedPossibles.includes(normalizedKey)) {
+                return item[key];
+            }
+        }
+        return null;
+    };
+
     useEffect(() => {
         const fetchCourses = async () => {
+            console.log("EligibilityModal: Fetching courses from", `${API_BASE_URL}/sheets`);
             try {
-                const response = await fetch(`${API_BASE_URL}/sheets`);
+                const response = await fetch(`${API_BASE_URL}/sheets`, {
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    console.error("EligibilityModal: Backend returned error status:", response.status);
+                    setAllCourses([]);
+                    return;
+                }
                 const data = await response.json();
-                setAllCourses(data);
+                console.log("EligibilityModal: Received data length:", Array.isArray(data) ? data.length : 'not an array');
+                if (Array.isArray(data)) {
+                    setAllCourses(data);
+                } else {
+                    console.warn("EligibilityModal: Received non-array data:", data);
+                    setAllCourses([]);
+                }
             } catch (error) {
-                console.error("Failed to fetch courses:", error);
+                console.error("EligibilityModal: Failed to fetch courses:", error);
+                setAllCourses([]);
             } finally {
                 setLoading(false);
             }
@@ -36,35 +66,47 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
         fetchCourses();
     }, []);
 
-    // Map internal level to Excel Program Level
-    const excelLevel = useMemo(() => {
-        if (level === 'bachelors') return 'Bachelor';
-        if (level === 'masters') return 'Masters';
-        if (level === 'mbbs') return 'Bachelor'; // MBBS is usually under Bachelor in the sheet
-        return '';
+    // Map internal level to possible Excel Program Levels
+    const excelLevels = useMemo(() => {
+        if (level === 'bachelors') return ['Bachelor', 'UG', 'Undergraduate'];
+        if (level === 'masters') return ['Masters', 'PG', 'Postgraduate'];
+        if (level === 'mbbs') return ['MBBS', 'Bachelor', 'Medical']; 
+        return [];
     }, [level]);
 
     // Get unique Interested Fields for the selected level
     const interestedFields = useMemo(() => {
+        if (!Array.isArray(allCourses) || allCourses.length === 0) return [];
+        
         const fields = allCourses
-            .filter(c => (c['Program Level '] || '').trim() === excelLevel)
-            .map(c => (c['InterestedField '] || '').trim())
+            .filter(c => {
+                const pLevel = (getFieldValue(c, ['programlevel', 'program level', 'level']) || '').toString().trim();
+                return excelLevels.some(L => pLevel.toLowerCase() === L.toLowerCase());
+            })
+            .map(c => (getFieldValue(c, ['interestedfield', 'interested field', 'field']) || '').toString().trim())
             .filter(Boolean);
-        return [...new Set(fields)].sort();
-    }, [allCourses, excelLevel]);
+        
+        const uniqueFields = [...new Set(fields)].sort();
+        console.log(`EligibilityModal: Found ${uniqueFields.length} interested fields for ${level}`);
+        return uniqueFields;
+    }, [allCourses, excelLevels, level]);
 
     // Get Programs for selected Interested Field
     const programs = useMemo(() => {
-        if (!formData.interestedField) return [];
-        return allCourses
-            .filter(c => 
-                (c['Program Level '] || '').trim() === excelLevel && 
-                (c['InterestedField '] || '').trim() === formData.interestedField
-            )
-            .map(c => (c['Program Name '] || '').trim())
-            .filter(Boolean)
-            .sort();
-    }, [allCourses, excelLevel, formData.interestedField]);
+        if (!formData.interestedField || !Array.isArray(allCourses)) return [];
+        
+        const filteredPrograms = allCourses
+            .filter(c => {
+                const pLevel = (getFieldValue(c, ['programlevel', 'program level', 'level']) || '').toString().trim();
+                const iField = (getFieldValue(c, ['interestedfield', 'interested field', 'field']) || '').toString().trim();
+                return excelLevels.some(L => pLevel.toLowerCase() === L.toLowerCase()) && 
+                       iField.toLowerCase() === formData.interestedField.toLowerCase();
+            })
+            .map(c => (getFieldValue(c, ['programname', 'program name', 'program']) || '').toString().trim())
+            .filter(Boolean);
+
+        return [...new Set(filteredPrograms)].sort();
+    }, [allCourses, excelLevels, formData.interestedField]);
 
     if (!level) return null;
 
@@ -242,7 +284,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
     );
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 overflow-y-auto">
             <style>
                 {`
                 @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(5deg); } }
@@ -268,14 +310,14 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
-                className="absolute inset-0 bg-zinc-950/90 backdrop-blur-sm"
+                className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
             />
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="relative w-full max-w-xl bg-zinc-950 border border-white/[0.05] rounded-[40px] p-10 overflow-hidden shadow-2xl"
+                className="relative w-full max-w-xl max-h-[90vh] bg-zinc-950 border border-white/[0.05] rounded-[40px] p-10 overflow-y-auto shadow-2xl"
             >
                 {/* Premium Background Effects */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />

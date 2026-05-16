@@ -2,26 +2,36 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Wallet, FileText, Compass, Award, ShieldCheck, Ticket } from 'lucide-react';
 
-const FeesTable = () => {
+const FeesTable = ({ countryId }) => {
     const [coupon, setCoupon] = useState('');
     const [applied, setApplied] = useState(false);
     const [error, setError] = useState('');
     const [selectedLevel, setSelectedLevel] = useState('Bachelors');
+    const [uniType, setUniType] = useState('Public');
 
     const pricing = {
-        'Bachelors': [30000, 15000, 40000, 35000],
-        'Masters': [30000, 15000, 40000, 35000],
-        'MBBS': [35000, 0, 65000, 60000]
+        'Public': {
+            'Bachelors': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000],
+            'Masters': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000],
+            'MBBS': (countryId === 'germany' || countryId === 'italy') ? (countryId === 'germany' ? [30000, 15000, 40000, 35000] : [35000, 0, 65000, 60000]) : [5000, 5000, 5000, 5000]
+        },
+        'Private': {
+            'Bachelors': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000],
+            'Masters': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000],
+            'MBBS': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000]
+        }
     };
 
-    const currentPhases = pricing[selectedLevel];
-    const totalFee = currentPhases.reduce((a, b) => a + b, 0);
-    const discountedTotal = 60000; // Fixed discounted total as per request
+    const currentPhases = pricing[uniType][selectedLevel];
+    const totalFee = (countryId === 'germany' && uniType === 'Private') ? 20000 : currentPhases.reduce((a, b) => a + b, 0);
+    const discountedTotal = totalFee * 0.5; // 50% discount if coupon applied
+
+    const shouldHidePrice = uniType === 'Private' || !(countryId === 'germany' || countryId === 'italy');
 
     const feeStructure = [
         {
             title: "Admission Process",
-            price: `₹ ${currentPhases[0].toLocaleString('en-IN')}`,
+            price: shouldHidePrice ? null : `₹ ${(applied ? currentPhases[0] * 0.5 : currentPhases[0]).toLocaleString('en-IN')}`,
             icon: <FileText className="text-cyan-400" size={18} />,
             color: "from-cyan-500/10 to-blue-500/10 hover:border-cyan-400/40",
             glow: "bg-cyan-500/10",
@@ -34,7 +44,7 @@ const FeesTable = () => {
         },
         ...(currentPhases[1] > 0 ? [{
             title: "After Admission",
-            price: `₹ ${currentPhases[1].toLocaleString('en-IN')}`,
+            price: shouldHidePrice ? null : `₹ ${(applied ? currentPhases[1] * 0.5 : currentPhases[1]).toLocaleString('en-IN')}`,
             icon: <CheckCircle2 className="text-indigo-400" size={18} />,
             color: "from-indigo-500/10 to-purple-500/10 hover:border-indigo-400/40",
             glow: "bg-indigo-500/10",
@@ -47,7 +57,7 @@ const FeesTable = () => {
         }] : []),
         {
             title: "Pre-enrollment & Scholarship Docs",
-            price: `₹ ${currentPhases[2].toLocaleString('en-IN')}`,
+            price: shouldHidePrice ? null : `₹ ${(applied ? currentPhases[2] * 0.5 : currentPhases[2]).toLocaleString('en-IN')}`,
             icon: <Compass className="text-yellow-400" size={18} />,
             color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
             glow: "bg-yellow-500/10",
@@ -62,7 +72,7 @@ const FeesTable = () => {
         },
         {
             title: "Scholarship application + Visa process",
-            price: `₹ ${currentPhases[3].toLocaleString('en-IN')}`,
+            price: shouldHidePrice ? null : `₹ ${(applied ? currentPhases[3] * 0.5 : currentPhases[3]).toLocaleString('en-IN')}`,
             icon: <ShieldCheck className="text-emerald-400" size={18} />,
             color: "from-emerald-500/10 to-teal-500/10 hover:border-emerald-400/40",
             glow: "bg-emerald-500/10",
@@ -102,6 +112,23 @@ const FeesTable = () => {
                     <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
                         {applied ? 'Flash Offer: Specialized Combined Packages' : 'Perfectly divided among phases'}
                     </p>
+
+                    {/* University Type Toggle for Germany */}
+                    {countryId === 'germany' && (
+                        <div className="flex items-center justify-center gap-3 mt-8 bg-white/[0.03] p-1.5 rounded-2xl border border-white/5 shadow-inner">
+                            {['Public', 'Private'].map((type) => (
+                                <button
+                                    key={type}
+                                    onClick={() => setUniType(type)}
+                                    className={`px-10 py-4 rounded-xl text-[14px] font-black uppercase tracking-widest transition-all duration-300 ${uniType === type 
+                                        ? 'bg-white text-black shadow-lg scale-[1.02]' 
+                                        : 'text-white/40 hover:text-white/70'}`}
+                                >
+                                    {type} Universities
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </motion.div>
 
                 {/* Level Switcher (Now below and centered) */}
@@ -126,7 +153,7 @@ const FeesTable = () => {
 
                 {/* Left Column (2/3 width): Phase Cards */}
                 <div className="lg:col-span-2 flex flex-col gap-4">
-                    {applied ? (
+                    {(applied && countryId === 'italy') ? (
                         <>
                             {/* Card 1: Admission & Post-Admission */}
                             <motion.div
@@ -225,9 +252,11 @@ const FeesTable = () => {
                                         </div>
                                     </div>
                                     <div className="shrink-0 w-full sm:w-auto">
-                                        <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
-                                            {item.price}
-                                        </span>
+                                        {item.price && (
+                                            <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
+                                                {item.price}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
 

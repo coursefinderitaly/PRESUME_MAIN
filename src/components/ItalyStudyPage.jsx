@@ -510,7 +510,7 @@ const ItalyStudyPage = () => {
                         </div>
                     </div>
 
-                    <FeesTable />
+                    <FeesTable countryId="italy" />
 
                     {/* THE WINDING ROADWAY PATHWAY - CUSTOM BUILT TO MATCH USER REFERENCE IMAGE */}
                     <div className="relative py-20 px-4 overflow-hidden rounded-[48px] bg-[#0b1120]/60 backdrop-blur-2xl border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.6)]">

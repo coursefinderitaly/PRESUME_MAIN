@@ -376,7 +376,7 @@ const GenericCountryPage = ({ countryId }) => {
                         </div>
                     </div>
 
-                    <FeesTable />
+                    <FeesTable countryId={countryId} />
 
                     {/* Journey Timeline */}
                     <div className="relative py-24 rounded-[48px] bg-white/[0.02] border border-white/10 backdrop-blur-[40px] px-6 md:px-20 shadow-2xl z-20">
