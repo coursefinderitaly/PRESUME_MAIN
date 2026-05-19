@@ -25,7 +25,7 @@ router.post('/users', async (req, res) => {
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ error: 'Email already exists in database' });
     
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const hashedPassword = password ? await bcrypt.hash(password, 10) : await bcrypt.hash('defaultpassword123', 10);
     
     const updates = { ...req.body };
@@ -62,7 +62,7 @@ router.put('/users/:id', async (req, res) => {
 
     // If a password is provided, hash it before updating
     if (updates.password && updates.password.trim() !== "") {
-       const bcrypt = require('bcrypt');
+       const bcrypt = require('bcryptjs');
        updates.password = await bcrypt.hash(updates.password, 10);
     } else {
        delete updates.password;

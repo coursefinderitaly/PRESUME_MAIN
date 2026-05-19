@@ -198,7 +198,7 @@ mongoose.connect(dbUri, {
       const existing = await User.findOne({ email: adminEmail });
       
       if (!existing) {
-        const bcrypt = require('bcrypt');
+        const bcrypt = require('bcryptjs');
         const hashedPassword = await bcrypt.hash(adminPassword, 10);
         
         await User.create({

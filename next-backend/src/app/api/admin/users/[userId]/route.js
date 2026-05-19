@@ -1,6 +1,6 @@
 // next-backend/src/app/api/admin/users/[id]/route.js
 const { NextResponse } = require('next/server');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const dbConnect = require('../../../../../lib/db');
 const User = require('../../../../../models/User');
 const { withRoles } = require('../../../../../lib/authMiddleware');

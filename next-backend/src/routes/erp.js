@@ -90,7 +90,7 @@ router.post('/counselors', checkRole(['admin', 'partner']), async (req, res) => 
        return res.status(400).json({ error: "Password is required for Counselor accounts" });
     }
 
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const parts = name.split(' ');
@@ -160,7 +160,7 @@ router.put('/counselors/:id', checkRole(['admin', 'partner', 'counselor']), asyn
     if (email) updateData.email = email;
     if (phone) updateData.phone = phone;
     if (password) {
-      const bcrypt = require('bcrypt');
+      const bcrypt = require('bcryptjs');
       updateData.password = await bcrypt.hash(password, 10);
     }
 
@@ -245,7 +245,7 @@ router.post('/students', checkRole(['admin', 'partner', 'counselor', 'freelancer
     if (existing) return res.status(400).json({ error: "Student email already exists" });
 
     // Generate credentials
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const currentUser = await User.findById(req.user.id);
