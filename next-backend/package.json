@@ -2,6 +2,8 @@
   "name": "presume-backend",
   "version": "0.1.0",
   "private": true,
+  "description": "Next.js backend application",
+  "main": "server.js",
   "engines": {
     "node": ">=18.0.0"
   },
