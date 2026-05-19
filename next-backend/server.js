@@ -6,7 +6,73 @@ process.on('unhandledRejection', (err) => {
   console.log('CRASH ERROR (Rejection):', err);
 });
 
+// Programmatic dependencies auto-installer for Hostinger
+const { execSync } = require('child_process');
+const fs = require('fs');
 const path = require('path');
+
+function installIfNeeded() {
+  const essentialDeps = ['dotenv', 'razorpay', 'express', 'mongoose', 'cors', 'helmet', 'cookie-parser', 'express-rate-limit'];
+  let needsInstall = false;
+  
+  for (const dep of essentialDeps) {
+    try {
+      require.resolve(dep);
+    } catch (e) {
+      console.log(`Dependency "${dep}" is missing.`);
+      needsInstall = true;
+      break;
+    }
+  }
+
+  if (needsInstall) {
+    console.log('--- STARTING PROGRAMMATIC NPM INSTALL ON HOSTINGER ---');
+    const backendDir = __dirname;
+    const nodeBin = process.argv[0];
+    const nodeDir = path.dirname(nodeBin);
+    
+    const npmPaths = [
+      'npm',
+      path.join(nodeDir, 'npm'),
+      path.join(nodeDir, 'npm.cmd'),
+      path.join(nodeDir, '../lib/node_modules/npm/bin/npm-cli.js'),
+      path.join(nodeDir, 'node_modules/npm/bin/npm-cli.js')
+    ];
+
+    let success = false;
+    for (const npmPath of npmPaths) {
+      try {
+        let command;
+        if (npmPath.endsWith('.js')) {
+          command = `"${nodeBin}" "${npmPath}" install --production --no-audit --no-fund`;
+        } else {
+          command = `"${npmPath}" install --production --no-audit --no-fund`;
+        }
+        console.log(`Running install command: ${command} in ${backendDir}`);
+        execSync(command, { cwd: backendDir, stdio: 'inherit' });
+        success = true;
+        console.log('--- NPM INSTALL COMPLETED SUCCESSFULLY ---');
+        break;
+      } catch (err) {
+        console.log(`Failed installing with "${npmPath}":`, err.message);
+      }
+    }
+
+    if (!success) {
+      console.error('CRITICAL: Programmatic npm install failed. Please install dependencies manually.');
+    } else {
+      console.log('--- DEPENDENCIES PREPARED, CONTINUING BOOTSTRAP ---');
+    }
+  }
+}
+
+try {
+  installIfNeeded();
+} catch (e) {
+  console.error('Error during auto-installation helper:', e);
+}
+
+
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const mongoose = require('mongoose');
