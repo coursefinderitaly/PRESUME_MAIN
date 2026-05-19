@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   FileText, Users, Bell, ArrowRight, TrendingUp,
   BookOpen, Globe, CheckCircle2, GraduationCap,
@@ -131,8 +131,15 @@ const ProgressBar = ({ label, value, total, color }) => (
   </div>
 );
 
-const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiveTab, stats, fetchStats, unreadMsgCount }) => {
+const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiveTab, stats, fetchStats, unreadMsgCount, handleAvatarUpload, avatarUploading }) => {
   const [greeting, setGreeting] = useState('');
+  const fileInputRef = useRef(null);
+
+  const handlePhotoClick = () => {
+    if (!profile?.avatarUrl && !avatarUploading) {
+      fileInputRef.current?.click();
+    }
+  };
 
   // ── PROFILE PHOTO CONFIG ───────────────────
   // Adjust these variables easily to control the size and position
@@ -205,39 +212,64 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
 
             {/* Floating Avatar — Absolute Positioned so it doesn't affect surrounding text layout */}
             {profile?.role === 'student' && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: avatarConfig.top,
-                  right: avatarConfig.right,
-                  width: avatarConfig.size,
-                  height: avatarConfig.size,
-                  borderRadius: '18px',
-                  overflow: 'hidden',
-                  border: '2px solid var(--glass-border)',
-                  cursor: 'default',
-                  zIndex: 2,
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
-                  background: 'linear-gradient(135deg, #6366f1, #a78bfa)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'transform 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                {profile?.avatarUrl ? (
-                  <img src={profile.avatarUrl} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2px', padding: '5px' }}>
-                    <Upload size={16} color="#fff" style={{ opacity: 0.8 }} />
-                    <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.9, textAlign: 'center' }}>
-                      Add Photo
-                    </span>
-                  </div>
-                )}
-              </div>
+              <>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  style={{ display: 'none' }}
+                  disabled={avatarUploading}
+                />
+                <div
+                  onClick={handlePhotoClick}
+                  style={{
+                    position: 'absolute',
+                    top: avatarConfig.top,
+                    right: avatarConfig.right,
+                    width: avatarConfig.size,
+                    height: avatarConfig.size,
+                    borderRadius: '18px',
+                    overflow: 'hidden',
+                    border: '2px solid var(--glass-border)',
+                    cursor: profile?.avatarUrl ? 'default' : 'pointer',
+                    zIndex: 2,
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
+                    background: 'linear-gradient(135deg, #6366f1, #a78bfa)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'transform 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!profile?.avatarUrl && !avatarUploading) {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!profile?.avatarUrl && !avatarUploading) {
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }
+                  }}
+                >
+                  {avatarUploading ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2px', padding: '5px' }}>
+                      <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.9 }}>
+                        Saving...
+                      </span>
+                    </div>
+                  ) : profile?.avatarUrl ? (
+                    <img src={profile.avatarUrl} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2px', padding: '5px' }}>
+                      <Upload size={16} color="#fff" style={{ opacity: 0.8 }} />
+                      <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.9, textAlign: 'center' }}>
+                        Add Photo
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
 
             <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%', paddingRight: '120px' }}>

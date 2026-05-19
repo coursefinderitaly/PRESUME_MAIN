@@ -676,6 +676,8 @@ const Dashboard = () => {
                 fetchStats={fetchStats}
                 setPendingApplications={setPendingApplications}
                 unreadMsgCount={unreadMsgCount}
+                handleAvatarUpload={handleAvatarUpload}
+                avatarUploading={avatarUploading}
               />
             )}
 
