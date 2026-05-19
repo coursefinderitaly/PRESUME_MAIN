@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    CalendarCheck, Clock, ShieldCheck, GraduationCap, 
+import {
+    CalendarCheck, Clock, ShieldCheck, GraduationCap,
     Briefcase, Plane, Compass, ChevronRight, Sparkles,
     ArrowRight, X, MapPin, Globe, Calendar, User, Mail, Phone,
     CheckCircle2, ChevronLeft
@@ -130,7 +130,7 @@ const AnimatedBg = () => {
             }
 
             // ── Vignette ──
-            const vig = ctx.createRadialGradient(W/2, H/2, H*0.3, W/2, H/2, H*0.85);
+            const vig = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.85);
             vig.addColorStop(0, 'transparent');
             vig.addColorStop(1, 'rgba(3,5,15,0.65)');
             ctx.fillStyle = vig;
@@ -171,41 +171,41 @@ const AppointmentForm = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const consultancyTypes = [
-        { 
-            id: 'study', 
-            label: 'Study Visa Consultancy', 
-            icon: GraduationCap, 
+        {
+            id: 'study',
+            label: 'Study Visa Consultancy',
+            icon: GraduationCap,
             options: [
-                "Germany Visa Consultancy", "Europian Union Visa Consultancy", "Italy Visa Consultancy", 
-                "USA Visa Consultancy", "United Kingdom Visa Consultancy", "Canada Visa Consultancy", 
+                "Germany Visa Consultancy", "Europian Union Visa Consultancy", "Italy Visa Consultancy",
+                "USA Visa Consultancy", "United Kingdom Visa Consultancy", "Canada Visa Consultancy",
                 "Australia Visa Consultancy", "Other Country Visa Consultancy"
             ]
         },
-        { 
-            id: 'work', 
-            label: 'Work Visa Consultancy', 
-            icon: Briefcase, 
+        {
+            id: 'work',
+            label: 'Work Visa Consultancy',
+            icon: Briefcase,
             options: [
-                "Europian Union Visa Consultancy", "Czech Republic Visa Consultancy", "Serbia Visa Consultancy", 
+                "Europian Union Visa Consultancy", "Czech Republic Visa Consultancy", "Serbia Visa Consultancy",
                 "Germany Visa Consultancy", "Other Country Visa Consultancy"
             ]
         },
-        { 
-            id: 'tourist', 
-            label: 'Tourist Visa Consultancy', 
-            icon: Plane, 
+        {
+            id: 'tourist',
+            label: 'Tourist Visa Consultancy',
+            icon: Plane,
             options: [
-                "Europian Union Visa Consultancy", "USA Visa Consultancy", "Canada Visa Consultancy", 
-                "UAE Visa Consultancy", "Malaysia Visa Consultancy", "Japan Visa Consultancy", 
+                "Europian Union Visa Consultancy", "USA Visa Consultancy", "Canada Visa Consultancy",
+                "UAE Visa Consultancy", "Malaysia Visa Consultancy", "Japan Visa Consultancy",
                 "Other Country Visa Consultancy"
             ]
         },
-        { 
-            id: 'program', 
-            label: 'Program Visa Consultancy', 
-            icon: Compass, 
+        {
+            id: 'program',
+            label: 'Program Visa Consultancy',
+            icon: Compass,
             options: [
-                "Norway Visa Consultancy", "Neitherlands Visa Consultancy", "Italy Visa Consultancy", 
+                "Norway Visa Consultancy", "Neitherlands Visa Consultancy", "Italy Visa Consultancy",
                 "France Visa Consultancy", "Germany Visa Consultancy", "Other Country Visa Consultancy"
             ]
         }
@@ -255,7 +255,7 @@ const AppointmentForm = () => {
         try {
             const res = await fetch(`${API_BASE_URL}/appointments/book`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'x-csrf-protected': '1'
                 },
@@ -294,6 +294,9 @@ const AppointmentForm = () => {
     const activeType = consultancyTypes.find(t => t.label === formData.consultancyType);
 
     // Dynamic Calendar Logic
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
     const currentYear = currentDate.getFullYear();
     const currentDaysInMonth = new Date(currentYear, currentDate.getMonth() + 1, 0).getDate();
@@ -301,10 +304,13 @@ const AppointmentForm = () => {
     const startingBlankDays = (firstDayOfMonth + 6) % 7; // Monday = 0
     const blankDaysArray = Array.from({ length: startingBlankDays }, (_, i) => i);
     const daysInMonth = Array.from({ length: currentDaysInMonth }, (_, i) => i + 1);
-    const times = ['09:00 AM', '10:30 AM', '12:00 PM', '02:00 PM', '03:30 PM', '05:00 PM'];
+    const times = ['12:00 PM', '02:00 PM', '03:30 PM', '05:00 PM'];
 
     const handlePrevMonth = () => setCurrentDate(new Date(currentYear, currentDate.getMonth() - 1, 1));
     const handleNextMonth = () => setCurrentDate(new Date(currentYear, currentDate.getMonth() + 1, 1));
+
+    const isPrevMonthDisabled = currentDate.getFullYear() < today.getFullYear() ||
+        (currentDate.getFullYear() === today.getFullYear() && currentDate.getMonth() <= today.getMonth());
 
     const stepVariants = {
         initial: { opacity: 0, y: 16 },
@@ -330,7 +336,7 @@ const AppointmentForm = () => {
 
     return (
         <div className="h-screen bg-[#050810] text-white font-sans flex flex-col relative overflow-hidden">
-            
+
             {/* ── ANIMATED CANVAS BACKGROUND ───────────────────────── */}
             <AnimatedBg />
 
@@ -383,13 +389,12 @@ const AppointmentForm = () => {
                             {/* Step pills */}
                             <div className="flex items-center justify-center gap-1.5 mb-4">
                                 {Object.keys(stepLabel).map((s, i) => (
-                                    <div key={s} className={`h-1 rounded-full transition-all duration-500 ${
-                                        stepIndex[step] > i 
-                                            ? 'bg-amber-400 w-8' 
-                                            : stepIndex[step] === i + 1 
-                                                ? 'bg-amber-400 w-10' 
+                                    <div key={s} className={`h-1 rounded-full transition-all duration-500 ${stepIndex[step] > i
+                                            ? 'bg-amber-400 w-8'
+                                            : stepIndex[step] === i + 1
+                                                ? 'bg-amber-400 w-10'
                                                 : 'bg-white/20 w-6'
-                                    }`} />
+                                        }`} />
                                 ))}
                             </div>
 
@@ -486,30 +491,43 @@ const AppointmentForm = () => {
                                             <div className="flex justify-between items-center mb-3">
                                                 <h4 className="font-black text-sm text-white uppercase tracking-widest">{currentMonth} {currentYear}</h4>
                                                 <div className="flex gap-1.5">
-                                                    <button onClick={handlePrevMonth} className="p-1.5 bg-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-white/20 transition-all">
-                                                        <ChevronLeft size={16}/>
+                                                    <button
+                                                        disabled={isPrevMonthDisabled}
+                                                        onClick={handlePrevMonth}
+                                                        className={`p-1.5 rounded-lg text-gray-300 transition-all ${isPrevMonthDisabled
+                                                                ? 'opacity-20 cursor-not-allowed bg-transparent'
+                                                                : 'bg-white/10 hover:text-white hover:bg-white/20'
+                                                            }`}
+                                                    >
+                                                        <ChevronLeft size={16} />
                                                     </button>
                                                     <button onClick={handleNextMonth} className="p-1.5 bg-white/10 rounded-lg text-gray-300 hover:text-white hover:bg-white/20 transition-all">
-                                                        <ChevronRight size={16}/>
+                                                        <ChevronRight size={16} />
                                                     </button>
                                                 </div>
                                             </div>
                                             <div className="grid grid-cols-7 gap-1 text-center text-[9px] font-bold text-gray-500 mb-1.5 uppercase">
-                                                {['Mo','Tu','We','Th','Fr','Sa','Su'].map(d => <div key={d}>{d}</div>)}
+                                                {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => <div key={d}>{d}</div>)}
                                             </div>
                                             <div className="grid grid-cols-7 gap-1">
                                                 {blankDaysArray.map(d => <div key={`b-${d}`} className="h-8" />)}
-                                                {daysInMonth.map(d => (
-                                                    <button
-                                                        key={d}
-                                                        onClick={() => setFormData(p => ({ ...p, date: `${currentMonth} ${d}, ${currentYear}` }))}
-                                                        className={`h-8 rounded-lg flex items-center justify-center text-xs font-black transition-all ${
-                                                            formData.date === `${currentMonth} ${d}, ${currentYear}`
-                                                                ? 'bg-amber-400 text-black shadow-[0_0_14px_rgba(251,191,36,0.6)] scale-105'
-                                                                : 'hover:bg-white/15 text-white/80 hover:text-white bg-white/5'
-                                                        }`}
-                                                    >{d}</button>
-                                                ))}
+                                                {daysInMonth.map(d => {
+                                                    const cellDate = new Date(currentYear, currentDate.getMonth(), d);
+                                                    const isPast = cellDate < today;
+                                                    return (
+                                                        <button
+                                                            key={d}
+                                                            disabled={isPast}
+                                                            onClick={() => setFormData(p => ({ ...p, date: `${currentMonth} ${d}, ${currentYear}` }))}
+                                                            className={`h-8 rounded-lg flex items-center justify-center text-xs font-black transition-all ${isPast
+                                                                    ? 'opacity-25 cursor-not-allowed text-white/30 bg-transparent'
+                                                                    : formData.date === `${currentMonth} ${d}, ${currentYear}`
+                                                                        ? 'bg-amber-400 text-black shadow-[0_0_14px_rgba(251,191,36,0.6)] scale-105'
+                                                                        : 'hover:bg-white/15 text-white/80 hover:text-white bg-white/5'
+                                                                }`}
+                                                        >{d}</button>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
 
@@ -522,11 +540,10 @@ const AppointmentForm = () => {
                                                         <button
                                                             key={t}
                                                             onClick={() => setFormData(p => ({ ...p, time: t }))}
-                                                            className={`py-2.5 px-3 rounded-xl border text-xs font-black transition-all text-center ${
-                                                                formData.time === t
+                                                            className={`py-2.5 px-3 rounded-xl border text-xs font-black transition-all text-center ${formData.time === t
                                                                     ? 'bg-amber-400 text-black border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.5)]'
                                                                     : 'bg-white/5 border-white/15 text-gray-300 hover:border-white/40 hover:bg-white/10 hover:text-white'
-                                                            }`}
+                                                                }`}
                                                         >{t}</button>
                                                     ))}
                                                 </div>
@@ -566,9 +583,8 @@ const AppointmentForm = () => {
                                                     setFormData(p => ({ ...p, fullname: e.target.value }));
                                                     if (e.target.value) setFormErrors(p => ({ ...p, fullname: '' }));
                                                 }}
-                                                className={`w-full bg-white/[0.06] border rounded-2xl py-4 pl-12 pr-5 text-sm text-white font-semibold focus:outline-none focus:bg-white/[0.1] transition-all placeholder:text-gray-600 ${
-                                                    formErrors.fullname ? 'border-red-500/60' : 'border-white/15 focus:border-amber-400'
-                                                }`}
+                                                className={`w-full bg-white/[0.06] border rounded-2xl py-4 pl-12 pr-5 text-sm text-white font-semibold focus:outline-none focus:bg-white/[0.1] transition-all placeholder:text-gray-600 ${formErrors.fullname ? 'border-red-500/60' : 'border-white/15 focus:border-amber-400'
+                                                    }`}
                                             />
                                             {formErrors.fullname && <p className="text-red-400 text-[10px] font-bold mt-1 ml-1">{formErrors.fullname}</p>}
                                         </div>
@@ -585,9 +601,8 @@ const AppointmentForm = () => {
                                                     const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value);
                                                     setFormErrors(p => ({ ...p, email: valid ? '' : 'Enter a valid email address' }));
                                                 }}
-                                                className={`w-full bg-white/[0.06] border rounded-2xl py-4 pl-12 pr-5 text-sm text-white font-semibold focus:outline-none focus:bg-white/[0.1] transition-all placeholder:text-gray-600 ${
-                                                    formErrors.email ? 'border-red-500/60' : 'border-white/15 focus:border-amber-400'
-                                                }`}
+                                                className={`w-full bg-white/[0.06] border rounded-2xl py-4 pl-12 pr-5 text-sm text-white font-semibold focus:outline-none focus:bg-white/[0.1] transition-all placeholder:text-gray-600 ${formErrors.email ? 'border-red-500/60' : 'border-white/15 focus:border-amber-400'
+                                                    }`}
                                             />
                                             {formErrors.email && <p className="text-red-400 text-[10px] font-bold mt-1 ml-1">{formErrors.email}</p>}
                                         </div>
@@ -637,9 +652,8 @@ const AppointmentForm = () => {
                                                             : '';
                                                         setFormErrors(p => ({ ...p, phone: err }));
                                                     }}
-                                                    className={`flex-1 bg-white/[0.06] border rounded-r-2xl py-4 px-4 text-sm text-white font-semibold focus:outline-none focus:bg-white/[0.1] transition-all placeholder:text-gray-600 ${
-                                                        formErrors.phone ? 'border-red-500/60' : 'border-white/15 focus:border-amber-400'
-                                                    }`}
+                                                    className={`flex-1 bg-white/[0.06] border rounded-r-2xl py-4 px-4 text-sm text-white font-semibold focus:outline-none focus:bg-white/[0.1] transition-all placeholder:text-gray-600 ${formErrors.phone ? 'border-red-500/60' : 'border-white/15 focus:border-amber-400'
+                                                        }`}
                                                 />
                                             </div>
                                             {formErrors.phone && <p className="text-red-400 text-[10px] font-bold ml-1">{formErrors.phone}</p>}
