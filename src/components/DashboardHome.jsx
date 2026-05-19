@@ -6,6 +6,7 @@ import {
   Star, MapPin, Target, BarChart3, ChevronRight, Download, Upload
 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
+import PaymentTestingModal from './PaymentTestingModal';
 
 /* ── Live Clock ── */
 const LiveClock = () => {
@@ -19,11 +20,11 @@ const LiveClock = () => {
 };
 
 /* ── Metric Card ── */
-const MetricCard = ({ icon: Icon, label, value, color, onClick, locked }) => {
+const MetricCard = ({ icon: Icon, label, value, color, onClick, locked, onLockedClick }) => {
   const [hov, setHov] = useState(false);
   return (
     <div
-      onClick={locked ? undefined : onClick}
+      onClick={locked ? onLockedClick : onClick}
       onMouseEnter={() => !locked && setHov(true)}
       onMouseLeave={() => !locked && setHov(false)}
       style={{
@@ -33,7 +34,7 @@ const MetricCard = ({ icon: Icon, label, value, color, onClick, locked }) => {
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         border: `1px solid ${hov ? color + '40' : 'var(--glass-border)'}`,
-        cursor: locked ? 'not-allowed' : onClick ? 'pointer' : 'default',
+        cursor: locked ? 'pointer' : onClick ? 'pointer' : 'default',
         transition: 'all 0.25s ease',
         transform: hov ? 'translateY(-3px)' : 'none',
         boxShadow: hov ? `0 12px 24px -8px ${color}20` : '0 4px 12px rgba(0,0,0,0.05)',
@@ -74,19 +75,18 @@ const MetricCard = ({ icon: Icon, label, value, color, onClick, locked }) => {
 };
 
 /* ── Action Tile ── */
-const ActionTile = ({ icon: Icon, label, sub, color, onClick, locked }) => {
+const ActionTile = ({ icon: Icon, label, sub, color, onClick, locked, onLockedClick }) => {
   const [h, setH] = useState(false);
   return (
     <button
-      onClick={locked ? undefined : onClick}
+      onClick={locked ? onLockedClick : onClick}
       onMouseEnter={() => !locked && setH(true)}
       onMouseLeave={() => !locked && setH(false)}
-      disabled={locked}
       style={{
         display: 'flex', alignItems: 'center', gap: '14px', padding: '16px',
         background: h ? 'var(--glass-highlight)' : 'rgba(255,255,255,0.01)',
         border: h ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)',
-        borderRadius: '16px', cursor: locked ? 'not-allowed' : 'pointer', width: '100%',
+        borderRadius: '16px', cursor: locked ? 'pointer' : 'pointer', width: '100%',
         transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
         textAlign: 'left',
         boxShadow: h ? '0 10px 20px -10px rgba(0,0,0,0.3)' : 'none',
@@ -133,6 +133,7 @@ const ProgressBar = ({ label, value, total, color }) => (
 
 const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiveTab, stats, fetchStats, unreadMsgCount, handleAvatarUpload, avatarUploading }) => {
   const [greeting, setGreeting] = useState('');
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const fileInputRef = useRef(null);
 
   const handlePhotoClick = () => {
@@ -184,10 +185,10 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
 
   const quickActions = [
     { icon: Globe, label: 'Find Courses', sub: 'Explore global programs', color: COLORS.blue, tab: 'course-finder' },
-    { icon: FileText, label: isStudent ? 'My Applications' : 'Applications', sub: 'Track submissions', color: COLORS.purple, tab: isStudent ? 'applications' : 'partner-applications', locked: true },
-    { icon: Building2, label: 'Universities', sub: 'View target institutions', color: COLORS.teal, tab: 'applied-universities', locked: true },
-    { icon: BookOpen, label: 'Learning Hub', sub: 'Access digital resources', color: COLORS.rose, tab: 'learning', locked: true },
-    { icon: Bell, label: 'Notifications', sub: unreadMsgCount > 0 ? `${unreadMsgCount} unread` : 'Recent events', color: COLORS.amber, tab: 'notifications', locked: true },
+    { icon: FileText, label: isStudent ? 'My Applications' : 'Applications', sub: 'Track submissions', color: COLORS.purple, tab: isStudent ? 'applications' : 'partner-applications', locked: isStudent ? !profile?.portalUnlocked : false },
+    { icon: Building2, label: 'Universities', sub: 'View target institutions', color: COLORS.teal, tab: 'applied-universities', locked: isStudent ? !profile?.portalUnlocked : false },
+    { icon: BookOpen, label: 'Learning Hub', sub: 'Access digital resources', color: COLORS.rose, tab: 'learning', locked: isStudent ? !profile?.portalUnlocked : false },
+    { icon: Bell, label: 'Notifications', sub: unreadMsgCount > 0 ? `${unreadMsgCount} unread` : 'Recent events', color: COLORS.amber, tab: 'notifications', locked: isStudent ? !profile?.portalUnlocked : false },
     ...(!isStudent ? [{ icon: Users, label: 'Students', sub: 'Manage pipeline', color: COLORS.indigo, tab: 'students-list' }] : []),
     { icon: GraduationCap, label: 'My Profile', sub: 'Access user settings', color: COLORS.indigo, tab: 'profile' },
   ];
@@ -315,8 +316,8 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
             {isStudent ? (
               <>
                 <MetricCard icon={BookOpen} label="Saved Courses" value={profile?.savedUniversitiesCart?.length || 0} color={COLORS.blue} onClick={() => setActiveTab('course-finder')} />
-                <MetricCard icon={Building2} label="Applied Universities" value={applied} color={COLORS.purple} onClick={() => setActiveTab('applied-universities')} locked />
-                <MetricCard icon={CheckCircle2} label="Documents" value={profile?.documentZip ? 'Uploaded' : 'Pending'} color={COLORS.teal} onClick={() => setActiveTab('applications')} locked />
+                <MetricCard icon={Building2} label="Applied Universities" value={applied} color={COLORS.purple} onClick={() => setActiveTab('applied-universities')} locked={!profile?.portalUnlocked} onLockedClick={() => setPaymentModalOpen(true)} />
+                <MetricCard icon={CheckCircle2} label="Documents" value={profile?.documentZip ? 'Uploaded' : 'Pending'} color={COLORS.teal} onClick={() => setActiveTab('applications')} locked={!profile?.portalUnlocked} onLockedClick={() => setPaymentModalOpen(true)} />
                 <MetricCard icon={Shield} label="Account Status" value="Active" color={COLORS.green} />
               </>
             ) : (
@@ -342,7 +343,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
               </h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', overflowY: 'auto', paddingRight: '4px' }}>
                 {quickActions.map((a, i) => (
-                  <ActionTile key={a.tab} icon={a.icon} label={a.label} sub={a.sub} color={a.color} onClick={() => setActiveTab(a.tab)} locked={a.locked} />
+                  <ActionTile key={a.tab} icon={a.icon} label={a.label} sub={a.sub} color={a.color} onClick={() => setActiveTab(a.tab)} locked={a.locked} onLockedClick={() => setPaymentModalOpen(true)} />
                 ))}
               </div>
             </div>
@@ -456,6 +457,13 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
 
         </div>
       </div>
+      <PaymentTestingModal 
+        isOpen={paymentModalOpen} 
+        onClose={() => setPaymentModalOpen(false)} 
+        onSuccess={(response) => {
+          console.log("Payment Verified", response);
+        }}
+      />
     </div>
   );
 };

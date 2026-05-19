@@ -4,7 +4,7 @@ import {
   Users, Trash2, LogOut, ShieldAlert, Edit2, ChevronLeft, Save, Plus,
   MapPin, Phone, Briefcase, GraduationCap, Building2, UserCircle, KeyRound,
   Database, Server, ShieldCheck, Mail, Sun, Moon, Monitor, Globe, FileText, Unlock, Ban,
-  MessageSquare, Send, X, AlertTriangle, Search, CheckSquare, Calendar
+  MessageSquare, Send, X, AlertTriangle, Search, CheckSquare, Calendar, CreditCard
 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { useTheme } from '../ThemeContext';
@@ -18,6 +18,7 @@ import ApplicationTracking from './ApplicationTracking';
 
 import UniversityDataManagement from './UniversityDataManagement';
 import AppointmentsManagement from './AppointmentsManagement';
+import AdminPayments from './AdminPayments';
 
 
 const AdminPortal = () => {
@@ -740,6 +741,16 @@ const AdminPortal = () => {
             <Calendar size={18} /> Appointments
             {unreadCounts.appointments > 0 && <span className="nav-badge">{unreadCounts.appointments}</span>}
           </button>
+          <button 
+            className={`nav-item ${activeTab === 'payments' ? 'active' : ''}`} 
+            onClick={() => { 
+              setActiveTab('payments'); 
+              cancelEdit(); 
+              if(window.innerWidth<=768) setIsSidebarOpen(false); 
+            }}
+          >
+            <CreditCard size={18} /> Student Payments
+          </button>
         </nav>
         <div style={{ marginTop: 'auto', padding: '0.5rem 0' }}>
           <button 
@@ -817,7 +828,7 @@ const AdminPortal = () => {
         {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: LEDGER TABLE */}
         {/* -------------------------------------------------------------------------------- */}
-        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments') && (
+        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments' && activeTab !== 'payments') && (
           <div className="animate-fade-in" style={{ display: activeTab === 'overview' ? 'flex' : 'block', flexDirection: 'column', flex: activeTab === 'overview' ? 1 : 'none', minHeight: 0 }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexShrink: 0 }}>
               <div>
@@ -1503,6 +1514,15 @@ const AdminPortal = () => {
         {/* -------------------------------------------------------------------------------- */}
         {(!selectedUser && !isAdding && activeTab === 'appointments') && (
           <AppointmentsManagement />
+        )}
+
+        {/* -------------------------------------------------------------------------------- */}
+        {/* VIEW: PAYMENTS                                                                   */}
+        {/* -------------------------------------------------------------------------------- */}
+        {(!selectedUser && !isAdding && activeTab === 'payments') && (
+          <div className="animate-fade-in" style={{ height: 'calc(100vh - 180px)' }}>
+            <AdminPayments />
+          </div>
         )}
 
         {/* -------------------------------------------------------------------------------- */}

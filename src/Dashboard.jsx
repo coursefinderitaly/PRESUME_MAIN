@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import {
   LogOut, User, MapPin, Globe, Phone, Smartphone, Edit2, Save, X,
   Home, Search, Users, Briefcase, FileText, Bell, MonitorPlay, Building2, CheckSquare, KeyRound,
-  Sun, Moon, Monitor, Menu, UploadCloud, MessageSquare, ChevronRight, ChevronLeft, Camera, Trash2
+  Sun, Moon, Monitor, Menu, UploadCloud, MessageSquare, ChevronRight, ChevronLeft, Camera, Trash2, CreditCard
 } from 'lucide-react';
 import './Dashboard.css';
 import { useTheme } from './ThemeContext';
 
 import DashboardHome from './components/DashboardHome';
+import PaymentTestingModal from './components/PaymentTestingModal';
 import StudentsList from './components/StudentsList';
 import ManageCounselors from './components/ManageCounselors';
 import Notifications from './components/Notifications';
@@ -21,6 +22,7 @@ import StudentDetails from './components/StudentDetails';
 import AppliedUniversities from './components/AppliedUniversities';
 import PartnerApplications from './components/PartnerApplications';
 import StudentDocuments from './components/StudentDocuments';
+import PaymentHistory from './components/PaymentHistory';
 import { API_BASE_URL } from './config';
 
 const AnimatedBackground = () => (
@@ -112,6 +114,7 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarLocked, setIsSidebarLocked] = useState(true);
   const [pendingApplications, setPendingApplications] = useState([]);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   // Unread admin messages state (for student floating alert)
   const [unreadMsgCount, setUnreadMsgCount] = useState(0);
@@ -432,22 +435,31 @@ const Dashboard = () => {
       <button
         className={`nav-item ${activeTab === id ? 'active' : ''} ${locked ? 'locked' : ''}`}
         onClick={() => { 
-          if (locked) return;
+          if (locked) {
+            setPaymentModalOpen(true);
+            return;
+          }
           setActiveTab(id); 
           setMessage({ text: '', type: '' }); 
           setEditMode(false); 
         }}
-        disabled={locked}
+        style={{ cursor: 'pointer' }}
       >
         <Icon size={expanded ? 18 : 22} />
         {expanded && <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</span>}
-        {locked && expanded && <span className="badge-soon">SOON</span>}
+        {locked && expanded && <span className="badge-soon" style={{ background: 'rgba(245,158,11,0.2)', color: '#f59e0b', padding: '2px 6px', borderRadius: '4px', fontSize: '0.6rem', fontWeight: 800 }}>LOCKED</span>}
       </button>
     );
   };
 
   return (
     <>
+      <PaymentTestingModal 
+        isOpen={paymentModalOpen} 
+        onClose={() => setPaymentModalOpen(false)} 
+        onSuccess={(response) => console.log('Payment unlocked via sidebar!', response)}
+        userEmail={profile?.email}
+      />
       <AnimatedBackground />
       <div className="dash-universe" style={{ 
         height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'row', 
@@ -521,10 +533,10 @@ const Dashboard = () => {
             {isStudent && (
               <>
                 <NavButton id="course-finder" icon={Search} label="Search Programs" />
-                <NavButton id="applications" icon={FileText} label="Applications" locked />
-                <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" locked />
-                <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" locked />
-                <NavButton id="alerts" icon={Bell} label="Alerts" locked />
+                <NavButton id="applications" icon={FileText} label="Applications" locked={!profile.portalUnlocked} />
+                <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" locked={!profile.portalUnlocked} />
+                <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" locked={!profile.portalUnlocked} />
+                <NavButton id="alerts" icon={Bell} label="Alerts" locked={!profile.portalUnlocked} />
               </>
             )}
 
@@ -536,10 +548,11 @@ const Dashboard = () => {
                 <NavButton id="partner-applications" icon={FileText} label="Applications" locked={(isPartner || isCounselor) && activeTab !== 'partner-applications'} />
                 <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
                 {isPartner && <NavButton id="counselors" icon={Briefcase} label="Manage Team" />}
-                <NavButton id="notifications" icon={Bell} label="Alerts" locked />
+                <NavButton id="notifications" icon={Bell} label="Alerts" locked={!profile.portalUnlocked} />
               </>
             )}
 
+            <NavButton id="payments" icon={CreditCard} label="Billing & Payments" />
             <NavButton id="profile" icon={User} label="Account Profile" />
           </div>
 
@@ -694,6 +707,7 @@ const Dashboard = () => {
             {activeTab === 'counselors' && <ManageCounselors setMessage={setMessage} />}
             {activeTab === 'notifications' && <Notifications profile={profile} />}
             {activeTab === 'learning' && <LearningResources />}
+            {activeTab === 'payments' && <PaymentHistory userEmail={profile?.email} />}
             {activeTab === 'course-finder' && (
               <SearchProgram preselectedUnis={pendingApplications} onProceed={(selected) => { setPendingApplications(selected); if (isPartner || isCounselor || isFreelancer) { setActiveTab('students-list'); } else { setActiveTab('applications'); } }} />
             )}

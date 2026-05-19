@@ -58,7 +58,12 @@ app.use(helmet.hidePoweredBy());
 app.use(helmet.xssFilter());
 app.use(helmet.noSniff());
 
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ 
+  limit: '50mb',
+  verify: (req, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
 app.use(cookieParser());
 
 // Custom CSRF Protection
@@ -101,8 +106,6 @@ app.use('/api/auth/login', authLimiter);
 
 // Database Connection
 const dbUri = process.env.MONGO_URI || process.env.MONGODB_URI || '';
-const maskedUri = dbUri.replace(/:([^@]+)@/, ':****@');
-console.log('Attempting to connect to MongoDB with URI:', maskedUri);
 mongoose.connect(dbUri, { 
   serverSelectionTimeoutMS: 5000,
   family: 4
@@ -111,23 +114,30 @@ mongoose.connect(dbUri, {
   
   // Auto-seed Admin
   try {
-    const User = require('./src/models/User');
-    const bcrypt = require('bcrypt');
-    const hashedPassword = await bcrypt.hash('Admin@778', 10);
-    
-    await User.findOneAndUpdate(
-      { email: 'admin@example.com' },
-      {
-        firstName: 'System',
-        lastName: 'Admin',
-        phone: '0000000000',
-        email: 'admin@example.com',
-        password: hashedPassword,
-        role: 'admin'
-      },
-      { upsert: true, returnDocument: 'after' }
-    );
-    console.log('--- SYSTEM ADMIN CREATED/UPDATED ---');
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminEmail || !adminPassword) {
+      console.log('Admin seeding skipped: ADMIN_EMAIL or ADMIN_PASSWORD not set in environment.');
+    } else {
+      const User = require('./src/models/User');
+      const existing = await User.findOne({ email: adminEmail });
+      
+      if (!existing) {
+        const bcrypt = require('bcrypt');
+        const hashedPassword = await bcrypt.hash(adminPassword, 10);
+        
+        await User.create({
+          firstName: 'System',
+          lastName: 'Admin',
+          phone: '0000000000',
+          email: adminEmail,
+          password: hashedPassword,
+          role: 'admin'
+        });
+        console.log('--- SYSTEM ADMIN INITIALIZED ---');
+      }
+    }
   } catch (err) {
     console.log('Admin seeding skipped:', err.message);
   }
@@ -145,6 +155,7 @@ app.use('/api/sheets', require('./src/routes/sheets'));
 app.use('/api/contact', require('./src/routes/contact'));
 app.use('/api/ai', require('./src/routes/ai'));
 app.use('/api/appointments', require('./src/routes/appointments'));
+app.use('/api/payment', require('./src/routes/payment'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'up', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });

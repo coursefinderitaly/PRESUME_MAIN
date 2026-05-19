@@ -11,7 +11,7 @@ function withAuth(handler) {
         return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
       }
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
       // Attach user to request object
       request.user = decoded;
@@ -35,7 +35,7 @@ function withRoles(allowedRoles, handler) {
         return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
       }
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
       if (!allowedRoles.includes(decoded.role)) {
         return NextResponse.json({ error: 'Access forbidden: insufficient permissions' }, { status: 403 });

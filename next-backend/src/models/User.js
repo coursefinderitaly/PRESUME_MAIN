@@ -153,7 +153,10 @@ const UserSchema = new mongoose.Schema({
   loginAttempts: { type: Number, default: 0 },
   lockUntil: { type: Date },
   isBlocked: { type: Boolean, default: false },
-  adminViewed: { type: Boolean, default: false }
+  adminViewed: { type: Boolean, default: false },
+
+  // Payment-based Portal Access
+  portalUnlocked: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

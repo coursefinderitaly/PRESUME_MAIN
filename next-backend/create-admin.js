@@ -1,10 +1,18 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, 'next-backend', '.env') });
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 async function run() {
   try {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminEmail || !adminPassword) {
+      console.error('Error: ADMIN_EMAIL and ADMIN_PASSWORD must be defined in the .env file.');
+      process.exit(1);
+    }
+
     console.log('Connecting to MongoDB...');
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected!');
@@ -22,13 +30,13 @@ async function run() {
     const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
     // Generate hashed password
-    const hashedPassword = await bcrypt.hash('Admin@123', 10);
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
     const adminData = {
       firstName: 'Admin',
       lastName: 'User',
       phone: '1234567890',
-      email: 'admin@example.com',
+      email: adminEmail,
       password: hashedPassword,
       role: 'admin'
     };
