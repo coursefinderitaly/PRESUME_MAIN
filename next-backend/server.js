@@ -30,6 +30,13 @@ function installIfNeeded() {
     const backendDir = __dirname;
     const nodeBin = process.argv[0];
     const nodeDir = path.dirname(nodeBin);
+
+    // Inject node binary dir into PATH so postinstall scripts (e.g. @firebase/util)
+    // that call bare `node` can find it on Hostinger where it's not globally available.
+    const envWithNode = {
+      ...process.env,
+      PATH: `${nodeDir}:${process.env.PATH || ''}`,
+    };
     
     const npmPaths = [
       'npm',
@@ -49,7 +56,7 @@ function installIfNeeded() {
           command = `"${npmPath}" install --production --no-audit --no-fund`;
         }
         console.log(`Running install command: ${command} in ${backendDir}`);
-        execSync(command, { cwd: backendDir, stdio: 'inherit' });
+        execSync(command, { cwd: backendDir, stdio: 'inherit', env: envWithNode });
         success = true;
         console.log('--- NPM INSTALL COMPLETED SUCCESSFULLY ---');
         break;
