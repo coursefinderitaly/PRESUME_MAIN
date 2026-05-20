@@ -906,7 +906,6 @@ const AdminPortal = () => {
             </header>
 
             {activeTab === 'overview' && (
-              <>
               <div className="admin-stats-grid" style={{ gap: '20px', marginBottom: '20px', flexShrink: 0 }}>
                 <div className="glass-panel" style={{ padding: '20px', textAlign: 'center' }}>
                   <div style={{ color: 'var(--accent-secondary)', fontSize: '2.5rem', fontWeight: 800 }}>{stats.total}</div>
@@ -925,84 +924,6 @@ const AdminPortal = () => {
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Partners</div>
                 </div>
               </div>
-
-              {/* ── Website Traffic Overview ── */}
-              <div style={{ background: 'linear-gradient(135deg, rgba(6,182,212,0.06), rgba(139,92,246,0.06))', border: '1px solid rgba(6,182,212,0.2)', borderRadius: '16px', padding: '22px 24px', marginBottom: '20px', flexShrink: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Globe2 size={20} color="#06b6d4" />
-                    <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-main)' }}>Website Traffic</span>
-                    {visitorsLoading && <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>loading…</span>}
-                  </div>
-                  <button
-                    onClick={() => { setActiveTab('visitors'); fetchVisitors(); cancelEdit(); }}
-                    style={{ background: 'rgba(6,182,212,0.1)', color: '#06b6d4', border: '1px solid rgba(6,182,212,0.25)', padding: '6px 14px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <Activity size={13} /> View Full Analytics →
-                  </button>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px', marginBottom: '22px' }}>
-                  {[
-                    { label: 'Today',      value: visitorStats.todayCount,  color: '#06b6d4' },
-                    { label: 'This Week',  value: visitorStats.weekCount,   color: '#8b5cf6' },
-                    { label: 'This Month', value: visitorStats.monthCount,  color: '#f59e0b' },
-                    { label: 'All Time',   value: visitorStats.total,       color: '#10b981' },
-                  ].map(s => (
-                    <div key={s.label} style={{ textAlign: 'center', background: 'var(--card-bg-solid)', borderRadius: '12px', padding: '14px 10px', border: '1px solid var(--glass-border)' }}>
-                      <div style={{ fontSize: '1.9rem', fontWeight: 800, color: s.color, lineHeight: 1 }}>{visitorsLoading ? '…' : s.value}</div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: '6px' }}>{s.label}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Recent Visitors Mini-Table */}
-                <div style={{ background: 'var(--card-bg-solid)', borderRadius: '12px', border: '1px solid var(--glass-border)', overflow: 'hidden' }}>
-                  <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--glass-border)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Recent Visitors</div>
-                  {visitorsLoading ? (
-                    <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Loading…</div>
-                  ) : visitors.length === 0 ? (
-                    <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                      <Globe2 size={24} style={{ opacity: 0.2, marginBottom: '8px', display: 'block', margin: '0 auto 8px' }} />
-                      No visitors yet. Visit the website to start tracking.
-                    </div>
-                  ) : (
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
-                      <thead>
-                        <tr style={{ background: 'var(--table-header-bg)' }}>
-                          {['Time', 'IP', 'Location', 'Browser', 'Device', 'Page'].map(h => (
-                            <th key={h} style={{ padding: '8px 14px', color: '#a1a1aa', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.8px', fontWeight: 600, textAlign: 'left', whiteSpace: 'nowrap' }}>{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {visitors.slice(0, 8).map((v, i) => (
-                          <tr key={i} style={{ borderTop: '1px solid var(--glass-border)' }}>
-                            <td style={{ padding: '8px 14px', color: 'var(--text-muted)', whiteSpace: 'nowrap', fontSize: '0.78rem' }}>
-                              {new Date(v.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                              <span style={{ display: 'block', fontSize: '0.68rem', opacity: 0.7 }}>{new Date(v.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
-                            </td>
-                            <td style={{ padding: '8px 14px', fontFamily: 'monospace', color: '#06b6d4', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>{v.ip}</td>
-                            <td style={{ padding: '8px 14px' }}>
-                              <span style={{ color: 'var(--text-main)', fontWeight: 500 }}>{v.country || '—'}</span>
-                              {v.city && <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem', display: 'block' }}>{v.city}</span>}
-                            </td>
-                            <td style={{ padding: '8px 14px', color: 'var(--text-muted)' }}>{v.browser}</td>
-                            <td style={{ padding: '8px 14px' }}>
-                              <span style={{
-                                background: v.device === 'Mobile' ? 'rgba(139,92,246,0.12)' : 'rgba(16,185,129,0.12)',
-                                color: v.device === 'Mobile' ? '#a78bfa' : '#34d399',
-                                padding: '2px 8px', borderRadius: '12px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase'
-                              }}>{v.device || 'Desktop'}</span>
-                            </td>
-                            <td style={{ padding: '8px 14px', color: 'var(--text-muted)', fontFamily: 'monospace', fontSize: '0.75rem' }}>{v.page}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-                </div>
-              </div>
-              </>
             )}
 
             {activeTab !== 'overview' && (
