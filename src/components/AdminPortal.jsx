@@ -4,7 +4,8 @@ import {
   Users, Trash2, LogOut, ShieldAlert, Edit2, ChevronLeft, Save, Plus,
   MapPin, Phone, Briefcase, GraduationCap, Building2, UserCircle, KeyRound,
   Database, Server, ShieldCheck, Mail, Sun, Moon, Monitor, Globe, FileText, Unlock, Ban,
-  MessageSquare, Send, X, AlertTriangle, Search, CheckSquare, Calendar, CreditCard
+  MessageSquare, Send, X, AlertTriangle, Search, CheckSquare, Calendar, CreditCard,
+  Globe2, Activity, RefreshCw, Smartphone
 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { useTheme } from '../ThemeContext';
@@ -47,6 +48,13 @@ const AdminPortal = () => {
   const [chatSearchTerm, setChatSearchTerm] = useState('');
   const [docDeleteConfirm, setDocDeleteConfirm] = useState({ isOpen: false, filename: null });
   const [chatClearConfirm, setChatClearConfirm] = useState({ isOpen: false, studentId: null, studentName: '' });
+
+  // Visitor Analytics state
+  const [visitors, setVisitors] = useState([]);
+  const [visitorStats, setVisitorStats] = useState({ total: 0, todayCount: 0, weekCount: 0, monthCount: 0 });
+  const [visitorsLoading, setVisitorsLoading] = useState(false);
+  const [visitorSearch, setVisitorSearch] = useState('');
+  const [visitorClearConfirm, setVisitorClearConfirm] = useState(false);
 
   const [chats, setChats] = useState([]);
   const [chatsLoading, setChatsLoading] = useState(false);
@@ -253,9 +261,48 @@ const AdminPortal = () => {
     }
   };
 
+  const fetchVisitors = async () => {
+    setVisitorsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/visitors?limit=200`, { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setVisitors(data.visitors || []);
+        setVisitorStats({ total: data.total || 0, todayCount: data.todayCount || 0, weekCount: data.weekCount || 0, monthCount: data.monthCount || 0 });
+      }
+    } catch (err) {
+      console.error('[fetchVisitors]', err);
+    }
+    setVisitorsLoading(false);
+  };
+
+  const clearVisitorLogs = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/visitors/clear`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { 'x-csrf-protected': '1' }
+      });
+      if (res.ok) {
+        setVisitors([]);
+        setVisitorStats({ total: 0, todayCount: 0, weekCount: 0, monthCount: 0 });
+        setVisitorClearConfirm(false);
+      }
+    } catch (err) {
+      console.error('[clearVisitorLogs]', err);
+    }
+  };
+
   useEffect(() => {
     checkAdminAccess();
   }, []);
+
+  // Auto-fetch visitor stats when viewing overview or visitors tab
+  useEffect(() => {
+    if (activeTab === 'overview' || activeTab === 'visitors') {
+      fetchVisitors();
+    }
+  }, [activeTab]);
 
   // Poll for new notifications every 20 seconds
   useEffect(() => {
@@ -751,6 +798,12 @@ const AdminPortal = () => {
           >
             <CreditCard size={18} /> Student Payments
           </button>
+          <button
+            className={`nav-item ${activeTab === 'visitors' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('visitors'); fetchVisitors(); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}
+          >
+            <Globe2 size={18} /> Visitor Analytics
+          </button>
         </nav>
         <div style={{ marginTop: 'auto', padding: '0.5rem 0' }}>
           <button 
@@ -800,7 +853,7 @@ const AdminPortal = () => {
           </div>
         </div>
 
-        <div data-lenis-prevent style={{ padding: '1.5rem 2rem', flex: 1, overflowY: activeTab === 'overview' ? 'hidden' : 'auto', display: activeTab === 'overview' ? 'flex' : 'block', flexDirection: 'column' }}>
+        <div data-lenis-prevent style={{ padding: '1.5rem 2rem', flex: 1, overflowY: 'auto', display: 'block' }}>
 
         {viewingStudentProfile ? (
           <div className="animate-fade-in" style={{ background: 'var(--card-bg-solid)', padding: '20px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-lg)' }}>
@@ -828,8 +881,8 @@ const AdminPortal = () => {
         {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: LEDGER TABLE */}
         {/* -------------------------------------------------------------------------------- */}
-        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments' && activeTab !== 'payments') && (
-          <div className="animate-fade-in" style={{ display: activeTab === 'overview' ? 'flex' : 'block', flexDirection: 'column', flex: activeTab === 'overview' ? 1 : 'none', minHeight: 0 }}>
+        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments' && activeTab !== 'payments' && activeTab !== 'visitors') && (
+          <div className="animate-fade-in">
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexShrink: 0 }}>
               <div>
                 <h1 style={{ color: 'var(--text-main)', fontSize: '1.6rem', margin: '0 0 8px 0', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -853,6 +906,7 @@ const AdminPortal = () => {
             </header>
 
             {activeTab === 'overview' && (
+              <>
               <div className="admin-stats-grid" style={{ gap: '20px', marginBottom: '20px', flexShrink: 0 }}>
                 <div className="glass-panel" style={{ padding: '20px', textAlign: 'center' }}>
                   <div style={{ color: 'var(--accent-secondary)', fontSize: '2.5rem', fontWeight: 800 }}>{stats.total}</div>
@@ -871,6 +925,84 @@ const AdminPortal = () => {
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Partners</div>
                 </div>
               </div>
+
+              {/* ── Website Traffic Overview ── */}
+              <div style={{ background: 'linear-gradient(135deg, rgba(6,182,212,0.06), rgba(139,92,246,0.06))', border: '1px solid rgba(6,182,212,0.2)', borderRadius: '16px', padding: '22px 24px', marginBottom: '20px', flexShrink: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Globe2 size={20} color="#06b6d4" />
+                    <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-main)' }}>Website Traffic</span>
+                    {visitorsLoading && <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>loading…</span>}
+                  </div>
+                  <button
+                    onClick={() => { setActiveTab('visitors'); fetchVisitors(); cancelEdit(); }}
+                    style={{ background: 'rgba(6,182,212,0.1)', color: '#06b6d4', border: '1px solid rgba(6,182,212,0.25)', padding: '6px 14px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <Activity size={13} /> View Full Analytics →
+                  </button>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px', marginBottom: '22px' }}>
+                  {[
+                    { label: 'Today',      value: visitorStats.todayCount,  color: '#06b6d4' },
+                    { label: 'This Week',  value: visitorStats.weekCount,   color: '#8b5cf6' },
+                    { label: 'This Month', value: visitorStats.monthCount,  color: '#f59e0b' },
+                    { label: 'All Time',   value: visitorStats.total,       color: '#10b981' },
+                  ].map(s => (
+                    <div key={s.label} style={{ textAlign: 'center', background: 'var(--card-bg-solid)', borderRadius: '12px', padding: '14px 10px', border: '1px solid var(--glass-border)' }}>
+                      <div style={{ fontSize: '1.9rem', fontWeight: 800, color: s.color, lineHeight: 1 }}>{visitorsLoading ? '…' : s.value}</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: '6px' }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Recent Visitors Mini-Table */}
+                <div style={{ background: 'var(--card-bg-solid)', borderRadius: '12px', border: '1px solid var(--glass-border)', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--glass-border)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Recent Visitors</div>
+                  {visitorsLoading ? (
+                    <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Loading…</div>
+                  ) : visitors.length === 0 ? (
+                    <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      <Globe2 size={24} style={{ opacity: 0.2, marginBottom: '8px', display: 'block', margin: '0 auto 8px' }} />
+                      No visitors yet. Visit the website to start tracking.
+                    </div>
+                  ) : (
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                      <thead>
+                        <tr style={{ background: 'var(--table-header-bg)' }}>
+                          {['Time', 'IP', 'Location', 'Browser', 'Device', 'Page'].map(h => (
+                            <th key={h} style={{ padding: '8px 14px', color: '#a1a1aa', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.8px', fontWeight: 600, textAlign: 'left', whiteSpace: 'nowrap' }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {visitors.slice(0, 8).map((v, i) => (
+                          <tr key={i} style={{ borderTop: '1px solid var(--glass-border)' }}>
+                            <td style={{ padding: '8px 14px', color: 'var(--text-muted)', whiteSpace: 'nowrap', fontSize: '0.78rem' }}>
+                              {new Date(v.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                              <span style={{ display: 'block', fontSize: '0.68rem', opacity: 0.7 }}>{new Date(v.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                            </td>
+                            <td style={{ padding: '8px 14px', fontFamily: 'monospace', color: '#06b6d4', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>{v.ip}</td>
+                            <td style={{ padding: '8px 14px' }}>
+                              <span style={{ color: 'var(--text-main)', fontWeight: 500 }}>{v.country || '—'}</span>
+                              {v.city && <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem', display: 'block' }}>{v.city}</span>}
+                            </td>
+                            <td style={{ padding: '8px 14px', color: 'var(--text-muted)' }}>{v.browser}</td>
+                            <td style={{ padding: '8px 14px' }}>
+                              <span style={{
+                                background: v.device === 'Mobile' ? 'rgba(139,92,246,0.12)' : 'rgba(16,185,129,0.12)',
+                                color: v.device === 'Mobile' ? '#a78bfa' : '#34d399',
+                                padding: '2px 8px', borderRadius: '12px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase'
+                              }}>{v.device || 'Desktop'}</span>
+                            </td>
+                            <td style={{ padding: '8px 14px', color: 'var(--text-muted)', fontFamily: 'monospace', fontSize: '0.75rem' }}>{v.page}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </div>
+              </>
             )}
 
             {activeTab !== 'overview' && (
@@ -885,8 +1017,6 @@ const AdminPortal = () => {
 
             {activeTab === 'partner_students' ? (
               <PartnerDirectoryBrowser users={users} onStudentClick={(u) => setViewingStudentProfile(u)} />
-            ) : activeTab === 'overview' ? (
-              <SystemHierarchy users={users} onStudentClick={(u) => setViewingStudentProfile(u)} />
             ) : activeTab === 'data_management' ? (
               <UniversityDataManagement />
             ) : (
@@ -1522,6 +1652,168 @@ const AdminPortal = () => {
         {(!selectedUser && !isAdding && activeTab === 'payments') && (
           <div className="animate-fade-in" style={{ height: 'calc(100vh - 180px)' }}>
             <AdminPayments />
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------------------------- */}
+        {/* VIEW: VISITOR ANALYTICS                                                          */}
+        {/* -------------------------------------------------------------------------------- */}
+        {(!selectedUser && !isAdding && activeTab === 'visitors') && (
+          <div className="animate-fade-in" style={{ height: 'calc(100vh - 180px)', overflowY: 'auto', padding: '0 2px' }}>
+            <div style={{ background: 'var(--card-bg-solid)', padding: '24px', borderRadius: '20px', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-xl)' }}>
+
+              {/* Header */}
+              <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
+                <div>
+                  <h1 style={{ color: 'var(--text-main)', fontSize: '1.6rem', margin: '0 0 8px 0', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Globe2 size={28} color="#06b6d4" /> Visitor Analytics
+                  </h1>
+                  <p style={{ color: 'var(--text-muted)', margin: 0 }}>Real-time website visitor intelligence. Every public page visit is logged here.</p>
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    onClick={fetchVisitors}
+                    style={{ background: 'var(--input-bg)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '0.85rem' }}
+                  >
+                    <RefreshCw size={15} /> Refresh
+                  </button>
+                  <button
+                    onClick={() => setVisitorClearConfirm(true)}
+                    style={{ background: 'rgba(239,68,68,0.08)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '0.85rem' }}
+                  >
+                    <Trash2 size={15} /> Clear Logs
+                  </button>
+                </div>
+              </header>
+
+              {/* Stat Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '16px', marginBottom: '28px' }}>
+                {[
+                  { label: 'Today',      value: visitorStats.todayCount,  color: '#06b6d4', bg: 'rgba(6,182,212,0.08)',    border: 'rgba(6,182,212,0.2)' },
+                  { label: 'This Week',  value: visitorStats.weekCount,   color: '#8b5cf6', bg: 'rgba(139,92,246,0.08)',   border: 'rgba(139,92,246,0.2)' },
+                  { label: 'This Month', value: visitorStats.monthCount,  color: '#f59e0b', bg: 'rgba(245,158,11,0.08)',   border: 'rgba(245,158,11,0.2)' },
+                  { label: 'All Time',   value: visitorStats.total,       color: '#10b981', bg: 'rgba(16,185,129,0.08)',   border: 'rgba(16,185,129,0.2)' },
+                ].map(stat => (
+                  <div key={stat.label} style={{ background: stat.bg, border: `1px solid ${stat.border}`, borderRadius: '14px', padding: '18px 20px' }}>
+                    <div style={{ color: stat.color, fontSize: '2.2rem', fontWeight: 800, lineHeight: 1 }}>
+                      {visitorsLoading ? '…' : stat.value}
+                    </div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '8px' }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Search */}
+              <div style={{ marginBottom: '16px' }}>
+                <input
+                  type="text"
+                  placeholder="Search by IP, country, city, browser, OS…"
+                  value={visitorSearch}
+                  onChange={e => setVisitorSearch(e.target.value)}
+                  style={{ background: 'var(--input-bg)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', padding: '10px 16px', borderRadius: '8px', width: '100%', outline: 'none', fontSize: '0.9rem', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              {/* Visitor Table */}
+              {visitorsLoading ? (
+                <div style={{ padding: '60px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <Activity size={32} style={{ opacity: 0.3, marginBottom: '12px', display: 'block', margin: '0 auto 12px' }} />
+                  Loading visitor data…
+                </div>
+              ) : (
+                <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+                    <thead style={{ background: 'var(--table-header-bg)', borderBottom: '1px solid var(--glass-border)' }}>
+                      <tr>
+                        {['Time', 'IP Address', 'Location', 'Browser / OS', 'Device', 'Page', 'Referrer'].map(h => (
+                          <th key={h} style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visitors
+                        .filter(v => {
+                          if (!visitorSearch) return true;
+                          const q = visitorSearch.toLowerCase();
+                          return (
+                            (v.ip || '').toLowerCase().includes(q) ||
+                            (v.country || '').toLowerCase().includes(q) ||
+                            (v.city || '').toLowerCase().includes(q) ||
+                            (v.browser || '').toLowerCase().includes(q) ||
+                            (v.os || '').toLowerCase().includes(q) ||
+                            (v.page || '').toLowerCase().includes(q)
+                          );
+                        })
+                        .map((v, idx) => (
+                          <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.15s' }}
+                            onMouseOver={e => e.currentTarget.style.background = 'rgba(6,182,212,0.03)'}
+                            onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                          >
+                            <td style={{ padding: '10px 16px', whiteSpace: 'nowrap' }}>
+                              <div style={{ color: 'var(--text-main)', fontWeight: 500 }}>{new Date(v.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{new Date(v.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
+                            </td>
+                            <td style={{ padding: '10px 16px', fontFamily: 'monospace', color: '#06b6d4', whiteSpace: 'nowrap' }}>{v.ip}</td>
+                            <td style={{ padding: '10px 16px' }}>
+                              <div style={{ color: 'var(--text-main)', fontWeight: 500 }}>{v.country || '—'}</div>
+                              <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>{[v.city, v.regionName].filter(Boolean).join(', ') || ''}</div>
+                              {v.isp && <div style={{ color: 'var(--text-muted)', fontSize: '0.72rem', opacity: 0.7 }}>{v.isp}</div>}
+                            </td>
+                            <td style={{ padding: '10px 16px' }}>
+                              <div style={{ color: 'var(--text-main)' }}>{v.browser}</div>
+                              <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>{v.os}</div>
+                            </td>
+                            <td style={{ padding: '10px 16px' }}>
+                              <span style={{
+                                background: v.device === 'Mobile' ? 'rgba(139,92,246,0.12)' : v.device === 'Tablet' ? 'rgba(245,158,11,0.12)' : 'rgba(16,185,129,0.12)',
+                                color: v.device === 'Mobile' ? '#a78bfa' : v.device === 'Tablet' ? '#fbbf24' : '#34d399',
+                                border: `1px solid ${v.device === 'Mobile' ? 'rgba(139,92,246,0.3)' : v.device === 'Tablet' ? 'rgba(245,158,11,0.3)' : 'rgba(16,185,129,0.3)'}`,
+                                padding: '3px 10px', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap'
+                              }}>{v.device || 'Desktop'}</span>
+                            </td>
+                            <td style={{ padding: '10px 16px', color: 'var(--text-muted)', fontFamily: 'monospace', fontSize: '0.8rem' }}>{v.page}</td>
+                            <td style={{ padding: '10px 16px', color: 'var(--text-muted)', fontSize: '0.8rem', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {!v.referrer || v.referrer === 'Direct' ? (
+                                <span style={{ color: '#10b981', fontWeight: 600 }}>Direct</span>
+                              ) : (
+                                <span title={v.referrer}>{v.referrer}</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      }
+                      {visitors.filter(v => {
+                        if (!visitorSearch) return true;
+                        const q = visitorSearch.toLowerCase();
+                        return (v.ip||'').toLowerCase().includes(q)||(v.country||'').toLowerCase().includes(q)||(v.city||'').toLowerCase().includes(q)||(v.browser||'').toLowerCase().includes(q)||(v.os||'').toLowerCase().includes(q)||(v.page||'').toLowerCase().includes(q);
+                      }).length === 0 && (
+                        <tr><td colSpan="7" style={{ padding: '60px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                          <Globe2 size={40} style={{ margin: '0 auto 15px', opacity: 0.15, display: 'block' }} />
+                          {visitorSearch ? 'No visitors match your search.' : 'No visitors recorded yet. Visit the website to generate data.'}
+                        </td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Clear Confirm Dialog */}
+              {visitorClearConfirm && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ background: 'var(--bg-secondary)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '16px', padding: '28px', maxWidth: '420px', width: '90%' }}>
+                    <h3 style={{ color: '#ef4444', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><AlertTriangle size={20} /> Clear All Visitor Logs</h3>
+                    <p style={{ color: 'var(--text-muted)', margin: '0 0 24px 0', lineHeight: 1.6 }}>
+                      This will permanently delete all <strong style={{ color: 'var(--text-main)' }}>{visitorStats.total}</strong> visitor records. This action cannot be undone.
+                    </p>
+                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                      <button onClick={() => setVisitorClearConfirm(false)} style={{ padding: '10px 20px', background: 'var(--input-bg)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
+                      <button onClick={clearVisitorLogs} style={{ padding: '10px 20px', background: 'rgba(239,68,68,0.15)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.4)', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Yes, Clear All</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
           </div>
         )}
 

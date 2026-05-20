@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from './LandingPage';
 import Dashboard from './Dashboard';
 import AdminPortal from './components/AdminPortal';
@@ -16,18 +16,49 @@ import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
 import NotFound from './components/NotFound';
+import { API_BASE_URL } from './config';
 
 import './index.css';
 
 import AuthModal from './components/AuthModal';
-
 import ErrorBoundary from './components/ErrorBoundary';
+
+// ── Silent visitor tracker — fires once per unique page visit per session tab ─
+function VisitorTracker() {
+  const location = useLocation();
+  const trackedPaths = useRef(new Set());
+
+  useEffect(() => {
+    const path = location.pathname;
+
+    // Skip admin and dashboard routes — don't count admin/logged-in browsing
+    if (path.startsWith('/admin') || path.startsWith('/dashboard')) return;
+
+    // Deduplicate: only track each path once per browser tab session
+    if (trackedPaths.current.has(path)) return;
+    trackedPaths.current.add(path);
+
+    // Fire-and-forget — never block the UI
+    try {
+      const referrer = document.referrer || 'Direct';
+      fetch(`${API_BASE_URL}/visitors`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: path, referrer }),
+        keepalive: true, // survives page unload
+      }).catch(() => {}); // silently ignore network errors
+    } catch (_) {}
+  }, [location.pathname]);
+
+  return null;
+}
 
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
         <Router>
+          <VisitorTracker />
           <SmoothScrollLayout>
             <ScrollToTop />
 
