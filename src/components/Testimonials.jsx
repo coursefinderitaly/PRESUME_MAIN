@@ -5,19 +5,19 @@ import { Play, X } from 'lucide-react';
 const videos = [
   { 
     id: 'ghr4xUI5dac', 
-    title: 'Study in Italy - Student Success Story', 
+    title: 'Apple Academy Program', 
     thumbnail: 'https://img.youtube.com/vi/ghr4xUI5dac/maxresdefault.jpg',
     fallbackThumbnail: 'https://img.youtube.com/vi/ghr4xUI5dac/hqdefault.jpg',
   },
   { 
     id: '9GFZaJxoOzs', 
-    title: 'Work Visa Experience - Germany', 
+    title: 'How to Apply and Benefits Italian Scholarship in Italy', 
     thumbnail: 'https://img.youtube.com/vi/9GFZaJxoOzs/maxresdefault.jpg',
     fallbackThumbnail: 'https://img.youtube.com/vi/9GFZaJxoOzs/hqdefault.jpg',
   },
   { 
     id: 'B61Skf27U-8', 
-    title: 'Presume Overseas - Student Testimonial', 
+    title: 'Getting Admission in the Italian Universities', 
     thumbnail: 'https://img.youtube.com/vi/B61Skf27U-8/maxresdefault.jpg',
     fallbackThumbnail: 'https://img.youtube.com/vi/B61Skf27U-8/hqdefault.jpg',
   },
@@ -95,12 +95,13 @@ const VideoCard = ({ vid, index }) => {
               <iframe
                 width="100%"
                 height="100%"
-                src={`https://www.youtube.com/embed/${vid.id}?autoplay=1&rel=0&origin=${window.location.origin}`}
+                src={`https://www.youtube-nocookie.com/embed/${vid.id}?autoplay=1&rel=0`}
                 title={vid.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full"
+                referrerPolicy="strict-origin-when-cross-origin"
               ></iframe>
               <button
                 onClick={() => setIsPlaying(false)}

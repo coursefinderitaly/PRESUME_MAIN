@@ -69,14 +69,16 @@ export const DELETE = withRoles(['admin', 'partner'], async function (request, {
     await dbConnect();
     const { studentId } = await params;
 
-    const student = await User.findOneAndDelete({ _id: studentId, role: 'student' });
+    const student = await User.findOneAndUpdate(
+      { _id: studentId, role: 'student' },
+      { isDeleted: true, deletedAt: new Date() },
+      { new: true }
+    );
     if (!student) {
       return NextResponse.json({ error: 'Student not found' }, { status: 404 });
     }
 
-    await Application.deleteMany({ _id: { $in: student.applications } });
-
-    return NextResponse.json({ message: 'Student removed successfully' });
+    return NextResponse.json({ message: 'Student moved to trash successfully' });
   } catch (err) {
     console.error('[DELETE /api/erp/students/:studentId]', err);
     return NextResponse.json({ error: 'Failed to delete student' }, { status: 500 });

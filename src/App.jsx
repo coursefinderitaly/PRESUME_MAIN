@@ -29,10 +29,38 @@ function VisitorTracker() {
   const trackedPaths = useRef(new Set());
 
   useEffect(() => {
-    const path = location.pathname;
+    let path = location.pathname;
 
-    // Skip admin and dashboard routes — don't count admin/logged-in browsing
-    if (path.startsWith('/admin') || path.startsWith('/dashboard')) return;
+    // Normalize: strip trailing slash (except for absolute root '/')
+    if (path.length > 1 && path.endsWith('/')) {
+      path = path.slice(0, -1);
+    }
+
+    // Skip admin, dashboard, and login routes — don't count admin/logged-in browsing or logins
+    if (path.startsWith('/admin') || path.startsWith('/dashboard') || path === '/login') return;
+
+    // Define all currently available/valid frontend routes on the website
+    const VALID_PATHS = new Set([
+      '/',
+      '/study-in-italy',
+      '/study-in-australia',
+      '/study-in-canada',
+      '/study-in-france',
+      '/study-in-germany',
+      '/study-in-ireland',
+      '/study-in-uk',
+      '/study-in-usa',
+      '/partner-registration',
+      '/book-appointment',
+      '/contact',
+      '/our-story',
+      '/apple-academy'
+    ]);
+
+    // If page is not in our active pages, default track it as '/' root
+    if (!VALID_PATHS.has(path)) {
+      path = '/';
+    }
 
     // Deduplicate: only track each path once per browser tab session
     if (trackedPaths.current.has(path)) return;

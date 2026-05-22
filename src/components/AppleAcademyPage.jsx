@@ -23,7 +23,7 @@ import tuwaiqLogo from '../unilogo/tuwaiq.png';
 // Apple logo as clean SVG
 const AppleLogo = ({ size = 64 }) => (
   <svg width={size} height={size * 1.2} viewBox="0 0 100 120" fill="currentColor">
-    <path d="M75.3 63.1c-.1-10.2 8.3-15.1 8.7-15.4-4.7-6.9-12.1-7.9-14.8-8-6.3-.6-12.3 3.7-15.5 3.7-3.2 0-8.1-3.6-13.3-3.5-6.8.1-13.1 4-16.6 10-7.1 12.3-1.8 30.6 5.1 40.6 3.4 4.9 7.4 10.4 12.7 10.2 5.1-.2 7-3.3 13.2-3.3 6.1 0 7.8 3.3 13.2 3.2 5.5-.1 9-5 12.4-9.9 3.9-5.6 5.5-11.1 5.6-11.4-.1-.1-10.7-4.2-10.7-16.2zM64.4 32.7c2.8-3.4 4.7-8.2 4.2-12.9-4.1.2-9 2.7-11.9 6.1-2.6 3-4.9 7.9-4.3 12.5 4.6.4 9.2-2.4 12-5.7z"/>
+    <path d="M75.3 63.1c-.1-10.2 8.3-15.1 8.7-15.4-4.7-6.9-12.1-7.9-14.8-8-6.3-.6-12.3 3.7-15.5 3.7-3.2 0-8.1-3.6-13.3-3.5-6.8.1-13.1 4-16.6 10-7.1 12.3-1.8 30.6 5.1 40.6 3.4 4.9 7.4 10.4 12.7 10.2 5.1-.2 7-3.3 13.2-3.3 6.1 0 7.8 3.3 13.2 3.2 5.5-.1 9-5 12.4-9.9 3.9-5.6 5.5-11.1 5.6-11.4-.1-.1-10.7-4.2-10.7-16.2zM64.4 32.7c2.8-3.4 4.7-8.2 4.2-12.9-4.1.2-9 2.7-11.9 6.1-2.6 3-4.9 7.9-4.3 12.5 4.6.4 9.2-2.4 12-5.7z" />
   </svg>
 );
 
@@ -362,24 +362,24 @@ const AppleAcademyPage = () => {
                 <div className="absolute top-[-50%] right-[-50%] w-[100%] h-[100%] bg-cyan-500/10 blur-[100px] pointer-events-none group-hover:bg-cyan-500/20 transition-all duration-700"></div>
 
                 <div className="flex items-center gap-3 mb-10 relative z-10">
-                   <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                     <Rocket size={20} className="text-cyan-400" />
-                   </div>
-                   <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">Selection Process</h3>
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                    <Rocket size={20} className="text-cyan-400" />
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">Selection Process</h3>
                 </div>
 
                 <div className="flex flex-col relative mb-10 ml-2">
                   {/* Vertical Line with glowing gradient */}
                   <div className="absolute left-[27px] top-[30px] bottom-[30px] w-[2px] bg-gradient-to-b from-cyan-400/80 via-blue-500/50 to-purple-500/20 z-0"></div>
-                  
+
                   {[
-                    { title: 'Application', desc: 'Submit your profile and basic details.', icon: <FileText size={20}/>, color: 'text-cyan-400', border: 'border-cyan-400/50', bg: 'bg-cyan-500/10' },
-                    { title: 'Online Test', desc: '60-minute automated logic & coding assessment.', icon: <Code size={20}/>, color: 'text-blue-400', border: 'border-blue-400/50', bg: 'bg-blue-500/10' },
-                    { title: 'Interview', desc: 'Technical & behavioral discussion with Apple mentors.', icon: <Globe size={20}/>, color: 'text-indigo-400', border: 'border-indigo-400/50', bg: 'bg-indigo-500/10' },
-                    { title: 'Enrollment', desc: 'Welcome to the Apple Developer Academy.', icon: <Award size={20}/>, color: 'text-purple-400', border: 'border-purple-400/50', bg: 'bg-purple-500/10' }
+                    { title: 'Application', desc: 'Submit your profile and basic details.', icon: <FileText size={20} />, color: 'text-cyan-400', border: 'border-cyan-400/50', bg: 'bg-cyan-500/10' },
+                    { title: 'Online Test', desc: '60-minute automated logic & coding assessment.', icon: <Code size={20} />, color: 'text-blue-400', border: 'border-blue-400/50', bg: 'bg-blue-500/10' },
+                    { title: 'Interview', desc: 'Technical & behavioral discussion with Apple mentors.', icon: <Globe size={20} />, color: 'text-indigo-400', border: 'border-indigo-400/50', bg: 'bg-indigo-500/10' },
+                    { title: 'Enrollment', desc: 'Welcome to the Apple Developer Academy.', icon: <Award size={20} />, color: 'text-purple-400', border: 'border-purple-400/50', bg: 'bg-purple-500/10' }
                   ].map((step, i) => (
-                    <motion.div 
-                      key={i} 
+                    <motion.div
+                      key={i}
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
@@ -387,8 +387,8 @@ const AppleAcademyPage = () => {
                       className="flex items-start gap-6 relative z-10 pb-10 last:pb-0 group/step"
                     >
                       <div className={`w-14 h-14 shrink-0 rounded-2xl bg-[#030712] border-2 ${step.border} flex items-center justify-center ${step.color} shadow-[0_0_20px_rgba(0,0,0,0.5)] group-hover/step:scale-110 transition-transform duration-300 relative`}>
-                         <div className={`absolute inset-0 ${step.bg} rounded-xl blur-md -z-10 opacity-0 group-hover/step:opacity-100 transition-opacity`}></div>
-                         {step.icon}
+                        <div className={`absolute inset-0 ${step.bg} rounded-xl blur-md -z-10 opacity-0 group-hover/step:opacity-100 transition-opacity`}></div>
+                        {step.icon}
                       </div>
                       <div className="flex-1 pt-2">
                         <span className="text-xl font-black uppercase text-white tracking-widest">{step.title}</span>
@@ -417,12 +417,12 @@ const AppleAcademyPage = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-             <img src={pastedImage} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 1" />
-             <img src={pastedImage2} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 2" />
-             <img src={pastedImage3} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 3" />
-             <img src={pastedImage4} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 4" />
-             <img src={pastedImage5} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 5" />
-             <img src={pastedImage6} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 6" />
+            <img src={pastedImage} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 1" />
+            <img src={pastedImage2} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 2" />
+            <img src={pastedImage3} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 3" />
+            <img src={pastedImage4} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 4" />
+            <img src={pastedImage5} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 5" />
+            <img src={pastedImage6} className="w-full h-64 object-cover rounded-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] transition-transform duration-500" alt="Success Story 6" />
           </div>
         </section>
 
@@ -466,7 +466,7 @@ const AppleAcademyPage = () => {
             onClick={() => setModalOpen({ type: 'signup', role: 'student' })}
             className="relative z-10 px-10 py-4 rounded-full bg-white text-black font-black tracking-wider text-sm flex items-center gap-3 mx-auto group"
           >
-            Apply Now — It's Free
+            Apply Now
             <MoveRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </motion.section>

@@ -15,7 +15,7 @@ router.use(auth);
 router.get('/stats', checkRole(['admin', 'partner', 'counselor', 'freelancer']), async (req, res) => {
   try {
     const currentUser = await User.findById(req.user.id);
-    let studentQuery = { role: 'student' };
+    let studentQuery = { role: 'student', isDeleted: { $ne: true } };
     
     if (currentUser && currentUser.role === 'partner') {
       studentQuery.registeredBy = currentUser._id;
@@ -190,7 +190,7 @@ router.get('/students', checkRole(['admin', 'partner', 'counselor', 'freelancer'
     const currentUser = await User.findById(req.user.id);
     const { country, state, isAssigned } = req.query;
     
-    let query = { role: 'student' };
+    let query = { role: 'student', isDeleted: { $ne: true } };
     
     // Visibility Scoping
     if (currentUser && currentUser.role === 'partner') {
@@ -332,16 +332,17 @@ router.put('/students/:id', async (req, res) => {
   }
 });
 
-// Delete Student
+// Delete Student (Soft Delete)
 router.delete('/students/:id', checkRole(['admin', 'partner']), async (req, res) => {
   try {
-    const student = await User.findOneAndDelete({ _id: req.params.id, role: 'student' });
+    const student = await User.findOneAndUpdate(
+      { _id: req.params.id, role: 'student' },
+      { isDeleted: true, deletedAt: new Date() },
+      { new: true }
+    );
     if (!student) return res.status(404).json({ error: "Student not found" });
 
-    // Assuming we should also delete from Application (if applicable later)
-    await Application.deleteMany({ _id: { $in: student.applications }});
-
-    res.json({ message: "Student removed successfully" });
+    res.json({ message: "Student moved to trash successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to delete student" });

@@ -156,7 +156,11 @@ const UserSchema = new mongoose.Schema({
   adminViewed: { type: Boolean, default: false },
 
   // Payment-based Portal Access
-  portalUnlocked: { type: Boolean, default: false }
+  portalUnlocked: { type: Boolean, default: false },
+
+  // Soft Delete Fields
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: { type: Date }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
       $or: [{ email: identifier }, { phone: identifier }] 
     });
     
-    if (!user) return res.status(400).json({ error: "User not found" });
+    if (!user || user.isDeleted) return res.status(400).json({ error: "User not found" });
     
     // Enforce Block Status
     if (user.isBlocked) {

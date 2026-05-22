@@ -5,7 +5,7 @@ import {
   MapPin, Phone, Briefcase, GraduationCap, Building2, UserCircle, KeyRound,
   Database, Server, ShieldCheck, Mail, Sun, Moon, Monitor, Globe, FileText, Unlock, Ban,
   MessageSquare, Send, X, AlertTriangle, Search, CheckSquare, Calendar, CreditCard,
-  Globe2, Activity, RefreshCw, Smartphone
+  Globe2, Activity, RefreshCw, Smartphone, Download
 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { useTheme } from '../ThemeContext';
@@ -16,6 +16,7 @@ import SystemHierarchy from './SystemHierarchy';
 import PartnerDirectoryBrowser from './PartnerDirectoryBrowser';
 import SearchableSelect from './SearchableSelect';
 import ApplicationTracking from './ApplicationTracking';
+import * as XLSX from 'xlsx';
 
 import UniversityDataManagement from './UniversityDataManagement';
 import AppointmentsManagement from './AppointmentsManagement';
@@ -41,6 +42,8 @@ const AdminPortal = () => {
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, action: null, targetId: null });
   const [viewingStudentProfile, setViewingStudentProfile] = useState(null);
   const [selectedApp, setSelectedApp] = useState(null);
+  const [trashUsers, setTrashUsers] = useState([]);
+  const [trashLoading, setTrashLoading] = useState(false);
   
   const [documents, setDocuments] = useState([]);
   const [documentsLoading, setDocumentsLoading] = useState(false);
@@ -514,13 +517,66 @@ const AdminPortal = () => {
         });
       if (res.ok) {
         setUsers(users.filter(u => u._id !== id));
-        setMessage({ text: 'Entity permanently erased from database.', type: 'success' });
+        setMessage({ text: 'Account successfully moved to the trash.', type: 'success' });
         if (selectedUser && selectedUser._id === id) cancelEdit();
       } else {
-        setMessage({ text: 'Failed to erase entity', type: 'error' });
+        setMessage({ text: 'Failed to delete account', type: 'error' });
       }
     } catch (err) {
       setMessage({ text: 'Server error during deletion', type: 'error' });
+    }
+  };
+
+  const fetchTrashUsers = async () => {
+    setTrashLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/admin/users/trash/all`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (res.ok) setTrashUsers(data);
+    } catch (err) {
+      console.error(err);
+      setMessage({ text: 'Failed to synchronize Trash records', type: 'error' });
+    }
+    setTrashLoading(false);
+  };
+
+  const handleRestoreUser = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/admin/users/${id}/restore`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        setMessage({ text: 'Account successfully restored to active directory.', type: 'success' });
+        fetchUsers();
+        fetchTrashUsers();
+      } else {
+        setMessage({ text: 'Failed to restore account', type: 'error' });
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage({ text: 'Server error restoring account', type: 'error' });
+    }
+  };
+
+  const handlePermanentDelete = async (id) => {
+    if (!window.confirm("CRITICAL WARNING: This will permanently erase this account and all associated data from the core database. This action CANNOT be undone. Proceed?")) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/admin/users/${id}/permanent`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        setMessage({ text: 'Account permanently obliterated from database.', type: 'success' });
+        fetchTrashUsers();
+      } else {
+        setMessage({ text: 'Failed to permanently erase account', type: 'error' });
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage({ text: 'Server error during permanent erasure', type: 'error' });
     }
   };
 
@@ -583,6 +639,149 @@ const AdminPortal = () => {
   const handleLogout = async () => {
     await fetch(`${API_BASE_URL}/auth/logout`, { method: "POST", credentials: "include" }).catch(()=>{});
     navigate('/');
+  };
+
+  const handleDownloadExcel = () => {
+    const wsData = [];
+    const addEmptyRow = () => wsData.push([]);
+
+    const directStudents = users.filter(u => u.role === 'student' && !u.registeredBy && !u.createdByCounselor);
+    const partners = users.filter(u => u.role === 'partner');
+    const freelancers = users.filter(u => u.role === 'freelancer');
+
+    // 1. DIRECT STUDENTS
+    wsData.push(["=== DIRECT STUDENTS ==="]);
+    wsData.push(["Full Name", "Email Address", "Phone Number", "Access Level", "Registration Date"]);
+    if (directStudents.length > 0) {
+      directStudents.forEach(u => {
+        wsData.push([`${u.firstName || ''} ${u.lastName || ''}`.trim(), u.email || '', u.phone || '', 'Direct Student', u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : '']);
+      });
+    } else {
+      wsData.push(["No direct students found."]);
+    }
+    addEmptyRow();
+    addEmptyRow();
+
+    // 2. PARTNERS
+    wsData.push(["=== PARTNERS & THEIR STUDENTS ==="]);
+    if (partners.length > 0) {
+      partners.forEach(p => {
+        const partnerName = p.companyName ? `${p.companyName} (${p.firstName || ''} ${p.lastName || ''})` : `${p.firstName || ''} ${p.lastName || ''}`;
+        wsData.push([`[PARTNER] ${partnerName}`, `Email: ${p.email || 'N/A'}`, `Phone: ${p.phone || 'N/A'}`, `Joined: ${p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-IN') : ''}`]);
+        
+        const pStudents = users.filter(u => u.role === 'student' && u.registeredBy && (u.registeredBy === p._id || u.registeredBy === p.studentUniqueId));
+        if (pStudents.length > 0) {
+          wsData.push(["", "Student Full Name", "Student Email", "Student Phone", "Access Level", "Registration Date"]);
+          pStudents.forEach(stu => {
+            wsData.push(["", `${stu.firstName || ''} ${stu.lastName || ''}`.trim(), stu.email || '', stu.phone || '', 'Partner Student', stu.createdAt ? new Date(stu.createdAt).toLocaleDateString('en-IN') : '']);
+          });
+        } else {
+          wsData.push(["", "No students registered under this partner yet."]);
+        }
+        addEmptyRow();
+      });
+    } else {
+      wsData.push(["No partners found."]);
+    }
+    addEmptyRow();
+
+    // 3. FREELANCERS / COUNSELORS
+    wsData.push(["=== FREELANCERS & THEIR STUDENTS ==="]);
+    if (freelancers.length > 0) {
+      freelancers.forEach(c => {
+        wsData.push([`[FREELANCER] ${c.firstName || ''} ${c.lastName || ''}`, `Email: ${c.email || 'N/A'}`, `Phone: ${c.phone || 'N/A'}`, `Joined: ${c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-IN') : ''}`]);
+        
+        const cStudents = users.filter(u => u.role === 'student' && u.createdByCounselor && ((typeof u.createdByCounselor === 'string' && u.createdByCounselor === c._id) || (typeof u.createdByCounselor === 'object' && u.createdByCounselor._id === c._id)));
+        if (cStudents.length > 0) {
+          wsData.push(["", "Student Full Name", "Student Email", "Student Phone", "Access Level", "Registration Date"]);
+          cStudents.forEach(stu => {
+            wsData.push(["", `${stu.firstName || ''} ${stu.lastName || ''}`.trim(), stu.email || '', stu.phone || '', 'Freelancer Student', stu.createdAt ? new Date(stu.createdAt).toLocaleDateString('en-IN') : '']);
+          });
+        } else {
+          wsData.push(["", "No students registered under this freelancer yet."]);
+        }
+        addEmptyRow();
+      });
+    } else {
+      wsData.push(["No freelancers found."]);
+    }
+
+    // Flat list of All Students Sheet
+    const activeStudents = users.filter(u => u.role === 'student');
+    const studentsSheetData = [
+      ["S.No", "Full Name", "Email Address", "Phone Number", "Access Level", "Registered By / Owner", "Total Applications", "Registration Date"]
+    ];
+
+    activeStudents.forEach((stu, idx) => {
+      const partnerId = stu.registeredBy;
+      const partner = partnerId ? users.find(p => p.role === 'partner' && (p._id === partnerId || p.studentUniqueId === partnerId)) : null;
+      const partnerName = partner ? (partner.companyName || `${partner.firstName} ${partner.lastName || ''}`.trim()) : (partnerId || '');
+      
+      const counselorId = typeof stu.createdByCounselor === 'string' ? stu.createdByCounselor : (stu.createdByCounselor?._id || null);
+      const counselor = counselorId ? users.find(c => c._id === counselorId) : null;
+      const counselorName = counselor ? `${counselor.firstName} ${counselor.lastName || ''}`.trim() : '';
+
+      let level = 'Direct Student';
+      let owner = '-';
+      if (partnerId) {
+        level = 'Partner Student';
+        owner = partnerName;
+      } else if (counselorId) {
+        level = 'Freelancer Student';
+        owner = counselorName;
+      }
+
+      const totalApps = (stu.appliedUniversities || []).filter(app => app && typeof app === 'object' && app.id).length;
+      const regDate = stu.createdAt ? new Date(stu.createdAt).toLocaleDateString('en-IN') : '';
+
+      studentsSheetData.push([
+        idx + 1,
+        `${stu.firstName || ''} ${stu.lastName || ''}`.trim(),
+        stu.email || '',
+        stu.phone || '',
+        level,
+        owner,
+        totalApps,
+        regDate
+      ]);
+    });
+
+    const workbook = XLSX.utils.book_new();
+
+    // Add Flat Students Sheet first
+    const wsStudents = XLSX.utils.aoa_to_sheet(studentsSheetData);
+    wsStudents['!cols'] = [
+      { wch: 8 },  // S.No
+      { wch: 30 }, // Full Name
+      { wch: 35 }, // Email Address
+      { wch: 20 }, // Phone Number
+      { wch: 20 }, // Access Level
+      { wch: 30 }, // Registered By
+      { wch: 18 }, // Total Applications
+      { wch: 20 }, // Registration Date
+    ];
+    XLSX.utils.book_append_sheet(workbook, wsStudents, "All Students Database");
+
+    // Add Structured Directory Sheet second
+    const wsDirectory = XLSX.utils.aoa_to_sheet(wsData);
+    wsDirectory['!cols'] = [
+      { wch: 38 }, 
+      { wch: 35 }, 
+      { wch: 35 }, 
+      { wch: 20 }, 
+      { wch: 20 }, 
+    ];
+    XLSX.utils.book_append_sheet(workbook, wsDirectory, "Structured Directory");
+
+    // Generate filename dynamically replacing "downlaoddate" with current formatted date
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    const formattedDate = `${dd}_${mm}_${yyyy}`;
+    
+    // Write out the file
+    XLSX.writeFile(workbook, `Presume_${formattedDate}.xlsx`);
   };
 
   const filteredUsers = useMemo(() => {
@@ -804,6 +1003,12 @@ const AdminPortal = () => {
           >
             <Globe2 size={18} /> Visitor Analytics
           </button>
+          <button
+            className={`nav-item ${activeTab === 'trash' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('trash'); fetchTrashUsers(); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}
+          >
+            <Trash2 size={18} /> Trash / Restorations
+          </button>
         </nav>
         <div style={{ marginTop: 'auto', padding: '0.5rem 0' }}>
           <button 
@@ -844,6 +1049,11 @@ const AdminPortal = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            {/* EXPORT DATA BUTTON */}
+            <button onClick={handleDownloadExcel} style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '8px 14px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.4)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)'; }}>
+              <Download size={15} /> Export Students Data
+            </button>
+
             {/* Theme Toggle Group */}
             <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '4px', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
               <button onClick={() => setTheme('light')} style={{ background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }} title="Light Mode"><Sun size={14} /></button>
@@ -881,7 +1091,7 @@ const AdminPortal = () => {
         {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: LEDGER TABLE */}
         {/* -------------------------------------------------------------------------------- */}
-        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments' && activeTab !== 'payments' && activeTab !== 'visitors') && (
+        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments' && activeTab !== 'payments' && activeTab !== 'visitors' && activeTab !== 'trash') && (
           <div className="animate-fade-in">
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexShrink: 0 }}>
               <div>
@@ -1092,6 +1302,125 @@ const AdminPortal = () => {
               </table>
             </div>
             )}
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------------------------- */}
+        {/* VIEW: TRASH LEDGER */}
+        {/* -------------------------------------------------------------------------------- */}
+        {(!selectedUser && !isAdding && activeTab === 'trash') && (
+          <div className="animate-fade-in">
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexShrink: 0 }}>
+              <div>
+                <h1 style={{ color: 'var(--text-main)', fontSize: '1.6rem', margin: '0 0 8px 0', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <Trash2 size={24} color="#ef4444" /> Trash & Recoveries
+                </h1>
+                <p style={{ color: 'var(--text-muted)', margin: 0 }}>Restore accounts that were deleted by mistake, or permanently wipe them from the active directory.</p>
+              </div>
+
+              <button 
+                onClick={fetchTrashUsers} 
+                style={{ background: 'var(--input-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}
+              >
+                <Server size={14} /> Refresh Trash
+              </button>
+            </header>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', padding: '0 5px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600 }}>
+                <Trash2 size={18} color="#ef4444" />
+                Showing <span style={{ color: 'var(--text-main)', fontWeight: 800 }}>{trashUsers.length}</span> Soft-Deleted Accounts
+              </div>
+            </div>
+
+            <div className="data-table-wrapper" style={{ background: 'var(--card-bg-solid)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflowX: 'auto', boxShadow: 'var(--shadow-lg)' }}>
+              {trashLoading ? (
+                <div style={{ padding: '50px 30px', textAlign: 'center', color: '#a1a1aa' }}>
+                  <div className="animate-spin" style={{ display: 'inline-block', width: '24px', height: '24px', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--accent-primary)', borderRadius: '50%' }}></div>
+                  <div style={{ marginTop: '15px' }}>Synchronizing Trash Ledger...</div>
+                </div>
+              ) : (
+                <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
+                  <thead style={{ background: 'var(--table-header-bg)', borderBottom: '1px solid var(--glass-border)' }}>
+                    <tr>
+                      <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Entity Name</th>
+                      <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Identifiers</th>
+                      <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Role</th>
+                      <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Deleted At</th>
+                      <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600, textAlign: 'right' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {trashUsers.map(u => (
+                      <tr key={u._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'background 0.2s' }}>
+                        <td style={{ padding: '12px 16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #71717a, #3f3f46)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#fff', fontSize: '0.9rem' }}>
+                              {u.firstName ? u.firstName.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <div style={{ textAlign: 'left' }}>
+                              <div style={{ color: 'var(--text-main)', fontWeight: 600, fontSize: '0.95rem' }}>
+                                {u.firstName} {u.lastName}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                              <Mail size={12} /> {u.email}
+                            </div>
+                            {u.phone && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                <Phone size={12} /> {u.phone}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
+                          <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '12px', fontWeight: 700, textTransform: 'uppercase', background: u.role === 'admin' ? 'rgba(239, 68, 68, 0.15)' : u.role === 'partner' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(59, 130, 246, 0.15)', color: u.role === 'admin' ? '#f87171' : u.role === 'partner' ? '#34d399' : '#60a5fa', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            {u.role}
+                          </span>
+                        </td>
+                        <td style={{ padding: '12px 16px', verticalAlign: 'middle', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                            <Calendar size={12} /> {u.deletedAt ? new Date(u.deletedAt).toLocaleString('en-IN') : 'N/A'}
+                          </div>
+                        </td>
+                        <td style={{ padding: '12px 16px', verticalAlign: 'middle', textAlign: 'right' }}>
+                          <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                            <button 
+                              onClick={() => handleRestoreUser(u._id)}
+                              style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', transition: 'all 0.2s' }}
+                              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(16, 185, 129, 0.25)'; }}
+                              onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(16, 185, 129, 0.15)'; }}
+                            >
+                              <RefreshCw size={12} /> Restore
+                            </button>
+                            <button 
+                              onClick={() => handlePermanentDelete(u._id)}
+                              style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', transition: 'all 0.2s' }}
+                              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.25)'; }}
+                              onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'; }}
+                            >
+                              <Trash2 size={12} /> Erase
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {trashUsers.length === 0 && (
+                      <tr>
+                        <td colSpan="5" style={{ padding: '50px 30px', textAlign: 'center', color: '#a1a1aa' }}>
+                          <Trash2 size={40} style={{ margin: '0 auto 15px auto', opacity: 0.2 }} />
+                          <div>No soft-deleted records found. Trash is empty.</div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         )}
 

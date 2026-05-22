@@ -10,7 +10,7 @@ router.use(auth, checkRole(['admin']));
 // GET all users (students, partners, and other admins)
 router.get('/users', async (req, res) => {
   try {
-    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    const users = await User.find({ isDeleted: { $ne: true } }).select('-password').sort({ createdAt: -1 });
     res.json(users);
   } catch (err) {
     console.error(err);
@@ -77,15 +77,50 @@ router.put('/users/:id', async (req, res) => {
   }
 });
 
-// DELETE user
+// DELETE user (Soft Delete)
 router.delete('/users/:id', async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findByIdAndUpdate(req.params.id, { isDeleted: true, deletedAt: new Date() });
     if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json({ message: 'User deleted successfully' });
+    res.json({ message: 'User moved to trash successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error deleting user' });
+  }
+});
+
+// GET all users in trash
+router.get('/users/trash/all', async (req, res) => {
+  try {
+    const users = await User.find({ isDeleted: true }).select('-password').sort({ deletedAt: -1 });
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error fetching trash users' });
+  }
+});
+
+// RESTORE user from trash
+router.post('/users/:id/restore', async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, { isDeleted: false, deletedAt: null });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'User restored successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error restoring user' });
+  }
+});
+
+// PERMANENT DELETE user
+router.delete('/users/:id/permanent', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'User permanently deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error deleting user permanently' });
   }
 });
 
@@ -223,7 +258,7 @@ router.delete('/users/:studentId/applications/:appId', async (req, res) => {
 router.get('/chats', async (req, res) => {
   try {
     const students = await User.find(
-      { role: 'student' },
+      { role: 'student', isDeleted: { $ne: true } },
       'firstName lastName email adminMessages'
     ).sort({ updatedAt: -1 });
 
@@ -260,7 +295,7 @@ router.get('/chats', async (req, res) => {
 // GET total unread count for admin (for polling notification badge)
 router.get('/chats/unread-count', async (req, res) => {
   try {
-    const students = await User.find({ role: 'student' }, 'adminMessages');
+    const students = await User.find({ role: 'student', isDeleted: { $ne: true } }, 'adminMessages');
     let total = 0;
     students.forEach(s => {
       (s.adminMessages || []).forEach(m => {
@@ -409,13 +444,13 @@ router.get('/unread-summary', async (req, res) => {
     const unreadApplications = await Application.countDocuments({ adminViewed: { $ne: true } });
     
     // 4. Direct Students (student role and adminViewed false)
-    const unreadDirectStudents = await User.countDocuments({ role: 'student', adminViewed: { $ne: true } });
+    const unreadDirectStudents = await User.countDocuments({ role: 'student', isDeleted: { $ne: true }, adminViewed: { $ne: true } });
     
     // 5. Freelancers (freelancer role and adminViewed false)
-    const unreadFreelancers = await User.countDocuments({ role: 'freelancer', adminViewed: { $ne: true } });
+    const unreadFreelancers = await User.countDocuments({ role: 'freelancer', isDeleted: { $ne: true }, adminViewed: { $ne: true } });
 
     // 6. Chats (already handled but good to have here too)
-    const students = await User.find({ role: 'student' }, 'adminMessages');
+    const students = await User.find({ role: 'student', isDeleted: { $ne: true } }, 'adminMessages');
     let unreadChats = 0;
     students.forEach(s => {
       (s.adminMessages || []).forEach(m => {
@@ -448,7 +483,7 @@ router.post('/mark-category-read', async (req, res) => {
     if (category === 'applications') {
       await Application.updateMany({ adminViewed: { $ne: true } }, { adminViewed: true });
     } else if (category === 'direct_students') {
-      await User.updateMany({ role: 'student', adminViewed: { $ne: true } }, { adminViewed: true });
+      await User.updateMany({ role: 'student', isDeleted: { $ne: true }, adminViewed: { $ne: true } }, { adminViewed: true });
     } else if (category === 'freelancers') {
       await User.updateMany({ role: 'freelancer', adminViewed: { $ne: true } }, { adminViewed: true });
     } else if (category === 'appointments') {
