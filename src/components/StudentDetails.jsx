@@ -29,6 +29,9 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
   const [hasAttachmentsWarning, setHasAttachmentsWarning] = useState(false);
   const [showNoDocsError, setShowNoDocsError] = useState(false);
   const [expandedUniIds, setExpandedUniIds] = useState([]);
+  const [razorpayOrderId, setRazorpayOrderId] = useState('');
+  const [paymentError, setPaymentError] = useState(null);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [selectedForApplication, setSelectedForApplication] = useState(() => {
     let initial = [];
     if (student.savedUniversitiesCart && student.savedUniversitiesCart.length > 0) {
@@ -219,6 +222,35 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
       ...prev,
       workExperience: [...prev.workExperience, { organisationName: '', position: '', jobProfile: '', modeOfSalary: '', startDate: '', endDate: '', currentlyWorkingHere: false }]
     }));
+  };
+
+  const handleProceedToPayment = async () => {
+    try {
+      setIsCreatingOrder(true);
+      setPaymentError(null);
+      
+      const response = await fetch(`${API_BASE_URL}/payment/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+        body: JSON.stringify({
+          itemId: 'application_fee',
+          userEmail: student.email || ''
+        })
+      });
+      
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to create application fee order');
+      }
+      
+      setRazorpayOrderId(data.order.id);
+      setIsPaymentPending(true);
+    } catch (err) {
+      console.error('Failed to create payment order:', err);
+      alert('Could not initialize payment transaction. Please try again.');
+    } finally {
+      setIsCreatingOrder(false);
+    }
   };
 
   const handleFinalSubmit = async () => {
@@ -1418,7 +1450,13 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                 isOpen={true}
                 onClose={() => setIsPaymentPending(false)}
                 amount="29,900"
+                razorpayOrderId={razorpayOrderId}
+                userEmail={student.email}
                 onPaymentSuccess={handleFinalSubmit}
+                onPaymentFailure={(reason) => {
+                  setPaymentError(reason);
+                  setIsPaymentPending(false);
+                }}
               />
             ) : (
               <div style={{ background: 'var(--card-bg-solid)', backdropFilter: 'blur(40px)', width: '92%', maxWidth: '1400px', height: '90vh', borderRadius: '24px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 30px 60px -12px rgba(0, 0, 0, 0.5)', border: '1px solid var(--glass-border)', position: 'relative' }}>
@@ -1561,11 +1599,17 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                       </button>
                       <button
                         type="button"
-                        onClick={() => setIsPaymentPending(true)}
+                        disabled={isCreatingOrder}
+                        onClick={handleProceedToPayment}
                         className="btn-save"
-                        style={{ padding: '14px 45px', fontSize: '1.05rem', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 900, letterSpacing: '0.5px', boxShadow: '0 8px 12px -3px rgba(16, 185, 129, 0.25)' }}
+                        style={{ padding: '14px 45px', fontSize: '1.05rem', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 900, letterSpacing: '0.5px', boxShadow: '0 8px 12px -3px rgba(16, 185, 129, 0.25)', opacity: isCreatingOrder ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: '8px' }}
                       >
-                        PROCEED TO PAYMENT
+                        {isCreatingOrder ? (
+                          <>
+                            <div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+                            INITIALIZING...
+                          </>
+                        ) : 'PROCEED TO PAYMENT'}
                       </button>
                     </div>
                   </>
@@ -1588,6 +1632,43 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                 )}
               </div>
             )}
+          </div>,
+          document.body
+        )}
+
+        {paymentError && createPortal(
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100001, backdropFilter: 'blur(12px)', animation: 'fadeIn 0.3s ease' }}>
+            <div style={{ background: 'var(--card-bg-solid)', backdropFilter: 'blur(40px)', width: '92%', maxWidth: '550px', borderRadius: '24px', padding: '40px', textAlign: 'center', boxShadow: '0 30px 60px -12px rgba(0, 0, 0, 0.5)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ fontSize: '6.5rem', marginBottom: '20px', filter: 'drop-shadow(0 0 30px rgba(239, 68, 68, 0.35))' }}>❌</div>
+              <h1 style={{ fontSize: '2.4rem', marginBottom: '12px', fontWeight: 950, color: 'var(--text-main)', letterSpacing: '-0.5px' }}>Payment Failed!</h1>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '28px', maxWidth: '420px', lineHeight: 1.6 }}>
+                Your transaction for the Application Processing Fee could not be completed.
+              </p>
+              
+              <div style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.25)', padding: '16px 24px', borderRadius: '12px', color: '#f87171', fontSize: '0.92rem', marginBottom: '32px', fontWeight: 700, width: '100%' }}>
+                Reason: {paymentError}
+              </div>
+              
+              <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
+                <button
+                  onClick={() => {
+                    setPaymentError(null);
+                    setIsPaymentPending(true);
+                  }}
+                  className="btn-save"
+                  style={{ flex: 1, padding: '14px', fontSize: '1rem', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)' }}
+                >
+                  RETRY PAYMENT
+                </button>
+                <button
+                  onClick={() => setPaymentError(null)}
+                  className="btn-save"
+                  style={{ flex: 1, padding: '14px', fontSize: '1rem', background: 'var(--input-bg)', color: 'var(--text-muted)', border: '1px solid var(--glass-border)', borderRadius: '12px', fontWeight: 700, cursor: 'pointer' }}
+                >
+                  CLOSE
+                </button>
+              </div>
+            </div>
           </div>,
           document.body
         )}

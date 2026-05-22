@@ -9,6 +9,7 @@ const User = require('../models/User');
 const itemDatabase = {
   'test_item_1': { name: 'Premium Access Unlock', price_inr: 1 },
   'premium_access': { name: 'Premium Access', price_inr: 999 },
+  'application_fee': { name: 'Application Processing Fee', price_inr: 29900 },
 };
 
 // 1. Create Order
@@ -204,6 +205,40 @@ router.post('/webhook', async (req, res) => {
   } catch (error) {
     console.error('Webhook error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 7. Update simulated or real payment status (success or failure)
+router.post('/update-status', async (req, res) => {
+  try {
+    const { razorpayOrderId, razorpayPaymentId, status, failureReason } = req.body;
+    if (!razorpayOrderId || !status) {
+      return res.status(400).json({ error: 'razorpayOrderId and status are required' });
+    }
+
+    const payment = await Payment.findOneAndUpdate(
+      { razorpayOrderId },
+      { status, razorpayPaymentId, failureReason },
+      { new: true }
+    );
+
+    if (!payment) {
+      return res.status(404).json({ error: 'Payment record not found' });
+    }
+
+    // If status is captured, we unlock the user's portal
+    if (status === 'captured' && payment.userEmail) {
+      await User.findOneAndUpdate(
+        { email: payment.userEmail },
+        { portalUnlocked: true }
+      );
+      console.log(`[Payment Update] Portal unlocked for: ${payment.userEmail}`);
+    }
+
+    res.json({ success: true, payment });
+  } catch (error) {
+    console.error('Update status error:', error);
+    res.status(500).json({ error: 'Internal server error during status update' });
   }
 });
 

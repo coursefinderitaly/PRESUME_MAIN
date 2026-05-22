@@ -69,7 +69,7 @@ const PaymentHistory = ({ userEmail }) => {
                 <div class="logo">PRESUME OVERSEAS<small>Official Payment Receipt</small></div>
               </div>
               <div style="text-align:right">
-                <div class="badge ${payment.status}">${payment.status.toUpperCase()}</div>
+                <div class="badge ${payment.status === 'created' ? 'failed' : payment.status}">${payment.status === 'created' ? 'FAILED' : payment.status.toUpperCase()}</div>
                 <div style="font-size:12px;color:#94a3b8;margin-top:8px">${new Date(payment.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })}</div>
               </div>
             </div>
@@ -160,11 +160,11 @@ const PaymentHistory = ({ userEmail }) => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{
                   width: '44px', height: '44px', borderRadius: '12px',
-                  background: payment.status === 'captured' ? 'rgba(16, 185, 129, 0.1)' : payment.status === 'failed' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                  color: payment.status === 'captured' ? '#10b981' : payment.status === 'failed' ? '#ef4444' : '#f59e0b',
+                  background: payment.status === 'captured' ? 'rgba(16, 185, 129, 0.1)' : (payment.status === 'failed' || payment.status === 'created') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                  color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b',
                   display: 'flex', alignItems: 'center', justifyContent: 'center'
                 }}>
-                  {payment.status === 'captured' ? <CheckCircle size={20} /> : payment.status === 'failed' ? <XCircle size={20} /> : <Clock size={20} />}
+                  {payment.status === 'captured' ? <CheckCircle size={20} /> : (payment.status === 'failed' || payment.status === 'created') ? <XCircle size={20} /> : <Clock size={20} />}
                 </div>
                 
                 <div>
@@ -183,9 +183,9 @@ const PaymentHistory = ({ userEmail }) => {
                   <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)' }}>₹{payment.amount.toFixed(2)}</div>
                   <div style={{ 
                     fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2px',
-                    color: payment.status === 'captured' ? '#10b981' : payment.status === 'failed' ? '#ef4444' : '#f59e0b' 
+                    color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b' 
                   }}>
-                    {payment.status}
+                    {payment.status === 'created' ? 'failed' : payment.status}
                   </div>
                 </div>
 

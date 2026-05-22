@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Lock, ShieldCheck, Zap, ArrowRight, Loader2, Sparkles, AlertCircle, CheckCircle } from 'lucide-react';
+import { X, Lock, ShieldCheck, Zap, ArrowRight, Loader2, Sparkles, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
 const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
@@ -8,11 +8,13 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
     const [error, setError] = useState(null);
     const [isHovered, setIsHovered] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const [paymentFailed, setPaymentFailed] = useState(false);
 
     const handlePayment = async () => {
         try {
             setLoading(true);
             setError(null);
+            setPaymentFailed(false);
 
             // 1. Call backend to create order securely
             const response = await fetch(`${API_BASE_URL}/payment/create-order`, {
@@ -64,23 +66,59 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                         }, 2500);
 
                     } catch (verifyError) {
+                        try {
+                            await fetch(`${API_BASE_URL}/payment/update-status`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+                                body: JSON.stringify({
+                                    razorpayOrderId: response.razorpay_order_id,
+                                    status: 'failed',
+                                    failureReason: verifyError.message || 'Payment verification failed'
+                                })
+                            });
+                        } catch (dbErr) {
+                            console.error('Failed to log verification failure to DB:', dbErr);
+                        }
+
                         setError(verifyError.message);
                         setLoading(false);
+                        setPaymentFailed(true);
                     }
                 },
                 prefill: {
                     name: 'User',
-                    email: 'user@example.com',
+                    email: userEmail || 'user@example.com',
                 },
                 theme: {
-                    color: '#6366f1' // Premium Indigo
+                    color: '#06b6d4' // Cyan 500
+                },
+                modal: {
+                    ondismiss: function() {
+                        setLoading(false);
+                    }
                 }
             };
 
             const rzp = new window.Razorpay(options);
-            rzp.on('payment.failed', function (response) {
-                setError(response.error.description);
+            rzp.on('payment.failed', async function (response) {
+                const failureDesc = response.error.description || 'Payment failed on checkout';
+                try {
+                    await fetch(`${API_BASE_URL}/payment/update-status`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+                        body: JSON.stringify({
+                            razorpayOrderId: data.order.id,
+                            status: 'failed',
+                            failureReason: failureDesc
+                        })
+                    });
+                } catch (dbErr) {
+                    console.error('Failed to log checkout failure to DB:', dbErr);
+                }
+
+                setError(failureDesc);
                 setLoading(false);
+                setPaymentFailed(true);
             });
             rzp.open();
 
@@ -97,30 +135,31 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
             <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
                 {/* Backdrop Blur Layer */}
                 <motion.div
-                    initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                    animate={{ opacity: 1, backdropFilter: 'blur(16px)' }}
-                    exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                    transition={{ duration: 0.4 }}
-                    onClick={!loading && !paymentSuccess ? onClose : undefined}
-                    className="absolute inset-0 bg-[#030712]/70"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={!loading && !paymentSuccess && !paymentFailed ? onClose : undefined}
+                    className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"
                 />
 
                 {/* Modal Container */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    initial={{ opacity: 0, scale: 0.97, y: 10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    exit={{ opacity: 0, scale: 0.97, y: 10 }}
                     transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                    className="relative w-full max-w-[420px] bg-gradient-to-br from-[#1e293b] to-[#0f172a] rounded-[32px] p-1 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] overflow-hidden"
+                    className="relative w-full max-w-[420px] bg-slate-900 border border-slate-700/50 rounded-3xl shadow-2xl overflow-hidden"
                 >
-                    {/* Animated Edge Glow */}
-                    <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-[#6366f1] to-transparent opacity-30 animate-pulse blur-xl" style={{ animationDuration: '3s' }} />
+                    {/* Subtle Ambient Glow inside modal */}
+                    <div className="absolute -top-[150px] -right-[150px] w-[300px] h-[300px] bg-cyan-500/10 rounded-full blur-[80px] pointer-events-none" />
+                    <div className="absolute -bottom-[150px] -left-[150px] w-[300px] h-[300px] bg-sky-500/10 rounded-full blur-[80px] pointer-events-none" />
                     
-                    <div className="relative z-10 bg-[#0a0f1d] rounded-[28px] p-8 overflow-hidden h-full flex flex-col">
+                    <div className="relative z-10 p-8 flex flex-col h-full">
                         
                         {paymentSuccess ? (
                             <motion.div 
-                                initial={{ opacity: 0, scale: 0.8 }}
+                                initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="flex flex-col items-center justify-center py-10"
                             >
@@ -128,59 +167,99 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ type: "spring", bounce: 0.5 }}
-                                    className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(34,197,94,0.4)]"
+                                    className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-5 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]"
                                 >
-                                    <CheckCircle className="w-12 h-12 text-green-400" />
+                                    <CheckCircle className="w-10 h-10 text-emerald-400" />
                                 </motion.div>
-                                <h3 className="text-2xl font-bold text-white mb-2">Payment Successful!</h3>
-                                <p className="text-gray-400 text-center text-sm">Your premium access has been unlocked successfully. You will be redirected shortly.</p>
+                                <h3 className="text-xl font-bold text-slate-50 mb-2">Payment Successful!</h3>
+                                <p className="text-slate-400 text-center text-sm">Your premium access has been unlocked successfully. You will be redirected shortly.</p>
+                            </motion.div>
+                        ) : paymentFailed ? (
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="flex flex-col items-center justify-center py-10"
+                            >
+                                <motion.div 
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ type: "spring", bounce: 0.5 }}
+                                    className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(239,68,68,0.2)] border border-red-500/20"
+                                >
+                                    <XCircle className="w-10 h-10 text-red-400" />
+                                </motion.div>
+                                <h3 className="text-xl font-bold text-slate-50 mb-2">Payment Failed</h3>
+                                <p className="text-slate-400 text-center text-sm mb-6">
+                                    The transaction could not be completed.<br />
+                                    <span className="text-red-400 font-medium bg-red-500/10 px-3 py-1.5 rounded-lg mt-3 inline-block border border-red-500/20">
+                                        Reason: {error || 'Transaction was cancelled or declined'}
+                                    </span>
+                                </p>
+                                <div className="flex gap-3 w-full z-20">
+                                    <button 
+                                        onClick={() => {
+                                            setPaymentFailed(false);
+                                            setError(null);
+                                            handlePayment();
+                                        }}
+                                        className="flex-1 py-3 px-4 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl transition-all shadow-[0_4px_12px_rgba(239,68,68,0.3)] text-sm"
+                                    >
+                                        Retry Payment
+                                    </button>
+                                    <button 
+                                        onClick={() => {
+                                            setPaymentFailed(false);
+                                            setError(null);
+                                            onClose();
+                                        }}
+                                        className="flex-1 py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-xl transition-all text-sm border border-slate-700"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
                             </motion.div>
                         ) : (
                             <>
-                                {/* Subtle Inner Glow */}
-                                <div className="absolute top-[-50px] left-[-50px] w-48 h-48 bg-[#6366f1]/20 rounded-full blur-[60px] pointer-events-none" />
-                                <div className="absolute bottom-[-50px] right-[-50px] w-48 h-48 bg-[#a78bfa]/15 rounded-full blur-[60px] pointer-events-none" />
-
                                 {/* Close Button */}
                                 <button 
                                     onClick={onClose}
                                     disabled={loading}
-                                    className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all z-20 disabled:opacity-50"
+                                    className="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition-colors z-20 disabled:opacity-50"
                                 >
-                                    <X size={16} />
+                                    <X size={18} />
                                 </button>
 
                                 <div className="relative z-20 flex flex-col items-center mt-2">
                                     {/* Icon Lock Shield */}
                                     <motion.div 
-                                        initial={{ y: -10, opacity: 0 }}
+                                        initial={{ y: -5, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
-                                        transition={{ delay: 0.1, type: "spring" }}
-                                        className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#1e1b4b] to-[#312e81] flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(99,102,241,0.3)] border border-[#6366f1]/30 relative"
+                                        transition={{ delay: 0.1 }}
+                                        className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-5 border border-cyan-500/20 relative"
                                     >
                                         <motion.div 
-                                            animate={{ scale: isHovered ? 1.1 : 1 }}
+                                            animate={{ scale: isHovered ? 1.05 : 1 }}
                                             className="absolute inset-0 flex items-center justify-center transition-transform"
                                         >
-                                            <Lock className="w-8 h-8 text-[#818cf8]" />
+                                            <Lock className="w-7 h-7 text-cyan-400" />
                                         </motion.div>
-                                        <Sparkles className="absolute -top-2 -right-2 w-5 h-5 text-[#c084fc] animate-pulse" />
+                                        <Sparkles className="absolute -top-1.5 -right-1.5 w-4 h-4 text-sky-400" />
                                     </motion.div>
 
                                     <motion.h2 
                                         initial={{ y: 5, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.15 }}
-                                        className="text-[24px] font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 mb-2 text-center tracking-tight"
+                                        className="text-2xl font-bold text-slate-50 mb-2 text-center"
                                     >
-                                        Unlock Premium Features
+                                        Unlock Premium
                                     </motion.h2>
 
                                     <motion.p 
                                         initial={{ y: 5, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.2 }}
-                                        className="text-gray-400 text-[13px] font-medium mb-8 text-center leading-relaxed px-2"
+                                        className="text-slate-400 text-sm mb-8 text-center leading-relaxed"
                                     >
                                         Secure your account and gain full access by completing a quick ₹1.00 verification payment.
                                     </motion.p>
@@ -190,21 +269,21 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                         initial={{ scale: 0.95, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
                                         transition={{ delay: 0.3 }}
-                                        className="w-full p-4 rounded-xl bg-white/[0.03] border border-white/10 flex justify-between items-center mb-6 backdrop-blur-md relative overflow-hidden group"
+                                        className="w-full p-4 rounded-xl bg-white/5 border border-slate-700/50 flex justify-between items-center mb-6 relative overflow-hidden group"
                                     >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-[#6366f1]/0 via-[#6366f1]/10 to-[#6366f1]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                                         
                                         <div className="flex items-center gap-3 relative z-10">
-                                            <div className="w-10 h-10 rounded-full bg-[#10b981]/10 flex items-center justify-center">
-                                                <ShieldCheck className="w-5 h-5 text-[#10b981]" />
+                                            <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                                                <ShieldCheck className="w-5 h-5 text-emerald-400" />
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[13px] font-semibold text-gray-200">Secure Checkout</span>
-                                                <span className="text-[11px] text-gray-500 font-medium">Powered by Razorpay</span>
+                                                <span className="text-sm font-semibold text-slate-200">Secure Checkout</span>
+                                                <span className="text-xs text-slate-500 font-medium">Powered by Razorpay</span>
                                             </div>
                                         </div>
-                                        <div className="text-[20px] font-black text-white relative z-10">
-                                            ₹1<span className="text-[14px] text-gray-400">.00</span>
+                                        <div className="text-xl font-bold text-white relative z-10">
+                                            ₹1<span className="text-sm text-slate-400">.00</span>
                                         </div>
                                     </motion.div>
 
@@ -217,9 +296,9 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                                 exit={{ height: 0, opacity: 0 }}
                                                 className="w-full overflow-hidden mb-6"
                                             >
-                                                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[12px] font-bold flex items-start gap-2">
-                                                    <AlertCircle className="w-4 h-4 shrink-0 mt-[1px]" />
-                                                    <span>{error}</span>
+                                                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium flex items-start gap-2">
+                                                    <AlertCircle className="w-4 h-4 shrink-0" />
+                                                    <span className="mt-0.5">{error}</span>
                                                 </div>
                                             </motion.div>
                                         )}
@@ -234,21 +313,18 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                         onMouseLeave={() => setIsHovered(false)}
                                         onClick={handlePayment}
                                         disabled={loading}
-                                        className="relative w-full group overflow-hidden"
+                                        className="relative w-full group overflow-hidden bg-cyan-500 hover:bg-cyan-600 rounded-xl transition-all shadow-[0_4px_14px_rgba(6,182,212,0.4)] disabled:opacity-70"
                                     >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-xl opacity-100 transition-opacity duration-300" />
-                                        <div className="absolute inset-0 bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                        
-                                        <div className="relative py-4 px-6 rounded-xl flex items-center justify-center gap-3">
+                                        <div className="relative py-3.5 px-6 flex items-center justify-center gap-2">
                                             {loading ? (
                                                 <>
                                                     <Loader2 className="w-5 h-5 text-white animate-spin" />
-                                                    <span className="text-white font-bold tracking-wider text-[13px] uppercase">Processing...</span>
+                                                    <span className="text-white font-medium text-sm">Processing...</span>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <Zap className="w-4 h-4 text-[#e0e7ff]" fill="currentColor" />
-                                                    <span className="text-white font-bold tracking-wider text-[13px] uppercase shadow-sm">Authorize ₹1.00</span>
+                                                    <Zap className="w-4 h-4 text-cyan-100" fill="currentColor" />
+                                                    <span className="text-white font-medium text-sm">Authorize ₹1.00</span>
                                                     <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
                                                 </>
                                             )}
@@ -259,9 +335,9 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: 0.5 }}
-                                        className="mt-4 text-[10px] font-semibold text-gray-500 uppercase tracking-widest text-center flex items-center justify-center gap-2"
+                                        className="mt-5 text-[11px] font-medium text-slate-500 flex items-center justify-center gap-1.5"
                                     >
-                                        <Lock className="w-3 h-3" /> 256-bit SSL Encryption
+                                        <Lock className="w-3 h-3" /> 256-BIT SSL ENCRYPTION
                                     </motion.div>
                                 </div>
                             </>

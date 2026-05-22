@@ -94,7 +94,7 @@ const AdminPayments = () => {
                 <div class="logo">PRESUME OVERSEAS<small>Official Payment Receipt</small></div>
               </div>
               <div style="text-align:right">
-                <div class="badge ${payment.status}">${payment.status.toUpperCase()}</div>
+                <div class="badge ${payment.status === 'created' ? 'failed' : payment.status}">${payment.status === 'created' ? 'FAILED' : payment.status.toUpperCase()}</div>
                 <div style="font-size:12px;color:#94a3b8;margin-top:8px">${new Date(payment.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })}</div>
               </div>
             </div>
@@ -194,7 +194,7 @@ const AdminPayments = () => {
           { label: 'Total Collected', value: `₹${totalCollected.toFixed(2)}`, color: '#10b981', icon: <CheckCircle size={18} /> },
           { label: 'Total Transactions', value: payments.length, color: '#6366f1', icon: <CreditCard size={18} /> },
           { label: 'Unlocked Portals', value: unlockedCount, color: '#f59e0b', icon: <ShieldCheck size={18} /> },
-          { label: 'Failed Payments', value: payments.filter(p => p.status === 'failed').length, color: '#ef4444', icon: <XCircle size={18} /> },
+          { label: 'Failed Payments', value: payments.filter(p => p.status === 'failed' || p.status === 'created').length, color: '#ef4444', icon: <XCircle size={18} /> },
         ].map((stat, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
             style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '18px', display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -238,10 +238,10 @@ const AdminPayments = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: '200px' }}>
                 <div style={{
                   width: '42px', height: '42px', borderRadius: '12px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: payment.status === 'captured' ? 'rgba(16,185,129,0.1)' : payment.status === 'failed' ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)',
-                  color: payment.status === 'captured' ? '#10b981' : payment.status === 'failed' ? '#ef4444' : '#f59e0b'
+                  background: payment.status === 'captured' ? 'rgba(16,185,129,0.1)' : (payment.status === 'failed' || payment.status === 'created') ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)',
+                  color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b'
                 }}>
-                  {payment.status === 'captured' ? <CheckCircle size={20} /> : payment.status === 'failed' ? <XCircle size={20} /> : <Clock size={20} />}
+                  {payment.status === 'captured' ? <CheckCircle size={20} /> : (payment.status === 'failed' || payment.status === 'created') ? <XCircle size={20} /> : <Clock size={20} />}
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '0.95rem' }}>{payment.userName}</div>
@@ -259,6 +259,12 @@ const AdminPayments = () => {
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Date</div>
                   <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)' }}>{new Date(payment.createdAt).toLocaleDateString()}</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Status</div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 800, color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b' }}>
+                    {payment.status === 'created' ? 'FAILED' : payment.status.toUpperCase()}
+                  </div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Portal</div>

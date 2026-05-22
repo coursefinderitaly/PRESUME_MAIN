@@ -545,10 +545,10 @@ const Dashboard = () => {
                 <NavButton id="register-student" icon={User} label="Register New" />
                 <NavButton id="students-list" icon={Users} label="My Students" />
                 <NavButton id="course-finder" icon={Search} label="Prog. Finder" />
-                <NavButton id="partner-applications" icon={FileText} label="Applications" locked={(isPartner || isCounselor) && activeTab !== 'partner-applications'} />
+                <NavButton id="partner-applications" icon={FileText} label="Applications" />
                 <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
                 {isPartner && <NavButton id="counselors" icon={Briefcase} label="Manage Team" />}
-                <NavButton id="notifications" icon={Bell} label="Alerts" locked={!profile.portalUnlocked} />
+                <NavButton id="notifications" icon={Bell} label="Alerts" locked={isStudent ? !profile.portalUnlocked : false} />
               </>
             )}
 
