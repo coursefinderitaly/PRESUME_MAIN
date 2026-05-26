@@ -123,12 +123,13 @@ export const Header = ({ compact = false }) => {
                   {
                     label: 'Work Visa',
                     desc: 'Build your career in Europe',
+                    path: '/services/work-visa',
                     subItems: [
-                      { label: 'Bulgaria', desc: 'Fast-track work permits' },
-                      { label: 'Croatia', desc: 'Modern European workforce' },
-                      { label: 'Czech Republic', desc: 'Strong industrial & tech base' },
-                      { label: 'Germany', desc: 'Skilled worker migration' },
-                      { label: 'Serbia', desc: 'Emerging tech & business hub' }
+                      { label: 'Bulgaria', desc: 'Fast-track work permits', path: '/services/work-visa/bulgaria' },
+                      { label: 'Croatia', desc: 'Modern European workforce', path: '/services/work-visa/croatia' },
+                      { label: 'Czech Republic', desc: 'Strong industrial & tech base', path: '/services/work-visa/czech-republic' },
+                      { label: 'Germany', desc: 'Skilled worker migration', path: '/services/work-visa/germany' },
+                      { label: 'Serbia', desc: 'Emerging tech & business hub', path: '/services/work-visa/serbia' }
                     ]
                   }
                 ]}
@@ -286,7 +287,13 @@ export const Header = ({ compact = false }) => {
                 {
                   title: 'SERVICES', items: [
                     { label: 'Student Visa', subItems: ['Italy', 'Australia', 'Canada', 'France', 'Germany', 'Ireland', 'United Kingdom', 'United States'] },
-                    { label: 'Work Visa', subItems: ['Bulgaria', 'Croatia', 'Czech Republic', 'Germany', 'Serbia'] }
+                    { label: 'Work Visa', path: '/services/work-visa', subItems: [
+                      { label: 'Bulgaria', path: '/services/work-visa/bulgaria' },
+                      { label: 'Croatia', path: '/services/work-visa/croatia' },
+                      { label: 'Czech Republic', path: '/services/work-visa/czech-republic' },
+                      { label: 'Germany', path: '/services/work-visa/germany' },
+                      { label: 'Serbia', path: '/services/work-visa/serbia' }
+                    ] }
                   ]
                 },
                 { title: 'PROGRAMS', items: [{ label: 'Apple Academy', path: '/apple-academy' }] },
@@ -298,7 +305,7 @@ export const Header = ({ compact = false }) => {
                 },
                 { title: 'COMPANY', items: [{ label: 'Our Story', path: '/our-story' }, { label: 'Contact Us', path: '/contact' }] }
               ].map((section) => (
-                <MobileNavItem key={section.title} section={section} />
+                <MobileNavItem key={section.title} section={section} setMobileMenuOpen={setMobileMenuOpen} />
               ))}
             </div>
 
@@ -469,7 +476,7 @@ const NavItem = ({ title, items, isDarkHeader, compact }) => {
 };
 
 
-const MobileNavItem = ({ section }) => {
+const MobileNavItem = ({ section, setMobileMenuOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -498,7 +505,7 @@ const MobileNavItem = ({ section }) => {
                     {item}
                   </div>
                 ) : (
-                  <MobileSubItem key={idx} item={item} />
+                  <MobileSubItem key={idx} item={item} setMobileMenuOpen={setMobileMenuOpen} />
                 )
               ))}
             </div>
@@ -509,7 +516,7 @@ const MobileNavItem = ({ section }) => {
   );
 };
 
-const MobileSubItem = ({ item }) => {
+const MobileSubItem = ({ item, setMobileMenuOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -523,6 +530,7 @@ const MobileSubItem = ({ item }) => {
             setIsOpen(!isOpen);
           } else if (item.path) {
             navigate(item.path);
+            if (setMobileMenuOpen) setMobileMenuOpen(false);
           }
         }}
         className="text-xl font-black flex items-center justify-between w-full group transition-colors"
@@ -542,32 +550,43 @@ const MobileSubItem = ({ item }) => {
             exit={{ height: 0, opacity: 0 }}
             className="grid grid-cols-1 gap-3 pl-4 overflow-hidden"
           >
-            {item.subItems.map((sub, idx) => (
-              <div
-                key={idx}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const countryPathMap = {
-                    'Italy': '/study-in-italy',
-                    'Australia': '/study-in-australia',
-                    'Canada': '/study-in-canada',
-                    'France': '/study-in-france',
-                    'Germany': '/study-in-germany',
-                    'Ireland': '/study-in-ireland',
-                    'United Kingdom': '/study-in-uk',
-                    'United States': '/study-in-usa'
-                  };
-                  if (countryPathMap[sub]) {
-                    navigate(countryPathMap[sub]);
-                    setMobileMenuOpen(false);
-                  }
-                }}
-                className="flex items-center justify-between text-gray-400 text-base font-bold bg-white/5 px-5 py-4 rounded-2xl border border-white/5 hover:border-accent-gold/40 hover:text-white transition-all cursor-pointer"
-              >
-                {sub}
-                <ArrowRight size={14} className="text-accent-gold opacity-50" />
-              </div>
-            ))}
+            {item.subItems.map((sub, idx) => {
+              const label = typeof sub === 'object' ? sub.label : sub;
+              const path = typeof sub === 'object' ? sub.path : null;
+
+              return (
+                <div
+                  key={idx}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (path) {
+                      navigate(path);
+                      if (setMobileMenuOpen) setMobileMenuOpen(false);
+                      return;
+                    }
+                    
+                    const countryPathMap = {
+                      'Italy': '/study-in-italy',
+                      'Australia': '/study-in-australia',
+                      'Canada': '/study-in-canada',
+                      'France': '/study-in-france',
+                      'Germany': '/study-in-germany',
+                      'Ireland': '/study-in-ireland',
+                      'United Kingdom': '/study-in-uk',
+                      'United States': '/study-in-usa'
+                    };
+                    if (countryPathMap[label]) {
+                      navigate(countryPathMap[label]);
+                      if (setMobileMenuOpen) setMobileMenuOpen(false);
+                    }
+                  }}
+                  className="flex items-center justify-between text-gray-400 text-base font-bold bg-white/5 px-5 py-4 rounded-2xl border border-white/5 hover:border-accent-gold/40 hover:text-white transition-all cursor-pointer"
+                >
+                  {label}
+                  <ArrowRight size={14} className="text-accent-gold opacity-50" />
+                </div>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>

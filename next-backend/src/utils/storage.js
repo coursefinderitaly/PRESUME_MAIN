@@ -43,7 +43,7 @@ const getLocalFilePath = (fileName) => {
  * Generates the download URL pointing to your own server.
  */
 const generateSignedUrl = async (objectKey) => {
-    const baseUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+    const baseUrl = process.env.BACKEND_URL || 'http://localhost:5001';
     return `${baseUrl}/api/upload/download/${objectKey}`;
 };
 

@@ -184,7 +184,7 @@ router.get('/documents', async (req, res) => {
             size: stats.size,
             createdAt: stats.birthtime,
             filePath: path.join(uploadDir, filename),
-            downloadUrl: `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/upload/download/${filename}`
+            downloadUrl: `${process.env.BACKEND_URL || 'http://localhost:5001'}/api/upload/download/${filename}`
         };
     });
     

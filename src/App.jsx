@@ -12,6 +12,12 @@ import AppointmentForm from './components/AppointmentForm';
 import ContactUsPage from './components/ContactUsPage';
 import OurStoryPage from './components/OurStoryPage';
 import AppleAcademyPage from './components/AppleAcademyPage';
+import WorkVisaLandingPage from './components/WorkVisaLandingPage';
+import GermanyWorkVisaPage from './components/GermanyWorkVisaPage';
+import CroatiaWorkVisaPage from './components/CroatiaWorkVisaPage';
+import BulgariaWorkVisaPage from './components/BulgariaWorkVisaPage';
+import CzechRepublicWorkVisaPage from './components/CzechRepublicWorkVisaPage';
+import SerbiaWorkVisaPage from './components/SerbiaWorkVisaPage';
 import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
@@ -50,6 +56,12 @@ function VisitorTracker() {
       '/study-in-ireland',
       '/study-in-uk',
       '/study-in-usa',
+      '/services/work-visa',
+      '/services/work-visa/germany',
+      '/services/work-visa/croatia',
+      '/services/work-visa/bulgaria',
+      '/services/work-visa/czech-republic',
+      '/services/work-visa/serbia',
       '/partner-registration',
       '/book-appointment',
       '/contact',
@@ -112,6 +124,15 @@ function App() {
               <Route path="/study-in-ireland" element={<GenericCountryPage countryId="ireland" />} />
               <Route path="/study-in-uk" element={<GenericCountryPage countryId="uk" />} />
               <Route path="/study-in-usa" element={<GenericCountryPage countryId="usa" />} />
+              
+              {/* Work Visa Routes */}
+              <Route path="/services/work-visa" element={<WorkVisaLandingPage />} />
+              <Route path="/services/work-visa/germany" element={<GermanyWorkVisaPage />} />
+              <Route path="/services/work-visa/croatia" element={<CroatiaWorkVisaPage />} />
+              <Route path="/services/work-visa/bulgaria" element={<BulgariaWorkVisaPage />} />
+              <Route path="/services/work-visa/czech-republic" element={<CzechRepublicWorkVisaPage />} />
+              <Route path="/services/work-visa/serbia" element={<SerbiaWorkVisaPage />} />
+
               <Route path="/partner-registration" element={<BusinessPartnerForm />} />
               <Route path="/book-appointment" element={<AppointmentForm />} />
               <Route path="/contact" element={<ContactUsPage />} />

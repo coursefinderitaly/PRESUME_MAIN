@@ -22,7 +22,7 @@ console.error = (...args) => {
 const originalFetch = window.fetch;
 window.fetch = async (...args) => {
   let [url, config] = args;
-  if (typeof url === 'string' && (url.includes(':5000') || url.includes('/api/'))) {
+  if (typeof url === 'string' && (url.includes(':5000') || url.includes(':5001') || url.includes('/api/'))) {
     config = config || {};
     config.headers = config.headers || {};
     if (config.headers instanceof Headers) {

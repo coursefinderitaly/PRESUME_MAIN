@@ -1,9 +1,11 @@
 process.on('uncaughtException', (err) => {
-  console.log('CRASH ERROR (Exception):', err.message);
-  console.log(err.stack);
+  console.error('CRASH ERROR (Exception):', err.message);
+  console.error(err.stack);
+  process.exit(1);
 });
 process.on('unhandledRejection', (err) => {
-  console.log('CRASH ERROR (Rejection):', err);
+  console.error('CRASH ERROR (Rejection):', err);
+  process.exit(1);
 });
 
 // Programmatic dependencies auto-installer for Hostinger
