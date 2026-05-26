@@ -125,10 +125,11 @@ export const Header = ({ compact = false }) => {
                     desc: 'Build your career in Europe',
                     path: '/services/work-visa',
                     subItems: [
-                      { label: 'Bulgaria', desc: 'Fast-track work permits', path: '/services/work-visa/bulgaria' },
-                      { label: 'Croatia', desc: 'Modern European workforce', path: '/services/work-visa/croatia' },
                       { label: 'Czech Republic', desc: 'Strong industrial & tech base', path: '/services/work-visa/czech-republic' },
                       { label: 'Germany', desc: 'Skilled worker migration', path: '/services/work-visa/germany' },
+                      { label: 'Moldova (Transit)', desc: 'Schengen transit solutions', path: '/services/work-visa/moldova' },
+                      { label: 'Poland', desc: 'Work permit & settlement', path: '/services/work-visa/poland' },
+                      { label: 'Portugal', desc: 'Agricultural & hospitality roles', path: '/services/work-visa/portugal' },
                       { label: 'Serbia', desc: 'Emerging tech & business hub', path: '/services/work-visa/serbia' }
                     ]
                   }
@@ -288,10 +289,11 @@ export const Header = ({ compact = false }) => {
                   title: 'SERVICES', items: [
                     { label: 'Student Visa', subItems: ['Italy', 'Australia', 'Canada', 'France', 'Germany', 'Ireland', 'United Kingdom', 'United States'] },
                     { label: 'Work Visa', path: '/services/work-visa', subItems: [
-                      { label: 'Bulgaria', path: '/services/work-visa/bulgaria' },
-                      { label: 'Croatia', path: '/services/work-visa/croatia' },
                       { label: 'Czech Republic', path: '/services/work-visa/czech-republic' },
                       { label: 'Germany', path: '/services/work-visa/germany' },
+                      { label: 'Moldova (Transit)', path: '/services/work-visa/moldova' },
+                      { label: 'Poland', path: '/services/work-visa/poland' },
+                      { label: 'Portugal', path: '/services/work-visa/portugal' },
                       { label: 'Serbia', path: '/services/work-visa/serbia' }
                     ] }
                   ]

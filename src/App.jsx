@@ -14,10 +14,11 @@ import OurStoryPage from './components/OurStoryPage';
 import AppleAcademyPage from './components/AppleAcademyPage';
 import WorkVisaLandingPage from './components/WorkVisaLandingPage';
 import GermanyWorkVisaPage from './components/GermanyWorkVisaPage';
-import CroatiaWorkVisaPage from './components/CroatiaWorkVisaPage';
-import BulgariaWorkVisaPage from './components/BulgariaWorkVisaPage';
 import CzechRepublicWorkVisaPage from './components/CzechRepublicWorkVisaPage';
 import SerbiaWorkVisaPage from './components/SerbiaWorkVisaPage';
+import PolandWorkVisaPage from './components/PolandWorkVisaPage';
+import PortugalWorkVisaPage from './components/PortugalWorkVisaPage';
+import MoldovaWorkVisaPage from './components/MoldovaWorkVisaPage';
 import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
@@ -58,10 +59,11 @@ function VisitorTracker() {
       '/study-in-usa',
       '/services/work-visa',
       '/services/work-visa/germany',
-      '/services/work-visa/croatia',
-      '/services/work-visa/bulgaria',
       '/services/work-visa/czech-republic',
       '/services/work-visa/serbia',
+      '/services/work-visa/poland',
+      '/services/work-visa/portugal',
+      '/services/work-visa/moldova',
       '/partner-registration',
       '/book-appointment',
       '/contact',
@@ -128,10 +130,11 @@ function App() {
               {/* Work Visa Routes */}
               <Route path="/services/work-visa" element={<WorkVisaLandingPage />} />
               <Route path="/services/work-visa/germany" element={<GermanyWorkVisaPage />} />
-              <Route path="/services/work-visa/croatia" element={<CroatiaWorkVisaPage />} />
-              <Route path="/services/work-visa/bulgaria" element={<BulgariaWorkVisaPage />} />
               <Route path="/services/work-visa/czech-republic" element={<CzechRepublicWorkVisaPage />} />
               <Route path="/services/work-visa/serbia" element={<SerbiaWorkVisaPage />} />
+              <Route path="/services/work-visa/poland" element={<PolandWorkVisaPage />} />
+              <Route path="/services/work-visa/portugal" element={<PortugalWorkVisaPage />} />
+              <Route path="/services/work-visa/moldova" element={<MoldovaWorkVisaPage />} />
 
               <Route path="/partner-registration" element={<BusinessPartnerForm />} />
               <Route path="/book-appointment" element={<AppointmentForm />} />

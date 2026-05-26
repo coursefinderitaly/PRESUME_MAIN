@@ -7,36 +7,6 @@ import MinimalFooter from './MinimalFooter';
 
 const countries = [
   {
-    id: 'bulgaria',
-    name: 'Bulgaria',
-    flag: '🇧🇬',
-    tagline: 'Fast-track work permits',
-    highlight: '€800 – €1,500+/month',
-    color: 'from-green-600/20 to-teal-800/10',
-    accent: '#22c55e',
-    border: 'border-green-500/30',
-    glow: 'shadow-green-500/10',
-    jobs: ['Manufacturing', 'Construction', 'IT & Engineering'],
-    badge: 'Fast Processing',
-    badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30',
-    path: '/services/work-visa/bulgaria',
-  },
-  {
-    id: 'croatia',
-    name: 'Croatia',
-    flag: '🇭🇷',
-    tagline: 'Modern European workforce',
-    highlight: '€1,000 – €2,200+/month',
-    color: 'from-blue-700/20 to-red-600/10',
-    accent: '#3B82F6',
-    border: 'border-blue-500/30',
-    glow: 'shadow-blue-500/10',
-    jobs: ['Tourism', 'Construction', 'IT Services'],
-    badge: 'Scenic Living',
-    badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    path: '/services/work-visa/croatia',
-  },
-  {
     id: 'czech-republic',
     name: 'Czech Republic',
     flag: '🇨🇿',
@@ -67,6 +37,51 @@ const countries = [
     path: '/services/work-visa/germany',
   },
   {
+    id: 'poland',
+    name: 'Poland',
+    flag: '🇵🇱',
+    tagline: 'Gateway to Central Europe',
+    highlight: '€800 – €1,600+/month',
+    color: 'from-red-600/20 to-rose-800/10',
+    accent: '#dc2626',
+    border: 'border-red-500/30',
+    glow: 'shadow-red-500/10',
+    jobs: ['Logistics', 'Manufacturing', 'Construction'],
+    badge: 'Popular Choice',
+    badgeColor: 'bg-red-500/20 text-red-400 border-red-500/30',
+    path: '/services/work-visa/poland',
+  },
+  {
+    id: 'portugal',
+    name: 'Portugal',
+    flag: '🇵🇹',
+    tagline: 'Western European opportunities',
+    highlight: '€900 – €1,800+/month',
+    color: 'from-emerald-600/20 to-teal-800/10',
+    accent: '#10b981',
+    border: 'border-emerald-500/30',
+    glow: 'shadow-emerald-500/10',
+    jobs: ['Agriculture', 'Tourism', 'Tech Support'],
+    badge: 'Scenic Living',
+    badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    path: '/services/work-visa/portugal',
+  },
+  {
+    id: 'moldova',
+    name: 'Moldova (Transit visa)',
+    flag: '🇲🇩',
+    tagline: 'Schengen transit solutions',
+    highlight: 'Fast transit processing',
+    color: 'from-blue-600/20 to-indigo-800/10',
+    accent: '#3b82f6',
+    border: 'border-blue-500/30',
+    glow: 'shadow-blue-500/10',
+    jobs: ['Transit Permit', 'Documentation Support'],
+    badge: 'Easy Process',
+    badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    path: '/services/work-visa/moldova',
+  },
+  {
     id: 'serbia',
     name: 'Serbia',
     flag: '🇷🇸',
@@ -84,7 +99,7 @@ const countries = [
 ];
 
 const stats = [
-  { icon: Briefcase, value: '5+', label: 'Countries', color: 'text-amber-400' },
+  { icon: Briefcase, value: '6+', label: 'Countries', color: 'text-amber-400' },
   { icon: Globe, value: '500+', label: 'Placements', color: 'text-cyan-400' },
   { icon: Shield, value: '100%', label: 'Legal Process', color: 'text-green-400' },
   { icon: TrendingUp, value: '8–16', label: 'Weeks Process', color: 'text-purple-400' },
@@ -153,56 +168,57 @@ export default function WorkVisaLandingPage() {
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0 opacity-50" />
 
       {/* Hero */}
-      <section className="relative min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-4 z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center relative z-10 max-w-4xl mx-auto"
-        >
+      <section className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-10 px-4 z-10">
+        <div className="max-w-[1400px] mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-8 backdrop-blur-md"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex flex-col items-center lg:items-start text-center lg:text-left relative z-10 flex-1"
           >
-            <Briefcase size={14} className="text-amber-400" />
-            <span className="text-amber-400 text-xs font-black tracking-[0.2em] uppercase">Work Visa Programs</span>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-8 backdrop-blur-md shadow-lg"
+            >
+              <Briefcase size={14} className="text-amber-400" />
+              <span className="text-amber-400 text-xs font-black tracking-[0.2em] uppercase">Work Visa Programs</span>
+            </motion.div>
+
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[1.05]">
+              <span className="text-white">Build Your</span>
+              <br />
+              <span className="bg-gradient-to-r from-amber-300 via-yellow-200 to-orange-300 bg-clip-text text-transparent drop-shadow-2xl">
+                European Career
+              </span>
+            </h1>
+            <p className="text-gray-400 text-base md:text-xl max-w-2xl leading-relaxed font-light mb-8">
+              Legal work permits across 5 top European destinations. Competitive salaries, full documentation support, and a pathway to long-term settlement.
+            </p>
           </motion.div>
 
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.05]">
-            <span className="text-white">Build Your</span>
-            <br />
-            <span className="bg-gradient-to-r from-amber-300 via-yellow-200 to-orange-300 bg-clip-text text-transparent drop-shadow-lg">
-              European Career
-            </span>
-          </h1>
-          <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
-            Legal work permits across 5 top European destinations. Competitive salaries, full documentation support, and a pathway to long-term settlement.
-          </p>
-        </motion.div>
-
-        {/* Stats Row */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl w-full mx-auto"
-        >
-          {stats.map((s, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 + i * 0.1 }}
-              className="flex flex-col items-center gap-2 bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-all"
-            >
-              <s.icon size={20} className={s.color} />
-              <span className={`text-3xl font-black ${s.color}`}>{s.value}</span>
-              <span className="text-gray-500 text-xs font-bold tracking-wider uppercase">{s.label}</span>
-            </motion.div>
-          ))}
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="grid grid-cols-2 gap-4 lg:gap-6 w-full lg:w-auto flex-1 max-w-2xl"
+          >
+            {stats.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.1 }}
+                className={`flex flex-col items-center lg:items-start text-center lg:text-left gap-2 bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-3xl p-6 lg:p-8 hover:border-white/20 transition-all shadow-2xl ${i % 2 !== 0 ? 'lg:translate-y-8' : ''}`}
+              >
+                <s.icon size={24} className={s.color} />
+                <span className={`text-3xl lg:text-4xl font-black mt-2 ${s.color}`}>{s.value}</span>
+                <span className="text-gray-500 text-xs font-bold tracking-wider uppercase">{s.label}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </section>
 
       {/* Countries Grid */}
@@ -225,7 +241,7 @@ export default function WorkVisaLandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ delay: i * 0.1, duration: 0.6 }}
-              className={`group relative ${i === 3 ? 'md:col-span-1 lg:col-start-2' : ''} ${i === 4 ? 'md:col-span-1 lg:col-start-3' : ''}`}
+              className="group relative"
             >
               <Link to={country.path}>
                 <div

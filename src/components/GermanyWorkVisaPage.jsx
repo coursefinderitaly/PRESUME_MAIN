@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Header } from './Header';
 import MinimalFooter from './MinimalFooter';
+import InteractiveBackground from './InteractiveBackground';
 
 const benefits = [
   {
@@ -112,66 +113,55 @@ export default function GermanyWorkVisaPage() {
     <div className="min-h-screen bg-[#080b14] text-white overflow-x-hidden">
       <Header />
 
-      {/* Animated Background Blur Loop */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.3, 0.15] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-amber-500/20 blur-[150px]" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.25, 0.1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-yellow-500/20 blur-[160px]" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.2, 0.1], x: [0, 50, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-orange-500/20 blur-[140px]" 
-        />
-      </div>
+      {/* Interactive Animated Background */}
+      <InteractiveBackground 
+        color1="bg-amber-500/20" 
+        color2="bg-yellow-500/20" 
+        color3="bg-orange-500/20" 
+      />
 
       {/* Hero */}
-      <section className="relative pt-36 pb-28 px-4 overflow-hidden z-10">
+      <section className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-10 px-4 overflow-hidden z-10">
 
-        <div className="max-w-5xl mx-auto relative z-10 text-center">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <Link to="/services/work-visa" className="text-gray-500 text-sm font-medium hover:text-yellow-400 transition-colors">Work Visa</Link>
-            <span className="text-gray-700">/</span>
-            <span className="text-yellow-400 text-sm font-bold tracking-wide">Germany</span>
-          </div>
+        <div className="max-w-[1400px] mx-auto relative z-10 w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1">
+            <div className="flex items-center justify-center lg:justify-start gap-3 mb-6 bg-white/[0.03] backdrop-blur-md px-6 py-2 rounded-full border border-white/10 w-fit">
+              <Link to="/services/work-visa" className="text-gray-400 text-xs font-medium hover:text-yellow-400 transition-colors uppercase tracking-wider">Work Visa</Link>
+              <span className="text-gray-600">•</span>
+              <span className="text-yellow-400 text-xs font-black tracking-widest uppercase">Germany</span>
+            </div>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="inline-flex items-center justify-center gap-4 mb-6">
-              <span className="text-7xl md:text-8xl drop-shadow-2xl">🇩🇪</span>
+            <div className="inline-flex items-center justify-center lg:justify-start gap-4 mb-4">
+              <span className="text-6xl md:text-7xl lg:text-8xl drop-shadow-2xl">🇩🇪</span>
             </div>
             
-            <p className="text-yellow-400 text-xs font-black tracking-[0.3em] uppercase mb-4">Work Permit Program</p>
+            <p className="text-yellow-400 text-[10px] md:text-xs font-black tracking-[0.4em] uppercase mb-3">Work Permit Program</p>
             
-            <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] mb-8 tracking-tight">
-              Work in <span className="bg-gradient-to-r from-yellow-300 via-yellow-200 to-orange-300 bg-clip-text text-transparent">Germany</span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[1.05] mb-6 tracking-tighter">
+              Work in <br className="hidden md:block" /><span className="bg-gradient-to-r from-yellow-300 via-yellow-200 to-orange-300 bg-clip-text text-transparent">Germany</span>
             </h1>
             
-            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12">
+            <p className="text-gray-400 text-base md:text-lg max-w-2xl leading-relaxed mb-8">
               Europe's strongest economy offers excellent career opportunities for skilled international workers — with high salaries, modern work environments, and long-term settlement pathways.
             </p>
             
-            <div className="flex flex-wrap justify-center gap-5">
-              <Link to="/book-appointment" className="inline-flex items-center justify-center gap-3 bg-yellow-500 hover:bg-yellow-400 text-[#080b14] font-black text-sm tracking-widest px-10 py-5 rounded-full transition-all duration-300 hover:scale-105 shadow-[0_0_40px_-10px_rgba(234,179,8,0.5)]">
-                Start Your Journey <ArrowRight size={18} />
+            <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+              <Link to="/book-appointment" className="group relative inline-flex items-center justify-center gap-3 bg-yellow-500 text-[#080b14] font-black text-sm tracking-widest px-8 py-4 rounded-full transition-all duration-300 hover:bg-yellow-400 hover:scale-105 shadow-[0_0_40px_-10px_rgba(234,179,8,0.6)]">
+                Start Your Journey 
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.8 }} className="grid grid-cols-2 gap-4 lg:gap-6 w-full lg:w-auto flex-1 max-w-2xl">
             {[
               { label: 'Avg. Salary', value: '€2,500+', color: 'text-yellow-400' },
               { label: 'Processing', value: '8–16 Weeks', color: 'text-cyan-400' },
               { label: 'Job Category', value: 'Logistics', color: 'text-purple-400' },
               { label: 'Settle', value: 'Yes', color: 'text-green-400' },
             ].map((s, i) => (
-              <div key={i} className="bg-white/[0.02] border border-white/5 rounded-3xl py-8 px-6 hover:border-yellow-500/30 hover:bg-white/[0.04] transition-all backdrop-blur-sm">
-                <p className={`font-black text-xl md:text-2xl mb-2 ${s.color}`}>{s.value}</p>
+              <div key={i} className={`bg-white/[0.02] border border-white/10 rounded-3xl p-6 lg:p-8 hover:border-yellow-500/40 hover:bg-white/[0.04] transition-all backdrop-blur-xl shadow-2xl flex flex-col justify-center ${i % 2 !== 0 ? 'lg:translate-y-8' : ''}`}>
+                <p className={`font-black text-2xl lg:text-3xl mb-2 ${s.color}`}>{s.value}</p>
                 <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">{s.label}</p>
               </div>
             ))}

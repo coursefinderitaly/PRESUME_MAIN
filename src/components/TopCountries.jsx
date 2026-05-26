@@ -96,24 +96,15 @@ const studyCountries = [
 
 const workCountries = [
   {
-    name: 'Bulgaria',
-    note: 'European access',
-    code: 'BGR',
-    color: '#0f766e',
-    accent: '#f59e0b',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Sofia%2C_Bulgaria_2.jpg/1280px-Sofia%2C_Bulgaria_2.jpg',
-    city: 'Sofia, Plovdiv',
-    metric: 'EU access',
-  },
-  {
-    name: 'Croatia',
-    note: 'Hospitality careers',
-    code: 'HRV',
-    color: '#315c91',
-    accent: '#22c55e',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Dubrovnik%2C_Croatia_%28Unsplash%29.jpg/1280px-Dubrovnik%2C_Croatia_%28Unsplash%29.jpg',
-    city: 'Zagreb, Split',
-    metric: 'Hospitality demand',
+    name: 'Czech Republic',
+    note: 'Industrial openings',
+    code: 'CZE',
+    color: '#dc2626',
+    accent: '#2563eb',
+    image: 'https://images.unsplash.com/photo-1519677100203-a0e668c92439?auto=format&fit=crop&w=900&q=80',
+    city: 'Prague, Brno',
+    metric: 'Industrial roles',
+    path: '/services/work-visa/czech-republic',
   },
   {
     name: 'Germany',
@@ -124,6 +115,40 @@ const workCountries = [
     image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=900&q=80',
     city: 'Berlin, Hamburg',
     metric: 'Skilled worker',
+    path: '/services/work-visa/germany',
+  },
+  {
+    name: 'Moldova (Transit)',
+    note: 'Transit solutions',
+    code: 'MDA',
+    color: '#1d4ed8',
+    accent: '#f97316',
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=900&q=80',
+    city: 'Chișinău',
+    metric: 'Transit visa',
+    path: '/services/work-visa/moldova',
+  },
+  {
+    name: 'Poland',
+    note: 'Logistics & assembly',
+    code: 'POL',
+    color: '#b91c1c',
+    accent: '#facc15',
+    image: 'https://images.unsplash.com/photo-1519195928731-0342e1e6a0e5?auto=format&fit=crop&w=900&q=80',
+    city: 'Warsaw, Kraków',
+    metric: 'High placement',
+    path: '/services/work-visa/poland',
+  },
+  {
+    name: 'Portugal',
+    note: 'Agricultural & hospitality',
+    code: 'PRT',
+    color: '#047857',
+    accent: '#fbbf24',
+    image: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=900&q=80',
+    city: 'Lisbon, Porto',
+    metric: 'Schengen route',
+    path: '/services/work-visa/portugal',
   },
   {
     name: 'Serbia',
@@ -134,16 +159,7 @@ const workCountries = [
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Belgrade%2C_Serbia_%287182652103%29.jpg/1280px-Belgrade%2C_Serbia_%287182652103%29.jpg',
     city: 'Belgrade, Novi Sad',
     metric: 'Fast support',
-  },
-  {
-    name: 'Czech Republic',
-    note: 'Industrial openings',
-    code: 'CZE',
-    color: '#dc2626',
-    accent: '#2563eb',
-    image: 'https://images.unsplash.com/photo-1519677100203-a0e668c92439?auto=format&fit=crop&w=900&q=80',
-    city: 'Prague, Brno',
-    metric: 'Industrial roles',
+    path: '/services/work-visa/serbia',
   },
 ];
 
@@ -206,7 +222,7 @@ export const TopCountries = () => {
   const gridClass =
     activeTab === 'study'
       ? 'grid-cols-2 grid-rows-4 sm:grid-cols-4 sm:grid-rows-2'
-      : 'grid-cols-1 grid-rows-5 sm:grid-cols-5 sm:grid-rows-1';
+      : 'grid-cols-2 grid-rows-3 sm:grid-cols-3 sm:grid-rows-2';
 
   return (
     <section
