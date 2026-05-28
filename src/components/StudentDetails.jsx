@@ -179,8 +179,8 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
       fontSize: '0.9rem'
     }),
     singleValue: (base) => ({ ...base, color: 'var(--text-main)' }),
-    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0 }),
-    valueContainer: (base) => ({ ...base, padding: '0 8px' }),
+    valueContainer: (base) => ({ ...base, padding: '0 8px', display: 'flex', flex: '1 1 auto', width: '100%', cursor: 'text' }),
+    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, width: '100%', display: 'inline-flex' }),
     placeholder: (base) => ({ ...base, color: 'var(--text-muted)' }),
     indicatorSeparator: () => ({ display: 'none' }),
     dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)' }),
@@ -534,12 +534,12 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
       <div style={{ display: 'flex', flex: 1, minHeight: 0, gap: '24px', marginTop: '12px' }}>
 
         {/* LEFT WIZARD SIDEBAR */}
-        <div style={{ width: '280px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', paddingRight: '8px' }}>
+        <div style={{ width: '220px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', paddingRight: '8px' }}>
           {[
             { id: 'profile', label: 'Personal Profile', icon: User, desc: 'Identity & Contacts' },
             { id: 'academic', label: 'Academic History', icon: GraduationCap, desc: 'Education & Scores' },
-            { id: 'documents', label: 'Document Locker', icon: FileText, desc: 'Uploads & Evidence' },
-            { id: 'applications', label: 'Select University', icon: Building2, desc: 'Target Applications' }
+            { id: 'applications', label: 'Select University', icon: Building2, desc: 'Target Applications' },
+            { id: 'documents', label: 'Document Locker', icon: FileText, desc: 'Uploads & Evidence' }
           ].map((tabObj) => {
             const IconCmp = tabObj.icon;
             const isActive = activeTab === tabObj.id;
@@ -582,10 +582,12 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
         <div className="tab-content" style={{
           flex: 1,
           minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
           background: 'var(--card-bg-solid)',
           border: '1px solid var(--glass-border)',
           borderRadius: '24px',
-          overflowY: 'auto',
+          overflowY: activeTab === 'applications' ? 'hidden' : 'auto',
           padding: '30px',
           boxShadow: 'inset 0 0 40px rgba(0,0,0,0.1)'
         }}>
@@ -665,14 +667,14 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
 
                   <div className="dash-input-group">
                     <label>Country</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={countries} value={countries.find(c => c.value === formData.mailingCountry)}
                       onChange={(val) => handleSelectFieldChange('mailingCountry', val)} menuPortalTarget={document.body} placeholder="Select Country"
                     />
                   </div>
                   <div className="dash-input-group">
                     <label>State</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={getStateOptions(formData.mailingCountry)}
                       value={getStateOptions(formData.mailingCountry).find(s => s.value === formData.mailingState)}
                       onChange={(val) => handleSelectFieldChange('mailingState', val)} menuPortalTarget={document.body} placeholder="Select State"
@@ -681,7 +683,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   </div>
                   <div className="dash-input-group">
                     <label>City</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={getCityOptions(formData.mailingCountry, formData.mailingState)}
                       value={getCityOptions(formData.mailingCountry, formData.mailingState).find(c => c.value === formData.mailingCity)}
                       onChange={(val) => handleSelectFieldChange('mailingCity', val)} menuPortalTarget={document.body} placeholder="Select City"
@@ -718,14 +720,14 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
 
                   <div className="dash-input-group">
                     <label>Country</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={countries} value={countries.find(c => c.value === formData.permanentCountry)}
                       onChange={(val) => handleSelectFieldChange('permanentCountry', val)} menuPortalTarget={document.body} placeholder="Select Country"
                     />
                   </div>
                   <div className="dash-input-group">
                     <label>State</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={getStateOptions(formData.permanentCountry)}
                       value={getStateOptions(formData.permanentCountry).find(s => s.value === formData.permanentState)}
                       onChange={(val) => handleSelectFieldChange('permanentState', val)} menuPortalTarget={document.body} placeholder="Select State"
@@ -734,7 +736,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   </div>
                   <div className="dash-input-group">
                     <label>City</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={getCityOptions(formData.permanentCountry, formData.permanentState)}
                       value={getCityOptions(formData.permanentCountry, formData.permanentState).find(c => c.value === formData.permanentCity)}
                       onChange={(val) => handleSelectFieldChange('permanentCity', val)} menuPortalTarget={document.body} placeholder="Select City"
@@ -793,14 +795,14 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
 
                   <div className="dash-input-group">
                     <label>Issue Country</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={countries} value={countries.find(c => c.value === formData.issueCountry)}
                       onChange={(val) => handleSelectFieldChange('issueCountry', val)} menuPortalTarget={document.body} placeholder="Select Country"
                     />
                   </div>
                   <div className="dash-input-group">
                     <label>Issue State</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={getStateOptions(formData.issueCountry)}
                       value={getStateOptions(formData.issueCountry).find(s => s.value === formData.issueState)}
                       onChange={(val) => handleSelectFieldChange('issueState', val)} menuPortalTarget={document.body} placeholder="Select State"
@@ -809,7 +811,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   </div>
                   <div className="dash-input-group">
                     <label>Issue City</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={getCityOptions(formData.issueCountry, formData.issueState)}
                       value={getCityOptions(formData.issueCountry, formData.issueState).find(c => c.value === formData.issueCity)}
                       onChange={(val) => handleSelectFieldChange('issueCity', val)} menuPortalTarget={document.body} placeholder="Select City"
@@ -837,14 +839,14 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
                   <div className="dash-input-group">
                     <label>Nationality</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={nationalityOptions} value={nationalityOptions.find(c => c.value === formData.nationality)}
                       onChange={(val) => handleSelectFieldChange('nationality', val)} menuPortalTarget={document.body} placeholder="Select Nationality"
                     />
                   </div>
                   <div className="dash-input-group">
                     <label>Citizenship</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={nationalityOptions} value={nationalityOptions.find(c => c.value === formData.citizenship)}
                       onChange={(val) => handleSelectFieldChange('citizenship', val)} menuPortalTarget={document.body} placeholder="Select Citizenship"
                     />
@@ -860,7 +862,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   {formData.multiCitizen && (
                     <div className="dash-input-group" style={{ animation: 'fadeIn 0.3s ease' }}>
                       <label>Enter Nationality</label>
-                      <Select
+                      <Select classNamePrefix="react-select"
                         styles={customSelectStyles} options={nationalityOptions} value={nationalityOptions.find(c => c.value === formData.otherNationality)}
                         onChange={(val) => handleSelectFieldChange('otherNationality', val)} menuPortalTarget={document.body} placeholder="Select Nationality"
                       />
@@ -877,7 +879,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   {formData.livingInOtherCountry && (
                     <div className="dash-input-group" style={{ animation: 'fadeIn 0.3s ease' }}>
                       <label>Select Living Country</label>
-                      <Select
+                      <Select classNamePrefix="react-select"
                         styles={customSelectStyles} options={countries} value={countries.find(c => c.value === formData.otherLivingCountry)}
                         onChange={(val) => handleSelectFieldChange('otherLivingCountry', val)} menuPortalTarget={document.body} placeholder="Select Country"
                       />
@@ -941,7 +943,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
                   <div className="dash-input-group">
                     <label>Country of Education</label>
-                    <Select
+                    <Select classNamePrefix="react-select"
                       styles={customSelectStyles} options={countries} value={countries.find(c => c.value === formData.countryOfEducation)}
                       onChange={(val) => handleSelectFieldChange('countryOfEducation', val)} menuPortalTarget={document.body} placeholder="Select Country"
                     />
@@ -979,14 +981,14 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
                       <div className="dash-input-group">
                         <label>Country of Study</label>
-                        <Select
+                        <Select classNamePrefix="react-select"
                           styles={customSelectStyles} options={countries} value={countries.find(c => c.value === edu.countryOfStudy)}
                           onChange={(val) => handleEducationChange(index, 'countryOfStudy', val ? val.value : '')} menuPortalTarget={document.body} placeholder="Select Country"
                         />
                       </div>
                       <div className="dash-input-group">
                         <label>State of Study</label>
-                        <Select
+                        <Select classNamePrefix="react-select"
                           styles={customSelectStyles} options={getStateOptions(edu.countryOfStudy)}
                           value={getStateOptions(edu.countryOfStudy).find(s => s.value === edu.stateOfStudy) || null}
                           onChange={(val) => handleEducationChange(index, 'stateOfStudy', val ? val.value : '')} menuPortalTarget={document.body} placeholder="Select State"
@@ -1175,14 +1177,14 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                 <button type="submit" className="btn-save" style={{ padding: '12px 30px', fontSize: '1.05rem' }}>
                   <Save size={18} /> Save Complete Profile
                 </button>
-                <button type="button" onClick={() => setActiveTab('documents')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
+                <button type="button" onClick={() => setActiveTab('applications')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
                   Next
                 </button>
               </div>
             </form>
           </div>
-          <div style={{ display: activeTab === 'applications' ? 'block' : 'none' }}>
-            <div style={{ animation: 'fadeIn 0.3s ease' }}>
+          <div style={{ display: activeTab === 'applications' ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+            <div style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
 
               <div style={{ display: 'flex', justifyContent: 'center', borderBottom: '1px solid var(--glass-border)', marginBottom: '20px', gap: '30px', padding: '0 10px' }}>
                 <button
@@ -1202,7 +1204,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
               </div>
 
               {applicationSubTab === 'apply' && (
-                <div style={{ animation: 'fadeIn 0.3s ease' }}>
+                <div style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
                   <SearchProgram
                     preselectedUnis={selectedForApplication}
                     hideFooter={true}
@@ -1220,7 +1222,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   />
 
                   {/* Actions at bottom */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', marginTop: '30px', padding: '0 80px 0 5px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', marginTop: '15px', padding: '0 80px 0 5px' }}>
                     <button type="button" onClick={() => setActiveTab('documents')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
                       Previous
                     </button>
@@ -1294,11 +1296,11 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
 
                           return (
                             <div key={uni.id || idx} style={{ padding: '20px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--glass-border)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-                              <div style={{ fontWeight: 800, color: 'var(--text-main)', marginBottom: '5px', paddingRight: '25px', fontSize: '1.05rem' }}>{uni.name}</div>
+                              <div style={{ fontWeight: 900, color: '#f59e0b', marginBottom: '5px', paddingRight: '25px', fontSize: '1.15rem' }}>{uni.name}</div>
                               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}><MapPin size={14} /> {uni.location}</div>
 
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--accent-secondary)', background: 'rgba(59, 130, 246, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Programs: {uni.programs.join(', ')}</span>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', background: 'rgba(99, 102, 241, 0.1)', padding: '5px 12px', borderRadius: '6px', fontWeight: 900 }}>Programs: {uni.programs.join(', ')}</span>
                                 {uni.intake && <span style={{ fontSize: '0.8rem', color: '#8b5cf6', background: 'rgba(139, 92, 246, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Intake: {uni.intake}</span>}
                                 {uni.level && uni.level !== "N/A" && <span style={{ fontSize: '0.8rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>{uni.level}</span>}
                                 {uni.minPercentage && uni.minPercentage !== "0" && <span style={{ fontSize: '0.8rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Min {uni.minPercentage}%</span>}
@@ -1351,7 +1353,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   {/* Submit Actions for Selected Universities */}
                   {selectedForApplication.length > 0 && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', padding: '10px 80px 10px 5px', marginTop: '10px', animation: 'fadeIn 0.3s ease' }}>
-                      <button type="button" onClick={() => setActiveTab('documents')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
+                      <button type="button" onClick={() => setActiveTab('academic')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
                         Previous
                       </button>
                       <div style={{ display: 'flex', gap: '15px' }}>
@@ -1360,25 +1362,11 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                         </button>
                         <button
                           type="button"
-                          onClick={async () => {
-                            const docsInfo = documentUploadRef.current?.getAttachedFilesInfo() || [];
-                            if (docsInfo.length === 0) {
-                              setShowNoDocsError(true);
-                              setTimeout(() => setShowNoDocsError(false), 5000);
-                              return;
-                            }
-                            setShowNoDocsError(false);
-                            setHasAttachmentsWarning(false);
-                            const success = await handleSaveProfile();
-                            if (success) {
-                              setAttachedDocsPreview(docsInfo);
-                              setShowSummaryModal(true);
-                            }
-                          }}
+                          onClick={() => setActiveTab('documents')}
                           className="btn-save"
-                          style={{ padding: '12px 30px', background: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)', color: '#fff', border: 'none', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}
+                          style={{ padding: '12px 30px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', fontSize: '1.05rem', margin: 0 }}
                         >
-                          Review & Submit <ArrowRight size={18} />
+                          Next
                         </button>
                       </div>
                     </div>
@@ -1393,7 +1381,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
               <DocumentUpload profile={formData} setMessage={setMessage} ref={documentUploadRef} />
               {/* Actions */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px', paddingRight: '80px' }}>
-                <button type="button" onClick={() => setActiveTab('academic')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
+                <button type="button" onClick={() => setActiveTab('applications')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
                   Previous
                 </button>
                 <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
@@ -1413,17 +1401,15 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                       const success = await handleSaveProfile();
                       if (success) {
                         setAttachedDocsPreview(docsInfo);
-                        setMessage('Documents successfully uploaded!');
-                        setTimeout(() => setMessage(''), 5000);
+                        setShowSummaryModal(true);
                       }
                     }}
                     className="btn-save"
-                    style={{ padding: '12px 30px', fontSize: '1.05rem', background: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)', color: '#fff', border: 'none' }}
+                    style={{ padding: '12px 30px', background: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)', color: '#fff', border: 'none', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}
                   >
-                    <Save size={18} /> Save & Upload Documents
+                    Review & Submit <ArrowRight size={18} />
                   </button>
                 </div>
-                <button type="button" onClick={() => setActiveTab('applications')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>Next</button>
               </div>
             </div>
         </div>

@@ -57,10 +57,10 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
 
                         setLoading(false);
                         setPaymentSuccess(true);
-                        
+
                         // Close modal after success animation
                         setTimeout(() => {
-                            if(onSuccess) onSuccess(response);
+                            if (onSuccess) onSuccess(response);
                             setPaymentSuccess(false);
                             onClose();
                         }, 2500);
@@ -93,7 +93,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                     color: '#06b6d4' // Cyan 500
                 },
                 modal: {
-                    ondismiss: function() {
+                    ondismiss: function () {
                         setLoading(false);
                     }
                 }
@@ -154,16 +154,16 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                     {/* Subtle Ambient Glow inside modal */}
                     <div className="absolute -top-[150px] -right-[150px] w-[300px] h-[300px] bg-cyan-500/10 rounded-full blur-[80px] pointer-events-none" />
                     <div className="absolute -bottom-[150px] -left-[150px] w-[300px] h-[300px] bg-sky-500/10 rounded-full blur-[80px] pointer-events-none" />
-                    
+
                     <div className="relative z-10 p-8 flex flex-col h-full">
-                        
+
                         {paymentSuccess ? (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="flex flex-col items-center justify-center py-10"
                             >
-                                <motion.div 
+                                <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ type: "spring", bounce: 0.5 }}
@@ -175,12 +175,12 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                 <p className="text-slate-400 text-center text-sm">Your premium access has been unlocked successfully. You will be redirected shortly.</p>
                             </motion.div>
                         ) : paymentFailed ? (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="flex flex-col items-center justify-center py-10"
                             >
-                                <motion.div 
+                                <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ type: "spring", bounce: 0.5 }}
@@ -196,7 +196,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                     </span>
                                 </p>
                                 <div className="flex gap-3 w-full z-20">
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setPaymentFailed(false);
                                             setError(null);
@@ -206,7 +206,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                     >
                                         Retry Payment
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setPaymentFailed(false);
                                             setError(null);
@@ -221,7 +221,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                         ) : (
                             <>
                                 {/* Close Button */}
-                                <button 
+                                <button
                                     onClick={onClose}
                                     disabled={loading}
                                     className="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition-colors z-20 disabled:opacity-50"
@@ -231,13 +231,13 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
 
                                 <div className="relative z-20 flex flex-col items-center mt-2">
                                     {/* Icon Lock Shield */}
-                                    <motion.div 
+                                    <motion.div
                                         initial={{ y: -5, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.1 }}
                                         className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-5 border border-cyan-500/20 relative"
                                     >
-                                        <motion.div 
+                                        <motion.div
                                             animate={{ scale: isHovered ? 1.05 : 1 }}
                                             className="absolute inset-0 flex items-center justify-center transition-transform"
                                         >
@@ -246,16 +246,16 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                         <Sparkles className="absolute -top-1.5 -right-1.5 w-4 h-4 text-sky-400" />
                                     </motion.div>
 
-                                    <motion.h2 
+                                    <motion.h2
                                         initial={{ y: 5, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.15 }}
                                         className="text-2xl font-bold text-slate-50 mb-2 text-center"
                                     >
-                                        Unlock Premium
+                                        Unlock Portal
                                     </motion.h2>
 
-                                    <motion.p 
+                                    <motion.p
                                         initial={{ y: 5, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.2 }}
@@ -265,14 +265,14 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                     </motion.p>
 
                                     {/* Payment Box */}
-                                    <motion.div 
+                                    <motion.div
                                         initial={{ scale: 0.95, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
                                         transition={{ delay: 0.3 }}
                                         className="w-full p-4 rounded-xl bg-white/5 border border-slate-700/50 flex justify-between items-center mb-6 relative overflow-hidden group"
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                                        
+
                                         <div className="flex items-center gap-3 relative z-10">
                                             <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                                                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
@@ -290,7 +290,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                     {/* Error Message */}
                                     <AnimatePresence>
                                         {error && (
-                                            <motion.div 
+                                            <motion.div
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: 'auto', opacity: 1 }}
                                                 exit={{ height: 0, opacity: 0 }}
@@ -305,7 +305,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                     </AnimatePresence>
 
                                     {/* Action Button */}
-                                    <motion.button 
+                                    <motion.button
                                         initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.4 }}
@@ -330,8 +330,8 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                             )}
                                         </div>
                                     </motion.button>
-                                    
-                                    <motion.div 
+
+                                    <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: 0.5 }}

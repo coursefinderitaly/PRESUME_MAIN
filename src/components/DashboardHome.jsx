@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import {
   FileText, Users, Bell, ArrowRight, TrendingUp,
   BookOpen, Globe, CheckCircle2, GraduationCap,
@@ -196,20 +197,71 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
   const partnerTotal = (stats.studentsActive || 0) + (stats.studentsHold || 0) + (stats.studentsBackout || 0) + (stats.studentsReceived || 0) || 1;
 
   return (
-    <div className="dash-home-wrap" style={{ height: '100%', overflowY: 'auto', paddingRight: '4px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+    <div className="dash-home-wrap" style={{ height: '100%', overflowY: 'hidden', paddingRight: '4px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
       <style>{`.dash-home-wrap::-webkit-scrollbar { display: none; }`}</style>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.4s ease', paddingTop: '50px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.4s ease', paddingTop: '10px' }}>
 
         {/* ── Top Row: Header & Metrics ── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1.2fr) minmax(450px, 2fr)', gap: '16px' }}>
 
           {/* Welcome Card */}
-          <div style={{
-            display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-start', justifyContent: 'center', textAlign: 'left',
-            padding: '20px 24px', background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderRadius: '20px', border: '1px solid var(--glass-border)',
-            position: 'relative', overflow: 'hidden'
-          }}>
-            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: 'var(--accent-glow)', borderRadius: '50%', filter: 'blur(50px)', zIndex: 0 }} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            style={{
+              display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-start', justifyContent: 'center', textAlign: 'left',
+              padding: '20px 24px', background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderRadius: '20px', border: '1px solid var(--glass-border)',
+              position: 'relative', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)'
+            }}>
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0.8, 0.5],
+                x: [0, -30, 0],
+                y: [0, 20, 0]
+              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+              style={{ position: 'absolute', top: '-50px', right: '-50px', width: '250px', height: '250px', background: 'var(--accent-glow)', borderRadius: '50%', filter: 'blur(60px)', zIndex: 0 }}
+            />
+            <motion.div
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.3, 0.6, 0.3],
+                x: [0, 50, 0],
+                y: [0, -40, 0]
+              }}
+              transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+              style={{ position: 'absolute', bottom: '-80px', left: '-50px', width: '200px', height: '200px', background: 'var(--accent-primary)', borderRadius: '50%', filter: 'blur(80px)', zIndex: 0 }}
+            />
+            {/* Animated subtle floating dots */}
+            {Array.from({ length: 6 }).map((_, i) => (
+              <motion.div
+                key={i}
+                animate={{
+                  y: [0, -15, 0],
+                  opacity: [0.1, 0.6, 0.1],
+                  scale: [1, 1.5, 1]
+                }}
+                transition={{
+                  duration: Math.random() * 3 + 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: Math.random() * 2
+                }}
+                style={{
+                  position: 'absolute',
+                  width: '3px',
+                  height: '3px',
+                  borderRadius: '50%',
+                  background: 'var(--text-main)',
+                  top: `${Math.random() * 80 + 10}%`,
+                  left: `${Math.random() * 80 + 10}%`,
+                  zIndex: 0,
+                  boxShadow: '0 0 5px var(--text-main)'
+                }}
+              />
+            ))}
 
             {/* Floating Avatar — Absolute Positioned so it doesn't affect surrounding text layout */}
             {profile?.role === 'student' && (
@@ -309,7 +361,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
                 </button>
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Metrics Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
@@ -341,7 +393,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
               <h2 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Zap size={18} color="var(--accent-primary)" /> Quick Navigation
               </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', overflowY: 'auto', paddingRight: '4px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', overflowY: 'auto', padding: '4px 4px 10px 4px', margin: '-4px -4px 0 -4px' }}>
                 {quickActions.map((a, i) => (
                   <ActionTile key={a.tab} icon={a.icon} label={a.label} sub={a.sub} color={a.color} onClick={() => setActiveTab(a.tab)} locked={a.locked} onLockedClick={() => setPaymentModalOpen(true)} />
                 ))}
@@ -456,10 +508,59 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
           </div>
 
         </div>
+
+        {/* ── Third Row: Extra Space Filler ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={{
+            background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
+            border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '20px',
+            display: 'flex', flexDirection: 'column', marginBottom: '40px'
+          }}
+        >
+          <h2 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Sparkles size={18} color="var(--accent-primary)" /> Highlights & Opportunities
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
+            <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Star size={16} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 600 }}>Scholarship Deadline</h3>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Apply for the Global Excellence Scholarship before June 15th to secure your funding.</p>
+            </div>
+
+            <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Globe size={16} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 600 }}>Virtual University Fair</h3>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Meet representatives from top European universities this weekend.</p>
+            </div>
+
+            {isStudent && (
+              <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <FileText size={16} />
+                  </div>
+                  <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 600 }}>Profile Review</h3>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Complete your missing documents to bump your application readiness to 100%.</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
       </div>
-      <PaymentTestingModal 
-        isOpen={paymentModalOpen} 
-        onClose={() => setPaymentModalOpen(false)} 
+      <PaymentTestingModal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
         onSuccess={(response) => {
           console.log("Payment Verified", response);
         }}

@@ -1,5 +1,5 @@
 const getPremiumEmailTemplate = (data) => {
-    const { title, greeting, body, ctaText, ctaLink } = data;
+    const { title, greeting, body, credentialsBlock, ctaText, ctaLink } = data;
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,6 +111,8 @@ const getPremiumEmailTemplate = (data) => {
                     We are <strong>thrilled</strong> to have you join <strong>Presume Overseas</strong>. You've officially moved from <em>dreaming about the world</em> to taking the first bold step toward living in it.
                 </div>
 
+                ${body ? `<div>${body}</div>` : ''}
+
                 <!-- Steps -->
                 <div class="steps-title">What's Next?</div>
 
@@ -144,6 +146,8 @@ const getPremiumEmailTemplate = (data) => {
                     <p class="quote-text">The world is a book, and those who do not travel read only one page.</p>
                     <div class="quote-author">— Saint Augustine</div>
                 </div>
+
+                ${credentialsBlock ? `<div>${credentialsBlock}</div>` : ''}
 
                 <!-- CTA -->
                 <div class="cta-section">
@@ -180,12 +184,50 @@ const getPremiumEmailTemplate = (data) => {
 </html>`;
 };
 
-const getWelcomeEmailHTML = (candidateName) => {
+const getWelcomeEmailHTML = (candidateName, email, password) => {
+    let credentialsHtml = '';
+    if (email && password) {
+        credentialsHtml = `
+            <div style="margin-top: 30px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                <h4 style="margin: 0 0 10px 0; color: #0f172a; font-size: 15px;">Your Login Credentials</h4>
+                <p style="margin: 0 0 5px 0; font-size: 14px; color: #334155;"><strong>Email:</strong> ${email}</p>
+                <p style="margin: 0; font-size: 14px; color: #334155;"><strong>Password:</strong> ${password}</p>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #ef4444;"><em>Please keep these credentials secure and consider changing your password after your first login.</em></p>
+            </div>
+        `;
+    }
+
     return getPremiumEmailTemplate({
         title: "You're In! Welcome to Presume Overseas",
         greeting: candidateName,
         body: '',
+        credentialsBlock: credentialsHtml,
         ctaText: 'Go to My Portal',
+        ctaLink: 'https://presumeoverseas.com/dashboard'
+    });
+};
+
+const getPaymentPendingEmailHTML = (candidateName, email, password) => {
+    let credentialsHtml = '';
+    if (email && password) {
+        credentialsHtml = `
+            <div style="margin-top: 20px; background: #fffbeb; padding: 20px; border-radius: 12px; border: 1px dashed #f59e0b;">
+                <h4 style="margin: 0 0 10px 0; color: #b45309; font-size: 15px;">Your Login Credentials</h4>
+                <p style="margin: 0 0 5px 0; font-size: 14px; color: #78350f;"><strong>Email:</strong> ${email}</p>
+                <p style="margin: 0; font-size: 14px; color: #78350f;"><strong>Password:</strong> ${password}</p>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #d97706;">
+<em>Please keep these credentials secure.</em></p>
+            </div>
+        `;
+    }
+
+    return getPremiumEmailTemplate({
+        title: "Registration Complete - Action Required",
+        greeting: candidateName,
+        body: `Your account has been successfully created, but your registration payment is still pending.<br/><br/>
+               Please log in to your portal using the credentials below to complete your payment and unlock your dashboard features.`,
+        credentialsBlock: credentialsHtml,
+        ctaText: 'Login to Complete Payment',
         ctaLink: 'https://presumeoverseas.com/dashboard'
     });
 };
@@ -248,6 +290,7 @@ const getInquiryNotificationEmailHTML = (data) => {
 module.exports = {
     getPremiumEmailTemplate,
     getWelcomeEmailHTML,
+    getPaymentPendingEmailHTML,
     getExportEmailHTML,
     getPartnerRequestEmailHTML,
     getAdminCredentialsEmailHTML,

@@ -33,26 +33,26 @@
 
                                                 [data-theme='light'] .dash-universe {
                                                   /* ── Milky Soft Light Palette ── */
-                                                  --bg-primary: #f8fafc;
-                                                  --bg-secondary: #f1f5f9;
-                                                  --bg-tertiary: #e2e8f0;
-                                                  --card-bg-solid: rgba(255, 255, 255, 0.95);
-                                                  --table-header-bg: rgba(0, 0, 0, 0.03);
-                                                  --glass-bg: rgba(255, 255, 255, 0.9);
-                                                  --glass-border: rgba(0, 0, 0, 0.08);
-                                                  --glass-highlight: rgba(0, 0, 0, 0.02);
-                                                  --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.1);
+                                                  --bg-primary: #faf8f5;
+                                                  --bg-secondary: #f4f1eb;
+                                                  --bg-tertiary: #ebe6df;
+                                                  --card-bg-solid: rgba(253, 252, 248, 0.95);
+                                                  --table-header-bg: rgba(139, 115, 85, 0.05);
+                                                  --glass-bg: rgba(253, 252, 248, 0.9);
+                                                  --glass-border: rgba(139, 126, 102, 0.15);
+                                                  --glass-highlight: rgba(139, 126, 102, 0.05);
+                                                  --card-shadow: 0 16px 40px -12px rgba(100, 90, 80, 0.1);
 
-                                                  --accent-primary: #6366f1;
-                                                  --accent-secondary: #4f46e5;
-                                                  --accent-tertiary: #818cf8;
-                                                  --accent-glow: rgba(99, 102, 241, 0.1);
+                                                  --accent-primary: #8b7355;
+                                                  --accent-secondary: #6b563d;
+                                                  --accent-tertiary: #a69076;
+                                                  --accent-glow: rgba(139, 115, 85, 0.15);
 
-                                                  --text-main: #1e293b;
-                                                  --text-muted: #64748b;
-                                                  --text-dim: #94a3b8;
-                                                  --cyber-grid: rgba(99, 102, 241, 0.02);
-                                                  background: radial-gradient(circle at top right, #ffffff, #f8fafc);
+                                                  --text-main: #050505;
+                                                  --text-muted: #171717;
+                                                  --text-dim: #262626;
+                                                  --cyber-grid: rgba(0, 0, 0, 0.08);
+                                                  background: radial-gradient(circle at top right, #fdfcf9, #f4f1eb);
                                                 }
 
                                                 /* Base Universal Settings */
@@ -63,6 +63,25 @@
                                                   display: flex;
                                                   position: relative;
                                                   overflow: hidden;
+                                                }
+
+                                                /* Force theme text colors over hardcoded tailwind classes in dashboard */
+                                                .dash-universe .text-white,
+                                                .dash-universe .text-gray-100,
+                                                .dash-universe .text-gray-200,
+                                                .dash-universe .text-slate-100,
+                                                .dash-universe .text-slate-200 {
+                                                  color: var(--text-main) !important;
+                                                }
+                                                .dash-universe .text-gray-300,
+                                                .dash-universe .text-gray-400,
+                                                .dash-universe .text-slate-300,
+                                                .dash-universe .text-slate-400 {
+                                                  color: var(--text-muted) !important;
+                                                }
+                                                .dash-universe .text-gray-500,
+                                                .dash-universe .text-slate-500 {
+                                                  color: var(--text-dim) !important;
                                                 }
 
                                                 .dash-bg {
@@ -82,7 +101,7 @@
                                                   border-radius: 50%;
                                                   filter: blur(120px);
                                                   opacity: 0.6;
-                                                  animation: floating-loop 25s infinite linear;
+                                                  animation: none;
                                                   z-index: 0;
                                                   mix-blend-mode: screen;
                                                 }
@@ -1773,8 +1792,26 @@
                                                   color: var(--text-main) !important;
                                                 }
 
+                                                .react-select__value-container {
+                                                  display: flex !important;
+                                                  flex: 1 1 auto !important;
+                                                  width: 100% !important;
+                                                  cursor: text !important;
+                                                }
+
                                                 .react-select__input-container {
                                                   color: var(--text-main) !important;
+                                                  margin: 0 !important;
+                                                  padding: 0 !important;
+                                                  flex: 1 1 auto !important;
+                                                  width: 100% !important;
+                                                  display: inline-flex !important;
+                                                }
+                                                
+                                                .react-select__input-container > div,
+                                                .react-select__input-container input {
+                                                  width: 100% !important;
+                                                  cursor: text !important;
                                                 }
 
                                                 .react-select__placeholder {
@@ -2412,6 +2449,8 @@
                                                   display: flex;
                                                   align-items: center;
                                                   gap: 6px;
+                                                  flex: 1;
+                                                  padding-right: 10px;
                                                 }
 
                                                 .file-box label {
@@ -2420,6 +2459,8 @@
                                                   color: var(--text-main);
                                                   letter-spacing: 0.3px;
                                                   margin-bottom: 0;
+                                                  white-space: normal;
+                                                  line-height: 1.2;
                                                 }
 
                                                 .file-box input[type="file"] {
@@ -2428,6 +2469,8 @@
                                                   color: transparent;
                                                   /* hide default text */
                                                   cursor: pointer;
+                                                  flex-shrink: 0;
+                                                  margin-left: auto;
                                                 }
 
                                                 .file-box input[type="file"]::-webkit-file-upload-button {

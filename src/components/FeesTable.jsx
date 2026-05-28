@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Wallet, FileText, Compass, Award, ShieldCheck, Ticket } from 'lucide-react';
+import { CheckCircle2, Wallet, FileText, Compass, Award, ShieldCheck, Ticket, CreditCard } from 'lucide-react';
+import QuickAuthModal from './QuickAuthModal';
+import RazorpayGateway from './RazorpayGateway';
+import { API_BASE_URL } from '../config';
 
 const FeesTable = ({ countryId }) => {
     const [coupon, setCoupon] = useState('');
@@ -8,6 +11,13 @@ const FeesTable = ({ countryId }) => {
     const [error, setError] = useState('');
     const [selectedLevel, setSelectedLevel] = useState('Bachelors');
     const [uniType, setUniType] = useState('Public');
+    
+    // Payment Flow State
+    const [isQuickAuthOpen, setIsQuickAuthOpen] = useState(false);
+    const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
+    const [paymentEmail, setPaymentEmail] = useState('');
+    const [paymentPassword, setPaymentPassword] = useState('');
+    const [paymentOrderId, setPaymentOrderId] = useState('');
 
     const pricing = {
         'Public': {
@@ -24,7 +34,42 @@ const FeesTable = ({ countryId }) => {
 
     const currentPhases = pricing[uniType][selectedLevel];
     const totalFee = (countryId === 'germany' && uniType === 'Private') ? 20000 : currentPhases.reduce((a, b) => a + b, 0);
-    const discountedTotal = totalFee * 0.5; // 50% discount if coupon applied
+    const discountedTotal = applied ? (totalFee * 0.9) : totalFee;
+
+    const handlePayNowClick = async () => {
+        // Always show quick auth for now to allow testing the account creation flow
+        setIsQuickAuthOpen(true);
+    };
+
+    const handleQuickAuthSuccess = (email, password) => {
+        setPaymentEmail(email);
+        setPaymentPassword(password);
+        setIsQuickAuthOpen(false);
+        setPaymentOrderId(`order_${Math.random().toString(36).substring(2, 11)}`);
+        setIsRazorpayOpen(true);
+    };
+
+    const handlePaymentSuccess = async () => {
+        if (paymentEmail && paymentPassword) {
+            try {
+                const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+                  credentials: 'include',
+                  body: JSON.stringify({ identifier: paymentEmail, password: paymentPassword })
+                });
+                
+                if (loginRes.ok) {
+                    sessionStorage.setItem('tab_session', 'active');
+                    window.location.href = '/dashboard';
+                    return;
+                }
+            } catch (err) {
+                console.error("Login failed after payment", err);
+            }
+        }
+        window.location.href = '/dashboard';
+    };
 
     const shouldHidePrice = uniType === 'Private' || !(countryId === 'germany' || countryId === 'italy');
 
@@ -274,6 +319,17 @@ const FeesTable = ({ countryId }) => {
                                 </div>
                             </motion.div>
                         )))}
+                    
+                    {/* Pay Now Button (Moved to bottom of phases) */}
+                    <motion.button 
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handlePayNowClick}
+                        className="w-full mt-2 py-5 bg-gradient-to-r from-accent-gold via-yellow-400 to-amber-500 rounded-2xl text-black font-black uppercase tracking-[0.2em] shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-[0_20px_40px_-10px_rgba(245,158,11,0.7)]"
+                    >
+                        <CreditCard className="w-5 h-5" />
+                        Pay Now
+                    </motion.button>
                 </div>
 
                 {/* Right Column (1/3 width): Total Fee Card & Coupon Apply Card */}
@@ -414,12 +470,30 @@ const FeesTable = ({ countryId }) => {
                         </div>
                     </div>
 
-                    <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest bg-white/[0.02] border border-white/5 px-3 py-2 rounded-xl text-center mt-4">
+                    <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest bg-white/[0.02] border border-white/5 px-3 py-2 rounded-xl text-center mt-4 mb-2">
                         * 18% GST applicable extra.
                     </p>
                 </motion.div>
 
             </div>
+
+            {/* Modals */}
+            <QuickAuthModal 
+                isOpen={isQuickAuthOpen} 
+                onClose={() => setIsQuickAuthOpen(false)} 
+                onSuccess={handleQuickAuthSuccess} 
+            />
+            
+            <RazorpayGateway 
+                isOpen={isRazorpayOpen} 
+                onClose={() => setIsRazorpayOpen(false)} 
+                amount={discountedTotal.toLocaleString()}
+                razorpayOrderId={paymentOrderId}
+                userEmail={paymentEmail}
+                userPassword={paymentPassword}
+                onPaymentSuccess={handlePaymentSuccess}
+                triggerWelcomeEmail={true}
+            />
         </div>
     );
 };

@@ -50,9 +50,20 @@ const SearchableSelect = ({ name, value, options, onChange, placeholder, require
       ...provided,
       color: 'var(--text-main)'
     }),
+    valueContainer: (provided) => ({
+      ...provided,
+      display: 'flex',
+      flex: '1 1 auto',
+      width: '100%',
+      cursor: 'text'
+    }),
     input: (provided) => ({
       ...provided,
-      color: 'var(--text-main)'
+      color: 'var(--text-main)',
+      margin: 0,
+      padding: 0,
+      width: '100%',
+      display: 'inline-flex'
     }),
     placeholder: (provided) => ({
       ...provided,
@@ -76,7 +87,7 @@ const SearchableSelect = ({ name, value, options, onChange, placeholder, require
   };
 
   return (
-    <Select
+    <Select classNamePrefix="react-select"
       name={name}
       value={selectedOption}
       onChange={handleChange}

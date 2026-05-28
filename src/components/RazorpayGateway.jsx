@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, CreditCard, Smartphone, Globe, ShieldCheck, ChevronRight, CheckCircle2, ArrowLeft, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
-const RazorpayGateway = ({ isOpen, onClose, amount, razorpayOrderId, userEmail, onPaymentSuccess, onPaymentFailure }) => {
+const RazorpayGateway = ({ isOpen, onClose, amount, razorpayOrderId, userEmail, userPassword, onPaymentSuccess, onPaymentFailure, triggerWelcomeEmail = false }) => {
   const [method, setMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -39,6 +39,14 @@ const RazorpayGateway = ({ isOpen, onClose, amount, razorpayOrderId, userEmail, 
             });
           }
           
+          if (triggerWelcomeEmail && userEmail) {
+            fetch(`${API_BASE_URL}/auth/send-welcome`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+              body: JSON.stringify({ email: userEmail, password: userPassword })
+            }).catch(e => console.error('Failed to trigger welcome email:', e));
+          }
+
           setIsSuccess(true);
           setTimeout(() => {
             if (onPaymentSuccess) onPaymentSuccess();

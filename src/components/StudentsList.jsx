@@ -43,7 +43,8 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
       cursor: 'pointer',
     }),
     singleValue: (base) => ({ ...base, color: 'var(--text-main)' }),
-    input: (base) => ({ ...base, color: 'var(--text-main)' }),
+    valueContainer: (base) => ({ ...base, display: 'flex', flex: '1 1 auto', width: '100%', cursor: 'text' }),
+    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, width: '100%', display: 'inline-flex' }),
     placeholder: (base) => ({ ...base, color: 'var(--text-muted)' }),
   };
 
@@ -262,7 +263,7 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
             <input type="text" name="state" placeholder="Filter by State" value={filters.state} onChange={handleFilterChange} style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', width: '100%', outline: 'none', marginLeft: '8px' }} />
           </div>
           <div style={{ minWidth: '200px' }}>
-            <Select 
+            <Select classNamePrefix="react-select" 
               menuPortalTarget={document.body}
               options={filterOptions}
               value={filterOptions.find(o => o.value === filters.isAssigned)}
@@ -367,7 +368,7 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
                         <div style={{fontSize: '0.8rem', color: 'var(--text-muted)'}}>{s.phone}</div>
                       </td>
                       <td style={{padding: '18px 20px'}} onClick={(e) => e.stopPropagation()}>
-                        <Select 
+                        <Select classNamePrefix="react-select" 
                           menuPortalTarget={document.body}
                           options={offerStatusOptions}
                           value={offerStatusOptions.find(o => o.value === (s.offerStatus || 'Pending'))}
@@ -377,7 +378,7 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
                         />
                       </td>
                       <td style={{padding: '18px 20px'}} onClick={(e) => e.stopPropagation()}>
-                        <Select 
+                        <Select classNamePrefix="react-select" 
                           menuPortalTarget={document.body}
                           options={studentStatusOptions}
                           value={studentStatusOptions.find(o => o.value === (s.studentStatus || 'Active'))}
@@ -388,7 +389,7 @@ const StudentsList = ({ profile, setMessage, pendingApplications, setPendingAppl
                       </td>
                       {profile.role !== 'counselor' && profile.role !== 'freelancer' && (
                         <td style={{padding: '18px 20px'}} onClick={(e) => e.stopPropagation()}>
-                          <Select 
+                          <Select classNamePrefix="react-select" 
                             menuPortalTarget={document.body}
                             options={assignOptions}
                             value={currentCounselor}

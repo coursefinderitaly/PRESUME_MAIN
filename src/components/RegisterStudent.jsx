@@ -63,7 +63,8 @@ const RegisterStudent = ({ profile, setMessage }) => {
       '&:hover': { backgroundColor: 'rgba(128, 128, 128, 0.1)' }
     }),
     singleValue: (base) => ({ ...base, color: 'var(--text-main)' }),
-    input: (base) => ({ ...base, color: 'var(--text-main)' }),
+    valueContainer: (base) => ({ ...base, display: 'flex', flex: '1 1 auto', width: '100%', cursor: 'text' }),
+    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, width: '100%', display: 'inline-flex' }),
     placeholder: (base) => ({ ...base, color: 'var(--text-muted)' }),
     indicatorSeparator: (base) => ({ ...base, backgroundColor: 'var(--glass-border)' }),
     dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)' }),
@@ -157,7 +158,7 @@ const RegisterStudent = ({ profile, setMessage }) => {
           {profile.role !== 'counselor' && profile.role !== 'freelancer' && (
             <div className="dash-input-group" style={{ zIndex: 100 }}>
               <label>Assigned Counselor</label>
-              <Select 
+              <Select classNamePrefix="react-select" 
                 name="assignedCounselor" value={formData.assignedCounselor} onChange={handleSelectChange} 
                 options={assignOptions} styles={{ ...customSelectStyles, menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                 menuPortalTarget={document.body}

@@ -11,6 +11,7 @@ import { useTheme } from './ThemeContext';
 
 import DashboardHome from './components/DashboardHome';
 import PaymentTestingModal from './components/PaymentTestingModal';
+import VerticalApplicationTracker from './components/VerticalApplicationTracker';
 import StudentsList from './components/StudentsList';
 import ManageCounselors from './components/ManageCounselors';
 import Notifications from './components/Notifications';
@@ -25,50 +26,100 @@ import StudentDocuments from './components/StudentDocuments';
 import PaymentHistory from './components/PaymentHistory';
 import { API_BASE_URL } from './config';
 
-const AnimatedBackground = () => (
+const AnimatedBackground = ({ activeTheme }) => (
   <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, overflow: 'hidden', background: 'var(--bg-primary)', transition: 'background 0.5s ease' }}>
-    {/* Floating Dream Orbs */}
-    <motion.div
-      animate={{ 
-        scale: [1, 1.2, 0.9, 1.1, 1],
-        rotate: [0, 90, 180, 270, 360],
-        x: [0, 50, -30, 40, 0],
-        y: [0, 30, 60, -20, 0]
-      }}
-      transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-      style={{
-        position: 'absolute', top: '10%', left: '10%', width: '50vw', height: '50vw',
-        background: 'radial-gradient(circle, var(--accent-primary) 0%, transparent 70%)', 
-        filter: 'blur(80px)', opacity: 0.15
-      }}
-    />
-    <motion.div
-      animate={{ 
-        scale: [1.1, 0.9, 1.2, 1, 1.1],
-        rotate: [360, 270, 180, 90, 0],
-        x: [0, -40, 20, -50, 0],
-        y: [0, -20, -60, 30, 0]
-      }}
-      transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-      style={{
-        position: 'absolute', bottom: '10%', right: '10%', width: '45vw', height: '45vw',
-        background: 'radial-gradient(circle, var(--accent-secondary) 0%, transparent 70%)', 
-        filter: 'blur(100px)', opacity: 0.12
-      }}
-    />
-    <motion.div
-      animate={{ 
-        scale: [1, 1.1, 1],
-        opacity: [0.05, 0.1, 0.05]
-      }}
-      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-      style={{
-        position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-        width: '100vw', height: '100vh',
-        background: 'radial-gradient(circle, var(--accent-glow) 0%, transparent 80%)', 
-        filter: 'blur(60px)', zIndex: -1
-      }}
-    />
+    {/* Subtle Grid Overlay */}
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.04, backgroundImage: 'linear-gradient(var(--text-main) 1px, transparent 1px), linear-gradient(90deg, var(--text-main) 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)', WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)' }} />
+
+    {/* Glowing Orbs using SVG for better performance and scaling */}
+    <svg style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0.3 }} xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style={{ stopColor: activeTheme === 'light' ? 'rgba(230, 220, 200, 0.4)' : 'var(--accent-primary)', stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: activeTheme === 'light' ? 'rgba(240, 230, 210, 0.4)' : 'var(--accent-secondary)', stopOpacity: 1 }} />
+        </linearGradient>
+        <linearGradient id="grad2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style={{ stopColor: activeTheme === 'light' ? 'rgba(235, 225, 205, 0.3)' : 'var(--accent-glow)', stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: activeTheme === 'light' ? 'rgba(220, 210, 190, 0.2)' : 'var(--accent-primary)', stopOpacity: 0.5 }} />
+        </linearGradient>
+      </defs>
+      <motion.circle
+        cx="20%"
+        cy="30%"
+        r="15%"
+        fill="url(#grad1)"
+        filter="blur(80px)"
+        animate={{
+          cx: ["20%", "40%", "10%", "20%"],
+          cy: ["30%", "10%", "50%", "30%"],
+          scale: [1, 1.2, 0.9, 1],
+        }}
+        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.circle
+        cx="80%"
+        cy="70%"
+        r="20%"
+        fill="url(#grad2)"
+        filter="blur(100px)"
+        animate={{
+          cx: ["80%", "60%", "90%", "80%"],
+          cy: ["70%", "90%", "50%", "70%"],
+          scale: [1, 1.1, 0.8, 1],
+        }}
+        transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.circle
+        cx="50%"
+        cy="50%"
+        r="25%"
+        fill={activeTheme === 'light' ? 'rgba(245, 235, 215, 0.4)' : 'var(--accent-secondary)'}
+        filter="blur(120px)"
+        opacity="0.5"
+        animate={{
+          cx: ["50%", "60%", "40%", "50%"],
+          cy: ["50%", "40%", "60%", "50%"],
+          scale: [0.8, 1.2, 0.9, 0.8],
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </svg>
+
+    {/* Dynamic Floating Particles */}
+    {Array.from({ length: 20 }).map((_, i) => {
+      const size = Math.random() * 15 + 5;
+      const startX = Math.random() * 100;
+      const duration = Math.random() * 20 + 15;
+      const delay = Math.random() * -20;
+      return (
+        <motion.div
+          key={i}
+          style={{
+            position: 'absolute',
+            width: `${size}px`,
+            height: `${size}px`,
+            borderRadius: Math.random() > 0.5 ? '50%' : '4px',
+            background: activeTheme === 'light' ? 'rgba(180, 170, 150, 0.4)' : 'var(--accent-primary)',
+            opacity: Math.random() * 0.3 + 0.1,
+            left: `${startX}vw`,
+            bottom: '-10vh',
+            boxShadow: activeTheme === 'light' ? 'none' : '0 0 10px var(--accent-glow)'
+          }}
+          animate={{
+            y: ['0vh', '-120vh'],
+            x: [0, (Math.random() - 0.5) * 200],
+            rotate: [0, 360],
+            opacity: [0, Math.random() * 0.3 + 0.1, 0]
+          }}
+          transition={{
+            duration: duration,
+            repeat: Infinity,
+            ease: 'linear',
+            delay: delay
+          }}
+        />
+      );
+    })}
   </div>
 );
 
@@ -144,7 +195,7 @@ const Dashboard = () => {
   // Poll for unread admin messages (student portal)
   const pollUnreadMessages = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/erp/my-messages/unread`, { 
+      const res = await fetch(`${API_BASE_URL}/erp/my-messages/unread`, {
         credentials: 'include',
         headers: { 'x-csrf-protected': '1' }
       });
@@ -155,7 +206,7 @@ const Dashboard = () => {
           setAlertDismissed(false);
           setShowMsgAlert(true);
           try {
-            const msgRes = await fetch(`${API_BASE_URL}/erp/my-messages`, { 
+            const msgRes = await fetch(`${API_BASE_URL}/erp/my-messages`, {
               credentials: 'include',
               headers: { 'x-csrf-protected': '1' }
             });
@@ -164,13 +215,13 @@ const Dashboard = () => {
               const adminMsgs = msgs.filter(m => !m.read && m.sender === 'admin');
               if (adminMsgs.length > 0) setLatestAdminMsg(adminMsgs[adminMsgs.length - 1]);
             }
-          } catch (e) {}
+          } catch (e) { }
         } else {
           setUnreadMsgCount(data.unread);
           if (data.unread === 0) { setShowMsgAlert(false); setLatestAdminMsg(null); }
         }
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const fetchStats = async () => {
@@ -231,8 +282,8 @@ const Dashboard = () => {
 
 
   const handleLogout = async () => {
-    await fetch(`${API_BASE_URL}/auth/logout`, { 
-      method: "POST", 
+    await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: "POST",
       credentials: "include",
       headers: { 'x-csrf-protected': '1' }
     }).catch(() => { });
@@ -276,25 +327,25 @@ const Dashboard = () => {
   const handleAvatarUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) { 
-      setMessage({ text: 'Please select an image file.', type: 'error' }); 
-      return; 
+    if (!file.type.startsWith('image/')) {
+      setMessage({ text: 'Please select an image file.', type: 'error' });
+      return;
     }
-    
+
     setAvatarUploading(true);
     setMessage({ text: 'Compressing and uploading photo...', type: 'info' });
-    
+
     try {
       // Auto compress to max 600px dimension and 0.75 quality
       const avatarUrl = await compressImage(file, 600, 600, 0.75);
-      
+
       const res = await fetch(`${API_BASE_URL}/auth/avatar`, {
-        method: 'PUT', 
+        method: 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
         body: JSON.stringify({ avatarUrl })
       });
-      
+
       const data = await res.json();
       if (res.ok) {
         setProfile(prev => ({ ...prev, avatarUrl: data.avatarUrl }));
@@ -302,9 +353,9 @@ const Dashboard = () => {
       } else {
         setMessage({ text: data.error || 'Failed to upload.', type: 'error' });
       }
-    } catch (err) { 
+    } catch (err) {
       console.error(err);
-      setMessage({ text: 'Failed during upload.', type: 'error' }); 
+      setMessage({ text: 'Failed during upload.', type: 'error' });
     } finally {
       setAvatarUploading(false);
     }
@@ -312,16 +363,16 @@ const Dashboard = () => {
 
   const handleRemoveAvatar = async () => {
     if (!window.confirm('Are you sure you want to remove your profile photo?')) return;
-    
+
     setAvatarUploading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/auth/avatar`, {
-        method: 'PUT', 
+        method: 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
         body: JSON.stringify({ avatarUrl: "" })
       });
-      
+
       const data = await res.json();
       if (res.ok) {
         setProfile(prev => ({ ...prev, avatarUrl: null }));
@@ -329,9 +380,9 @@ const Dashboard = () => {
       } else {
         setMessage({ text: data.error || 'Failed to remove photo.', type: 'error' });
       }
-    } catch (err) { 
+    } catch (err) {
       console.error(err);
-      setMessage({ text: 'Request failed.', type: 'error' }); 
+      setMessage({ text: 'Request failed.', type: 'error' });
     } finally {
       setAvatarUploading(false);
     }
@@ -434,14 +485,14 @@ const Dashboard = () => {
     return (
       <button
         className={`nav-item ${activeTab === id ? 'active' : ''} ${locked ? 'locked' : ''}`}
-        onClick={() => { 
+        onClick={() => {
           if (locked) {
             setPaymentModalOpen(true);
             return;
           }
-          setActiveTab(id); 
-          setMessage({ text: '', type: '' }); 
-          setEditMode(false); 
+          setActiveTab(id);
+          setMessage({ text: '', type: '' });
+          setEditMode(false);
         }}
         style={{ cursor: 'pointer' }}
       >
@@ -454,16 +505,16 @@ const Dashboard = () => {
 
   return (
     <>
-      <PaymentTestingModal 
-        isOpen={paymentModalOpen} 
-        onClose={() => setPaymentModalOpen(false)} 
+      <PaymentTestingModal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
         onSuccess={(response) => console.log('Payment unlocked via sidebar!', response)}
         userEmail={profile?.email}
       />
-      <AnimatedBackground />
-      <div className="dash-universe" style={{ 
-        height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'row', 
-        background: 'var(--bg-primary)', boxSizing: 'border-box'
+      <AnimatedBackground activeTheme={activeTheme} />
+      <div className="dash-universe" style={{
+        height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'row',
+        background: 'transparent', boxSizing: 'border-box'
       }}>
 
         {/* ================================== */}
@@ -471,27 +522,27 @@ const Dashboard = () => {
         {/* ================================== */}
         <motion.aside
           initial={false}
-          animate={{ 
+          animate={{
             width: expanded ? '270px' : '80px',
             x: 0
           }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 300, 
-            damping: 30, 
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
             mass: 1,
-            restDelta: 0.5 
+            restDelta: 0.5
           }}
-          style={{ 
+          style={{
             height: 'calc(100vh - 32px)',
             margin: '16px',
-            background: 'var(--glass-bg)', 
+            background: 'var(--glass-bg)',
             border: '1px solid var(--glass-border)',
             borderRadius: '24px',
-            display: 'flex', 
-            flexDirection: 'column', 
+            display: 'flex',
+            flexDirection: 'column',
             zIndex: 100,
-            backdropFilter: 'blur(36px) saturate(160%)', 
+            backdropFilter: 'blur(36px) saturate(160%)',
             WebkitBackdropFilter: 'blur(36px) saturate(160%)',
             boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
             overflow: 'visible',
@@ -499,9 +550,22 @@ const Dashboard = () => {
           }}
         >
           {/* Inner Wrapper for Clipping */}
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', borderRadius: '24px' }}>
+          <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', borderRadius: '24px' }}>
+
+            {/* Animated Background Orbs for Sidebar */}
+            <motion.div
+              animate={{ y: [0, -60, 0], opacity: [0.02, 0.08, 0.02], scale: [1, 1.2, 1] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              style={{ position: 'absolute', bottom: '10%', left: '-20%', width: '150px', height: '150px', background: 'var(--accent-primary)', filter: 'blur(40px)', borderRadius: '50%', zIndex: 0 }}
+            />
+            <motion.div
+              animate={{ y: [0, 80, 0], opacity: activeTheme === 'light' ? [0.01, 0.03, 0.01] : [0.02, 0.05, 0.02], x: [0, 20, 0] }}
+              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+              style={{ position: 'absolute', top: '20%', right: '-30%', width: '200px', height: '200px', background: activeTheme === 'light' ? 'rgba(180, 170, 150, 0.5)' : 'var(--accent-secondary)', filter: 'blur(50px)', borderRadius: '50%', zIndex: 0 }}
+            />
+
             {/* Sidebar Header / Logo */}
-            <div style={{ padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', borderBottom: '1px solid var(--glass-border)', overflow: 'hidden', background: 'rgba(255,255,255,0.02)' }}>
+            <div style={{ position: 'relative', zIndex: 1, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', borderBottom: '1px solid var(--glass-border)', overflow: 'hidden', background: 'rgba(255,255,255,0.02)' }}>
               <div style={{ position: 'relative' }}>
                 <img
                   src="/logo.png"
@@ -511,7 +575,7 @@ const Dashboard = () => {
                 <div style={{ position: 'absolute', inset: -4, background: 'var(--accent-glow)', filter: 'blur(10px)', borderRadius: '50%', zIndex: -1, opacity: 0.5 }}></div>
               </div>
               {expanded && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
@@ -524,116 +588,116 @@ const Dashboard = () => {
               )}
             </div>
 
-          {/* Navigation Items */}
-          <div className="sidebar-nav">
-            <style>{`.sidebar-nav::-webkit-scrollbar { display: none; }`}</style>
-            
-            <NavButton id="home" icon={Home} label="Dashboard" />
-            
-            {isStudent && (
-              <>
-                <NavButton id="course-finder" icon={Search} label="Search Programs" />
-                <NavButton id="applications" icon={FileText} label="Applications" locked={!profile.portalUnlocked} />
-                <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" locked={!profile.portalUnlocked} />
-                <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" locked={!profile.portalUnlocked} />
-                <NavButton id="alerts" icon={Bell} label="Alerts" locked={!profile.portalUnlocked} />
-              </>
-            )}
+            {/* Navigation Items */}
+            <div className="sidebar-nav" style={{ position: 'relative', zIndex: 1, flex: 1, overflowY: 'auto' }}>
+              <style>{`.sidebar-nav::-webkit-scrollbar { display: none; }`}</style>
 
-            {(isPartner || isCounselor || isFreelancer) && (
-              <>
-                <NavButton id="register-student" icon={User} label="Register New" />
-                <NavButton id="students-list" icon={Users} label="My Students" />
-                <NavButton id="course-finder" icon={Search} label="Prog. Finder" />
-                <NavButton id="partner-applications" icon={FileText} label="Applications" />
-                <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
-                {isPartner && <NavButton id="counselors" icon={Briefcase} label="Manage Team" />}
-                <NavButton id="notifications" icon={Bell} label="Alerts" locked={isStudent ? !profile.portalUnlocked : false} />
-              </>
-            )}
+              <NavButton id="home" icon={Home} label="Dashboard" />
 
-            <NavButton id="payments" icon={CreditCard} label="Billing & Payments" />
-            <NavButton id="profile" icon={User} label="Account Profile" />
-          </div>
+              {isStudent && (
+                <>
+                  <NavButton id="course-finder" icon={Search} label="Search Programs" />
+                  <NavButton id="applications" icon={FileText} label="Applications" locked={!profile.portalUnlocked} />
+                  <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" locked={!profile.portalUnlocked} />
+                  <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" locked={!profile.portalUnlocked} />
+                  <NavButton id="alerts" icon={Bell} label="Alerts" locked={!profile.portalUnlocked} />
+                </>
+              )}
 
-          {/* Sidebar Footer: Theme & Profile */}
-          <div style={{ padding: '12px 16px', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '10px', background: 'rgba(0,0,0,0.05)' }}>
-            
-            {/* Theme Toggle */}
-            <div style={{ display: 'flex', background: 'var(--bg-tertiary)', padding: '2px', borderRadius: '12px', border: '1px solid var(--glass-border)', justifyContent: expanded ? 'space-between' : 'center' }}>
-              <button onClick={() => setTheme('light')} style={{ flex: expanded ? 1 : 'none', background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} title="Light Mode"><Sun size={14} /></button>
-              <button onClick={() => setTheme('dark')} style={{ flex: expanded ? 1 : 'none', background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} title="Dark Mode"><Moon size={14} /></button>
-              {expanded && <button onClick={() => setTheme('system')} style={{ flex: 1, background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} title="System Auto"><Monitor size={14} /></button>}
+              {(isPartner || isCounselor || isFreelancer) && (
+                <>
+                  <NavButton id="register-student" icon={User} label="Register New" />
+                  <NavButton id="students-list" icon={Users} label="My Students" />
+                  <NavButton id="course-finder" icon={Search} label="Prog. Finder" />
+                  <NavButton id="partner-applications" icon={FileText} label="Applications" />
+                  <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
+                  {isPartner && <NavButton id="counselors" icon={Briefcase} label="Manage Team" />}
+                  <NavButton id="notifications" icon={Bell} label="Alerts" locked={isStudent ? !profile.portalUnlocked : false} />
+                </>
+              )}
+
+              <NavButton id="payments" icon={CreditCard} label="Billing & Payments" />
+              <NavButton id="profile" icon={User} label="Account Profile" />
             </div>
 
-            {/* Profile Brief (Centered Row) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '4px', borderRadius: '12px', transition: 'all 0.2s' }}>
-              <div style={{ position: 'relative', width: '36px', height: '36px', flexShrink: 0 }}>
-                <div className="avatar" style={{ width: '36px', height: '36px', fontSize: '0.9rem', overflow: 'hidden', border: '2px solid var(--accent-glow)', borderRadius: '10px', background: 'var(--accent-primary)' }}>
-                  {profile.avatarUrl
-                    ? <img src={profile.avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', fontWeight: 800, color: '#fff' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</span>
-                  }
-                </div>
+            {/* Sidebar Footer: Theme & Profile */}
+            <div style={{ padding: '12px 16px', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '10px', background: 'rgba(0,0,0,0.05)' }}>
+
+              {/* Theme Toggle */}
+              <div style={{ display: 'flex', background: 'var(--bg-tertiary)', padding: '2px', borderRadius: '12px', border: '1px solid var(--glass-border)', justifyContent: expanded ? 'space-between' : 'center' }}>
+                <button onClick={() => setTheme('light')} style={{ flex: expanded ? 1 : 'none', background: theme === 'light' ? 'var(--accent-primary)' : 'transparent', color: theme === 'light' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} title="Light Mode"><Sun size={14} /></button>
+                <button onClick={() => setTheme('dark')} style={{ flex: expanded ? 1 : 'none', background: theme === 'dark' ? 'var(--accent-primary)' : 'transparent', color: theme === 'dark' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} title="Dark Mode"><Moon size={14} /></button>
+                {expanded && <button onClick={() => setTheme('system')} style={{ flex: 1, background: theme === 'system' ? 'var(--accent-primary)' : 'transparent', color: theme === 'system' ? '#fff' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} title="System Auto"><Monitor size={14} /></button>}
               </div>
-              {expanded && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ minWidth: 0, textAlign: 'left', flex: 1 }}>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.firstName} {profile.lastName}</div>
-                  <div style={{ fontSize: '0.6rem', color: 'var(--text-dim)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{profile.role}</div>
-                </motion.div>
-              )}
-              {expanded && (
+
+              {/* Profile Brief (Centered Row) */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '4px', borderRadius: '12px', transition: 'all 0.2s' }}>
+                <div style={{ position: 'relative', width: '36px', height: '36px', flexShrink: 0 }}>
+                  <div className="avatar" style={{ width: '36px', height: '36px', fontSize: '0.9rem', overflow: 'hidden', border: '2px solid var(--accent-glow)', borderRadius: '10px', background: 'var(--accent-primary)' }}>
+                    {profile.avatarUrl
+                      ? <img src={profile.avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', fontWeight: 800, color: '#fff' }}>{profile.firstName ? profile.firstName.charAt(0).toUpperCase() : 'U'}</span>
+                    }
+                  </div>
+                </div>
+                {expanded && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ minWidth: 0, textAlign: 'left', flex: 1 }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.firstName} {profile.lastName}</div>
+                    <div style={{ fontSize: '0.6rem', color: 'var(--text-dim)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{profile.role}</div>
+                  </motion.div>
+                )}
+                {expanded && (
+                  <button
+                    onClick={handleLogout}
+                    className="logout-btn-footer"
+                    style={{
+                      background: 'transparent', color: '#ef4444', border: 'none',
+                      padding: '6px 10px', borderRadius: '10px', display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', cursor: 'pointer', opacity: 0.8, transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                    title="Logout"
+                  >
+                    <LogOut size={16} />
+                    <span className="logout-text">Logout</span>
+                  </button>
+                )}
+              </div>
+
+              {!expanded && (
                 <button
                   onClick={handleLogout}
                   className="logout-btn-footer"
-                  style={{ 
-                    background: 'transparent', color: '#ef4444', border: 'none', 
-                    padding: '6px 10px', borderRadius: '10px', display: 'flex', alignItems: 'center', 
-                    justifyContent: 'center', cursor: 'pointer', opacity: 0.8, transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none',
+                    padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                   }}
                   title="Logout"
                 >
-                  <LogOut size={16} />
+                  <LogOut size={18} />
                   <span className="logout-text">Logout</span>
                 </button>
               )}
             </div>
+            {/* End Inner Wrapper */}
+          </div>
 
-            {!expanded && (
-              <button
-                onClick={handleLogout}
-                className="logout-btn-footer"
-                style={{ 
-                  background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', 
-                  padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', 
-                  justifyContent: 'center', cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-                title="Logout"
-              >
-                <LogOut size={18} />
-                <span className="logout-text">Logout</span>
-              </button>
-            )}
-          </div>
-          {/* End Inner Wrapper */}
-          </div>
-            
           {/* Manual Toggle Button (Floating Circle) */}
-          <button 
+          <button
             onClick={(e) => { e.stopPropagation(); setIsSidebarExpanded(!isSidebarExpanded); }}
-            style={{ 
-              position: 'absolute', top: '32px', right: '-14px', 
-              width: '28px', height: '28px', borderRadius: '50%', 
+            style={{
+              position: 'absolute', top: '32px', right: '-14px',
+              width: '28px', height: '28px', borderRadius: '50%',
               background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 101, 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 101,
               boxShadow: '0 4px 12px rgba(0,0,0,0.2)', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               color: 'var(--text-main)'
             }}
-            onMouseEnter={(e) => { 
+            onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.1)';
               e.currentTarget.style.borderColor = 'var(--accent-primary)';
             }}
-            onMouseLeave={(e) => { 
+            onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
               e.currentTarget.style.borderColor = 'var(--glass-border)';
             }}
@@ -645,9 +709,9 @@ const Dashboard = () => {
         </motion.aside>
 
         {/* ================================== */}
-        {/* MAIN CONTENT CARD                  */}
+        {/* MAIN DASHBOARD CONTENT AREA        */}
         {/* ================================== */}
-        <main className="dash-main" style={{ 
+        <main className="dash-main" style={{
           flex: 1, minHeight: 0, background: 'transparent', display: 'flex', flexDirection: 'column',
           margin: '16px 16px 16px 0'
         }}>
@@ -664,13 +728,13 @@ const Dashboard = () => {
             </header>
           )}
 
-          <div className="dash-content-area" style={{ 
-            flex: 1, 
-            padding: '16px', 
-            minHeight: 0, 
-            display: 'flex', 
-            flexDirection: 'column', 
-            overflowY: (activeTab === 'applications' || activeTab === 'course-finder' || activeTab === 'students-list' || activeTab === 'profile') ? 'hidden' : 'auto' 
+          <div className="dash-content-area" style={{
+            flex: 1,
+            padding: '16px',
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: (activeTab === 'applications' || activeTab === 'course-finder' || activeTab === 'students-list' || activeTab === 'profile') ? 'hidden' : 'auto'
           }}>
             {message.text && (
               <div className={`dash-message ${message.type}`} style={{ padding: '12px 20px', borderRadius: '12px', marginBottom: '20px', background: message.type === 'error' ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)', color: message.type === 'error' ? '#ef4444' : '#22c55e', fontWeight: 600 }}>
@@ -727,7 +791,7 @@ const Dashboard = () => {
                           </div>
                           {avatarUploading && <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', borderRadius: '25px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: '#fff', fontSize: '0.7rem', fontWeight: 700 }}>Saving…</span></div>}
                         </div>
-                        
+
                         <div style={{ textAlign: 'center' }}>
                           <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', margin: '0 0 4px 0' }}>{profile.firstName} {profile.lastName}</h2>
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>{profile.role}</div>
@@ -738,7 +802,7 @@ const Dashboard = () => {
                             <Camera size={14} /> Change Photo
                           </label>
                           {profile.avatarUrl && (
-                            <button 
+                            <button
                               type="button"
                               onClick={handleRemoveAvatar}
                               disabled={avatarUploading}
@@ -789,8 +853,8 @@ const Dashboard = () => {
                           <div className="profile-card full-width">
                             <h3><KeyRound size={16} /> Student Credentials</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                               <div className="data-row"><span className="label">Student ID</span><span className="value" style={{ letterSpacing: '0.1em' }}>{profile.studentUniqueId || 'PENDING'}</span></div>
-                               <div className="data-row"><span className="label">Identity Status</span><span className="value" style={{ color: '#6366f1' }}>Active</span></div>
+                              <div className="data-row"><span className="label">Student ID</span><span className="value" style={{ letterSpacing: '0.1em' }}>{profile.studentUniqueId || 'PENDING'}</span></div>
+                              <div className="data-row"><span className="label">Identity Status</span><span className="value" style={{ color: '#6366f1' }}>Active</span></div>
                             </div>
                           </div>
                         )}
@@ -807,9 +871,9 @@ const Dashboard = () => {
                         <div className="dash-input-group" style={{ marginTop: '10px' }}><label>Email Address</label><input type="email" name="email" value={formData.email || ''} onChange={handleChange} required className="dash-input" /></div>
                         <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '12px', lineHeight: '1.4' }}>Basic identity data used for communications and system identification.</p>
                       </div>
-                      
+
                       <div className="profile-card" style={{ marginTop: 'auto' }}>
-                         <button type="submit" form="profile-update-form" className="btn-save" style={{ width: '100%', background: 'var(--accent-primary)', color: '#fff', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(99,102,241,0.3)' }}><Save size={16} /> Save Changes</button>
+                        <button type="submit" form="profile-update-form" className="btn-save" style={{ width: '100%', background: 'var(--accent-primary)', color: '#fff', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(99,102,241,0.3)' }}><Save size={16} /> Save Changes</button>
                       </div>
                     </div>
 
@@ -822,7 +886,7 @@ const Dashboard = () => {
                             <div className="dash-input-group" style={{ marginTop: '10px' }}><label>State</label><input type="text" name="state" value={formData.state || ''} onChange={handleChange} required className="dash-input" /></div>
                             <div className="dash-input-group" style={{ marginTop: '10px' }}><label>City</label><input type="text" name="city" value={formData.city || ''} onChange={handleChange} required className="dash-input" /></div>
                           </div>
-                          
+
                           <div className="profile-card">
                             <h3><Phone size={16} /> Communication</h3>
                             <div className="dash-input-group"><label>Phone Number *</label><input type="tel" name="phone" value={formData.phone || ''} onChange={(e) => setFormData({ ...formData, phone: e.target.value.slice(0, 10) })} required className="dash-input" /></div>
@@ -865,6 +929,7 @@ const Dashboard = () => {
             )}
           </div>
         </main>
+        {isStudent && <VerticalApplicationTracker profile={profile} />}
       </div>
 
       {/* FLOATING CHAT FAB - only for students */}
@@ -1024,7 +1089,7 @@ const Dashboard = () => {
                           const updated = await fetch(`${API_BASE_URL}/erp/my-messages`, { credentials: 'include' });
                           if (updated.ok) setChatMessages(await updated.json());
                         }
-                      } catch(err) {}
+                      } catch (err) { }
                       setChatSending(false);
                       setTimeout(() => document.getElementById('fab-chat-bottom')?.scrollIntoView({ behavior: 'smooth' }), 80);
                     }
@@ -1055,7 +1120,7 @@ const Dashboard = () => {
                         const updated = await fetch(`${API_BASE_URL}/erp/my-messages`, { credentials: 'include' });
                         if (updated.ok) setChatMessages(await updated.json());
                       }
-                    } catch(err) {}
+                    } catch (err) { }
                     setChatSending(false);
                     setTimeout(() => document.getElementById('fab-chat-bottom')?.scrollIntoView({ behavior: 'smooth' }), 80);
                   }}
@@ -1087,12 +1152,12 @@ const Dashboard = () => {
                     setChatMessages(data);
                     setTimeout(() => document.getElementById('fab-chat-bottom')?.scrollIntoView({ behavior: 'smooth' }), 150);
                   })
-                  .catch(() => {});
+                  .catch(() => { });
               }
             }}
             title="Chat with Admin"
             style={{
-              position: 'fixed', bottom: '24px', right: '24px', zIndex: 99999,
+              position: 'fixed', bottom: '24px', right: '11px', zIndex: 99999,
               width: '56px', height: '56px', borderRadius: '50%',
               background: 'linear-gradient(135deg, #0047AB, #00D2FF)',
               border: 'none', cursor: 'pointer', color: '#fff',

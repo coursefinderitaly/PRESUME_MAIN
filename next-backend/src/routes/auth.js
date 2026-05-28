@@ -6,7 +6,7 @@ const User = require('../models/User');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const { sendStudentEmail, sendAdminEmail } = require('../utils/mailer');
-const { getWelcomeEmailHTML, getPartnerRequestEmailHTML } = require('../utils/emailTemplates');
+const { getWelcomeEmailHTML, getPartnerRequestEmailHTML, getPaymentPendingEmailHTML } = require('../utils/emailTemplates');
 
 // 1. SIGNUP ROUTE
 router.post('/signup', async (req, res) => {
@@ -42,12 +42,19 @@ router.post('/signup', async (req, res) => {
     });
     await newUser.save();
     
-    // Send Welcome Email if user is a student
+    // Send Welcome or Payment Pending Email if user is a student
     if (newUser.role === 'student' && email) {
-      const subject = '🎓 Welcome to Presume Overseas — Your Journey Begins!';
-      const html = getWelcomeEmailHTML(firstName, lastName);
-      // Fire-and-forget — never block the signup response
-      sendStudentEmail(email, subject, html).catch(err => console.error('[Auth] Welcome email failed:', err.message));
+      if (req.body.deferWelcomeEmail) {
+        // Payment is deferred/pending
+        const subject = 'Action Required: Complete Your Registration';
+        const html = getPaymentPendingEmailHTML(firstName, email, req.body.password);
+        sendStudentEmail(email, subject, html).catch(err => console.error('[Auth] Pending payment email failed:', err.message));
+      } else {
+        // Standard full welcome
+        const subject = '🎓 Welcome to Presume Overseas — Your Journey Begins!';
+        const html = getWelcomeEmailHTML(firstName, email, req.body.password);
+        sendStudentEmail(email, subject, html).catch(err => console.error('[Auth] Welcome email failed:', err.message));
+      }
     }
 
     res.status(201).json({ message: "User created successfully" });
@@ -258,6 +265,30 @@ router.post('/partner-request', async (req, res) => {
   } catch (err) {
     console.error("Partner request error:", err);
     res.status(500).json({ error: "Server error sending request" });
+  }
+});
+
+// 6. SEND WELCOME EMAIL POST-PAYMENT
+router.post('/send-welcome', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+    
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (user.role === 'student') {
+      const subject = '🎓 Welcome to Presume Overseas — Your Journey Begins!';
+      const html = getWelcomeEmailHTML(user.firstName, user.email, password);
+      await sendStudentEmail(user.email, subject, html);
+      console.log(`[Auth] Deferred welcome email sent for: ${user.email}`);
+      res.json({ message: "Welcome email sent successfully" });
+    } else {
+      res.status(400).json({ error: "Welcome emails are only for students" });
+    }
+  } catch (err) {
+    console.error("Failed to send welcome email:", err);
+    res.status(500).json({ error: "Server error sending email" });
   }
 });
 

@@ -89,7 +89,8 @@ const ManageCounselors = ({ setMessage, targetPartnerId }) => {
       cursor: 'pointer',
     }),
     singleValue: (base) => ({ ...base, color: 'var(--text-main)' }),
-    input: (base) => ({ ...base, color: 'var(--text-main)' }),
+    valueContainer: (base) => ({ ...base, display: 'flex', flex: '1 1 auto', width: '100%', cursor: 'text' }),
+    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, width: '100%', display: 'inline-flex' }),
   };
 
   const handleSubmit = async (e) => {
@@ -196,7 +197,7 @@ const ManageCounselors = ({ setMessage, targetPartnerId }) => {
           <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '10px' }}>
             <div>
               <label className="text-muted" style={{display: 'block', fontSize: '0.8rem', marginBottom: '8px', fontWeight: 600}}>Prefix</label>
-              <Select 
+              <Select classNamePrefix="react-select" 
                 name="country" value={formData.country} onChange={handleSelectChange} 
                 options={countries} styles={customSelectStyles}
                 menuPortalTarget={document.body}

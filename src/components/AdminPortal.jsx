@@ -452,6 +452,10 @@ const AdminPortal = () => {
     setIsAdding(false);
     setFormData({});
     setMessage({ text: '', type: '' });
+    setViewingStudentProfile(null);
+    setPartnerStudentsPopup(null);
+    setFreelancerStudentsPopup(null);
+    setSelectedApp(null);
   };
 
   const handleChange = (e) => {
@@ -830,7 +834,7 @@ const AdminPortal = () => {
   }, [users]);
 
   const stats = {
-    total: users.filter(u => u.role !== 'admin' && u.role !== 'counselor').length,
+    total: users.filter(u => u.role !== 'admin').length,
     directStudents: users.filter(u => u.role === 'student' && !u.registeredBy && !u.createdByCounselor).length,
     partnerStudents: users.filter(u => u.role === 'student' && (!!u.registeredBy || !!u.createdByCounselor)).length,
     partners: users.filter(u => u.role === 'partner').length,
@@ -906,9 +910,7 @@ const AdminPortal = () => {
             <GraduationCap size={18} /> Direct Students
             {unreadCounts.directStudents > 0 && <span className="nav-badge">{unreadCounts.directStudents}</span>}
           </button>
-          <button className={`nav-item ${activeTab === 'partner_students' ? 'active' : ''}`} onClick={() => { setActiveTab('partner_students'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
-            <Users size={18} /> Partner Students
-          </button>
+
           <button className={`nav-item ${activeTab === 'partners' ? 'active' : ''}`} onClick={() => { setActiveTab('partners'); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}>
             <Briefcase size={18} /> Business Partners
           </button>
@@ -1109,6 +1111,15 @@ const AdminPortal = () => {
                   <Server size={14} /> Refresh Ledger
                 </button>
 
+                {activeTab === 'partners' && (
+                  <button 
+                    onClick={() => setActiveTab('partner_students')} 
+                    style={{ background: '#2563eb', color: '#ffffff', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)' }}
+                  >
+                    <Users size={18} /> All Partner Students
+                  </button>
+                )}
+                
                 <button className="btn-save" onClick={() => setShowCreationTypePopup(true)} style={{ background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', fontWeight: 600, border: 'none', cursor: 'pointer', color: '#fff' }}>
                   <Plus size={18} /> Create Account
                 </button>
@@ -1117,21 +1128,25 @@ const AdminPortal = () => {
 
             {activeTab === 'overview' && (
               <div className="admin-stats-grid" style={{ gap: '20px', marginBottom: '20px', flexShrink: 0 }}>
-                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center' }}>
+                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0,0,0,0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                   <div style={{ color: 'var(--accent-secondary)', fontSize: '2.5rem', fontWeight: 800 }}>{stats.total}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Total Records</div>
                 </div>
-                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center' }}>
+                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(52, 211, 153, 0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                   <div style={{ color: '#34d399', fontSize: '2.5rem', fontWeight: 800 }}>{stats.directStudents}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Direct Students</div>
                 </div>
-                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center' }}>
+                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(251, 191, 36, 0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                   <div style={{ color: '#fbbf24', fontSize: '2.5rem', fontWeight: 800 }}>{stats.partnerStudents}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Partner Students</div>
                 </div>
-                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center' }}>
+                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(192, 132, 252, 0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                   <div style={{ color: '#c084fc', fontSize: '2.5rem', fontWeight: 800 }}>{stats.partners}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Partners</div>
+                </div>
+                <div className="glass-panel" style={{ padding: '20px', textAlign: 'center', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(56, 189, 248, 0.2)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                  <div style={{ color: '#38bdf8', fontSize: '2.5rem', fontWeight: 800 }}>{stats.freelancers}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Freelancers</div>
                 </div>
               </div>
             )}
@@ -1147,7 +1162,17 @@ const AdminPortal = () => {
             )}
 
             {activeTab === 'partner_students' ? (
-              <PartnerDirectoryBrowser users={users} onStudentClick={(u) => setViewingStudentProfile(u)} />
+              <div className="animate-fade-in">
+                <button 
+                  onClick={() => setActiveTab('partners')} 
+                  style={{ background: 'var(--input-bg)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '1.05rem', fontWeight: 700, padding: '12px 24px', borderRadius: '12px', marginBottom: '25px', transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)'; e.currentTarget.style.borderColor = 'var(--accent-primary)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
+                >
+                  <ChevronLeft size={22} /> Back to Business Partners
+                </button>
+                <PartnerDirectoryBrowser users={users} onStudentClick={(u) => setViewingStudentProfile(u)} />
+              </div>
             ) : activeTab === 'data_management' ? (
               <UniversityDataManagement />
             ) : (
@@ -1158,6 +1183,7 @@ const AdminPortal = () => {
                     <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Entity Name</th>
                     <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Identifiers</th>
                     <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Access Level</th>
+                    <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Registered At</th>
                     <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600, textAlign: 'right' }}>Actions</th>
                   </tr>
                 </thead>
@@ -1263,8 +1289,21 @@ const AdminPortal = () => {
                           )}
                         </div>
                       </td>
+                      <td style={{ padding: '12px 16px', verticalAlign: 'middle', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Calendar size={12} /> {u.createdAt ? new Date(u.createdAt).toLocaleString('en-IN', {
+                            day: 'numeric', month: 'short', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit'
+                          }) : 'N/A'}
+                        </div>
+                      </td>
                       <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                          {u.role === 'partner' && (
+                            <button onClick={() => setPartnerStudentsPopup(u)} style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }}>
+                              <Users size={14} /> Registered Students
+                            </button>
+                          )}
                           <button onClick={() => handleEdit(u)} style={{ background: 'var(--input-bg)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }}>
                             <Edit2 size={14} /> Modify
                           </button>

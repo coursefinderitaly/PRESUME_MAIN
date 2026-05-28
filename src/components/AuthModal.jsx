@@ -197,10 +197,21 @@ const AuthModal = ({ type: initialProp, onClose }) => {
       color: '#f1f5f9',
       fontSize: '0.95rem'
     }),
+    valueContainer: (base) => ({
+      ...base,
+      display: 'flex',
+      flex: '1 1 auto',
+      width: '100%',
+      cursor: 'text'
+    }),
     input: (base) => ({
       ...base,
       color: 'white',
-      fontSize: '0.95rem'
+      fontSize: '0.95rem',
+      margin: 0,
+      padding: 0,
+      width: '100%',
+      display: 'inline-flex'
     }),
     placeholder: (base) => ({
       ...base,
@@ -254,21 +265,21 @@ const AuthModal = ({ type: initialProp, onClose }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
     >
       {/* Background Overlay - Reduced Blur from backdrop-blur-md to backdrop-blur-sm */}
-      <div 
-        className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" 
-        onClick={onClose} 
+      <div
+        className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"
+        onClick={onClose}
       />
 
       {/* Modal Container */}
       <motion.div
-        initial={{ scale: 0.97, y: 10, opacity: 0 }} 
-        animate={{ scale: 1, y: 0, opacity: 1 }} 
+        initial={{ scale: 0.97, y: 10, opacity: 0 }}
+        animate={{ scale: 1, y: 0, opacity: 1 }}
         exit={{ scale: 0.97, y: 10, opacity: 0 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
         className="relative flex flex-col md:flex-row w-full max-w-5xl bg-slate-900 border border-slate-700/50 rounded-3xl overflow-hidden shadow-2xl z-10 max-h-[90vh]"
@@ -304,10 +315,9 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                   { n: 3, t: 'Security', d: 'Secure your account' }
                 ].map((s) => (
                   <div key={s.n} className={`flex items-start gap-4 transition-all duration-300 ${step >= s.n ? 'opacity-100' : 'opacity-40'}`}>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                      step === s.n ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30' :
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step === s.n ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30' :
                       step > s.n ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'
-                    }`}>
+                      }`}>
                       {step > s.n ? <CheckCircle2 size={14} /> : s.n}
                     </div>
                     <div>
@@ -331,14 +341,14 @@ const AuthModal = ({ type: initialProp, onClose }) => {
         {/* Right Side (Forms) */}
         <div className="flex-1 p-6 sm:p-10 relative z-10 flex flex-col overflow-y-auto">
           <div className="max-w-md mx-auto w-full flex-1 flex flex-col">
-            
+
             <div className="mb-8">
               <h3 className="text-2xl font-bold text-slate-50">
                 {type === 'login' ? 'Sign In' : 'Create Account'}
               </h3>
               <p className="text-slate-400 text-sm mt-2">
-                {type === 'login' 
-                  ? 'Enter your credentials to access your account.' 
+                {type === 'login'
+                  ? 'Enter your credentials to access your account.'
                   : 'Join thousands of students and freelancers globally.'}
               </p>
             </div>
@@ -367,7 +377,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                   Freelancer
                 </button>
                 {/* Active Pill Background */}
-                <div 
+                <div
                   className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-slate-800 rounded-lg shadow transition-all duration-300 z-0 ${formData.role === 'freelancer' ? 'translate-x-full left-[calc(0%+4px)]' : 'left-1'}`}
                 />
               </div>
@@ -380,13 +390,13 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                     <label className="text-sm font-medium text-slate-300">Email Address</label>
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
-                      <input 
-                        type="email" 
-                        required 
-                        value={identifier} 
-                        onChange={e => setIdentifier(e.target.value)} 
-                        className="w-full pl-11 pr-4 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm" 
-                        placeholder="john@example.com" 
+                      <input
+                        type="email"
+                        required
+                        value={identifier}
+                        onChange={e => setIdentifier(e.target.value)}
+                        className="w-full pl-11 pr-4 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm"
+                        placeholder="john@example.com"
                       />
                     </div>
                   </div>
@@ -397,13 +407,13 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                     </div>
                     <div className="relative">
                       <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
-                      <input 
-                        type={showPassword ? 'text' : 'password'} 
-                        required 
-                        value={loginPassword} 
-                        onChange={e => setLoginPassword(e.target.value)} 
-                        className="w-full pl-11 pr-11 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm" 
-                        placeholder="••••••••" 
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        value={loginPassword}
+                        onChange={e => setLoginPassword(e.target.value)}
+                        className="w-full pl-11 pr-11 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm"
+                        placeholder="••••••••"
                       />
                       <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -414,8 +424,8 @@ const AuthModal = ({ type: initialProp, onClose }) => {
               ) : (
                 <div className="flex-1 relative">
                   <AnimatePresence custom={direction} mode="wait">
-                    <motion.div 
-                      key={step} 
+                    <motion.div
+                      key={step}
                       custom={direction}
                       variants={slideVariants}
                       initial="enter"
@@ -440,13 +450,13 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                             <label className="text-sm font-medium text-slate-300">Email Address <span className="text-red-400">*</span></label>
                             <input type="email" required value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className="w-full px-4 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm" placeholder="john@example.com" />
                           </div>
-                          
+
                           {formData.role === 'freelancer' && (
                             <div className="grid grid-cols-2 gap-4">
                               <div className="space-y-1.5">
                                 <label className="text-sm font-medium text-slate-300">Occupation</label>
-                                <select 
-                                  value={formData.occupation} 
+                                <select
+                                  value={formData.occupation}
                                   onChange={e => handleInputChange('occupation', e.target.value)}
                                   className="w-full px-4 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all appearance-none text-sm"
                                 >
@@ -458,8 +468,8 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                               </div>
                               <div className="space-y-1.5">
                                 <label className="text-sm font-medium text-slate-300">Service</label>
-                                <select 
-                                  value={formData.registeredService} 
+                                <select
+                                  value={formData.registeredService}
                                   onChange={e => handleInputChange('registeredService', e.target.value)}
                                   className="w-full px-4 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all appearance-none text-sm"
                                 >
@@ -473,25 +483,25 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                           )}
                         </>
                       )}
-                      
+
                       {step === 2 && (
                         <>
                           <div className="space-y-1.5">
                             <label className="text-sm font-medium text-slate-300">Country</label>
-                            <Select options={countries} value={formData.country} onChange={v => handleInputChange('country', v)} styles={selectStyles} placeholder="Search countries..." />
+                            <Select classNamePrefix="react-select" options={countries} value={formData.country} onChange={v => handleInputChange('country', v)} styles={selectStyles} placeholder="Search countries..." />
                           </div>
                           <div className="space-y-1.5">
                             <label className="text-sm font-medium text-slate-300">State / Province</label>
-                            <Select options={states} value={formData.state} onChange={v => handleInputChange('state', v)} styles={selectStyles} isDisabled={!formData.country} placeholder="Select state..." />
+                            <Select classNamePrefix="react-select" options={states} value={formData.state} onChange={v => handleInputChange('state', v)} styles={selectStyles} isDisabled={!formData.country} placeholder="Select state..." />
                           </div>
                           <div className="space-y-1.5">
                             <label className="text-sm font-medium text-slate-300">City</label>
-                            <Select options={cities} value={formData.city} onChange={v => handleInputChange('city', v)} styles={selectStyles} isDisabled={!formData.state} placeholder="Select city..." />
+                            <Select classNamePrefix="react-select" options={cities} value={formData.city} onChange={v => handleInputChange('city', v)} styles={selectStyles} isDisabled={!formData.state} placeholder="Select city..." />
                           </div>
                           {formData.role === 'freelancer' && (
                             <div className="space-y-1.5">
                               <label className="text-sm font-medium text-slate-300">Passport Issued Country</label>
-                              <Select options={countries} value={formData.passportCountry} onChange={v => handleInputChange('passportCountry', v)} styles={selectStyles} placeholder="Search countries..." />
+                              <Select classNamePrefix="react-select" options={countries} value={formData.passportCountry} onChange={v => handleInputChange('passportCountry', v)} styles={selectStyles} placeholder="Search countries..." />
                             </div>
                           )}
                         </>
@@ -515,7 +525,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                                     handleInputChange('phone', val);
                                   }}
                                   className="w-full px-3 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm"
-                                  placeholder="0000 000 000"
+                                  placeholder=""
                                 />
                               </div>
                             </div>
@@ -533,12 +543,12 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                                     handleInputChange('whatsapp', val);
                                   }}
                                   className="w-full px-3 py-3 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm"
-                                  placeholder="Optional"
+                                  placeholder=""
                                 />
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="pt-2 border-t border-slate-800 my-4" />
 
                           <div className="space-y-1.5">
@@ -569,9 +579,9 @@ const AuthModal = ({ type: initialProp, onClose }) => {
               {/* Actions Footer */}
               <div className="mt-8 pt-6 border-t border-slate-800 flex gap-3 mt-auto">
                 {type === 'signup' && step > 1 && (
-                  <button 
-                    type="button" 
-                    onClick={prevStep} 
+                  <button
+                    type="button"
+                    onClick={prevStep}
                     className="flex-1 py-3 border border-slate-700 rounded-xl text-slate-300 font-medium hover:bg-slate-800 hover:text-white transition-colors flex justify-center items-center gap-2"
                   >
                     <ArrowLeft size={16} /> Back

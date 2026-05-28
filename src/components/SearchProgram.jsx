@@ -68,6 +68,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
     intake: null,
     percentage: ''
   });
+  const [universitySearchQuery, setUniversitySearchQuery] = useState('');
 
   // --- Helper to format date values (especially from Excel) ---
   const formatDisplayValue = (val, isDeadlineCol = false) => {
@@ -102,6 +103,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
   const [selectedUniIds, setSelectedUniIds] = useState(() => preselectedUnis.map(u => u.id));
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [expandedUniIds, setExpandedUniIds] = useState([]);
 
   useEffect(() => {
     setSelectedUniIds(prev => {
@@ -246,14 +248,14 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
     control: (base, state) => ({
       ...base,
       backgroundColor: 'var(--input-bg)',
-      borderColor: state.isFocused ? 'var(--accent-secondary)' : 'var(--input-border)',
+      borderColor: state.isFocused ? 'var(--accent-primary)' : 'var(--input-border)',
       color: 'var(--text-main)',
       boxShadow: state.isFocused ? '0 0 0 3px rgba(14, 165, 233, 0.15)' : 'none',
       cursor: 'pointer',
-      minHeight: '30px',
-      height: '30px',
+      minHeight: '38px',
+      height: 'auto',
       borderRadius: '8px',
-      '&:hover': { borderColor: 'var(--accent-secondary)' },
+      '&:hover': { borderColor: 'var(--accent-primary)' },
     }),
     menu: (base) => ({
       ...base,
@@ -267,15 +269,16 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
     option: (base, state) => ({
       ...base,
       backgroundColor: state.isSelected
-        ? 'rgba(59, 130, 246, 0.15)'
+        ? 'rgba(6, 182, 212, 0.15)'
         : state.isFocused ? 'rgba(128, 128, 128, 0.1)' : 'transparent',
-      color: state.isSelected ? 'var(--accent-secondary)' : 'var(--text-main)',
+      color: state.isSelected ? 'var(--accent-primary)' : 'var(--text-main)',
       cursor: 'pointer',
       '&:hover': { backgroundColor: 'rgba(128, 128, 128, 0.1)' }
     }),
-    singleValue: (base) => ({ ...base, color: 'var(--text-main)', fontSize: '0.8rem' }),
-    valueContainer: (base) => ({ ...base, padding: '0 8px', height: '28px' }),
-    placeholder: (base) => ({ ...base, color: 'var(--text-muted)', fontSize: '0.8rem' }),
+    singleValue: (base) => ({ ...base, color: 'var(--text-main)', fontSize: '0.85rem' }),
+    valueContainer: (base) => ({ ...base, padding: '0 8px', display: 'flex', flex: '1 1 auto', width: '100%', cursor: 'text' }),
+    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, width: '100%', display: 'inline-flex', fontSize: '0.85rem' }),
+    placeholder: (base) => ({ ...base, color: 'var(--text-muted)', fontSize: '0.85rem' }),
     indicatorSeparator: () => ({ display: 'none' }),
     dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)', padding: '4px' }),
   };
@@ -367,8 +370,17 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       });
     }
 
+    // Filter by Specific University Name Search
+    if (universitySearchQuery) {
+      const q = universitySearchQuery.toLowerCase();
+      filtered = filtered.filter(u => {
+        const name = (getFieldValue(u, ['universityname', 'name']) || "").toLowerCase();
+        return name.includes(q);
+      });
+    }
+
     return filtered;
-  }, [universitiesData, searchParams]);
+  }, [universitiesData, searchParams, universitySearchQuery]);
 
   const toggleSelection = (uni) => {
     const uniId = uni.id;
@@ -542,13 +554,13 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
     <div className="view-search" style={{
       display: 'flex',
       gap: '24px',
-      height: '100%',
-      maxHeight: '100%',
+      flex: 1,
       overflow: 'hidden',
       minHeight: 0,
       position: 'relative',
       animation: 'fadeUp 0.4s ease',
-      paddingBottom: selectedUniIds.length > 0 && !hideFooter ? '60px' : '0'
+      paddingBottom: selectedUniIds.length > 0 && !hideFooter ? '60px' : '0',
+      boxSizing: 'border-box'
     }}>
 
       {/* LEFT CANVAS: SEARCH RESULTS */}
@@ -579,6 +591,24 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
                 </div>
               )}
             </div>
+
+            {!isLoading && hasSearched && (
+              <div style={{ display: 'flex', alignItems: 'center', background: 'var(--input-bg)', border: '1px solid var(--glass-border)', borderRadius: '8px', padding: '6px 12px', width: '280px', transition: 'all 0.2s', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)' }}>
+                <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '8px' }} />
+                <input 
+                  type="text" 
+                  value={universitySearchQuery} 
+                  onChange={(e) => setUniversitySearchQuery(e.target.value)} 
+                  placeholder="Search specific university..." 
+                  style={{ border: 'none', background: 'transparent', outline: 'none', color: 'var(--text-main)', fontSize: '0.85rem', width: '100%' }}
+                />
+                {universitySearchQuery && (
+                  <button type="button" onClick={() => setUniversitySearchQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', color: 'var(--text-muted)' }}>
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+            )}
 
             {!isLoading && hasSearched && filteredResults.length > 0 && !hideFooter && (
               <button
@@ -629,7 +659,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
               <p style={{ margin: 0, fontSize: '0.85rem' }}>Try adjusting your filtration parameters or checking availability for a different intake.</p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {filteredResults.map((uni, idx) => {
                 const uniId = uni.id || `fallback_${idx}`;
                 const isSelected = selectedUniIds.includes(uniId);
@@ -663,24 +693,24 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
                   <div key={uniId} style={{
                     background: isSelected ? 'rgba(139, 92, 246, 0.05)' : 'var(--card-bg-solid)',
                     border: isSelected ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)',
-                    borderRadius: '16px',
-                    padding: '16px 20px',
+                    borderRadius: '8px',
+                    padding: '6px 12px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '12px',
+                    gap: '2px',
                     transition: 'all 0.2s ease',
                     cursor: 'pointer',
-                    boxShadow: isSelected ? '0 8px 20px -8px rgba(139, 92, 246, 0.15)' : 'none'
+                    boxShadow: isSelected ? '0 4px 10px -4px rgba(139, 92, 246, 0.15)' : 'none'
                   }}
                     onClick={() => toggleSelection({ ...uni, id: uniId })}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                        <div style={{ paddingTop: '4px' }}>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                        <div style={{ paddingTop: '2px' }}>
                           <div style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '6px',
+                            width: '16px',
+                            height: '16px',
+                            borderRadius: '4px',
                             border: `2px solid ${isSelected ? 'var(--accent-primary)' : 'var(--glass-border)'}`,
                             background: isSelected ? 'var(--accent-primary)' : 'transparent',
                             display: 'flex',
@@ -688,64 +718,104 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
                             justifyContent: 'center',
                             transition: 'all 0.2s'
                           }}>
-                            {isSelected && <CheckSquare size={12} color="#fff" />}
+                            {isSelected && <CheckSquare size={10} color="#fff" />}
                           </div>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <h4 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.05rem', fontWeight: 700, lineHeight: 1.3 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <h4 style={{ margin: 0, color: 'var(--accent-primary)', fontSize: '1rem', fontWeight: 900, lineHeight: 1.1, letterSpacing: '0.3px' }}>
                             {programName || uniName}
                           </h4>
                           {programName && (
-                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <div style={{ fontSize: '0.9rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800 }}>
                               <Building size={13} />
                               <span>{uniName}</span>
                             </div>
                           )}
-                          <div style={{ display: 'flex', gap: '12px', color: 'var(--text-muted)', fontSize: '0.75rem', flexWrap: 'wrap', marginTop: '6px' }}>
+                          <div style={{ display: 'flex', gap: '10px', color: 'var(--text-muted)', fontSize: '0.85rem', flexWrap: 'wrap', marginTop: '4px' }}>
                             {location !== "Location N/A" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} /> {location}</span>}
-                            {reqPercentage !== "0" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--accent-primary)', fontWeight: 600 }}><GraduationCap size={12} /> Min. {displayPercentage}%</span>}
-                            {type !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '2px 8px', borderRadius: '4px' }}>{type}</span>}
-                            {ranking !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '2px 8px', borderRadius: '4px' }}>Rank: {ranking}</span>}
+                            {reqPercentage !== "0" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--accent-primary)', fontWeight: 700 }}><GraduationCap size={12} /> Min. {displayPercentage}%</span>}
+                            {type !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '2px 6px', borderRadius: '4px' }}>{type}</span>}
+                            {ranking !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '2px 6px', borderRadius: '4px' }}>Rank: {ranking}</span>}
                           </div>
                         </div>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                        {level && <span style={{ fontSize: '0.7rem', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--accent-primary)', padding: '4px 8px', borderRadius: '6px', fontWeight: 700 }}>{level}</span>}
+                        {level && <span style={{ fontSize: '0.8rem', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--accent-primary)', padding: '3px 8px', borderRadius: '6px', fontWeight: 800 }}>{level}</span>}
                       </div>
                     </div>
 
                     {otherCols.length > 0 && (
-                      <div style={{
-                        marginTop: '4px',
-                        paddingTop: '12px',
-                        borderTop: '1px solid var(--table-header-bg)',
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-                        gap: '10px'
-                      }}>
-                        {otherCols.map(col => {
-                          const isDateContext = col.toLowerCase().includes('deadline') || col.toLowerCase().includes('date');
-                          return (
-                            <div key={col} style={{
-                              fontSize: '0.75rem',
-                              background: isDateContext ? 'rgba(239, 68, 68, 0.03)' : 'var(--glass-bg)',
-                              padding: '8px 10px',
-                              borderRadius: '8px',
-                              border: '1px solid var(--glass-border)',
+                      <div style={{ marginTop: '4px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setExpandedUniIds(prev =>
+                                prev.includes(uniId) ? prev.filter(id => id !== uniId) : [...prev, uniId]
+                              );
+                            }}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              color: 'var(--text-muted)',
+                              fontSize: '0.8rem',
+                              cursor: 'pointer',
                               display: 'flex',
-                              flexDirection: 'column',
-                              gap: '2px'
-                            }}>
-                              <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDateContext ? '#ef4444' : 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                {isDateContext && <CalendarClock size={10} />}
-                                {col}
-                              </span>
-                              <span style={{ color: isDateContext ? '#ef4444' : 'var(--text-main)', fontWeight: 600 }}>
-                                {formatDisplayValue(uni[col], isDateContext)}
-                              </span>
-                            </div>
-                          );
-                        })}
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '4px 10px',
+                              borderRadius: '100px',
+                              transition: 'all 0.2s',
+                              fontWeight: 700
+                            }}
+                            onMouseOver={(e) => {
+                              e.currentTarget.style.color = 'var(--text-main)';
+                              e.currentTarget.style.background = 'var(--glass-bg)';
+                            }}
+                            onMouseOut={(e) => {
+                              e.currentTarget.style.color = 'var(--text-muted)';
+                              e.currentTarget.style.background = 'none';
+                            }}
+                          >
+                            {expandedUniIds.includes(uniId) ? 'Hide Details ▲' : 'Show Details ▼'}
+                          </button>
+                        </div>
+                        
+                        {expandedUniIds.includes(uniId) && (
+                          <div style={{
+                            marginTop: '8px',
+                            paddingTop: '12px',
+                            borderTop: '1px solid var(--glass-border)',
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                            gap: '8px',
+                            animation: 'fadeIn 0.2s ease'
+                          }}>
+                            {otherCols.map(col => {
+                              const isDateContext = col.toLowerCase().includes('deadline') || col.toLowerCase().includes('date');
+                              return (
+                                <div key={col} style={{
+                                  fontSize: '0.85rem',
+                                  background: isDateContext ? 'rgba(239, 68, 68, 0.03)' : 'var(--glass-bg)',
+                                  padding: '6px 10px',
+                                  borderRadius: '8px',
+                                  border: '1px solid var(--glass-border)',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '2px'
+                                }}>
+                                  <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDateContext ? '#ef4444' : 'var(--text-muted)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    {isDateContext && <CalendarClock size={12} />}
+                                    {col}
+                                  </span>
+                                  <span style={{ color: isDateContext ? '#ef4444' : 'var(--text-main)', fontWeight: 800, fontSize: '0.9rem' }}>
+                                    {formatDisplayValue(uni[col], isDateContext)}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -762,9 +832,11 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
 
       {/* RIGHT SIDE: FILTER PANEL */}
       <div style={{
-        width: '280px',
+        width: '230px',
         flexShrink: 0,
-        background: 'var(--card-bg-solid)',
+        background: 'var(--glass-bg)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
         border: '1px solid var(--glass-border)',
         borderRadius: '20px',
         padding: '12px 14px',
@@ -807,139 +879,141 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Program Level</label>
-            <Select
-              name="programLevel"
-              isSearchable={false}
-              value={searchParams.programLevel}
-              onChange={(val) => handleSelectChange("programLevel", val)}
-              options={levelOptions}
-              styles={customSelectStyles}
-              menuPortalTarget={document.body}
-              placeholder="All Levels"
-            />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', paddingBottom: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Program Level</label>
+              <Select classNamePrefix="react-select"
+                name="programLevel"
+
+                value={searchParams.programLevel}
+                onChange={(val) => handleSelectChange("programLevel", val)}
+                options={levelOptions}
+                styles={customSelectStyles}
+                menuPortalTarget={document.body}
+                placeholder="All Levels"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Interested Field</label>
+              <Select classNamePrefix="react-select"
+                name="interestedField"
+
+                value={searchParams.interestedField}
+                onChange={(val) => handleSelectChange("interestedField", val)}
+                options={interestedFieldOptions}
+                styles={customSelectStyles}
+                menuPortalTarget={document.body}
+                placeholder="All Fields"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Sub Field</label>
+              <Select classNamePrefix="react-select"
+                name="subField"
+
+                value={searchParams.subField}
+                onChange={(val) => handleSelectChange("subField", val)}
+                options={subFieldOptions}
+                styles={customSelectStyles}
+                menuPortalTarget={document.body}
+                placeholder="All Sub Fields"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Program Name</label>
+              <Select classNamePrefix="react-select"
+                name="programName"
+
+                value={searchParams.programName}
+                onChange={(val) => handleSelectChange("programName", val)}
+                options={programNameOptions}
+                styles={customSelectStyles}
+                menuPortalTarget={document.body}
+                placeholder="Program Title"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Target Intake</label>
+              <Select classNamePrefix="react-select"
+                name="intake"
+
+                value={searchParams.intake}
+                onChange={(val) => handleSelectChange("intake", val)}
+                options={intakeOptions}
+                styles={customSelectStyles}
+                menuPortalTarget={document.body}
+                placeholder="Select Intake"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Score Percentage (%)</label>
+              <input
+                type="number"
+                name="percentage"
+                value={searchParams.percentage}
+                onChange={handleTextChange}
+                placeholder="e.g. 75"
+                className="theme-input"
+                style={{
+                  width: '100%',
+                  background: 'var(--input-bg)',
+                  border: '1px solid var(--glass-border)',
+                  borderRadius: '8px',
+                  padding: '6px 10px',
+                  color: 'var(--text-main)',
+                  fontSize: '0.85rem',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Interested Field</label>
-            <Select
-              name="interestedField"
-              isSearchable={false}
-              value={searchParams.interestedField}
-              onChange={(val) => handleSelectChange("interestedField", val)}
-              options={interestedFieldOptions}
-              styles={customSelectStyles}
-              menuPortalTarget={document.body}
-              placeholder="All Fields"
-            />
-          </div>
+          <div style={{ marginTop: '24px' }}>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                const hasFilter =
+                  (searchParams.programLevel && searchParams.programLevel.value) ||
+                  (searchParams.interestedField && searchParams.interestedField.value) ||
+                  (searchParams.subField && searchParams.subField.value) ||
+                  (searchParams.programName && searchParams.programName.value) ||
+                  (searchParams.intake && searchParams.intake.value) ||
+                  (searchParams.percentage && String(searchParams.percentage).trim() !== '');
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Sub Field</label>
-            <Select
-              name="subField"
-              isSearchable={false}
-              value={searchParams.subField}
-              onChange={(val) => handleSelectChange("subField", val)}
-              options={subFieldOptions}
-              styles={customSelectStyles}
-              menuPortalTarget={document.body}
-              placeholder="All Sub Fields"
-            />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Program Name</label>
-            <Select
-              name="programName"
-              isSearchable={false}
-              value={searchParams.programName}
-              onChange={(val) => handleSelectChange("programName", val)}
-              options={programNameOptions}
-              styles={customSelectStyles}
-              menuPortalTarget={document.body}
-              placeholder="Program Title"
-            />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Target Intake</label>
-            <Select
-              name="intake"
-              isSearchable={false}
-              value={searchParams.intake}
-              onChange={(val) => handleSelectChange("intake", val)}
-              options={intakeOptions}
-              styles={customSelectStyles}
-              menuPortalTarget={document.body}
-              placeholder="Select Intake"
-            />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Score Percentage (%)</label>
-            <input
-              type="number"
-              name="percentage"
-              value={searchParams.percentage}
-              onChange={handleTextChange}
-              placeholder="e.g. 75"
-              className="theme-input"
+                if (hasFilter) {
+                  setHasSearched(true);
+                } else {
+                  setError("Please fill at least one preference before executing search.");
+                  setTimeout(() => setError(null), 4000);
+                }
+              }}
               style={{
                 width: '100%',
-                background: 'var(--input-bg)',
-                border: '1px solid var(--glass-border)',
-                borderRadius: '8px',
-                padding: '6px 10px',
-                color: 'var(--text-main)',
-                fontSize: '0.85rem',
-                boxSizing: 'border-box'
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '12px',
+                borderRadius: '12px',
+                background: 'var(--accent-primary)',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 4px 20px var(--accent-glow)',
+                transition: 'transform 0.2s active:scale-95'
               }}
-            />
+            >
+              <Search size={16} /> Find Courses
+            </button>
           </div>
-        </div>
-
-        <div style={{ marginTop: 'auto', paddingTop: '8px' }}>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              const hasFilter =
-                (searchParams.programLevel && searchParams.programLevel.value) ||
-                (searchParams.interestedField && searchParams.interestedField.value) ||
-                (searchParams.subField && searchParams.subField.value) ||
-                (searchParams.programName && searchParams.programName.value) ||
-                (searchParams.intake && searchParams.intake.value) ||
-                (searchParams.percentage && String(searchParams.percentage).trim() !== '');
-
-              if (hasFilter) {
-                setHasSearched(true);
-              } else {
-                setError("Please fill at least one preference before executing search.");
-                setTimeout(() => setError(null), 4000);
-              }
-            }}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              padding: '12px',
-              borderRadius: '12px',
-              background: 'var(--accent-primary)',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 4px 20px var(--accent-glow)',
-              transition: 'transform 0.2s active:scale-95'
-            }}
-          >
-            <Search size={16} /> Find Courses
-          </button>
         </div>
       </div>
 
