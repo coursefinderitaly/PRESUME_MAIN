@@ -101,13 +101,14 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
   'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176',
   'https://coursefinderitaly.com', 'https://www.coursefinderitaly.com',
-  'https://coursefinder2-0.onrender.com'
+  'https://coursefinder2-0.onrender.com',
+  'https://presumeoverseas.com', 'https://www.presumeoverseas.com'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.coursefinderitaly.com') || origin === 'https://coursefinderitaly.com') {
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.coursefinderitaly.com') || origin.endsWith('.presumeoverseas.com')) {
       return callback(null, true);
     }
     return callback(new Error('CORS policy violation: Origin not allowed.')); // Fixed CSRF Bypass
