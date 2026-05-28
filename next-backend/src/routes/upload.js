@@ -358,6 +358,12 @@ router.post('/email-excel', auth, upload.single('excelFile'), async (req, res) =
 router.get('/download/:key', auth, async (req, res) => {
     try {
         const { key } = req.params;
+
+        // Prevent directory traversal attacks
+        if (!key || key.includes('..') || key.includes('/') || key.includes('\\')) {
+            return res.status(400).json({ error: 'Invalid file key' });
+        }
+
         const filePath = getLocalFilePath(key);
         
         if (!fs.existsSync(filePath)) {

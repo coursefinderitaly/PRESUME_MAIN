@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, MapPin, Building, GraduationCap, ExternalLink, Filter, Database, Loader2, CalendarClock, Download, X, CheckSquare, FileSpreadsheet } from 'lucide-react';
+import { Search, MapPin, Building, GraduationCap, ExternalLink, Filter, Database, Loader2, CalendarClock, Download, X, CheckSquare, FileSpreadsheet, ChevronUp, ChevronDown } from 'lucide-react';
 import Select from 'react-select';
 import * as XLSX from 'xlsx';
 
@@ -252,8 +252,8 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       color: 'var(--text-main)',
       boxShadow: state.isFocused ? '0 0 0 3px rgba(14, 165, 233, 0.15)' : 'none',
       cursor: 'pointer',
-      minHeight: '38px',
-      height: 'auto',
+      minHeight: '34px',
+      height: '34px',
       borderRadius: '8px',
       '&:hover': { borderColor: 'var(--accent-primary)' },
     }),
@@ -273,14 +273,16 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
         : state.isFocused ? 'rgba(128, 128, 128, 0.1)' : 'transparent',
       color: state.isSelected ? 'var(--accent-primary)' : 'var(--text-main)',
       cursor: 'pointer',
+      padding: '6px 12px',
+      fontSize: '0.85rem',
       '&:hover': { backgroundColor: 'rgba(128, 128, 128, 0.1)' }
     }),
     singleValue: (base) => ({ ...base, color: 'var(--text-main)', fontSize: '0.85rem' }),
-    valueContainer: (base) => ({ ...base, padding: '0 8px', display: 'flex', flex: '1 1 auto', width: '100%', cursor: 'text' }),
-    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, width: '100%', display: 'inline-flex', fontSize: '0.85rem' }),
+    valueContainer: (base) => ({ ...base, padding: '0 8px', display: 'flex', flex: '1 1 auto', cursor: 'text' }),
+    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, display: 'inline-flex', fontSize: '0.85rem', background: 'transparent', border: 'none', boxShadow: 'none', outline: 'none' }),
     placeholder: (base) => ({ ...base, color: 'var(--text-muted)', fontSize: '0.85rem' }),
     indicatorSeparator: () => ({ display: 'none' }),
-    dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)', padding: '4px' }),
+    dropdownIndicator: () => ({ display: 'none' }),
   };
 
   const handleSelectChange = (name, selectedOption) => {
@@ -566,10 +568,10 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       {/* LEFT CANVAS: SEARCH RESULTS */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: 0, height: '100%' }}>
 
-        <header className="dash-header" style={{ marginBottom: "16px", flexShrink: 0, borderBottom: 'none', padding: 0, background: 'transparent', backdropFilter: 'none' }}>
+        <header className="dash-header" style={{ marginBottom: "8px", flexShrink: 0, borderBottom: 'none', padding: 0, background: 'transparent', backdropFilter: 'none' }}>
           <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>Course Finder</h1>
-            <p style={{ margin: '4px 0 0 0', color: 'var(--text-muted)' }}>Discover optimal academic pathways tailored for you.</p>
+            <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>Course Finder</h1>
+            <p style={{ margin: '2px 0 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Discover optimal academic pathways tailored for you.</p>
           </div>
         </header>
 
@@ -580,9 +582,19 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
         )}
 
         {/* Result Scroll Context */}
-        <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+          overflowY: 'auto',
+          paddingRight: '4px',
+          paddingBottom: '20px',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 95%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 95%, transparent 100%)'
+        }}>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)' }}>Search Results</h3>
               {!isLoading && hasSearched && (
@@ -637,7 +649,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
           </div>
 
           {isLoading ? (
-            <div className="empty-state" style={{ height: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px', background: 'var(--card-bg-solid)', borderRadius: '20px', border: '1px solid var(--glass-border)' }}>
+            <div className="empty-state" style={{ flex: 1, minHeight: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px', background: 'var(--card-bg-solid)', borderRadius: '20px', border: '1px solid var(--glass-border)' }}>
               <div style={{ position: 'relative', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '3px solid transparent', borderTopColor: 'var(--accent-primary)', borderRightColor: 'var(--accent-secondary)', animation: 'spin 1.5s linear infinite' }}></div>
                 <Database size={28} style={{ color: 'var(--accent-primary)' }} />
@@ -645,7 +657,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
               <p style={{ margin: 0, color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem' }}>Querying University Database...</p>
             </div>
           ) : !hasSearched ? (
-            <div style={{ height: '100%', minHeight: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', color: 'var(--text-muted)', background: 'var(--card-bg-solid)', border: '1px dashed var(--glass-border)', borderRadius: '20px' }}>
+            <div style={{ flex: 1, minHeight: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', color: 'var(--text-muted)', background: 'var(--card-bg-solid)', border: '1px dashed var(--glass-border)', borderRadius: '20px' }}>
               <div style={{ background: 'var(--glass-highlight)', padding: '20px', borderRadius: '50%' }}>
                 <Search size={40} style={{ color: 'var(--text-dim)' }} />
               </div>
@@ -659,10 +671,11 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
               <p style={{ margin: 0, fontSize: '0.85rem' }}>Try adjusting your filtration parameters or checking availability for a different intake.</p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(295px, 1fr))', gap: '8px' }}>
               {filteredResults.map((uni, idx) => {
                 const uniId = uni.id || `fallback_${idx}`;
                 const isSelected = selectedUniIds.includes(uniId);
+                const isExpanded = expandedUniIds.includes(uniId);
                 const otherCols = getOtherColumns(uni);
 
                 const uniName = uni["University Name"] || uni["university name"] || uni.name || "Unknown University";
@@ -691,13 +704,13 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
 
                 return (
                   <div key={uniId} style={{
-                    background: isSelected ? 'rgba(139, 92, 246, 0.05)' : 'var(--card-bg-solid)',
+                    background: isSelected ? 'rgba(139, 92, 246, 0.05)' : (idx % 2 === 0 ? 'var(--card-bg-solid)' : 'var(--glass-bg)'),
                     border: isSelected ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)',
-                    borderRadius: '8px',
-                    padding: '6px 12px',
+                    borderRadius: '10px',
+                    padding: '10px 12px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '2px',
+                    gap: '4px',
                     transition: 'all 0.2s ease',
                     cursor: 'pointer',
                     boxShadow: isSelected ? '0 4px 10px -4px rgba(139, 92, 246, 0.15)' : 'none'
@@ -705,11 +718,11 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
                     onClick={() => toggleSelection({ ...uni, id: uniId })}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
                         <div style={{ paddingTop: '2px' }}>
                           <div style={{
-                            width: '16px',
-                            height: '16px',
+                            width: '15px',
+                            height: '15px',
                             borderRadius: '4px',
                             border: `2px solid ${isSelected ? 'var(--accent-primary)' : 'var(--glass-border)'}`,
                             background: isSelected ? 'var(--accent-primary)' : 'transparent',
@@ -718,34 +731,34 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
                             justifyContent: 'center',
                             transition: 'all 0.2s'
                           }}>
-                            {isSelected && <CheckSquare size={10} color="#fff" />}
+                            {isSelected && <CheckSquare size={9} color="#fff" />}
                           </div>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <h4 style={{ margin: 0, color: 'var(--accent-primary)', fontSize: '1rem', fontWeight: 900, lineHeight: 1.1, letterSpacing: '0.3px' }}>
+                          <h4 style={{ margin: 0, color: programName ? 'var(--text-main)' : '#f97316', fontSize: '0.88rem', fontWeight: 900, lineHeight: 1.25, letterSpacing: '0.1px' }}>
                             {programName || uniName}
                           </h4>
                           {programName && (
-                            <div style={{ fontSize: '0.9rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800 }}>
-                              <Building size={13} />
+                            <div style={{ fontSize: '0.78rem', color: '#f97316', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800 }}>
+                              <Building size={12} />
                               <span>{uniName}</span>
                             </div>
                           )}
-                          <div style={{ display: 'flex', gap: '10px', color: 'var(--text-muted)', fontSize: '0.85rem', flexWrap: 'wrap', marginTop: '4px' }}>
-                            {location !== "Location N/A" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} /> {location}</span>}
-                            {reqPercentage !== "0" && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--accent-primary)', fontWeight: 700 }}><GraduationCap size={12} /> Min. {displayPercentage}%</span>}
-                            {type !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '2px 6px', borderRadius: '4px' }}>{type}</span>}
-                            {ranking !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '2px 6px', borderRadius: '4px' }}>Rank: {ranking}</span>}
+                          <div style={{ display: 'flex', gap: '8px', color: 'var(--text-muted)', fontSize: '0.72rem', flexWrap: 'wrap', marginTop: '1px' }}>
+                            {location !== "Location N/A" && <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><MapPin size={11} /> {location}</span>}
+                            {reqPercentage !== "0" && <span style={{ display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-primary)', fontWeight: 700 }}><GraduationCap size={11} /> Min. {displayPercentage}%</span>}
+                            {type !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '1px 4px', borderRadius: '3px' }}>{type}</span>}
+                            {ranking !== "" && <span style={{ background: 'var(--glass-highlight)', padding: '1px 4px', borderRadius: '3px' }}>Rank: {ranking}</span>}
                           </div>
                         </div>
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                        {level && <span style={{ fontSize: '0.8rem', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--accent-primary)', padding: '3px 8px', borderRadius: '6px', fontWeight: 800 }}>{level}</span>}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+                        {level && <span style={{ fontSize: '0.75rem', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--accent-primary)', padding: '2px 8px', borderRadius: '6px', fontWeight: 800 }}>{level}</span>}
                       </div>
                     </div>
 
                     {otherCols.length > 0 && (
-                      <div style={{ marginTop: '4px' }}>
+                      <div style={{ marginTop: '6px', borderTop: '1px dashed var(--glass-border)', paddingTop: '6px' }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                           <button
                             onClick={(e) => {
@@ -758,7 +771,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
                               background: 'none',
                               border: 'none',
                               color: 'var(--text-muted)',
-                              fontSize: '0.8rem',
+                              fontSize: '0.75rem',
                               cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
@@ -777,38 +790,38 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
                               e.currentTarget.style.background = 'none';
                             }}
                           >
-                            {expandedUniIds.includes(uniId) ? 'Hide Details ▲' : 'Show Details ▼'}
+                            {isExpanded ? 'Hide Details' : 'Show Details'} {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                           </button>
                         </div>
-                        
-                        {expandedUniIds.includes(uniId) && (
+
+                        {isExpanded && (
                           <div style={{
                             marginTop: '8px',
-                            paddingTop: '12px',
+                            paddingTop: '8px',
                             borderTop: '1px solid var(--glass-border)',
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                            gap: '8px',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+                            gap: '6px',
                             animation: 'fadeIn 0.2s ease'
                           }}>
                             {otherCols.map(col => {
                               const isDateContext = col.toLowerCase().includes('deadline') || col.toLowerCase().includes('date');
                               return (
                                 <div key={col} style={{
-                                  fontSize: '0.85rem',
+                                  fontSize: '0.8rem',
                                   background: isDateContext ? 'rgba(239, 68, 68, 0.03)' : 'var(--glass-bg)',
-                                  padding: '6px 10px',
-                                  borderRadius: '8px',
+                                  padding: '4px 8px',
+                                  borderRadius: '6px',
                                   border: '1px solid var(--glass-border)',
                                   display: 'flex',
                                   flexDirection: 'column',
-                                  gap: '2px'
+                                  gap: '1px'
                                 }}>
-                                  <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDateContext ? '#ef4444' : 'var(--text-muted)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    {isDateContext && <CalendarClock size={12} />}
+                                  <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDateContext ? '#ef4444' : 'var(--text-muted)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                    {isDateContext && <CalendarClock size={10} />}
                                     {col}
                                   </span>
-                                  <span style={{ color: isDateContext ? '#ef4444' : 'var(--text-main)', fontWeight: 800, fontSize: '0.9rem' }}>
+                                  <span style={{ color: isDateContext ? '#ef4444' : 'var(--text-main)', fontWeight: 800, fontSize: '0.85rem' }}>
                                     {formatDisplayValue(uni[col], isDateContext)}
                                   </span>
                                 </div>
@@ -838,24 +851,25 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
         border: '1px solid var(--glass-border)',
-        borderRadius: '20px',
-        padding: '12px 14px',
+        borderRadius: '16px',
+        padding: '10px 10px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px',
+        gap: '4px',
         height: '100%',
         maxHeight: '100%',
         minHeight: 0,
         overflowY: 'auto',
+        boxSizing: 'border-box',
         boxShadow: 'var(--card-shadow)',
-        scrollbarWidth: 'none'
+        paddingBottom: selectedUniIds.length > 0 && !hideFooter ? '80px' : '10px'
       }}>
 
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          paddingBottom: '8px',
+          paddingBottom: '6px',
           borderBottom: '1px solid var(--glass-border)',
           flexShrink: 0,
           position: 'relative',
@@ -879,8 +893,8 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
           </div>
         </div>
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', paddingBottom: '20px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', paddingBottom: '5px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, marginBottom: '2px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Program Level</label>
               <Select classNamePrefix="react-select"
@@ -974,7 +988,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
             </div>
           </div>
 
-          <div style={{ marginTop: '24px' }}>
+          <div style={{ marginTop: 'auto', paddingTop: '12px' }}>
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -998,9 +1012,9 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '8px',
-                padding: '12px',
-                borderRadius: '12px',
+                gap: '6px',
+                padding: '8px',
+                borderRadius: '10px',
                 background: 'var(--accent-primary)',
                 color: '#fff',
                 fontWeight: 700,

@@ -74,7 +74,7 @@ router.post('/login', async (req, res) => {
       $or: [{ email: identifier }, { phone: identifier }] 
     });
     
-    if (!user || user.isDeleted) return res.status(400).json({ error: "User not found" });
+    if (!user || user.isDeleted) return res.status(400).json({ error: "Invalid credentials" });
     
     // Enforce Block Status
     if (user.isBlocked) {
@@ -92,11 +92,6 @@ router.post('/login', async (req, res) => {
     // Check if password matches
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      // Skip lockout for Admin accounts
-      if (user.role === 'admin') {
-         return res.status(400).json({ error: "Invalid credentials" });
-      }
-
       user.loginAttempts += 1;
       
       // If they fail 5 times, lock the account for 15 minutes
@@ -137,7 +132,7 @@ router.post('/login', async (req, res) => {
 // 3. GET CURRENT PROFILE
 router.get('/me', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user.id).select('-password -loginAttempts -lockUntil -isDeleted -deletedAt -adminViewed');
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);
   } catch (err) {
@@ -292,7 +287,32 @@ router.post('/send-welcome', async (req, res) => {
   }
 });
 
-// 6. LOGOUT ROUTE
+// 7. SEND PAYMENT FAILED EMAIL
+router.post('/send-payment-failed', async (req, res) => {
+  try {
+    const { email, errorMessage } = req.body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+    
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (user.role === 'student') {
+      const { getPaymentFailedEmailHTML } = require('../utils/emailTemplates');
+      const subject = 'Action Required: Payment Unsuccessful';
+      const html = getPaymentFailedEmailHTML(user.firstName, errorMessage);
+      await sendStudentEmail(user.email, subject, html);
+      console.log(`[Auth] Payment failed email sent for: ${user.email}`);
+      res.json({ message: "Payment failed email sent successfully" });
+    } else {
+      res.status(400).json({ error: "Payment failed emails are only for students" });
+    }
+  } catch (err) {
+    console.error("Failed to send payment failed email:", err);
+    res.status(500).json({ error: "Server error sending email" });
+  }
+});
+
+// 8. LOGOUT ROUTE
 router.post('/logout', (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,

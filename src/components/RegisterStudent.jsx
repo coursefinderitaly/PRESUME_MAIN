@@ -56,15 +56,15 @@ const RegisterStudent = ({ profile, setMessage }) => {
     option: (base, state) => ({
       ...base,
       backgroundColor: state.isSelected 
-        ? 'rgba(59, 130, 246, 0.15)' 
+        ? 'rgba(14, 165, 233, 0.15)' 
         : state.isFocused ? 'rgba(128, 128, 128, 0.1)' : 'transparent',
       color: state.isSelected ? 'var(--accent-secondary)' : 'var(--text-main)',
       cursor: 'pointer',
       '&:hover': { backgroundColor: 'rgba(128, 128, 128, 0.1)' }
     }),
     singleValue: (base) => ({ ...base, color: 'var(--text-main)' }),
-    valueContainer: (base) => ({ ...base, display: 'flex', flex: '1 1 auto', width: '100%', cursor: 'text' }),
-    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, width: '100%', display: 'inline-flex' }),
+    valueContainer: (base) => ({ ...base, display: 'flex', flex: '1 1 auto', cursor: 'text' }),
+    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, display: 'inline-flex', background: 'transparent', border: 'none', boxShadow: 'none', outline: 'none' }),
     placeholder: (base) => ({ ...base, color: 'var(--text-muted)' }),
     indicatorSeparator: (base) => ({ ...base, backgroundColor: 'var(--glass-border)' }),
     dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)' }),

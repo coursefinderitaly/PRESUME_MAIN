@@ -165,8 +165,8 @@ const AuthModal = ({ type: initialProp, onClose }) => {
       background: 'rgba(255, 255, 255, 0.03)',
       borderColor: state.isFocused ? 'rgba(6, 182, 212, 0.5)' : 'rgba(255, 255, 255, 0.1)',
       borderRadius: '0.75rem',
-      padding: '2px',
       color: 'white',
+      padding: '2px 5px',
       boxShadow: state.isFocused ? '0 0 0 1px rgba(6, 182, 212, 0.3)' : 'none',
       '&:hover': {
         borderColor: state.isFocused ? 'rgba(6, 182, 212, 0.5)' : 'rgba(255, 255, 255, 0.2)',
@@ -181,15 +181,16 @@ const AuthModal = ({ type: initialProp, onClose }) => {
       zIndex: 100,
       boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)'
     }),
+    menuPortal: (base) => ({ ...base, zIndex: 99999 }),
     option: (base, state) => ({
       ...base,
-      background: state.isFocused ? 'rgba(6, 182, 212, 0.15)' : 'transparent',
-      color: state.isFocused ? '#67e8f9' : '#cbd5e1',
+      background: state.isSelected ? 'rgba(255, 255, 255, 0.1)' : state.isFocused ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+      color: state.isSelected ? '#ffffff' : state.isFocused ? '#ffffff' : '#cbd5e1',
       cursor: 'pointer',
-      padding: '10px 16px',
-      fontSize: '0.9rem',
+      padding: '8px 12px',
+      fontSize: '0.85rem',
       '&:active': {
-        background: 'rgba(6, 182, 212, 0.25)',
+        background: 'rgba(255, 255, 255, 0.15)',
       }
     }),
     singleValue: (base) => ({
@@ -201,17 +202,19 @@ const AuthModal = ({ type: initialProp, onClose }) => {
       ...base,
       display: 'flex',
       flex: '1 1 auto',
-      width: '100%',
-      cursor: 'text'
+      cursor: 'text',
+      flexWrap: 'nowrap'
     }),
     input: (base) => ({
       ...base,
-      color: 'white',
-      fontSize: '0.95rem',
+      color: '#f1f5f9',
       margin: 0,
       padding: 0,
-      width: '100%',
-      display: 'inline-flex'
+      display: 'inline-flex',
+      background: 'transparent',
+      border: 'none',
+      boxShadow: 'none',
+      outline: 'none'
     }),
     placeholder: (base) => ({
       ...base,
@@ -488,20 +491,20 @@ const AuthModal = ({ type: initialProp, onClose }) => {
                         <>
                           <div className="space-y-1.5">
                             <label className="text-sm font-medium text-slate-300">Country</label>
-                            <Select classNamePrefix="react-select" options={countries} value={formData.country} onChange={v => handleInputChange('country', v)} styles={selectStyles} placeholder="Search countries..." />
+                            <Select classNamePrefix="react-select" options={countries} value={formData.country} onChange={v => handleInputChange('country', v)} styles={selectStyles} placeholder="Search countries..." menuPortalTarget={document.body} menuPosition="fixed" />
                           </div>
                           <div className="space-y-1.5">
                             <label className="text-sm font-medium text-slate-300">State / Province</label>
-                            <Select classNamePrefix="react-select" options={states} value={formData.state} onChange={v => handleInputChange('state', v)} styles={selectStyles} isDisabled={!formData.country} placeholder="Select state..." />
+                            <Select classNamePrefix="react-select" options={states} value={formData.state} onChange={v => handleInputChange('state', v)} styles={selectStyles} isDisabled={!formData.country} placeholder="Select state..." menuPortalTarget={document.body} menuPosition="fixed" />
                           </div>
                           <div className="space-y-1.5">
                             <label className="text-sm font-medium text-slate-300">City</label>
-                            <Select classNamePrefix="react-select" options={cities} value={formData.city} onChange={v => handleInputChange('city', v)} styles={selectStyles} isDisabled={!formData.state} placeholder="Select city..." />
+                            <Select classNamePrefix="react-select" options={cities} value={formData.city} onChange={v => handleInputChange('city', v)} styles={selectStyles} isDisabled={!formData.state} placeholder="Select city..." menuPortalTarget={document.body} menuPosition="fixed" />
                           </div>
                           {formData.role === 'freelancer' && (
                             <div className="space-y-1.5">
                               <label className="text-sm font-medium text-slate-300">Passport Issued Country</label>
-                              <Select classNamePrefix="react-select" options={countries} value={formData.passportCountry} onChange={v => handleInputChange('passportCountry', v)} styles={selectStyles} placeholder="Search countries..." />
+                              <Select classNamePrefix="react-select" options={countries} value={formData.passportCountry} onChange={v => handleInputChange('passportCountry', v)} styles={selectStyles} placeholder="Search countries..." menuPortalTarget={document.body} menuPosition="fixed" />
                             </div>
                           )}
                         </>

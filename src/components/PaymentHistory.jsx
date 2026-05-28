@@ -18,7 +18,8 @@ const PaymentHistory = ({ userEmail }) => {
     }
     try {
       const res = await fetch(`${API_BASE_URL}/payment/history?email=${encodeURIComponent(userEmail)}`, {
-        headers: { 'x-csrf-protected': '1' }
+        headers: { 'x-csrf-protected': '1' },
+        credentials: 'include'
       });
       if (res.ok) {
         const data = await res.json();

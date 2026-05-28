@@ -1386,6 +1386,8 @@
                                                   box-shadow: 0 0 0 3px var(--accent-glow) !important;
                                                 }
 
+                                                /* React-Select input overrides moved to global index.css */
+
                                                 /* Tables — glass rows */
                                                 .dash-universe .data-table {
                                                   background: transparent;
@@ -1702,7 +1704,6 @@
                                                 .theme-input:focus {
                                                   outline: none;
                                                   border-color: var(--accent-secondary);
-                                                  background: var(--input-focus);
                                                   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
                                                 }
 
@@ -1738,93 +1739,7 @@
                                                   color: #0f172a;
                                                 }
 
-                                                /* ================== REACT-SELECT THEMING ================== */
-                                                /* Default (Dark Mode) */
-                                                .react-select__control {
-                                                  background-color: var(--input-bg) !important;
-                                                  border: 1px solid var(--input-border) !important;
-                                                  border-radius: 10px !important;
-                                                  padding: 2px 4px !important;
-                                                  box-shadow: none !important;
-                                                  cursor: pointer !important;
-                                                }
-
-                                                .react-select__control:hover {
-                                                  border-color: rgba(255, 255, 255, 0.3) !important;
-                                                }
-
-                                                .react-select__control--is-focused {
-                                                  border-color: var(--accent-secondary) !important;
-                                                  background-color: var(--input-focus) !important;
-                                                  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
-                                                }
-
-                                                .react-select__menu {
-                                                  background-color: var(--card-bg-solid) !important;
-                                                  border: 1px solid var(--glass-border) !important;
-                                                  border-radius: 10px !important;
-                                                  backdrop-filter: blur(16px);
-                                                  z-index: 100 !important;
-                                                  overflow: hidden;
-                                                  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-                                                }
-
-                                                .react-select__option {
-                                                  background-color: transparent !important;
-                                                  color: var(--text-muted) !important;
-                                                  cursor: pointer !important;
-                                                  transition: all 0.2s ease;
-                                                }
-
-                                                .react-select__option:hover,
-                                                .react-select__option--is-focused {
-                                                  background-color: rgba(255, 255, 255, 0.05) !important;
-                                                  color: var(--text-main) !important;
-                                                }
-
-                                                .react-select__option--is-selected {
-                                                  background-color: rgba(59, 130, 246, 0.15) !important;
-                                                  color: var(--accent-secondary) !important;
-                                                  font-weight: 600;
-                                                }
-
-                                                .react-select__single-value {
-                                                  color: var(--text-main) !important;
-                                                }
-
-                                                .react-select__value-container {
-                                                  display: flex !important;
-                                                  flex: 1 1 auto !important;
-                                                  width: 100% !important;
-                                                  cursor: text !important;
-                                                }
-
-                                                .react-select__input-container {
-                                                  color: var(--text-main) !important;
-                                                  margin: 0 !important;
-                                                  padding: 0 !important;
-                                                  flex: 1 1 auto !important;
-                                                  width: 100% !important;
-                                                  display: inline-flex !important;
-                                                }
-                                                
-                                                .react-select__input-container > div,
-                                                .react-select__input-container input {
-                                                  width: 100% !important;
-                                                  cursor: text !important;
-                                                }
-
-                                                .react-select__placeholder {
-                                                  color: rgba(255, 255, 255, 0.3) !important;
-                                                }
-
-                                                .react-select__indicator {
-                                                  color: var(--text-muted) !important;
-                                                }
-
-                                                .react-select__indicator-separator {
-                                                  background-color: var(--glass-border) !important;
-                                                }
+                                                /* React-Select theming moved to global index.css */
 
                                                 .edit-actions {
                                                   flex: 1 1 100%;
@@ -2229,54 +2144,7 @@
                                                   filter: invert(1) hue-rotate(180deg) brightness(0.2);
                                                 }
 
-                                                /* Light Mode Overrides for React Select */
-                                                [data-theme='light'] .react-select__control {
-                                                  border-color: rgba(0, 0, 0, 0.1) !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__control:hover {
-                                                  border-color: rgba(0, 0, 0, 0.2) !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__menu {
-                                                  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-                                                  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__option {
-                                                  color: #64748b !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__option:hover,
-                                                [data-theme='light'] .react-select__option--is-focused {
-                                                  background-color: rgba(0, 0, 0, 0.04) !important;
-                                                  color: #0f172a !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__option--is-selected {
-                                                  background-color: rgba(59, 130, 246, 0.1) !important;
-                                                  color: var(--accent-primary) !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__single-value {
-                                                  color: #0f172a !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__input-container {
-                                                  color: #0f172a !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__placeholder {
-                                                  color: rgba(0, 0, 0, 0.4) !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__indicator {
-                                                  color: rgba(0, 0, 0, 0.4) !important;
-                                                }
-
-                                                [data-theme='light'] .react-select__indicator-separator {
-                                                  background-color: rgba(0, 0, 0, 0.1) !important;
-                                                }
+                                                /* React-Select light mode overrides moved to global index.css */
 
                                                 [data-theme='light'] .logout-btn {
                                                   color: #dc2626;

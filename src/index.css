@@ -605,12 +605,12 @@
   --bg-tertiary: #334155;
   --glass-bg: rgba(15, 23, 42, 0.8);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --accent-primary: #8b5cf6;
-  --accent-secondary: #a78bfa;
-  --accent-tertiary: #c4b5fd;
+  --accent-primary: #0ea5e9;
+  --accent-secondary: #38bdf8;
+  --accent-tertiary: #7dd3fc;
   --input-bg: rgba(255, 255, 255, 0.05);
   --input-border: rgba(255, 255, 255, 0.15);
-  --input-focus: #8b5cf6;
+  --input-focus: #0ea5e9;
   --table-border: rgba(255, 255, 255, 0.1);
   --table-header-bg: rgba(255, 255, 255, 0.05);
   --filter-chip-bg: rgba(255, 255, 255, 0.04);
@@ -648,9 +648,9 @@
   --bg-tertiary: rgba(255, 255, 255, 0.9);
   --glass-bg: rgba(255, 255, 255, 0.8);
   --glass-border: rgba(0, 0, 0, 0.08);
-  --accent-primary: #4f46e5;
-  --accent-secondary: #6366f1;
-  --accent-tertiary: #818cf8;
+  --accent-primary: #0284c7;
+  --accent-secondary: #0ea5e9;
+  --accent-tertiary: #38bdf8;
   --text-main: #0f172a !important;
   --text-muted: #475569 !important;
   --cyber-grid: transparent;
@@ -874,4 +874,210 @@ body.perf-low .bg-\[length\:400\%_400\%\] {
 body.perf-low .transform-gpu {
   transform: none !important;
   will-change: auto !important;
+}
+
+/* ================== GLOBAL REACT-SELECT STYLES ================== */
+.react-select-container {
+  width: 100%;
+}
+
+.react-select__control {
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--input-border) !important;
+  border-radius: 10px !important;
+  padding: 0 4px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  height: var(--control-height, 38px);
+  min-height: var(--control-min-height, 38px);
+  align-items: center !important;
+  pointer-events: auto !important;
+}
+
+.react-select__control:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.react-select__control--is-focused {
+  border-color: var(--accent-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
+}
+
+.react-select__value-container {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 1fr !important;
+  align-items: center !important;
+  height: 100% !important;
+  padding: 0 8px !important;
+  flex: 1 1 auto !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+  pointer-events: auto !important;
+}
+
+.react-select__placeholder,
+.react-select__single-value {
+  grid-area: 1/1/2/2 !important;
+  color: var(--text-main) !important;
+  font-size: 0.9rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-self: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.react-select__placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.6 !important;
+}
+
+.react-select__input-container {
+  grid-area: 1/1/2/2 !important;
+  color: var(--text-main) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-self: center !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Specific neutralisation of inner input overrides from global selectors */
+.react-select__input-container input,
+.dash-universe .react-select__input-container input,
+.dash-universe .react-select__input-container input[type="text"],
+input.react-select__input,
+.dash-universe input.react-select__input {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: auto !important;
+  display: inline-block !important;
+  color: var(--text-main) !important;
+  transition: none !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.react-select__input-container input:focus,
+.dash-universe .react-select__input-container input:focus,
+.dash-universe .react-select__input-container input[type="text"]:focus,
+input.react-select__input:focus,
+.dash-universe input.react-select__input:focus {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+}
+
+.react-select__indicators,
+.react-select__indicators-container {
+  height: 100% !important;
+  align-items: center !important;
+  display: flex !important;
+}
+
+.react-select__dropdown-indicator,
+.react-select__indicator-separator {
+  display: none !important;
+}
+
+.react-select__indicator {
+  color: var(--text-muted) !important;
+  padding: 4px 6px !important;
+  cursor: pointer !important;
+}
+
+.react-select__indicator:hover {
+  color: var(--text-main) !important;
+}
+
+.react-select__menu {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 10px !important;
+  backdrop-filter: blur(16px);
+  z-index: 99999 !important;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.react-select__menu-list {
+  padding: 4px !important;
+}
+
+.react-select__option {
+  background-color: transparent !important;
+  color: var(--text-muted) !important;
+  cursor: pointer !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.88rem !important;
+  transition: all 0.2s ease;
+}
+
+.react-select__option:hover,
+.react-select__option--is-focused {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: var(--text-main) !important;
+}
+
+.react-select__option--is-selected {
+  background-color: rgba(14, 165, 233, 0.15) !important;
+  color: var(--accent-secondary) !important;
+  font-weight: 600 !important;
+}
+
+/* Light Theme Overrides */
+[data-theme='light'] .react-select__control {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme='light'] .react-select__control:hover {
+  border-color: rgba(0, 0, 0, 0.22) !important;
+}
+
+[data-theme='light'] .react-select__menu {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme='light'] .react-select__option {
+  color: #64748b !important;
+}
+
+[data-theme='light'] .react-select__option:hover,
+[data-theme='light'] .react-select__option--is-focused {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+[data-theme='light'] .react-select__option--is-selected {
+  background-color: rgba(14, 165, 233, 0.1) !important;
+  color: var(--accent-primary) !important;
+}
+
+[data-theme='light'] .react-select__placeholder {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme='light'] .react-select__indicator {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme='light'] .react-select__indicator-separator {
+  background-color: rgba(0, 0, 0, 0.1) !important;
 }

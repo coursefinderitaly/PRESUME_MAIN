@@ -9,8 +9,10 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
     const [paymentFailed, setPaymentFailed] = useState(false);
+    const [selectedProgram, setSelectedProgram] = useState('bachelors_masters');
 
     const handlePayment = async () => {
+        const itemId = selectedProgram === 'mbbs' ? 'mbbs_fee' : 'bachelors_masters_fee';
         try {
             setLoading(true);
             setError(null);
@@ -20,7 +22,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
             const response = await fetch(`${API_BASE_URL}/payment/create-order`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
-                body: JSON.stringify({ itemId: 'test_item_1', userEmail: userEmail || '' })
+                body: JSON.stringify({ itemId, userEmail: userEmail || '' })
             });
 
             const data = await response.json();
@@ -259,10 +261,27 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                         initial={{ y: 5, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.2 }}
-                                        className="text-slate-400 text-sm mb-8 text-center leading-relaxed"
+                                        className="text-slate-400 text-sm mb-4 text-center leading-relaxed"
                                     >
-                                        Secure your account and gain full access by completing a quick ₹1.00 verification payment.
+                                        Secure your account and gain full access by completing your Phase 1 payment.
                                     </motion.p>
+
+                                    <motion.div
+                                        initial={{ y: 5, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ delay: 0.25 }}
+                                        className="w-full mb-6"
+                                    >
+                                        <label className="text-xs font-medium text-slate-300 mb-1.5 block text-left">Select Your Program</label>
+                                        <select 
+                                            value={selectedProgram}
+                                            onChange={(e) => setSelectedProgram(e.target.value)}
+                                            className="w-full px-3 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm"
+                                        >
+                                            <option value="bachelors_masters" className="bg-slate-800 text-slate-200">Bachelors / Masters</option>
+                                            <option value="mbbs" className="bg-slate-800 text-slate-200">MBBS</option>
+                                        </select>
+                                    </motion.div>
 
                                     {/* Payment Box */}
                                     <motion.div
@@ -282,8 +301,9 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                                 <span className="text-xs text-slate-500 font-medium">Powered by Razorpay</span>
                                             </div>
                                         </div>
-                                        <div className="text-xl font-bold text-white relative z-10">
-                                            ₹1<span className="text-sm text-slate-400">.00</span>
+                                        <div className="text-xl font-bold text-white relative z-10 text-right">
+                                            ₹{selectedProgram === 'mbbs' ? '50,000' : '35,000'}
+                                            <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mt-0.5">Phase 1 Fee</div>
                                         </div>
                                     </motion.div>
 
@@ -324,7 +344,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                                             ) : (
                                                 <>
                                                     <Zap className="w-4 h-4 text-cyan-100" fill="currentColor" />
-                                                    <span className="text-white font-medium text-sm">Authorize ₹1.00</span>
+                                                    <span className="text-white font-medium text-sm">Pay ₹{selectedProgram === 'mbbs' ? '50,000' : '35,000'}</span>
                                                     <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
                                                 </>
                                             )}

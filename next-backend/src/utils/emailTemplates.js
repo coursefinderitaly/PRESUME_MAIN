@@ -192,7 +192,7 @@ const getWelcomeEmailHTML = (candidateName, email, password) => {
                 <h4 style="margin: 0 0 10px 0; color: #0f172a; font-size: 15px;">Your Login Credentials</h4>
                 <p style="margin: 0 0 5px 0; font-size: 14px; color: #334155;"><strong>Email:</strong> ${email}</p>
                 <p style="margin: 0; font-size: 14px; color: #334155;"><strong>Password:</strong> ${password}</p>
-                <p style="margin: 10px 0 0 0; font-size: 12px; color: #ef4444;"><em>Please keep these credentials secure and consider changing your password after your first login.</em></p>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #ef4444;"><em>Please keep these credentials secure.</em></p>
             </div>
         `;
     }
@@ -287,10 +287,23 @@ const getInquiryNotificationEmailHTML = (data) => {
     });
 };
 
+const getPaymentFailedEmailHTML = (candidateName, errorMessage) => {
+    return getPremiumEmailTemplate({
+        title: "Payment Unsuccessful - Action Required",
+        greeting: candidateName,
+        body: `We noticed that your recent payment attempt was unsuccessful.<br/><br/>
+               <strong>Reason:</strong> ${errorMessage || 'Transaction declined or cancelled by user.'}<br/><br/>
+               Please log in to your portal and try again. If you continue to experience issues, please reach out to our support team for assistance.`,
+        ctaText: 'Try Again in Portal',
+        ctaLink: 'https://presumeoverseas.com/dashboard'
+    });
+};
+
 module.exports = {
     getPremiumEmailTemplate,
     getWelcomeEmailHTML,
     getPaymentPendingEmailHTML,
+    getPaymentFailedEmailHTML,
     getExportEmailHTML,
     getPartnerRequestEmailHTML,
     getAdminCredentialsEmailHTML,

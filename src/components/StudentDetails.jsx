@@ -172,18 +172,29 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
     option: (base, state) => ({
       ...base,
       backgroundColor: state.isSelected
-        ? 'rgba(59, 130, 246, 0.15)'
+        ? 'rgba(14, 165, 233, 0.15)'
         : state.isFocused ? 'rgba(128, 128, 128, 0.1)' : 'transparent',
       color: state.isSelected ? 'var(--accent-secondary)' : 'var(--text-main)',
       cursor: 'pointer',
       fontSize: '0.9rem'
     }),
     singleValue: (base) => ({ ...base, color: 'var(--text-main)' }),
-    valueContainer: (base) => ({ ...base, padding: '0 8px', display: 'flex', flex: '1 1 auto', width: '100%', cursor: 'text' }),
-    input: (base) => ({ ...base, color: 'var(--text-main)', margin: 0, padding: 0, width: '100%', display: 'inline-flex' }),
+    valueContainer: (base) => ({ ...base, padding: '0 8px', display: 'flex', flex: '1 1 auto', cursor: 'text' }),
+    input: (base) => ({
+      ...base,
+      color: 'var(--text-main)',
+      margin: 0,
+      padding: 0,
+      display: 'inline-flex',
+      background: 'transparent',
+      border: 'none',
+      boxShadow: 'none',
+      outline: 'none'
+    }),
     placeholder: (base) => ({ ...base, color: 'var(--text-muted)' }),
     indicatorSeparator: () => ({ display: 'none' }),
     dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)' }),
+    menuPortal: (base) => ({ ...base, zIndex: 99999 }),
   };
 
   const handleDateChange = (name, date) => {
@@ -582,13 +593,14 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
         <div className="tab-content" style={{
           flex: 1,
           minWidth: 0,
+          minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
           background: 'var(--card-bg-solid)',
           border: '1px solid var(--glass-border)',
           borderRadius: '24px',
           overflowY: activeTab === 'applications' ? 'hidden' : 'auto',
-          padding: '30px',
+          padding: activeTab === 'applications' ? '16px 20px 20px 20px' : '30px',
           boxShadow: 'inset 0 0 40px rgba(0,0,0,0.1)'
         }}>
           <div style={{ display: activeTab === 'profile' ? 'block' : 'none' }}>
@@ -1222,7 +1234,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                   />
 
                   {/* Actions at bottom */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', marginTop: '15px', padding: '0 80px 0 5px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', marginTop: '15px', padding: '0 260px 0 5px' }}>
                     <button type="button" onClick={() => setActiveTab('documents')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
                       Previous
                     </button>
@@ -1272,7 +1284,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
               )}
 
               {applicationSubTab === 'applied' && (
-                <div style={{ animation: 'fadeIn 0.3s ease' }}>
+                <div style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflowY: 'auto', paddingRight: '10px' }}>
                   {selectedForApplication.length === 0 ? (
                     <div className="empty-state" style={{ padding: '50px 20px', textAlign: 'center', background: 'var(--card-bg-solid)', borderRadius: '16px', border: '1px dashed var(--glass-border)' }}>
                       <Search className="text-muted" size={48} style={{ marginBottom: '15px', opacity: 0.5, margin: '0 auto' }} />
@@ -1296,11 +1308,11 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
 
                           return (
                             <div key={uni.id || idx} style={{ padding: '20px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--glass-border)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-                              <div style={{ fontWeight: 900, color: '#f59e0b', marginBottom: '5px', paddingRight: '25px', fontSize: '1.15rem' }}>{uni.name}</div>
+                              <div style={{ fontWeight: 900, color: '#f59e0b', marginBottom: '5px', paddingRight: '25px', fontSize: '1.15rem', wordBreak: 'break-word' }}>{uni.name}</div>
                               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}><MapPin size={14} /> {uni.location}</div>
 
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
-                                <span style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', background: 'rgba(99, 102, 241, 0.1)', padding: '5px 12px', borderRadius: '6px', fontWeight: 900 }}>Programs: {uni.programs.join(', ')}</span>
+                                <div style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', background: 'rgba(99, 102, 241, 0.1)', padding: '5px 12px', borderRadius: '6px', fontWeight: 900, wordBreak: 'break-word', width: '100%', boxSizing: 'border-box' }}>Programs: {uni.programs.join(', ')}</div>
                                 {uni.intake && <span style={{ fontSize: '0.8rem', color: '#8b5cf6', background: 'rgba(139, 92, 246, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Intake: {uni.intake}</span>}
                                 {uni.level && uni.level !== "N/A" && <span style={{ fontSize: '0.8rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>{uni.level}</span>}
                                 {uni.minPercentage && uni.minPercentage !== "0" && <span style={{ fontSize: '0.8rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Min {uni.minPercentage}%</span>}
@@ -1329,13 +1341,13 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                                   </button>
 
                                   {isExpanded && (
-                                    <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px dashed var(--glass-border)', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px', animation: 'fadeIn 0.3s ease' }}>
+                                    <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px dashed var(--glass-border)', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px', animation: 'fadeIn 0.3s ease' }}>
                                       {otherCols.map(col => {
                                         const isDateContext = col.toLowerCase().includes('deadline') || col.toLowerCase().includes('date');
                                         return (
-                                          <div key={col} style={{ fontSize: '0.85rem', background: isDateContext ? 'rgba(239, 68, 68, 0.05)' : 'var(--input-bg)', padding: '10px', borderRadius: '8px', border: isDateContext ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDateContext ? '#ef4444' : 'var(--text-muted)' }}>{col}</span>
-                                            <span style={{ color: isDateContext ? '#ef4444' : 'var(--text-main)', fontWeight: isDateContext ? 800 : 600 }}>{formatDisplayValue(uni.rawSheetData[col], isDateContext)}</span>
+                                          <div key={col} style={{ fontSize: '0.85rem', background: isDateContext ? 'rgba(239, 68, 68, 0.05)' : 'var(--input-bg)', padding: '10px', borderRadius: '8px', border: isDateContext ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0, overflow: 'hidden', boxSizing: 'border-box' }}>
+                                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDateContext ? '#ef4444' : 'var(--text-muted)', wordBreak: 'break-word', display: 'block' }}>{col}</span>
+                                            <span style={{ color: isDateContext ? '#ef4444' : 'var(--text-main)', fontWeight: isDateContext ? 800 : 600, wordBreak: 'break-word', whiteSpace: 'normal', display: 'block' }}>{formatDisplayValue(uni.rawSheetData[col], isDateContext)}</span>
                                           </div>
                                         );
                                       })}

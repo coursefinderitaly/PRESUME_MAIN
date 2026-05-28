@@ -307,9 +307,9 @@ router.put('/students/:id', async (req, res) => {
       if (existing) return res.status(400).json({ error: "Email already in use" });
     }
 
-    const allowedFields = [
+    let allowedFields = [
       'firstName', 'middleName', 'lastName', 'email', 'phone', 'dob', 'gender',
-      'country', 'state', 'city', 'offerStatus', 'studentStatus',
+      'country', 'state', 'city',
       'mailingAddress1', 'mailingAddress2', 'mailingCountry', 'mailingState', 'mailingCity', 'mailingPincode',
       'isPermanentSameAsMailing', 'permanentAddress1', 'permanentAddress2', 'permanentCountry', 'permanentState', 'permanentCity', 'permanentPincode',
       'passportNo', 'issueDate', 'expiryDate', 'issueCountry', 'issueState', 'issueCity',
@@ -317,6 +317,11 @@ router.put('/students/:id', async (req, res) => {
       'altContactName', 'altContactPhone', 'altContactEmail', 'altContactRelation',
       'countryOfEducation', 'highestLevelOfEducation', 'educationHistory', 'workExperience', 'appliedUniversities', 'savedUniversitiesCart'
     ];
+
+    // Only allow admins, partners, or counselors to modify status fields
+    if (req.user.role !== 'student') {
+        allowedFields.push('offerStatus', 'studentStatus');
+    }
 
     allowedFields.forEach(field => {
       if (updates[field] !== undefined) {

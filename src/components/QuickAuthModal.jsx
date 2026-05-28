@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, Eye, EyeOff, User as UserIcon, ArrowRight, ShieldCheck, Phone } from 'lucide-react';
+import { X, Mail, Lock, Eye, EyeOff, User as UserIcon, ArrowRight, ShieldCheck, Phone, ChevronDown } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
-const QuickAuthModal = ({ isOpen, onClose, onSuccess }) => {
+const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelors' }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     email: '',
     phonePrefix: '+91',
     phone: '',
-    password: ''
+    password: '',
+    program: initialProgram
   });
+  
+  // Update formData.program when initialProgram prop changes
+  React.useEffect(() => {
+    setFormData(prev => ({ ...prev, program: initialProgram }));
+  }, [initialProgram]);
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -45,7 +52,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess }) => {
       if (!res.ok) throw new Error(data.error || 'Registration failed');
       
       // Notify parent to proceed to payment
-      if (onSuccess) onSuccess(formData.email, formData.password);
+      onSuccess(formData.email, formData.password, formData.program);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -96,6 +103,22 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess }) => {
           )}
 
           <form onSubmit={handleSignup} className="space-y-4">
+            <div className="space-y-1.5 relative">
+              <label className="text-xs font-medium text-slate-300">Program Level</label>
+              <select
+                value={formData.program}
+                onChange={e => handleInputChange('program', e.target.value)}
+                className="w-full pl-4 pr-10 py-2.5 bg-white/5 border border-slate-700/50 rounded-xl text-slate-100 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all text-sm appearance-none"
+              >
+                <option value="Bachelors" className="bg-slate-900">Bachelors</option>
+                <option value="Masters" className="bg-slate-900">Masters</option>
+                <option value="MBBS" className="bg-slate-900">MBBS</option>
+              </select>
+              <div className="absolute right-3 top-[34px] pointer-events-none text-slate-500">
+                <ChevronDown size={16} />
+              </div>
+            </div>
+
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-slate-300">First Name</label>
               <div className="relative">
@@ -134,13 +157,13 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess }) => {
                   onChange={e => handleInputChange('phonePrefix', e.target.value)}
                   className="bg-transparent border-none text-slate-300 pl-3 pr-2 py-2.5 outline-none text-sm cursor-pointer hover:bg-white/10"
                 >
-                  <option value="+91" className="text-black">+91 (IN)</option>
-                  <option value="+1" className="text-black">+1 (US/CA)</option>
-                  <option value="+44" className="text-black">+44 (UK)</option>
-                  <option value="+61" className="text-black">+61 (AU)</option>
-                  <option value="+971" className="text-black">+971 (AE)</option>
-                  <option value="+353" className="text-black">+353 (IE)</option>
-                  <option value="+49" className="text-black">+49 (DE)</option>
+                  <option value="+91" className="bg-slate-800 text-slate-200">+91 (IN)</option>
+                  <option value="+1" className="bg-slate-800 text-slate-200">+1 (US/CA)</option>
+                  <option value="+44" className="bg-slate-800 text-slate-200">+44 (UK)</option>
+                  <option value="+61" className="bg-slate-800 text-slate-200">+61 (AU)</option>
+                  <option value="+971" className="bg-slate-800 text-slate-200">+971 (AE)</option>
+                  <option value="+353" className="bg-slate-800 text-slate-200">+353 (IE)</option>
+                  <option value="+49" className="bg-slate-800 text-slate-200">+49 (DE)</option>
                 </select>
                 <div className="w-px bg-slate-700/50 my-2"></div>
                 <input

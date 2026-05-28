@@ -107,10 +107,10 @@ const allowedOrigins = [
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('coursefinderitaly.com')) {
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.coursefinderitaly.com') || origin === 'https://coursefinderitaly.com') {
       return callback(null, true);
     }
-    return callback(null, true); // Fallback: allow all for now to fix Hostinger login loop
+    return callback(new Error('CORS policy violation: Origin not allowed.')); // Fixed CSRF Bypass
   },
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-protected', 'x-auth-token']
@@ -188,6 +188,14 @@ const authLimiter = rateLimit({
   message: { error: 'Too many requests from this IP, please try again later' }
 });
 app.use('/api/auth/login', authLimiter);
+
+// Payment Rate Limiter
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30,
+  message: { error: 'Too many payment requests from this IP, please try again later' }
+});
+app.use('/api/payment/create-order', paymentLimiter);
 
 // Database Connection
 const dbUri = process.env.MONGO_URI || process.env.MONGODB_URI || '';

@@ -21,14 +21,14 @@ const FeesTable = ({ countryId }) => {
 
     const pricing = {
         'Public': {
-            'Bachelors': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000],
-            'Masters': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000],
-            'MBBS': (countryId === 'germany' || countryId === 'italy') ? (countryId === 'germany' ? [30000, 15000, 40000, 35000] : [35000, 0, 65000, 60000]) : [5000, 5000, 5000, 5000]
+            'Bachelors': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
+            'Masters': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
+            'MBBS': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [50000, 0, 50000, 50000] : [5000, 5000, 5000, 5000]
         },
         'Private': {
-            'Bachelors': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000],
-            'Masters': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000],
-            'MBBS': (countryId === 'germany' || countryId === 'italy') ? [30000, 15000, 40000, 35000] : [5000, 5000, 5000, 5000]
+            'Bachelors': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
+            'Masters': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
+            'MBBS': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [50000, 0, 50000, 50000] : [5000, 5000, 5000, 5000]
         }
     };
 
@@ -41,7 +41,10 @@ const FeesTable = ({ countryId }) => {
         setIsQuickAuthOpen(true);
     };
 
-    const handleQuickAuthSuccess = (email, password) => {
+    const handleQuickAuthSuccess = (email, password, program) => {
+        if (program) {
+            setSelectedLevel(program);
+        }
         setPaymentEmail(email);
         setPaymentPassword(password);
         setIsQuickAuthOpen(false);
@@ -482,12 +485,14 @@ const FeesTable = ({ countryId }) => {
                 isOpen={isQuickAuthOpen} 
                 onClose={() => setIsQuickAuthOpen(false)} 
                 onSuccess={handleQuickAuthSuccess} 
+                initialProgram={selectedLevel}
             />
             
             <RazorpayGateway 
                 isOpen={isRazorpayOpen} 
                 onClose={() => setIsRazorpayOpen(false)} 
-                amount={discountedTotal.toLocaleString()}
+                itemId="dynamic_fee"
+                pricingParams={{ countryId, uniType, selectedLevel, applied }}
                 razorpayOrderId={paymentOrderId}
                 userEmail={paymentEmail}
                 userPassword={paymentPassword}

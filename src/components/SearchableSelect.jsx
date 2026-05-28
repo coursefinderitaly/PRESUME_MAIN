@@ -54,7 +54,6 @@ const SearchableSelect = ({ name, value, options, onChange, placeholder, require
       ...provided,
       display: 'flex',
       flex: '1 1 auto',
-      width: '100%',
       cursor: 'text'
     }),
     input: (provided) => ({
@@ -62,8 +61,11 @@ const SearchableSelect = ({ name, value, options, onChange, placeholder, require
       color: 'var(--text-main)',
       margin: 0,
       padding: 0,
-      width: '100%',
-      display: 'inline-flex'
+      display: 'inline-flex',
+      background: 'transparent',
+      border: 'none',
+      boxShadow: 'none',
+      outline: 'none'
     }),
     placeholder: (provided) => ({
       ...provided,
