@@ -102,16 +102,18 @@ const allowedOrigins = [
   'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176',
   'https://coursefinderitaly.com', 'https://www.coursefinderitaly.com',
   'https://coursefinder2-0.onrender.com',
-  'https://presumeoverseas.com', 'https://www.presumeoverseas.com'
+  'https://presumeoverseas.com', 'https://www.presumeoverseas.com',
+  'http://presumeoverseas.com', 'http://www.presumeoverseas.com'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.coursefinderitaly.com') || origin.endsWith('.presumeoverseas.com')) {
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.coursefinderitaly.com') || origin.endsWith('.presumeoverseas.com') || origin === 'https://presumeoverseas.com' || origin === 'http://presumeoverseas.com') {
       return callback(null, true);
     }
-    return callback(new Error('CORS policy violation: Origin not allowed.')); // Fixed CSRF Bypass
+    console.error(`[CORS Blocked] Origin not allowed: ${origin}`);
+    return callback(new Error(`CORS policy violation: Origin not allowed.`)); // Fixed CSRF Bypass
   },
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-protected', 'x-auth-token']
