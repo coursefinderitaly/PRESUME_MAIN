@@ -109,7 +109,7 @@ const allowedOrigins = [
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.coursefinderitaly.com') || origin.endsWith('.presumeoverseas.com') || origin === 'https://presumeoverseas.com' || origin === 'http://presumeoverseas.com') {
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.coursefinderitaly.com') || origin.endsWith('.presumeoverseas.com') || origin.endsWith('.hostingersite.com') || origin === 'https://presumeoverseas.com' || origin === 'http://presumeoverseas.com') {
       return callback(null, true);
     }
     console.error(`[CORS Blocked] Origin not allowed: ${origin}`);
