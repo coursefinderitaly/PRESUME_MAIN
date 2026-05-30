@@ -1598,7 +1598,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                       <button
                         type="button"
                         disabled={isCreatingOrder}
-                        onClick={handleProceedToPayment}
+                        onClick={student.portalUnlocked ? handleFinalSubmit : handleProceedToPayment}
                         className="btn-save"
                         style={{ padding: '14px 45px', fontSize: '1.05rem', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 900, letterSpacing: '0.5px', boxShadow: '0 8px 12px -3px rgba(16, 185, 129, 0.25)', opacity: isCreatingOrder ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: '8px' }}
                       >
@@ -1607,7 +1607,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                             <div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
                             INITIALIZING...
                           </>
-                        ) : 'PROCEED TO PAYMENT'}
+                        ) : student.portalUnlocked ? 'SUBMIT APPLICATION' : 'PROCEED TO PAYMENT'}
                       </button>
                     </div>
                   </>

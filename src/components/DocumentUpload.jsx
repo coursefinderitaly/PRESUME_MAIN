@@ -167,10 +167,8 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                 { id: 'twelfth', label: '12th Marksheet' },
                 { id: 'degree', label: 'Degree' },
                 { id: 'transcript', label: 'Transcript' },
-                { id: 'passport_front', label: 'Passport (Front)' },
-                { id: 'passport_back', label: 'Passport (Back)' },
-                { id: 'aadhar_front', label: 'Aadhar (Front)' },
-                { id: 'aadhar_back', label: 'Aadhar (Back)' },
+                { id: 'passport', label: 'Passport' },
+                { id: 'aadhar', label: 'Aadhar Card' },
                 { id: 'teams_id', label: 'Teams ID' },
                 { id: 'photo', label: 'Photograph' },
                 { id: 'sop', label: 'SOP' },
@@ -181,8 +179,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                 { id: 'lor1', label: 'LOR 1' },
                 { id: 'lor2', label: 'LOR 2' },
                 { id: 'study_module', label: 'Study Module' },
-                { id: 'bonafide', label: 'Bonafide' },
-                { id: 'fiscal', label: 'Fiscal' }
+                { id: 'bonafide', label: 'Bonafide' }
             ];
             ids.forEach(({id, label}) => {
                 const el = document.getElementById(id);
@@ -254,6 +251,8 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                 { id: 'twelfth', prefix: '12TH' },
                 { id: 'degree', prefix: 'DEGREE' },
                 { id: 'transcript', prefix: 'TRANSCRIPT' },
+                { id: 'passport', prefix: 'PASSPORT' },
+                { id: 'aadhar', prefix: 'AADHAR' },
                 { id: 'teams_id', prefix: 'TEAMS - ID' },
                 { id: 'photo', prefix: 'PHOTO' },
                 { id: 'sop', prefix: 'SOP' },
@@ -264,8 +263,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                 { id: 'study_module', prefix: 'STUDY-MODULE' },
                 { id: 'work_exp', prefix: 'WORK EXPERIENCE' },
                 { id: 'cv', prefix: 'CV' },
-                { id: 'bonafide', prefix: 'BONAFIDE' },
-                { id: 'fiscal', prefix: 'FISCAL' }
+                { id: 'bonafide', prefix: 'BONAFIDE' }
             ];
 
             let filesProcessed = 0;
@@ -340,25 +338,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                 }
             }
 
-            // Process Passport (Front + Back)
-            const passFront = Array.from(document.getElementById('passport_front')?.files || []);
-            const passBack = Array.from(document.getElementById('passport_back')?.files || []);
-            if (passFront.length > 0 || passBack.length > 0) {
-                filesProcessed++;
-                try {
-                    await createAndAddPDFToZip([...passFront, ...passBack], `PASSPORT -- ${candidateNameUpper}.pdf`);
-                } catch (e) { }
-            }
 
-            // Process Aadhar (Front + Back)
-            const aadharFront = Array.from(document.getElementById('aadhar_front')?.files || []);
-            const aadharBack = Array.from(document.getElementById('aadhar_back')?.files || []);
-            if (aadharFront.length > 0 || aadharBack.length > 0) {
-                filesProcessed++;
-                try {
-                    await createAndAddPDFToZip([...aadharFront, ...aadharBack], `AADHAR -- ${candidateNameUpper}.pdf`);
-                } catch (e) { }
-            }
 
             // COMBINED COMBINATIONS
             const photoFiles = Array.from(document.getElementById('photo')?.files || []);
@@ -400,7 +380,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                 try { await createAndAddPDFToZip([...lor1Files, ...lor2Files], `LOR'S -- ${candidateNameUpper}.pdf`); } catch (error) { }
             }
 
-            if (generatedFiles.length === 0) {
+            if (generatedFiles.length === 0 && !summaryData) {
                 setMessage('No files were attached to upload.');
                 setIsProcessing(false);
                 return;
@@ -408,9 +388,11 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
 
             // 1. Send Multiple Documents to Backend
             const formData = new FormData();
-            generatedFiles.forEach(file => {
-               formData.append('documents', file, file.name);
-            });
+            if (generatedFiles.length > 0) {
+                generatedFiles.forEach(file => {
+                   formData.append('documents', file, file.name);
+                });
+            }
             formData.append('email', profile?.email || '');
             formData.append('candidateName', candidateNameUpper);
             if (summaryData) {
@@ -504,33 +486,19 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                             <h3>Identity</h3>
                         </div>
                         <div className="doc-category-body">
-                            <div className={`file-box ${attachedFiles['passport_front'] ? 'attached' : ''}`}>
+                            <div className={`file-box ${attachedFiles['passport'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>Passport (Front)</label>
-                                    <StatusIndicator id="passport_front" />
+                                    <label>Passport</label>
+                                    <StatusIndicator id="passport" />
                                 </div>
-                                <input type="file" id="passport_front" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'passport_front')} />
+                                <input type="file" id="passport" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'passport')} />
                             </div>
-                            <div className={`file-box ${attachedFiles['passport_back'] ? 'attached' : ''}`}>
+                            <div className={`file-box ${attachedFiles['aadhar'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>Passport (Back)</label>
-                                    <StatusIndicator id="passport_back" />
+                                    <label>Aadhar Card</label>
+                                    <StatusIndicator id="aadhar" />
                                 </div>
-                                <input type="file" id="passport_back" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'passport_back')} />
-                            </div>
-                            <div className={`file-box ${attachedFiles['aadhar_front'] ? 'attached' : ''}`}>
-                                <div className="file-label-wrap">
-                                    <label>Aadhar (Front)</label>
-                                    <StatusIndicator id="aadhar_front" />
-                                </div>
-                                <input type="file" id="aadhar_front" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'aadhar_front')} />
-                            </div>
-                            <div className={`file-box ${attachedFiles['aadhar_back'] ? 'attached' : ''}`}>
-                                <div className="file-label-wrap">
-                                    <label>Aadhar (Back)</label>
-                                    <StatusIndicator id="aadhar_back" />
-                                </div>
-                                <input type="file" id="aadhar_back" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'aadhar_back')} />
+                                <input type="file" id="aadhar" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'aadhar')} />
                             </div>
                             <div className={`file-box ${attachedFiles['teams_id'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
@@ -629,13 +597,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                                 </div>
                                 <input type="file" id="bonafide" accept="image/*,application/pdf,.doc,.docx" multiple onChange={(e) => handleFileChange(e, 'bonafide')} />
                             </div>
-                            <div className={`file-box ${attachedFiles['fiscal'] ? 'attached' : ''}`}>
-                                <div className="file-label-wrap">
-                                    <label>Fiscal</label>
-                                    <StatusIndicator id="fiscal" />
-                                </div>
-                                <input type="file" id="fiscal" accept="image/*,application/pdf,.doc,.docx" multiple onChange={(e) => handleFileChange(e, 'fiscal')} />
-                            </div>
+
                         </div>
                     </div>
                 </div>

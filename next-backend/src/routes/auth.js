@@ -143,7 +143,7 @@ router.get('/me', auth, async (req, res) => {
 // 4. UPDATE PROFILE ROUTE
 router.put('/update', auth, async (req, res) => {
   try {
-    const { email, firstName, lastName, country, state, city, phone, whatsapp, companyName, companyAddress, teamSize, priorExperience, designation, studentUniqueId } = req.body;
+    const { email, firstName, lastName, country, state, city, phone, whatsapp, companyName, companyAddress, teamSize, priorExperience, designation, studentUniqueId, highestLevelOfEducation } = req.body;
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -167,6 +167,7 @@ router.put('/update', auth, async (req, res) => {
     if (priorExperience !== undefined) user.priorExperience = priorExperience;
     if (designation !== undefined) user.designation = designation;
     if (studentUniqueId !== undefined) user.studentUniqueId = studentUniqueId;
+    if (highestLevelOfEducation !== undefined) user.highestLevelOfEducation = highestLevelOfEducation;
 
     await user.save();
     res.json({ message: "Profile updated successfully", user });

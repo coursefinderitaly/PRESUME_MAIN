@@ -130,10 +130,10 @@ export default function CzechRepublicWorkVisaPage() {
       <section className="relative z-10 bg-white/[0.01] border-y border-white/5 py-24 px-4">
         <div className="max-w-[1400px] mx-auto flex flex-col gap-20">
           {/* Requirements */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }}>
-              <p className="text-red-400 text-sm font-black tracking-[0.3em] uppercase mb-4 drop-shadow-md">Eligibility</p>
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-tight">Requirements</h2>
+          <div className="max-w-3xl mx-auto w-full">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }}>
+              <p className="text-red-400 text-sm font-black tracking-[0.3em] uppercase mb-4 drop-shadow-md text-center">Eligibility</p>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-tight text-center">Requirements</h2>
               <div className="space-y-5">
                 {requirements.map((req, i) => (
                   <div key={i} className="flex items-center gap-4 bg-white/[0.03] border border-white/10 rounded-2xl p-5 shadow-lg hover:bg-white/[0.05] transition-colors">
@@ -141,16 +141,6 @@ export default function CzechRepublicWorkVisaPage() {
                     <span className="text-gray-100 font-bold text-base md:text-lg">{req}</span>
                   </div>
                 ))}
-              </div>
-            </motion.div>
-            
-            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-100px" }} className="bg-gradient-to-r from-red-500/20 to-orange-500/10 border border-red-500/40 rounded-2xl p-8 flex items-start gap-5 shadow-[0_0_30px_-10px_rgba(239,68,68,0.4)] h-fit">
-              <Info size={32} className="text-red-400 flex-shrink-0 mt-1 drop-shadow-[0_0_12px_rgba(239,68,68,0.8)]" />
-              <div>
-                <h4 className="text-white font-black text-2xl mb-2 tracking-tight"> Bonus</h4>
-                <p className="text-gray-200 text-base md:text-lg font-medium leading-relaxed">
-                  After your clients arrive in Czech Republic and work for 30 days, we will refund you <strong className="text-white bg-red-500/20 px-2 py-0.5 rounded ml-1">100 EUR</strong> for each person.
-                </p>
               </div>
             </motion.div>
           </div>

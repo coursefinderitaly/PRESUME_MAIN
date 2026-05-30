@@ -28,9 +28,9 @@ router.post('/email-zip', auth, upload.array('documents'), async (req, res) => {
 
         console.log(`Processing Zipping for: ${candidateName}, Initializing Local Storage Stream.`);
 
-        if (!uploadedFiles || uploadedFiles.length === 0) {
-            console.error('No files in request');
-            return res.status(400).json({ error: 'No documents uploaded' });
+        if ((!uploadedFiles || uploadedFiles.length === 0) && !summaryData) {
+            console.error('No files in request and no summary data');
+            return res.status(400).json({ error: 'No documents or application data provided' });
         }
 
         if (!email || email === 'undefined') {
@@ -227,52 +227,71 @@ router.post('/email-zip', auth, upload.array('documents'), async (req, res) => {
             zipFilename = `${(candidateName || 'Candidate').replace(/\s+/g, '_')}_${Date.now()}_Documents.zip`;
         }
 
-        const passThroughStream = new PassThrough();
-        const archive = archiver('zip', {
-            zlib: { level: 1 } // Fastest compression (Better for PDFs/Images)
-        });
+        let downloadUrl = null;
+        let isOversized = false;
+        let fileSizeInMB = 0;
+        let filePath = null;
 
-        archive.on('error', err => { throw err; });
-        archive.pipe(passThroughStream);
+        if (uploadedFiles && uploadedFiles.length > 0) {
+            const passThroughStream = new PassThrough();
+            const archive = archiver('zip', {
+                zlib: { level: 1 } // Fastest compression (Better for PDFs/Images)
+            });
 
-        // Map files to the archiver stream
-        uploadedFiles.forEach(file => {
-            // we use the originalname the frontend gave us
-            archive.append(file.buffer, { name: file.originalname || 'document.pdf' });
-        });
+            archive.on('error', err => { throw err; });
+            archive.pipe(passThroughStream);
 
-        // Trigger finalize which tells archiver to finish formatting the zip and close the stream
-        archive.finalize();
+            // Map files to the archiver stream
+            uploadedFiles.forEach(file => {
+                // we use the originalname the frontend gave us
+                archive.append(file.buffer, { name: file.originalname || 'document.pdf' });
+            });
 
-        // Save to Hostinger Local Disk
-        console.log(`[Storage] Saving copy to local disk: ${zipFilename}`);
-        await uploadZipStream(passThroughStream, zipFilename);
+            // Trigger finalize which tells archiver to finish formatting the zip and close the stream
+            archive.finalize();
 
-        const downloadUrl = await generateSignedUrl(zipFilename);
+            // Save to Hostinger Local Disk
+            console.log(`[Storage] Saving copy to local disk: ${zipFilename}`);
+            await uploadZipStream(passThroughStream, zipFilename);
+            
+            downloadUrl = await generateSignedUrl(zipFilename);
+            filePath = getLocalFilePath(zipFilename);
+
+            try {
+                const stats = fs.statSync(filePath);
+                fileSizeInMB = stats.size / (1024 * 1024);
+                isOversized = fileSizeInMB > 24; // Gmail limit is ~25MB, we cut off at 24MB to account for base64 encoding bloat constraints
+            } catch (err) {
+                console.error("Could not determine file size:", err);
+            }
+        } else if (zipFilename) {
+            try {
+                downloadUrl = await generateSignedUrl(zipFilename);
+                filePath = getLocalFilePath(zipFilename);
+                const stats = fs.statSync(filePath);
+                fileSizeInMB = stats.size / (1024 * 1024);
+                isOversized = fileSizeInMB > 24;
+            } catch (err) {
+                console.error("Could not get existing file:", err);
+            }
+        }
 
         // Respond immediately after local storage is confirmed, 
         // while emails continue in the background
         res.status(200).json({ message: 'Application submitted! Documents are stored and emails are sending.' });
 
-        const filePath = getLocalFilePath(zipFilename);
-        let fileSizeInMB = 0;
-        let isOversized = false;
-        try {
-            const stats = fs.statSync(filePath);
-            fileSizeInMB = stats.size / (1024 * 1024);
-            isOversized = fileSizeInMB > 24; // Gmail limit is ~25MB, we cut off at 24MB to account for base64 encoding bloat constraints
-        } catch (err) {
-            console.error("Could not determine file size:", err);
-        }
-
         // --- 2. COMPILE EMAIL HTML ---
         emailHtml += `<div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 15px; border-radius: 4px; color: #064e3b; margin-top: 20px;">`;
-        if (isOversized) {
-            emailHtml += `<strong>Document Bundle Too Large for Email:</strong> The generated ZIP file (${fileSizeInMB.toFixed(2)} MB) exceeds the constraints for email attachments. Please download the document bundle directly using the secure link beneath.`;
+        if (downloadUrl) {
+            if (isOversized) {
+                emailHtml += `<strong>Document Bundle Too Large for Email:</strong> The generated ZIP file (${fileSizeInMB.toFixed(2)} MB) exceeds the constraints for email attachments. Please download the document bundle directly using the secure link beneath.`;
+            } else {
+                emailHtml += `<strong>Document Bundle Attached:</strong> The verified files have been zipped and are attached to this email.`;
+            }
+            emailHtml += `<br/><br/><a href="${downloadUrl}" style="color: #0284c7; font-weight: bold; font-size: 14px; text-decoration: underline;">Download Documents Zip File (Server Hosted)</a>`;
         } else {
-            emailHtml += `<strong>Document Bundle Attached:</strong> The verified files have been zipped and are attached to this email.`;
+            emailHtml += `<strong>No New Documents Attached:</strong> The applicant used their existing document bundle or did not attach new documents.`;
         }
-        emailHtml += `<br/><br/><a href="${downloadUrl}" style="color: #0284c7; font-weight: bold; font-size: 14px; text-decoration: underline;">Download Documents Zip File (Server Hosted)</a>`;
         emailHtml += `</div>`;
 
         emailHtml += `<p style="color: #94a3b8; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 10px;">This is an automated administrative email from the Partner Portal. Do not reply.</p>`;
@@ -280,13 +299,17 @@ router.post('/email-zip', auth, upload.array('documents'), async (req, res) => {
 
         const storageEmail = process.env.STORAGE_EMAIL || 'coursefinderdoc@gmail.com';
 
-        // Prepare physical attachment from the disk only if it's below Gmail limit
+        // Prepare physical attachment from the disk only if it's below Gmail limit and exists
         const attachments = [];
-        if (!isOversized) {
-            attachments.push({
-                filename: zipFilename,
-                path: filePath
-            });
+        if (!isOversized && filePath) {
+            try {
+                if (fs.existsSync(filePath)) {
+                    attachments.push({
+                        filename: zipFilename,
+                        path: filePath
+                    });
+                }
+            } catch(e) {}
         }
 
         // Send Notification with/without Attachment to Storage/Admin Mail via GMAIL

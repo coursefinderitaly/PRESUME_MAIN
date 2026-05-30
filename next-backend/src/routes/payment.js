@@ -7,6 +7,9 @@ const User = require('../models/User');
 const auth = require('../middleware/auth');
 const checkRole = require('../middleware/rbac');
 
+const { COUPONS } = require('../config/coupons');
+const { getPhases } = require('../config/feesHelper');
+
 // Dummy item database - replace with real DB queries later
 const itemDatabase = {
   'test_item_1': { name: 'Premium Access Unlock', price_inr: 1 },
@@ -16,21 +19,15 @@ const itemDatabase = {
   'bachelors_masters_fee': { name: 'Bachelors/Masters Phase 1 Fee', price_inr: 35000 },
 };
 
-const calculateDynamicFee = (countryId, uniType, selectedLevel, applied) => {
-    const pricing = {
-        'Public': {
-            'Bachelors': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
-            'Masters': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
-            'MBBS': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [50000, 0, 50000, 50000] : [5000, 5000, 5000, 5000]
-        },
-        'Private': {
-            'Bachelors': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
-            'Masters': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
-            'MBBS': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [50000, 0, 50000, 50000] : [5000, 5000, 5000, 5000]
-        }
-    };
-    const currentPhases = (pricing[uniType] && pricing[uniType][selectedLevel]) ? pricing[uniType][selectedLevel] : [5000, 5000, 5000, 5000];
-    return applied ? currentPhases[0] * 0.5 : currentPhases[0];
+const calculateDynamicFee = (countryId, uniType, selectedLevel, applied, couponCode) => {
+    const activeCouponName = couponCode ? couponCode.toUpperCase() : '';
+    const currentPhases = getPhases(countryId, uniType || 'Public', selectedLevel, activeCouponName);
+    const phase1Fee = currentPhases[0];
+
+    if (countryId === 'italy') {
+        return Math.round(phase1Fee * 1.18);
+    }
+    return phase1Fee;
 };
 
 // 1. Create Order
@@ -41,8 +38,17 @@ router.post('/create-order', async (req, res) => {
     let finalItemName = 'Custom Payment';
 
     if (itemId === 'dynamic_fee' && pricingParams) {
-      finalAmount = calculateDynamicFee(pricingParams.countryId, pricingParams.uniType, pricingParams.selectedLevel, pricingParams.applied);
+      finalAmount = calculateDynamicFee(
+        pricingParams.countryId,
+        pricingParams.uniType,
+        pricingParams.selectedLevel,
+        pricingParams.applied,
+        pricingParams.couponCode
+      );
       finalItemName = `Phase 1 Fee - ${pricingParams.selectedLevel}`;
+    } else if (itemId === 'phase_payment' && pricingParams) {
+      finalAmount = pricingParams.amount;
+      finalItemName = `${pricingParams.countryName ? pricingParams.countryName.toUpperCase() : 'Study Abroad'} - Phase ${pricingParams.phaseNumber} Payment`;
     } else if (itemId && itemDatabase[itemId]) {
       finalAmount = itemDatabase[itemId].price_inr;
       finalItemName = itemDatabase[itemId].name;

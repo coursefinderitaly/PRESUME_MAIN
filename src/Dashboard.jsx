@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   LogOut, User, MapPin, Globe, Phone, Smartphone, Edit2, Save, X,
   Home, Search, Users, Briefcase, FileText, Bell, MonitorPlay, Building2, CheckSquare, KeyRound,
-  Sun, Moon, Monitor, Menu, UploadCloud, MessageSquare, ChevronRight, ChevronLeft, Camera, Trash2, CreditCard
+  Sun, Moon, Monitor, Menu, UploadCloud, MessageSquare, ChevronRight, ChevronLeft, Camera, Trash2, CreditCard, Sparkles
 } from 'lucide-react';
 import './Dashboard.css';
 import { useTheme } from './ThemeContext';
@@ -24,6 +24,7 @@ import AppliedUniversities from './components/AppliedUniversities';
 import PartnerApplications from './components/PartnerApplications';
 import StudentDocuments from './components/StudentDocuments';
 import PaymentHistory from './components/PaymentHistory';
+import Subscriptions from './components/Subscriptions';
 import { API_BASE_URL } from './config';
 
 const AnimatedBackground = ({ activeTheme }) => (
@@ -487,7 +488,7 @@ const Dashboard = () => {
         className={`nav-item ${activeTab === id ? 'active' : ''} ${locked ? 'locked' : ''}`}
         onClick={() => {
           if (locked) {
-            setPaymentModalOpen(true);
+            setActiveTab('subscriptions');
             return;
           }
           setActiveTab(id);
@@ -597,6 +598,7 @@ const Dashboard = () => {
               {isStudent && (
                 <>
                   <NavButton id="course-finder" icon={Search} label="Search Programs" />
+                  <NavButton id="subscriptions" icon={Sparkles} label="Our Services" />
                   <NavButton id="applications" icon={FileText} label="Applications" locked={!profile.portalUnlocked} />
                   <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" locked={!profile.portalUnlocked} />
                   <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" locked={!profile.portalUnlocked} />
@@ -771,9 +773,12 @@ const Dashboard = () => {
             {activeTab === 'counselors' && <ManageCounselors setMessage={setMessage} />}
             {activeTab === 'notifications' && <Notifications profile={profile} />}
             {activeTab === 'learning' && <LearningResources />}
-            {activeTab === 'payments' && <PaymentHistory userEmail={profile?.email} />}
+            {activeTab === 'payments' && <PaymentHistory userEmail={profile?.email} profile={profile} refreshProfile={fetchProfile} />}
             {activeTab === 'course-finder' && (
               <SearchProgram preselectedUnis={pendingApplications} onProceed={(selected) => { setPendingApplications(selected); if (isPartner || isCounselor || isFreelancer) { setActiveTab('students-list'); } else { setActiveTab('applications'); } }} />
+            )}
+            {activeTab === 'subscriptions' && (
+              <Subscriptions profile={profile} refreshProfile={fetchProfile} />
             )}
 
             {activeTab === 'profile' && (

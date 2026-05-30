@@ -1,16 +1,93 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle2, Wallet, FileText, Compass, Award, ShieldCheck, Ticket, CreditCard } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, Wallet, FileText, Compass, Award, ShieldCheck, Ticket, CreditCard, Landmark, GraduationCap, Coins, Sparkles, Lock, Tag, Shield } from 'lucide-react';
 import QuickAuthModal from './QuickAuthModal';
 import RazorpayGateway from './RazorpayGateway';
 import { API_BASE_URL } from '../config';
+import { COUPONS } from '../config/coupons';
+import { getPhases } from '../config/feesHelper';
+import { countryData } from '../data/countryData';
 
-const FeesTable = ({ countryId }) => {
+const ConfettiBlast = () => {
+  const particles = Array.from({ length: 20 });
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-visible z-[9999]">
+      {particles.map((_, i) => {
+        const angle = (i / 20) * 360;
+        const radius = Math.random() * 85 + 45;
+        const xTarget = Math.cos(angle * Math.PI / 180) * radius;
+        const yTarget = Math.sin(angle * Math.PI / 180) * radius - 40;
+        
+        return (
+          <motion.div
+            key={i}
+            initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+            animate={{ 
+              x: xTarget, 
+              y: yTarget, 
+              scale: Math.random() * 1.5 + 0.5,
+              rotate: Math.random() * 360,
+              opacity: 0 
+            }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full"
+            style={{
+              backgroundColor: i % 2 === 0 ? '#fbbf24' : '#f59e0b',
+              boxShadow: '0 0 8px rgba(245, 158, 11, 0.8)'
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+const FeesTable = ({ 
+  countryId, 
+  showUniversityFees = false, 
+  isDark = false, 
+  hideControls = false, 
+  externalLevel, 
+  onExternalLevelChange, 
+  externalUniType, 
+  onExternalUniTypeChange,
+  userEmail = ''
+}) => {
+    const mbbsCosts = [
+        {
+            university: "Sapienza University of Rome",
+            description: "Founded in 1303, one of the oldest and largest universities in Europe offering top-tier medical training.",
+            rows: [
+                { year: "1st Year", tuition: "€ 3,000", admin: "€ 2,500", app: "€ 30", total: "€ 5,530" },
+                { year: "2nd - 6th Year", tuition: "€ 3,000", admin: "-", app: "-", total: "€ 3,000 / yr" }
+            ]
+        },
+        {
+            university: "University of Padua",
+            description: "Established in 1222, internationally recognized for its high academic standards and clinical experience.",
+            rows: [
+                { year: "1st Year", tuition: "€ 2,800", admin: "€ 2,500", app: "€ 30", total: "€ 5,330" },
+                { year: "2nd - 6th Year", tuition: "€ 2,800", admin: "-", app: "-", total: "€ 2,800 / yr" }
+            ]
+        }
+    ];
+
     const [coupon, setCoupon] = useState('');
-    const [applied, setApplied] = useState(false);
+    const [couponDiscount, setCouponDiscount] = useState(0);
     const [error, setError] = useState('');
-    const [selectedLevel, setSelectedLevel] = useState('Bachelors');
-    const [uniType, setUniType] = useState('Public');
+    const [showPromoSuccess, setShowPromoSuccess] = useState(false);
+    
+    // Internal state overrides if props are absent
+    const [internalLevel, setInternalLevel] = useState('Bachelors');
+    const [internalUni, setInternalUni] = useState('Public');
+    
+    const selectedLevel = externalLevel !== undefined && externalLevel !== null ? externalLevel : internalLevel;
+    const setSelectedLevel = onExternalLevelChange || setInternalLevel;
+    
+    const uniType = externalUniType !== undefined && externalUniType !== null ? externalUniType : internalUni;
+    const setUniType = onExternalUniTypeChange || setInternalUni;
+    
+    const applied = couponDiscount > 0;
     
     // Payment Flow State
     const [isQuickAuthOpen, setIsQuickAuthOpen] = useState(false);
@@ -18,32 +95,81 @@ const FeesTable = ({ countryId }) => {
     const [paymentEmail, setPaymentEmail] = useState('');
     const [paymentPassword, setPaymentPassword] = useState('');
     const [paymentOrderId, setPaymentOrderId] = useState('');
+    const [userPayments, setUserPayments] = useState([]);
 
-    const pricing = {
-        'Public': {
-            'Bachelors': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
-            'Masters': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
-            'MBBS': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [50000, 0, 50000, 50000] : [5000, 5000, 5000, 5000]
-        },
-        'Private': {
-            'Bachelors': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
-            'Masters': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [35000, 15000, 50000, 50000] : [5000, 5000, 5000, 5000],
-            'MBBS': (countryId === 'germany') ? [30000, 15000, 40000, 35000] : (countryId === 'italy') ? [50000, 0, 50000, 50000] : [5000, 5000, 5000, 5000]
+    const fetchPayments = async () => {
+        if (!userEmail) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/payment/history?email=${encodeURIComponent(userEmail)}`, {
+                headers: { 'x-csrf-protected': '1' },
+                credentials: 'include'
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success && data.payments) {
+                    setUserPayments(data.payments);
+                }
+            }
+        } catch (err) {
+            console.error("Failed to fetch payments in FeesTable:", err);
         }
     };
 
-    const currentPhases = pricing[uniType][selectedLevel];
-    const totalFee = (countryId === 'germany' && uniType === 'Private') ? 20000 : currentPhases.reduce((a, b) => a + b, 0);
-    const discountedTotal = applied ? (totalFee * 0.9) : totalFee;
+    React.useEffect(() => {
+        fetchPayments();
+    }, [userEmail]);
+
+    const isPhase1Paid = userPayments.some(p => 
+        p.status === 'captured' && 
+        (p.itemId === 'dynamic_fee' || (p.itemName && p.itemName.toLowerCase().includes('phase 1')))
+    );
+
+    const activeCouponName = applied ? coupon : '';
+    const currentPhases = getPhases(countryId, uniType, selectedLevel, activeCouponName);
+    const basePhases = getPhases(countryId, uniType, selectedLevel, '');
+
+    const totalFee = basePhases.reduce((a, b) => a + b, 0);
+    const discountedTotal = currentPhases.reduce((a, b) => a + b, 0);
+
+    const getPhasePrice = (phaseIdx) => {
+        if (phaseIdx === 'combined') return currentPhases[2];
+        return currentPhases[phaseIdx];
+    };
+
+    const getPhasePricingDetails = (phaseIdx) => {
+        if (phaseIdx === 'combined') {
+            return {
+                originalPrice: basePhases[2] + basePhases[3],
+                discountedPrice: currentPhases[2]
+            };
+        }
+        return {
+            originalPrice: basePhases[phaseIdx],
+            discountedPrice: currentPhases[phaseIdx]
+        };
+    };
+
+    const getPhasePriceForLevel = (level) => {
+        return getPhases(countryId, uniType, level, activeCouponName)[0];
+    };
+
+    const getOriginalPhasePriceForLevel = (level) => {
+        return getPhases(countryId, uniType, level, '')[0];
+    };
+
+    const isCombined50 = countryId === 'italy' && (selectedLevel === 'Bachelors' || selectedLevel === 'Masters') && couponDiscount === 50;
 
     const handlePayNowClick = async () => {
-        // Always show quick auth for now to allow testing the account creation flow
         setIsQuickAuthOpen(true);
     };
 
-    const handleQuickAuthSuccess = (email, password, program) => {
+    const handleQuickAuthSuccess = (email, password, program, finalCoupon, finalDiscount) => {
         if (program) {
             setSelectedLevel(program);
+        }
+        if (finalCoupon !== undefined && finalDiscount !== undefined) {
+            setCoupon(finalCoupon);
+            setCouponDiscount(finalDiscount);
         }
         setPaymentEmail(email);
         setPaymentPassword(password);
@@ -53,6 +179,7 @@ const FeesTable = ({ countryId }) => {
     };
 
     const handlePaymentSuccess = async () => {
+        await fetchPayments();
         if (paymentEmail && paymentPassword) {
             try {
                 const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -79,7 +206,8 @@ const FeesTable = ({ countryId }) => {
     const feeStructure = [
         {
             title: "Admission Process",
-            price: shouldHidePrice ? null : `₹ ${(applied ? currentPhases[0] * 0.5 : currentPhases[0]).toLocaleString('en-IN')}`,
+            phaseIndex: 0,
+            price: shouldHidePrice ? null : `₹ ${getPhasePrice(0).toLocaleString('en-IN')}`,
             icon: <FileText className="text-cyan-400" size={18} />,
             color: "from-cyan-500/10 to-blue-500/10 hover:border-cyan-400/40",
             glow: "bg-cyan-500/10",
@@ -92,7 +220,8 @@ const FeesTable = ({ countryId }) => {
         },
         ...(currentPhases[1] > 0 ? [{
             title: "After Admission",
-            price: shouldHidePrice ? null : `₹ ${(applied ? currentPhases[1] * 0.5 : currentPhases[1]).toLocaleString('en-IN')}`,
+            phaseIndex: 1,
+            price: shouldHidePrice ? null : `₹ ${getPhasePrice(1).toLocaleString('en-IN')}`,
             icon: <CheckCircle2 className="text-indigo-400" size={18} />,
             color: "from-indigo-500/10 to-purple-500/10 hover:border-indigo-400/40",
             glow: "bg-indigo-500/10",
@@ -103,9 +232,10 @@ const FeesTable = ({ countryId }) => {
                 "Documents Verification"
             ]
         }] : []),
-        {
-            title: "Pre-enrollment & Scholarship Docs",
-            price: shouldHidePrice ? null : `₹ ${(applied ? currentPhases[2] * 0.5 : currentPhases[2]).toLocaleString('en-IN')}`,
+        ...(isCombined50 ? [{
+            title: "Pre-enrollment, Scholarship & Visa",
+            phaseIndex: 'combined',
+            price: shouldHidePrice ? null : `₹ ${getPhasePrice(2).toLocaleString('en-IN')}`,
             icon: <Compass className="text-yellow-400" size={18} />,
             color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
             glow: "bg-yellow-500/10",
@@ -115,16 +245,7 @@ const FeesTable = ({ countryId }) => {
                 "Courier charges",
                 "Pre-enrollment filing",
                 "DOV process assistance",
-                "Financial Guidance"
-            ]
-        },
-        {
-            title: "Scholarship application + Visa process",
-            price: shouldHidePrice ? null : `₹ ${(applied ? currentPhases[3] * 0.5 : currentPhases[3]).toLocaleString('en-IN')}`,
-            icon: <ShieldCheck className="text-emerald-400" size={18} />,
-            color: "from-emerald-500/10 to-teal-500/10 hover:border-emerald-400/40",
-            glow: "bg-emerald-500/10",
-            items: [
+                "Financial Guidance",
                 "Scholarship application & submission",
                 "Visa application assistance",
                 "Visa/Scholarship Documents Assistance",
@@ -132,9 +253,271 @@ const FeesTable = ({ countryId }) => {
                 "Accommodation proof assistance",
                 "Mock interview prep"
             ]
-        }
+        }] : [
+            {
+                title: "Pre-enrollment & Scholarship Docs",
+                phaseIndex: 2,
+                price: shouldHidePrice ? null : `₹ ${getPhasePrice(2).toLocaleString('en-IN')}`,
+                icon: <Compass className="text-yellow-400" size={18} />,
+                color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
+                glow: "bg-yellow-500/10",
+                items: [
+                    "HRD attestation assistance",
+                    "Apostille, translation & legalization",
+                    "Courier charges",
+                    "Pre-enrollment filing",
+                    "DOV process assistance",
+                    "Financial Guidance"
+                ]
+            },
+            ...(currentPhases[3] > 0 ? [{
+                title: "Scholarship application + Visa process",
+                phaseIndex: 3,
+                price: shouldHidePrice ? null : `₹ ${getPhasePrice(3).toLocaleString('en-IN')}`,
+                icon: <ShieldCheck className="text-emerald-400" size={18} />,
+                color: "from-emerald-500/10 to-teal-500/10 hover:border-emerald-400/40",
+                glow: "bg-emerald-500/10",
+                items: [
+                    "Scholarship application & submission",
+                    "Visa application assistance",
+                    "Visa/Scholarship Documents Assistance",
+                    "1-year travel insurance & itinerary",
+                    "Accommodation proof assistance",
+                    "Mock interview prep"
+                ]
+            }] : [])
+        ])
     ];
 
+    // =========================================================================
+    // CASE A: Compact Modal view used inside the Dashboard Subscriptions popup
+    // =========================================================================
+    if (hideControls) {
+        const surface  = 'var(--glass-popup-inner, rgba(255, 255, 255, 0.03))';
+        const border   = 'var(--glass-border)';
+        const title    = 'var(--text-main)';
+        const sub      = 'var(--text-muted)';
+        const muted    = 'var(--text-muted)';
+        const accent   = 'var(--accent-primary, #0ea5e9)';
+        const accentBg = 'var(--filter-chip-bg)';
+        const divider  = 'var(--table-border)';
+        const inputBg  = 'var(--input-bg)';
+
+        return (
+            <div style={{ width: '100%', height: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', fontFamily: 'inherit', position: 'relative' }}>
+                
+                {/* 2x2 Grid Layout Container - Fit on screen completely */}
+                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', height: '100%' }}>
+                        {feeStructure.map((item, idx) => {
+                            const { originalPrice, discountedPrice } = getPhasePricingDetails(item.phaseIndex);
+                            const displayPrice = !shouldHidePrice && discountedPrice > 0;
+                            const stepNum = String(idx + 1).padStart(2, '0');
+
+                            // Phase-specific colors & backgrounds
+                            let phaseAccent = accent;
+                            let phaseBg = 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)';
+                            let phaseBorder = border;
+
+                            if (idx === 0) { // Step 1: Admission (Cyan/Blue)
+                                phaseAccent = '#22d3ee';
+                                phaseBg = 'linear-gradient(135deg, rgba(34, 211, 238, 0.06) 0%, rgba(59, 130, 246, 0.03) 100%)';
+                                phaseBorder = 'rgba(34, 211, 238, 0.25)';
+                            } else if (idx === 1) { // Step 2: After Admission (Indigo/Purple)
+                                phaseAccent = '#818cf8';
+                                phaseBg = 'linear-gradient(135deg, rgba(129, 140, 248, 0.06) 0%, rgba(167, 139, 250, 0.03) 100%)';
+                                phaseBorder = 'rgba(129, 140, 248, 0.25)';
+                            } else if (idx === 2) { // Step 3: Pre-enrollment (Yellow/Amber)
+                                phaseAccent = '#fbbf24';
+                                phaseBg = 'linear-gradient(135deg, rgba(251, 191, 36, 0.06) 0%, rgba(245, 158, 11, 0.03) 100%)';
+                                phaseBorder = 'rgba(251, 191, 36, 0.25)';
+                            } else if (idx === 3) { // Step 4: Visa (Emerald/Teal)
+                                phaseAccent = '#34d399';
+                                phaseBg = 'linear-gradient(135deg, rgba(52, 211, 153, 0.06) 0%, rgba(20, 184, 166, 0.03) 100%)';
+                                phaseBorder = 'rgba(52, 211, 153, 0.25)';
+                            }
+
+                            return (
+                                <motion.div key={idx}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.04, duration: 0.2 }}
+                                    style={{
+                                        background: phaseBg,
+                                        border: `1px solid ${phaseBorder}`,
+                                        borderRadius: '16px',
+                                        overflow: 'hidden',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        backdropFilter: 'blur(12px)',
+                                        WebkitBackdropFilter: 'blur(12px)',
+                                        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)',
+                                    }}
+                                >
+                                    {/* Header */}
+                                    <div style={{
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        padding: '14px 18px', background: 'rgba(255, 255, 255, 0.02)',
+                                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)', flexShrink: 0
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <span style={{
+                                                width: '36px', height: '36px', borderRadius: '10px',
+                                                background: `linear-gradient(135deg, ${phaseAccent} 0%, rgba(255, 255, 255, 0.1) 100%)`, 
+                                                color: '#fff', display: 'flex',
+                                                alignItems: 'center', justifyContent: 'center',
+                                                fontSize: '15px', fontWeight: 800, flexShrink: 0,
+                                                boxShadow: `0 2px 8px ${phaseAccent}40`
+                                            }}>{stepNum}</span>
+                                            <div>
+                                                <p style={{ margin: 0, fontSize: '11px', fontWeight: 900, color: phaseAccent, textTransform: 'uppercase', letterSpacing: '1px' }}>Step {idx + 1}</p>
+                                                <p style={{ 
+                                                    margin: 0, 
+                                                    fontSize: '16px', 
+                                                    fontWeight: 800, 
+                                                    color: '#ffffff', 
+                                                    lineHeight: 1.2,
+                                                    textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
+                                                    opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
+                                                }}>{item.title}</p>
+                                            </div>
+                                        </div>
+                                        {displayPrice && (
+                                            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                                {applied && discountedPrice < originalPrice && (
+                                                    <p style={{ margin: 0, fontSize: '11px', color: muted, textDecoration: 'line-through', fontWeight: 700 }}>₹{Math.round(originalPrice).toLocaleString('en-IN')}</p>
+                                                )}
+                                                <p style={{ 
+                                                    margin: 0, 
+                                                    fontSize: '18px', 
+                                                    fontWeight: 950, 
+                                                    color: (idx === 0 && isPhase1Paid) ? '#10b981' : phaseAccent,
+                                                    textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
+                                                    opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
+                                                }}>₹{Math.round(discountedPrice).toLocaleString('en-IN')}</p>
+                                                <p style={{ 
+                                                    margin: 0, 
+                                                    fontSize: '11px', 
+                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'rgba(255, 255, 255, 0.6)', 
+                                                    fontWeight: 800,
+                                                    textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
+                                                    opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
+                                                }}>Total: ₹{Math.round(discountedPrice * 1.18).toLocaleString('en-IN')}</p>
+                                                {idx === 0 && isPhase1Paid && (
+                                                    <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.5px' }}>✓ PAID</span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Deliverables */}
+                                    <div style={{ padding: '16px 18px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px', alignContent: 'start', overflowY: 'auto', flex: 1 }} className="scrollbar-hide">
+                                        {item.items.map((lineItem, lIdx) => (
+                                            <div key={lIdx} style={{
+                                                display: 'flex', alignItems: 'center', gap: '8px',
+                                                background: 'rgba(255, 255, 255, 0.015)',
+                                                border: '1px solid rgba(255, 255, 255, 0.03)',
+                                                borderRadius: '8px',
+                                                padding: '8px 12px'
+                                            }}>
+                                                <CheckCircle2 size={15} color={phaseAccent} style={{ flexShrink: 0 }} />
+                                                <span style={{
+                                                    fontSize: '13px', color: 'rgba(255, 255, 255, 0.85)',
+                                                    fontWeight: 600, lineHeight: 1.35
+                                                }}>
+                                                    {lineItem}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Bottom Action Bar */}
+                <div style={{
+                    padding: '16px 0 0 0',
+                    marginTop: '12px',
+                    borderTop: `1px solid ${divider}`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '10px',
+                    flexShrink: 0
+                }}>
+                    {!isPhase1Paid && (
+                        <motion.div 
+                            animate={{ scale: [1, 1.03, 1] }} 
+                            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                            style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px', 
+                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', 
+                                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+                                padding: '8px 18px', 
+                                borderRadius: '24px' 
+                            }}
+                        >
+                            <Sparkles size={16} color="#fff" fill="#fff" />
+                            <span style={{ fontSize: '13px', color: '#fff', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                                Pay 1st Phase Fee Now To Open Portal
+                            </span>
+                        </motion.div>
+                    )}
+                    <motion.button
+                        whileHover={isPhase1Paid ? {} : { scale: 1.02 }} whileTap={isPhase1Paid ? {} : { scale: 0.97 }}
+                        onClick={handlePayNowClick}
+                        style={{
+                            width: '100%', maxWidth: '400px', padding: '14px', borderRadius: '12px', cursor: isPhase1Paid ? 'default' : 'pointer',
+                            background: isPhase1Paid ? 'rgba(16, 185, 129, 0.2)' : '#16a34a', color: isPhase1Paid ? '#10b981' : '#fff', fontSize: '16px', fontWeight: 900,
+                            letterSpacing: '0.5px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                            boxShadow: isPhase1Paid ? 'none' : '0 4px 14px rgba(22,163,74,0.4)', boxSizing: 'border-box',
+                            border: isPhase1Paid ? '1px solid rgba(16, 185, 129, 0.4)' : 'none'
+                        }}
+                    >
+                        {isPhase1Paid ? (
+                            <>
+                                <CheckCircle2 size={18} /> First Installment Paid
+                            </>
+                        ) : (
+                            <>
+                                <CreditCard size={18} /> Proceed to Payment
+                            </>
+                        )}
+                    </motion.button>
+                    <p style={{ margin: 0, textAlign: 'center', fontSize: '11px', color: muted, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        <ShieldCheck size={13} color="#16a34a" /> SSL Encrypted · Razorpay
+                    </p>
+                </div>
+
+                {/* Modals */}
+                <QuickAuthModal
+                    isOpen={isQuickAuthOpen} onClose={() => setIsQuickAuthOpen(false)}
+                    onSuccess={handleQuickAuthSuccess} initialProgram={selectedLevel}
+                    getFirstPhaseFee={getPhasePriceForLevel} getOriginalFirstPhaseFee={getOriginalPhasePriceForLevel}
+                    countryId={countryId} initialCoupon={coupon} initialDiscount={couponDiscount}
+                    hideRegistration={hideControls}
+                    loggedInEmail={userEmail}
+                    isPhase1Paid={isPhase1Paid}
+                />
+                <RazorpayGateway
+                    isOpen={isRazorpayOpen} onClose={() => setIsRazorpayOpen(false)}
+                    itemId="dynamic_fee"
+                    pricingParams={{ countryId, uniType, selectedLevel, applied, couponCode: coupon }}
+                    razorpayOrderId={paymentOrderId} userEmail={paymentEmail}
+                    userPassword={paymentPassword} onPaymentSuccess={handlePaymentSuccess}
+                    triggerWelcomeEmail={true}
+                />
+            </div>
+        );
+    }
+
+    // =========================================================================
+    // CASE B: Original Page View (used in public study-in-italy/germany pages)
+    // =========================================================================
     const currentPricing = { total: totalFee, phase: currentPhases[0] };
 
     return (
@@ -201,84 +584,17 @@ const FeesTable = ({ countryId }) => {
 
                 {/* Left Column (2/3 width): Phase Cards */}
                 <div className="lg:col-span-2 flex flex-col gap-4">
-                    {(applied && countryId === 'italy') ? (
-                        <>
-                            {/* Card 1: Admission & Post-Admission */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className="group relative p-6 rounded-[32px] bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-indigo-500/10 backdrop-blur-3xl border border-cyan-500/30 overflow-hidden shadow-xl flex flex-col gap-5"
-                            >
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/15 rounded-full blur-[60px] -mr-16 -mt-16" />
-                                <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-11 h-11 bg-cyan-500 text-black rounded-xl flex items-center justify-center font-black shadow-[0_0_15px_rgba(6,182,212,0.3)] shrink-0">
-                                            <FileText size={22} />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-black text-white tracking-tight">Admission & Post-Admission</h3>
-                                            <p className="text-cyan-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 01 & 02 Combined</p>
-                                        </div>
-                                    </div>
-                                    <div className="shrink-0">
-                                        <div className="px-5 py-2 rounded-xl bg-black/60 border border-cyan-500/30 text-center">
-                                            <span className="text-xl font-black text-white tracking-tighter">₹ 35,000</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
-                                    {[...feeStructure[0].items, ...(feeStructure[1].title === "After Admission" ? feeStructure[1].items : [])].map((item, i) => (
-                                        <div key={i} className="flex items-start gap-2.5">
-                                            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 mt-1 shrink-0" />
-                                            <span className="text-xs text-gray-300 font-medium leading-relaxed">{item}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </motion.div>
-
-                            {/* Card 2: Pre-enrollment, Scholarship & Visa */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.1 }}
-                                className="group relative p-6 rounded-[32px] bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-cyan-500/10 backdrop-blur-3xl border border-emerald-500/30 overflow-hidden shadow-xl flex flex-col gap-5"
-                            >
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/15 rounded-full blur-[60px] -mr-16 -mt-16" />
-                                <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-11 h-11 bg-emerald-500 text-black rounded-xl flex items-center justify-center font-black shadow-[0_0_15px_rgba(16,185,129,0.3)] shrink-0">
-                                            <Compass size={22} />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-black text-white tracking-tight">Pre-enrollment, Scholarship & Visa</h3>
-                                            <p className="text-emerald-400 text-[9px] font-black uppercase tracking-widest mt-0.5">Phases 03 & 04 Combined</p>
-                                        </div>
-                                    </div>
-                                    <div className="shrink-0">
-                                        <div className="px-5 py-2 rounded-xl bg-black/60 border border-emerald-500/30 text-center">
-                                            <span className="text-xl font-black text-white tracking-tighter">₹ 25,000</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
-                                    {[...feeStructure[feeStructure.length - 2].items, ...feeStructure[feeStructure.length - 1].items].map((item, i) => (
-                                        <div key={i} className="flex items-start gap-2.5">
-                                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 mt-1 shrink-0" />
-                                            <span className="text-xs text-gray-300 font-medium leading-relaxed">{item}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        </>
-                    ) : (
-                        feeStructure.map((item, idx) => (
+                    {feeStructure.map((item, idx) => {
+                        const { originalPrice, discountedPrice } = getPhasePricingDetails(item.phaseIndex);
+                        return (
                             <motion.div
                                 key={idx}
-                                initial={{ opacity: 0, x: -10 }}
-                                whileInView={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ delay: idx * 0.05 }}
-                                className={`group relative p-6 rounded-3xl bg-gradient-to-br ${item.color} backdrop-blur-2xl border border-white/5 hover:border-white/20 transition-all duration-300 overflow-hidden shadow-xl flex flex-col gap-5 cursor-default select-none h-full`}
+                                whileHover={{ y: -6, scale: 1.015, boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.4)' }}
+                                transition={{ type: 'spring', damping: 15, stiffness: 100, delay: idx * 0.05 }}
+                                className={`group relative p-6 rounded-3xl bg-gradient-to-br ${item.color} backdrop-blur-2xl border border-white/5 hover:border-white/35 transition-all duration-300 overflow-hidden shadow-xl flex flex-col gap-5 cursor-default select-none h-full`}
                             >
                                 {/* Dynamic Aura */}
                                 <div className={`absolute top-0 right-0 w-48 h-48 ${item.glow} rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
@@ -295,15 +611,31 @@ const FeesTable = ({ countryId }) => {
                                             </div>
                                             <div>
                                                 <p className="text-accent-gold text-[10px] font-black uppercase tracking-wider mb-0.5">Phase 0{idx + 1}</p>
-                                                <h3 className="text-xl font-black text-white group-hover:text-white transition-colors tracking-tight leading-tight">{item.title}</h3>
+                                                <h3 className={`text-xl font-black text-white group-hover:text-white transition-colors tracking-tight leading-tight ${(idx === 0 && isPhase1Paid) ? 'line-through text-white/40' : ''}`}>{item.title}</h3>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="shrink-0 w-full sm:w-auto">
-                                        {item.price && (
-                                            <span className="px-5 py-2.5 rounded-2xl bg-black/70 border border-white/10 text-sm font-black text-accent-gold tracking-widest shadow-[inset_0_1px_4px_rgba(255,255,255,0.05)] group-hover:bg-accent-gold group-hover:text-black transition-all duration-300 block text-center min-w-[110px]">
-                                                {item.price}
-                                            </span>
+                                    <div className="shrink-0 w-full sm:w-auto flex flex-col items-end gap-1">
+                                        {!shouldHidePrice && (
+                                            <>
+                                                <div className="flex flex-col items-end">
+                                                    {applied && discountedPrice < originalPrice && (
+                                                        <span className={`text-[10px] text-gray-500 line-through font-bold ${(idx === 0 && isPhase1Paid) ? 'text-gray-600' : ''}`}>
+                                                            ₹ {Math.round(originalPrice).toLocaleString('en-IN')}
+                                                        </span>
+                                                    )}
+                                                    <span className={`text-lg font-black text-accent-gold tracking-tight ${(idx === 0 && isPhase1Paid) ? 'line-through text-emerald-500' : ''}`}>
+                                                        ₹ {Math.round(discountedPrice).toLocaleString('en-IN')}
+                                                    </span>
+                                                </div>
+                                                <div className={`text-right text-[10px] text-gray-400 font-bold leading-normal ${(idx === 0 && isPhase1Paid) ? 'text-gray-500' : ''}`}>
+                                                    <p className={`m-0 select-none ${(idx === 0 && isPhase1Paid) ? 'line-through' : ''}`}>+ 18% GST (₹ {Math.round(discountedPrice * 0.18).toLocaleString('en-IN')})</p>
+                                                    <p className={`m-0 text-white font-extrabold select-none ${(idx === 0 && isPhase1Paid) ? 'line-through text-white/40' : ''}`}>Total: ₹ {Math.round(discountedPrice * 1.18).toLocaleString('en-IN')}</p>
+                                                </div>
+                                                {idx === 0 && isPhase1Paid && (
+                                                    <span className="text-[10px] text-emerald-400 font-black uppercase tracking-wider mt-1">✓ PAID</span>
+                                                )}
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -321,17 +653,27 @@ const FeesTable = ({ countryId }) => {
                                     ))}
                                 </div>
                             </motion.div>
-                        )))}
+                        );
+                    })}
                     
                     {/* Pay Now Button (Moved to bottom of phases) */}
                     <motion.button 
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={isPhase1Paid ? {} : { scale: 1.02 }}
+                        whileTap={isPhase1Paid ? {} : { scale: 0.98 }}
                         onClick={handlePayNowClick}
-                        className="w-full mt-2 py-5 bg-gradient-to-r from-accent-gold via-yellow-400 to-amber-500 rounded-2xl text-black font-black uppercase tracking-[0.2em] shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-[0_20px_40px_-10px_rgba(245,158,11,0.7)]"
+                        className={`w-full mt-2 py-5 rounded-2xl font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all duration-300 text-sm ${isPhase1Paid ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 cursor-default shadow-none' : 'bg-gradient-to-r from-accent-gold via-yellow-400 to-amber-500 text-black shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] hover:shadow-[0_20px_40px_-10px_rgba(245,158,11,0.7)]'}`}
                     >
-                        <CreditCard className="w-5 h-5" />
-                        Pay Now
+                        {isPhase1Paid ? (
+                            <>
+                                <CheckCircle2 className="w-5 h-5" />
+                                First Installment Paid
+                            </>
+                        ) : (
+                            <>
+                                <CreditCard className="w-5 h-5" />
+                                Pay Now
+                            </>
+                        )}
                     </motion.button>
                 </div>
 
@@ -353,7 +695,7 @@ const FeesTable = ({ countryId }) => {
                             </h2>
                         </div>
 
-                        {/* Redesigned Large Sticker Banner Cards */}
+                        {/* Sticker Banners */}
                         <div className="flex flex-col gap-2 select-none">
                             <div className="bg-gradient-to-r from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 p-3.5 rounded-2xl flex items-center justify-between shadow-md backdrop-blur-md">
                                 <span className="text-xs font-black text-emerald-300 uppercase tracking-widest">🔥 50% OFF</span>
@@ -381,22 +723,22 @@ const FeesTable = ({ countryId }) => {
                             <button
                                 onClick={() => {
                                     if (applied) {
-                                        setApplied(false);
+                                        setCouponDiscount(0);
                                         setCoupon('');
                                         setError('');
                                         return;
                                     }
                                     if (!coupon.trim()) return;
                                     const code = coupon.toUpperCase();
-                                    if (code === 'PRESUME' || code === 'NEET') {
-                                        setApplied(true);
+                                    if (COUPONS[code] !== undefined) {
+                                        setCouponDiscount(COUPONS[code]);
                                         setError('');
                                     } else {
-                                        setApplied(false);
+                                        setCouponDiscount(0);
                                         setError('Invalid discount code');
                                     }
                                 }}
-                                className={`px-4 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all duration-300 shadow-md shrink-0 ${applied ? 'bg-rose-500/20 border border-rose-500/40 text-rose-400 hover:bg-rose-500 hover:text-white' : 'bg-accent-gold text-primary-blue hover:bg-yellow-400'}`}
+                                className={`px-4 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all duration-300 shadow-md shrink-0 ${applied ? 'bg-rose-500/20 border border-rose-500/40 text-rose-450 hover:bg-rose-500 hover:text-white' : 'bg-accent-gold text-primary-blue hover:bg-yellow-400'}`}
                             >
                                 {applied ? 'Remove' : 'Apply'}
                             </button>
@@ -411,7 +753,8 @@ const FeesTable = ({ countryId }) => {
                                 {error}
                             </p>
                         )}
-                        {/* Premium Features Included */}
+                        
+                        {/* Included Perks */}
                         <div className="border-t border-white/5 pt-4 flex flex-col gap-2">
                             <p className="text-[10px] font-black uppercase text-gray-400/80 tracking-widest mb-1 select-none">Included Premium Perks:</p>
                             <div className="flex flex-col gap-2.5">
@@ -450,15 +793,13 @@ const FeesTable = ({ countryId }) => {
                             </div>
                         </div>
 
-                        {/* High-Impact Neon Visual Animated Object */}
+                        {/* High-Impact Neon Visual Guarantee */}
                         <div className="flex flex-col items-center justify-center p-5 bg-black/40 border border-white/5 rounded-3xl relative overflow-hidden group mt-3 backdrop-blur-xl select-none min-h-[140px] shadow-2xl">
-                            {/* Rotating Neon Glow Ring in background */}
                             <motion.div
                                 animate={{ rotate: 360 }}
                                 transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
                                 className="absolute w-[200px] h-[200px] border-2 border-dashed border-accent-gold/30 rounded-full opacity-40 group-hover:opacity-100 group-hover:border-accent-gold/60 transition-all duration-500 pointer-events-none z-10"
                             />
-                            {/* Inner pulsating glowing orb */}
                             <motion.div
                                 animate={{ scale: [1, 1.12, 1], y: [0, -6, 0] }}
                                 transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
@@ -480,19 +821,26 @@ const FeesTable = ({ countryId }) => {
 
             </div>
 
-            {/* Modals */}
             <QuickAuthModal 
                 isOpen={isQuickAuthOpen} 
                 onClose={() => setIsQuickAuthOpen(false)} 
                 onSuccess={handleQuickAuthSuccess} 
                 initialProgram={selectedLevel}
+                getFirstPhaseFee={getPhasePriceForLevel}
+                getOriginalFirstPhaseFee={getOriginalPhasePriceForLevel}
+                countryId={countryId}
+                initialCoupon={coupon}
+                initialDiscount={couponDiscount}
+                hideRegistration={hideControls}
+                loggedInEmail={userEmail}
+                isPhase1Paid={isPhase1Paid}
             />
             
             <RazorpayGateway 
                 isOpen={isRazorpayOpen} 
                 onClose={() => setIsRazorpayOpen(false)} 
                 itemId="dynamic_fee"
-                pricingParams={{ countryId, uniType, selectedLevel, applied }}
+                pricingParams={{ countryId, uniType, selectedLevel, applied, couponCode: coupon }}
                 razorpayOrderId={paymentOrderId}
                 userEmail={paymentEmail}
                 userPassword={paymentPassword}

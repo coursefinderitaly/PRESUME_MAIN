@@ -161,6 +161,24 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
             </div>
 
             <div className="space-y-5">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Your Academic Background</label>
+                    <div className="relative group">
+                        <select
+                            required name="stream" value={formData.stream} onChange={handleInputChange}
+                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                        >
+                            <option value="" disabled className="bg-zinc-900 text-gray-500">Select your background</option>
+                            {streams[level].map(s => (
+                                <option key={s} value={s} className="bg-zinc-900">{s}</option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-600 group-focus-within:text-blue-500 transition-colors">
+                            <ArrowRight className="w-4 h-4 rotate-90" />
+                        </div>
+                    </div>
+                </div>
+
                 {(level === 'bachelors' || level === 'mbbs') && (
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -195,24 +213,6 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                         />
                     </div>
                 )}
-
-                <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Academic Stream</label>
-                    <div className="relative group">
-                        <select
-                            required name="stream" value={formData.stream} onChange={handleInputChange}
-                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
-                        >
-                            <option value="" disabled className="bg-zinc-900 text-gray-500">Select your major</option>
-                            {streams[level].map(s => (
-                                <option key={s} value={s} className="bg-zinc-900">{s}</option>
-                            ))}
-                        </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-600 group-focus-within:text-blue-500 transition-colors">
-                            <ArrowRight className="w-4 h-4 rotate-90" />
-                        </div>
-                    </div>
-                </div>
 
                 <div className="space-y-2">
                     <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Interested Field</label>

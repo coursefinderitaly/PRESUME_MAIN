@@ -184,14 +184,21 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
     blue: '#3b82f6', rose: '#f43f5e', amber: '#f59e0b', green: '#10b981'
   };
 
-  const quickActions = [
+  const quickActions = isStudent ? [
+    { icon: FileText, label: 'SOP Creation', sub: 'Craft a winning personal statement', color: COLORS.blue, tab: 'applications', locked: !profile?.portalUnlocked },
+    { icon: Sparkles, label: 'Documents Crafting', sub: 'CV, LOR & resume styling', color: COLORS.purple, tab: 'applications', locked: !profile?.portalUnlocked },
+    { icon: Shield, label: 'Visa Assistance', sub: 'Expert visa documentation & guide', color: COLORS.teal, tab: 'applications', locked: !profile?.portalUnlocked },
+    { icon: BookOpen, label: 'Premium Learning Hub', sub: 'Access masterclasses & study aids', color: COLORS.rose, tab: 'learning', locked: !profile?.portalUnlocked },
+    { icon: Globe, label: 'Course Finder', sub: 'Search top global universities', color: COLORS.indigo, tab: 'course-finder' },
+    { icon: CheckCircle2, label: 'Live Track Status', sub: 'Monitor university applications', color: COLORS.green, tab: 'applied-universities', locked: !profile?.portalUnlocked }
+  ] : [
     { icon: Globe, label: 'Find Courses', sub: 'Explore global programs', color: COLORS.blue, tab: 'course-finder' },
-    { icon: FileText, label: isStudent ? 'My Applications' : 'Applications', sub: 'Track submissions', color: COLORS.purple, tab: isStudent ? 'applications' : 'partner-applications', locked: isStudent ? !profile?.portalUnlocked : false },
-    { icon: Building2, label: 'Universities', sub: 'View target institutions', color: COLORS.teal, tab: 'applied-universities', locked: isStudent ? !profile?.portalUnlocked : false },
-    { icon: BookOpen, label: 'Learning Hub', sub: 'Access digital resources', color: COLORS.rose, tab: 'learning', locked: isStudent ? !profile?.portalUnlocked : false },
-    { icon: Bell, label: 'Notifications', sub: unreadMsgCount > 0 ? `${unreadMsgCount} unread` : 'Recent events', color: COLORS.amber, tab: 'notifications', locked: isStudent ? !profile?.portalUnlocked : false },
-    ...(!isStudent ? [{ icon: Users, label: 'Students', sub: 'Manage pipeline', color: COLORS.indigo, tab: 'students-list' }] : []),
-    { icon: GraduationCap, label: 'My Profile', sub: 'Access user settings', color: COLORS.indigo, tab: 'profile' },
+    { icon: FileText, label: 'Applications', sub: 'Track submissions', color: COLORS.purple, tab: 'partner-applications' },
+    { icon: Building2, label: 'Universities', sub: 'View target institutions', color: COLORS.teal, tab: 'applied-universities' },
+    { icon: BookOpen, label: 'Learning Hub', sub: 'Access digital resources', color: COLORS.rose, tab: 'learning' },
+    { icon: Bell, label: 'Notifications', sub: unreadMsgCount > 0 ? `${unreadMsgCount} unread` : 'Recent events', color: COLORS.amber, tab: 'notifications' },
+    { icon: Users, label: 'Students', sub: 'Manage pipeline', color: COLORS.indigo, tab: 'students-list' },
+    { icon: GraduationCap, label: 'My Profile', sub: 'Access user settings', color: COLORS.indigo, tab: 'profile' }
   ];
 
   const partnerTotal = (stats.studentsActive || 0) + (stats.studentsHold || 0) + (stats.studentsBackout || 0) + (stats.studentsReceived || 0) || 1;
@@ -368,8 +375,8 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
             {isStudent ? (
               <>
                 <MetricCard icon={BookOpen} label="Saved Courses" value={profile?.savedUniversitiesCart?.length || 0} color={COLORS.blue} onClick={() => setActiveTab('course-finder')} />
-                <MetricCard icon={Building2} label="Applied Universities" value={applied} color={COLORS.purple} onClick={() => setActiveTab('applied-universities')} locked={!profile?.portalUnlocked} onLockedClick={() => setPaymentModalOpen(true)} />
-                <MetricCard icon={CheckCircle2} label="Documents" value={profile?.documentZip ? 'Uploaded' : 'Pending'} color={COLORS.teal} onClick={() => setActiveTab('applications')} locked={!profile?.portalUnlocked} onLockedClick={() => setPaymentModalOpen(true)} />
+                <MetricCard icon={Building2} label="Applied Universities" value={applied} color={COLORS.purple} onClick={() => setActiveTab('applied-universities')} locked={!profile?.portalUnlocked} onLockedClick={() => setActiveTab('subscriptions')} />
+                <MetricCard icon={CheckCircle2} label="Documents" value={profile?.documentZip ? 'Uploaded' : 'Pending'} color={COLORS.teal} onClick={() => setActiveTab('applications')} locked={!profile?.portalUnlocked} onLockedClick={() => setActiveTab('subscriptions')} />
                 <MetricCard icon={Shield} label="Account Status" value="Active" color={COLORS.green} />
               </>
             ) : (
@@ -391,11 +398,19 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
 
             <div style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '20px', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
               <h2 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Zap size={18} color="var(--accent-primary)" /> Quick Navigation
+                {isStudent ? (
+                  <>
+                    <Sparkles size={18} color="var(--accent-primary)" /> Elite Services
+                  </>
+                ) : (
+                  <>
+                    <Zap size={18} color="var(--accent-primary)" /> Quick Navigation
+                  </>
+                )}
               </h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', overflowY: 'auto', padding: '4px 4px 10px 4px', margin: '-4px -4px 0 -4px' }}>
                 {quickActions.map((a, i) => (
-                  <ActionTile key={a.tab} icon={a.icon} label={a.label} sub={a.sub} color={a.color} onClick={() => setActiveTab(a.tab)} locked={a.locked} onLockedClick={() => setPaymentModalOpen(true)} />
+                  <ActionTile key={a.tab} icon={a.icon} label={a.label} sub={a.sub} color={a.color} onClick={() => setActiveTab(a.tab)} locked={a.locked} onLockedClick={() => setActiveTab('subscriptions')} />
                 ))}
               </div>
             </div>

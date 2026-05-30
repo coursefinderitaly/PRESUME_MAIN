@@ -137,22 +137,13 @@ export default function SerbiaWorkVisaPage() {
           <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
             <p className="text-indigo-400 text-sm font-black tracking-[0.3em] uppercase mb-4 drop-shadow-md">Eligibility</p>
             <h2 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-tight">Requirements</h2>
-            <div className="space-y-5 mb-10">
+            <div className="space-y-5">
               {requirements.map((req, i) => (
                 <div key={i} className="flex items-center gap-4 bg-white/[0.03] border border-white/10 rounded-2xl p-5 shadow-lg hover:bg-white/[0.05] transition-colors">
                   <CheckCircle size={28} className="text-indigo-400 flex-shrink-0 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
                   <span className="text-gray-100 font-bold text-base md:text-lg">{req}</span>
                 </div>
               ))}
-            </div>
-            <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/10 border border-indigo-500/40 rounded-2xl p-8 flex items-start gap-5 shadow-[0_0_30px_-10px_rgba(99,102,241,0.4)]">
-              <Info size={32} className="text-indigo-400 flex-shrink-0 mt-1 drop-shadow-[0_0_12px_rgba(99,102,241,0.8)]" />
-              <div>
-                <h4 className="text-white font-black text-2xl mb-2 tracking-tight"> Bonus</h4>
-                <p className="text-gray-200 text-base md:text-lg font-medium leading-relaxed">
-                  After your clients arrive in Serbia and work for 30 days, we will refund you <strong className="text-white bg-indigo-500/20 px-2 py-0.5 rounded ml-1">€100</strong> for each person.
-                </p>
-              </div>
             </div>
           </motion.div>
 
