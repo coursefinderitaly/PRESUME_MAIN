@@ -98,9 +98,12 @@ export const WhyChooseUs = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       const minDim = Math.min(width, height);
-      // Increased radius to shift cards further apart
-      if (width < 768) setRadius(minDim * 0.16);
-      else setRadius(minDim * 0.20);
+      // Set a bounded radius to keep cards closer, preventing clipping outside the canvas/container
+      if (width < 768) {
+        setRadius(Math.max(95, Math.min(minDim * 0.25, 115)));
+      } else {
+        setRadius(Math.max(135, Math.min(minDim * 0.15, 160)));
+      }
     };
     handleResize();
     window.addEventListener('resize', handleResize);

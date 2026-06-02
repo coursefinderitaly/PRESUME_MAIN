@@ -1670,8 +1670,8 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
           </div>,
           document.body
         )}
-      </div>
-      );
+    </div>
+  );
 };
 
-      export default StudentDetails;
+export default StudentDetails;

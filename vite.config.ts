@@ -22,4 +22,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['framer-motion', 'gsap', 'lenis', '@use-gesture/react'],
   },
+  server: {
+    host: true, // Expose to local network
+  },
 })

@@ -26,6 +26,11 @@ export const getPhases = (countryId, uniType, level, couponCode) => {
         phases = [...phases];
         phases[0] = Math.round(phases[0] * (1 - discountPct / 100));
     }
+    // 6. Dynamic database coupons support
+    else if (couponCode && couponCode.startsWith('PRESUME-')) {
+        phases = [...phases];
+        phases[0] = Math.round(phases[0] * 0.5); // 50% discount
+    }
     
     return phases;
 };

@@ -435,6 +435,11 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                         setCouponError('');
                         setShowPromoSuccess(true);
                         setTimeout(() => setShowPromoSuccess(false), 2000);
+                      } else if (code.startsWith('PRESUME-')) {
+                        setCouponDiscount(50);
+                        setCouponError('');
+                        setShowPromoSuccess(true);
+                        setTimeout(() => setShowPromoSuccess(false), 2000);
                       } else {
                         setCouponError('Invalid');
                       }

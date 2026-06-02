@@ -253,6 +253,7 @@ app.use('/api/ai', require('./src/routes/ai'));
 app.use('/api/appointments', require('./src/routes/appointments'));
 app.use('/api/payment', require('./src/routes/payment'));
 app.use('/api/visitors', require('./src/routes/visitors'));
+app.use('/api/coupons', require('./src/routes/coupons'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'up', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });

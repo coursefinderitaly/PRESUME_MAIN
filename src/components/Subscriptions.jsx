@@ -69,7 +69,7 @@ const countriesComparisonData = [
     name: 'Germany',
     flag: '🇩🇪',
     subtitle: 'Zero Tuition & Tech Hub',
-    univTuition: '€1,500-€20,000 (Zero Tuition) at Public Unis',
+    univTuition: '€1,500-€20,000 at Public Universities',
     workRights: '18 Months Stay-back',
     benefits: [
       'Most public universities charge no tuition, only a small semester contribution.',
@@ -556,11 +556,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
         </div>
 
         {/* Comparison Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(285px, 1fr))',
-          gap: '24px'
-        }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {countriesComparisonData.map((c) => {
             const fee = getProcessingFeeDetails(c.id);
             const isSelected = selectedCountry === c.id;
@@ -627,15 +623,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                 </div>
 
                 {/* Micro Info Badges */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '8px',
-                  background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid var(--glass-border)',
-                  borderRadius: '12px',
-                  padding: '10px'
-                }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2.5 rounded-xl border border-white/10 bg-white/5">
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', tracking: '0.5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <Landmark size={10} /> Tuition Cost

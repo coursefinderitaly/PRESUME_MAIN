@@ -23,6 +23,7 @@ import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
 import NotFound from './components/NotFound';
+import CouponPage from './coupon_generator/coupon';
 import { API_BASE_URL } from './config';
 
 import './index.css';
@@ -68,7 +69,8 @@ function VisitorTracker() {
       '/book-appointment',
       '/contact',
       '/our-story',
-      '/apple-academy'
+      '/apple-academy',
+      '/coupon'
     ]);
 
     // If page is not in our active pages, default track it as '/' root
@@ -141,6 +143,7 @@ function App() {
               <Route path="/contact" element={<ContactUsPage />} />
               <Route path="/our-story" element={<OurStoryPage />} />
               <Route path="/apple-academy" element={<AppleAcademyPage />} />
+              <Route path="/coupon" element={<CouponPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </IdleTimeout>

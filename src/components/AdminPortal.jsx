@@ -21,6 +21,7 @@ import * as XLSX from 'xlsx';
 import UniversityDataManagement from './UniversityDataManagement';
 import AppointmentsManagement from './AppointmentsManagement';
 import AdminPayments from './AdminPayments';
+import AdminCoupons from './AdminCoupons';
 
 
 const AdminPortal = () => {
@@ -999,6 +1000,16 @@ const AdminPortal = () => {
           >
             <CreditCard size={18} /> Student Payments
           </button>
+          <button 
+            className={`nav-item ${activeTab === 'coupons' ? 'active' : ''}`} 
+            onClick={() => { 
+              setActiveTab('coupons'); 
+              cancelEdit(); 
+              if(window.innerWidth<=768) setIsSidebarOpen(false); 
+            }}
+          >
+            🎟️ Coupons Management
+          </button>
           <button
             className={`nav-item ${activeTab === 'visitors' ? 'active' : ''}`}
             onClick={() => { setActiveTab('visitors'); fetchVisitors(); cancelEdit(); if(window.innerWidth<=768) setIsSidebarOpen(false); }}
@@ -1093,7 +1104,7 @@ const AdminPortal = () => {
         {/* -------------------------------------------------------------------------------- */}
         {/* VIEW: LEDGER TABLE */}
         {/* -------------------------------------------------------------------------------- */}
-        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments' && activeTab !== 'payments' && activeTab !== 'visitors' && activeTab !== 'trash') && (
+        {(!selectedUser && !isAdding && activeTab !== 'applications' && activeTab !== 'uploaded_documents' && activeTab !== 'chats' && activeTab !== 'contact_forms' && activeTab !== 'appointments' && activeTab !== 'payments' && activeTab !== 'visitors' && activeTab !== 'trash' && activeTab !== 'coupons') && (
           <div className="animate-fade-in">
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexShrink: 0 }}>
               <div>
@@ -1643,7 +1654,7 @@ const AdminPortal = () => {
               </button>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: openChat ? '320px 1fr' : '1fr', gap: '20px', alignItems: 'start' }}>
+            <div className={`grid gap-5 items-start ${openChat ? 'grid-cols-1 xl:grid-cols-[320px_1fr]' : 'grid-cols-1'}`}>
 
               {/* INBOX LIST */}
               <div style={{ background: 'var(--card-bg-solid)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflow: 'hidden' }}>
@@ -1941,6 +1952,15 @@ const AdminPortal = () => {
         {(!selectedUser && !isAdding && activeTab === 'payments') && (
           <div className="animate-fade-in" style={{ height: 'calc(100vh - 180px)' }}>
             <AdminPayments />
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------------------------- */}
+        {/* VIEW: COUPONS MANAGEMENT                                                         */}
+        {/* -------------------------------------------------------------------------------- */}
+        {(!selectedUser && !isAdding && activeTab === 'coupons') && (
+          <div className="animate-fade-in" style={{ height: 'calc(100vh - 180px)' }}>
+            <AdminCoupons />
           </div>
         )}
 

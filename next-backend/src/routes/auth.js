@@ -3,6 +3,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Coupon = require('../models/Coupon');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const { sendStudentEmail, sendAdminEmail } = require('../utils/mailer');
@@ -41,6 +42,12 @@ router.post('/signup', async (req, res) => {
       companyName, companyAddress, teamSize, priorExperience, designation, studentUniqueId
     });
     await newUser.save();
+
+    // Bind any previously generated guest coupons to this new user account
+    await Coupon.updateMany(
+      { userEmail: email.toLowerCase(), userId: null },
+      { $set: { userId: newUser._id } }
+    );
     
     // Send Welcome or Payment Pending Email if user is a student
     if (newUser.role === 'student' && email) {

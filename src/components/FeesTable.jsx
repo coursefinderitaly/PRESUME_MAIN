@@ -1,57 +1,60 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Wallet, FileText, Compass, Award, ShieldCheck, Ticket, CreditCard, Landmark, GraduationCap, Coins, Sparkles, Lock, Tag, Shield } from 'lucide-react';
 import QuickAuthModal from './QuickAuthModal';
 import RazorpayGateway from './RazorpayGateway';
+import CouponPage from '../coupon_generator/coupon';
 import { API_BASE_URL } from '../config';
 import { COUPONS } from '../config/coupons';
 import { getPhases } from '../config/feesHelper';
 import { countryData } from '../data/countryData';
 
 const ConfettiBlast = () => {
-  const particles = Array.from({ length: 20 });
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-visible z-[9999]">
-      {particles.map((_, i) => {
-        const angle = (i / 20) * 360;
-        const radius = Math.random() * 85 + 45;
-        const xTarget = Math.cos(angle * Math.PI / 180) * radius;
-        const yTarget = Math.sin(angle * Math.PI / 180) * radius - 40;
-        
-        return (
-          <motion.div
-            key={i}
-            initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
-            animate={{ 
-              x: xTarget, 
-              y: yTarget, 
-              scale: Math.random() * 1.5 + 0.5,
-              rotate: Math.random() * 360,
-              opacity: 0 
-            }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full"
-            style={{
-              backgroundColor: i % 2 === 0 ? '#fbbf24' : '#f59e0b',
-              boxShadow: '0 0 8px rgba(245, 158, 11, 0.8)'
-            }}
-          />
-        );
-      })}
-    </div>
-  );
+    const particles = Array.from({ length: 20 });
+    return (
+        <div className="absolute inset-0 pointer-events-none overflow-visible z-[9999]">
+            {particles.map((_, i) => {
+                const angle = (i / 20) * 360;
+                const radius = Math.random() * 85 + 45;
+                const xTarget = Math.cos(angle * Math.PI / 180) * radius;
+                const yTarget = Math.sin(angle * Math.PI / 180) * radius - 40;
+
+                return (
+                    <motion.div
+                        key={i}
+                        initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                        animate={{
+                            x: xTarget,
+                            y: yTarget,
+                            scale: Math.random() * 1.5 + 0.5,
+                            rotate: Math.random() * 360,
+                            opacity: 0
+                        }}
+                        transition={{ duration: 1.2, ease: "easeOut" }}
+                        className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full"
+                        style={{
+                            backgroundColor: i % 2 === 0 ? '#fbbf24' : '#f59e0b',
+                            boxShadow: '0 0 8px rgba(245, 158, 11, 0.8)'
+                        }}
+                    />
+                );
+            })}
+        </div>
+    );
 };
 
-const FeesTable = ({ 
-  countryId, 
-  showUniversityFees = false, 
-  isDark = false, 
-  hideControls = false, 
-  externalLevel, 
-  onExternalLevelChange, 
-  externalUniType, 
-  onExternalUniTypeChange,
-  userEmail = ''
+const FeesTable = ({
+    countryId,
+    showUniversityFees = false,
+    isDark = false,
+    hideControls = false,
+    externalLevel,
+    onExternalLevelChange,
+    externalUniType,
+    onExternalUniTypeChange,
+    userEmail = ''
 }) => {
     const mbbsCosts = [
         {
@@ -76,19 +79,20 @@ const FeesTable = ({
     const [couponDiscount, setCouponDiscount] = useState(0);
     const [error, setError] = useState('');
     const [showPromoSuccess, setShowPromoSuccess] = useState(false);
-    
+    const [showCouponModal, setShowCouponModal] = useState(false);
+
     // Internal state overrides if props are absent
     const [internalLevel, setInternalLevel] = useState('Bachelors');
     const [internalUni, setInternalUni] = useState('Public');
-    
+
     const selectedLevel = externalLevel !== undefined && externalLevel !== null ? externalLevel : internalLevel;
     const setSelectedLevel = onExternalLevelChange || setInternalLevel;
-    
+
     const uniType = externalUniType !== undefined && externalUniType !== null ? externalUniType : internalUni;
     const setUniType = onExternalUniTypeChange || setInternalUni;
-    
+
     const applied = couponDiscount > 0;
-    
+
     // Payment Flow State
     const [isQuickAuthOpen, setIsQuickAuthOpen] = useState(false);
     const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
@@ -119,8 +123,8 @@ const FeesTable = ({
         fetchPayments();
     }, [userEmail]);
 
-    const isPhase1Paid = userPayments.some(p => 
-        p.status === 'captured' && 
+    const isPhase1Paid = userPayments.some(p =>
+        p.status === 'captured' &&
         (p.itemId === 'dynamic_fee' || (p.itemName && p.itemName.toLowerCase().includes('phase 1')))
     );
 
@@ -183,12 +187,12 @@ const FeesTable = ({
         if (paymentEmail && paymentPassword) {
             try {
                 const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
-                  credentials: 'include',
-                  body: JSON.stringify({ identifier: paymentEmail, password: paymentPassword })
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+                    credentials: 'include',
+                    body: JSON.stringify({ identifier: paymentEmail, password: paymentPassword })
                 });
-                
+
                 if (loginRes.ok) {
                     sessionStorage.setItem('tab_session', 'active');
                     window.location.href = '/dashboard';
@@ -249,7 +253,6 @@ const FeesTable = ({
                 "Scholarship application & submission",
                 "Visa application assistance",
                 "Visa/Scholarship Documents Assistance",
-                "1-year travel insurance & itinerary",
                 "Accommodation proof assistance",
                 "Mock interview prep"
             ]
@@ -281,7 +284,6 @@ const FeesTable = ({
                     "Scholarship application & submission",
                     "Visa application assistance",
                     "Visa/Scholarship Documents Assistance",
-                    "1-year travel insurance & itinerary",
                     "Accommodation proof assistance",
                     "Mock interview prep"
                 ]
@@ -293,19 +295,19 @@ const FeesTable = ({
     // CASE A: Compact Modal view used inside the Dashboard Subscriptions popup
     // =========================================================================
     if (hideControls) {
-        const surface  = 'var(--glass-popup-inner, rgba(255, 255, 255, 0.03))';
-        const border   = 'var(--glass-border)';
-        const title    = 'var(--text-main)';
-        const sub      = 'var(--text-muted)';
-        const muted    = 'var(--text-muted)';
-        const accent   = 'var(--accent-primary, #0ea5e9)';
+        const surface = 'var(--glass-popup-inner, rgba(255, 255, 255, 0.03))';
+        const border = 'var(--glass-border)';
+        const title = 'var(--text-main)';
+        const sub = 'var(--text-muted)';
+        const muted = 'var(--text-muted)';
+        const accent = 'var(--accent-primary, #0ea5e9)';
         const accentBg = 'var(--filter-chip-bg)';
-        const divider  = 'var(--table-border)';
-        const inputBg  = 'var(--input-bg)';
+        const divider = 'var(--table-border)';
+        const inputBg = 'var(--input-bg)';
 
         return (
             <div style={{ width: '100%', height: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', fontFamily: 'inherit', position: 'relative' }}>
-                
+
                 {/* 2x2 Grid Layout Container - Fit on screen completely */}
                 <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', height: '100%' }}>
@@ -363,7 +365,7 @@ const FeesTable = ({
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                             <span style={{
                                                 width: '36px', height: '36px', borderRadius: '10px',
-                                                background: `linear-gradient(135deg, ${phaseAccent} 0%, rgba(255, 255, 255, 0.1) 100%)`, 
+                                                background: `linear-gradient(135deg, ${phaseAccent} 0%, rgba(255, 255, 255, 0.1) 100%)`,
                                                 color: '#fff', display: 'flex',
                                                 alignItems: 'center', justifyContent: 'center',
                                                 fontSize: '15px', fontWeight: 800, flexShrink: 0,
@@ -371,11 +373,11 @@ const FeesTable = ({
                                             }}>{stepNum}</span>
                                             <div>
                                                 <p style={{ margin: 0, fontSize: '11px', fontWeight: 900, color: phaseAccent, textTransform: 'uppercase', letterSpacing: '1px' }}>Step {idx + 1}</p>
-                                                <p style={{ 
-                                                    margin: 0, 
-                                                    fontSize: '16px', 
-                                                    fontWeight: 800, 
-                                                    color: '#ffffff', 
+                                                <p style={{
+                                                    margin: 0,
+                                                    fontSize: '16px',
+                                                    fontWeight: 800,
+                                                    color: '#ffffff',
                                                     lineHeight: 1.2,
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
                                                     opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
@@ -387,18 +389,18 @@ const FeesTable = ({
                                                 {applied && discountedPrice < originalPrice && (
                                                     <p style={{ margin: 0, fontSize: '11px', color: muted, textDecoration: 'line-through', fontWeight: 700 }}>₹{Math.round(originalPrice).toLocaleString('en-IN')}</p>
                                                 )}
-                                                <p style={{ 
-                                                    margin: 0, 
-                                                    fontSize: '18px', 
-                                                    fontWeight: 950, 
+                                                <p style={{
+                                                    margin: 0,
+                                                    fontSize: '18px',
+                                                    fontWeight: 950,
                                                     color: (idx === 0 && isPhase1Paid) ? '#10b981' : phaseAccent,
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
                                                     opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
                                                 }}>₹{Math.round(discountedPrice).toLocaleString('en-IN')}</p>
-                                                <p style={{ 
-                                                    margin: 0, 
-                                                    fontSize: '11px', 
-                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'rgba(255, 255, 255, 0.6)', 
+                                                <p style={{
+                                                    margin: 0,
+                                                    fontSize: '11px',
+                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'rgba(255, 255, 255, 0.6)',
                                                     fontWeight: 800,
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
                                                     opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
@@ -448,17 +450,17 @@ const FeesTable = ({
                     flexShrink: 0
                 }}>
                     {!isPhase1Paid && (
-                        <motion.div 
-                            animate={{ scale: [1, 1.03, 1] }} 
+                        <motion.div
+                            animate={{ scale: [1, 1.03, 1] }}
                             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                            style={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: '8px', 
-                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', 
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                                 boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                                padding: '8px 18px', 
-                                borderRadius: '24px' 
+                                padding: '8px 18px',
+                                borderRadius: '24px'
                             }}
                         >
                             <Sparkles size={16} color="#fff" fill="#fff" />
@@ -551,8 +553,8 @@ const FeesTable = ({
                                 <button
                                     key={type}
                                     onClick={() => setUniType(type)}
-                                    className={`px-10 py-4 rounded-xl text-[14px] font-black uppercase tracking-widest transition-all duration-300 ${uniType === type 
-                                        ? 'bg-white text-black shadow-lg scale-[1.02]' 
+                                    className={`px-10 py-4 rounded-xl text-[14px] font-black uppercase tracking-widest transition-all duration-300 ${uniType === type
+                                        ? 'bg-white text-black shadow-lg scale-[1.02]'
                                         : 'text-white/40 hover:text-white/70'}`}
                                 >
                                     {type} Universities
@@ -655,9 +657,9 @@ const FeesTable = ({
                             </motion.div>
                         );
                     })}
-                    
+
                     {/* Pay Now Button (Moved to bottom of phases) */}
-                    <motion.button 
+                    <motion.button
                         whileHover={isPhase1Paid ? {} : { scale: 1.02 }}
                         whileTap={isPhase1Paid ? {} : { scale: 0.98 }}
                         onClick={handlePayNowClick}
@@ -690,9 +692,19 @@ const FeesTable = ({
                     <div className="relative z-10 flex flex-col gap-4">
                         <div>
                             <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Fee Breakdown Summary</p>
-                            <h2 className="text-2xl font-black text-white tracking-tight leading-tight mb-3">
-                                Premium Support
-                            </h2>
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-2xl font-black text-white tracking-tight leading-tight mb-3">
+                                    Premium Support
+                                </h2>
+                                <button
+                                    onClick={() => {
+                                        setShowCouponModal(true);
+                                    }}
+                                    className="px-3 py-1.5 bg-gradient-to-r from-accent-gold via-yellow-400 to-amber-500 text-black text-[10px] font-black tracking-widest uppercase rounded-xl hover:scale-105 transition-transform shadow-lg border border-white/20 mb-3"
+                                >
+                                    GET VOUCHER
+                                </button>
+                            </div>
                         </div>
 
                         {/* Sticker Banners */}
@@ -733,6 +745,9 @@ const FeesTable = ({
                                     if (COUPONS[code] !== undefined) {
                                         setCouponDiscount(COUPONS[code]);
                                         setError('');
+                                    } else if (code.startsWith('PRESUME-')) {
+                                        setCouponDiscount(50);
+                                        setError('');
                                     } else {
                                         setCouponDiscount(0);
                                         setError('Invalid discount code');
@@ -753,7 +768,7 @@ const FeesTable = ({
                                 {error}
                             </p>
                         )}
-                        
+
                         {/* Included Perks */}
                         <div className="border-t border-white/5 pt-4 flex flex-col gap-2">
                             <p className="text-[10px] font-black uppercase text-gray-400/80 tracking-widest mb-1 select-none">Included Premium Perks:</p>
@@ -821,10 +836,10 @@ const FeesTable = ({
 
             </div>
 
-            <QuickAuthModal 
-                isOpen={isQuickAuthOpen} 
-                onClose={() => setIsQuickAuthOpen(false)} 
-                onSuccess={handleQuickAuthSuccess} 
+            <QuickAuthModal
+                isOpen={isQuickAuthOpen}
+                onClose={() => setIsQuickAuthOpen(false)}
+                onSuccess={handleQuickAuthSuccess}
                 initialProgram={selectedLevel}
                 getFirstPhaseFee={getPhasePriceForLevel}
                 getOriginalFirstPhaseFee={getOriginalPhasePriceForLevel}
@@ -835,10 +850,10 @@ const FeesTable = ({
                 loggedInEmail={userEmail}
                 isPhase1Paid={isPhase1Paid}
             />
-            
-            <RazorpayGateway 
-                isOpen={isRazorpayOpen} 
-                onClose={() => setIsRazorpayOpen(false)} 
+
+            <RazorpayGateway
+                isOpen={isRazorpayOpen}
+                onClose={() => setIsRazorpayOpen(false)}
                 itemId="dynamic_fee"
                 pricingParams={{ countryId, uniType, selectedLevel, applied, couponCode: coupon }}
                 razorpayOrderId={paymentOrderId}
@@ -847,6 +862,59 @@ const FeesTable = ({
                 onPaymentSuccess={handlePaymentSuccess}
                 triggerWelcomeEmail={true}
             />
+
+            {/* Coupon Generator Modal */}
+            {showCouponModal && createPortal(
+                <div style={{
+                position: 'fixed', inset: 0,
+                background: 'rgba(0,0,0,0.6)', // Darker dim
+                backdropFilter: 'blur(15px)', // Stronger background blur
+                WebkitBackdropFilter: 'blur(15px)',
+                zIndex: 100010,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                animation: 'modalFadeIn 0.3s ease-out'
+                }}>
+                <style>{`
+                    @keyframes modalFadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                    }
+                    @keyframes modalScaleUp {
+                    from { transform: scale(0.95); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                    }
+                `}</style>
+                {/* Close Button Floating */}
+                <button
+                onClick={() => setShowCouponModal(false)}
+                style={{
+                    position: 'absolute', top: '24px', right: '24px',
+                    width: '60px', height: '60px',
+                    background: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: '#fff', borderRadius: '50%',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', fontSize: '28px', fontWeight: 300,
+                    transition: 'all 0.2s', zIndex: 100011
+                }}
+                onMouseEnter={e => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={e => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                }}
+                >✕</button>
+
+                <CouponPage onClose={() => setShowCouponModal(false)} />
+                </div>,
+                document.body
+            )}
         </div>
     );
 };
