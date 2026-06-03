@@ -911,7 +911,7 @@ const FeesTable = ({
                 }}
                 >✕</button>
 
-                <CouponPage onClose={() => setShowCouponModal(false)} />
+                <CouponPage onClose={() => setShowCouponModal(false)} defaultEmail={userEmail || ''} />
                 </div>,
                 document.body
             )}

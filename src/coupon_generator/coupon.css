@@ -19,441 +19,462 @@
   transform-origin: top left;
 }
 
-#stage{
-  position:absolute;
-    top:0;
-    left:0;
-    width:2560px;
-    height:1166px;
-    transform-origin:top left;
-    overflow: hidden;
-    margin:0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: geometricPrecision;
+#stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2560px;
+  height: 1166px;
+  transform-origin: top left;
+  overflow: hidden;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  will-change: transform;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 #stage .node {
   position: absolute;
+  overflow: visible !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 
-.node-1{
-  position:absolute;
-    left:0px;
-    top:0px;
-    width:194px;
-    height:1166px;
+#stage img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
-.node-2{
-  position:absolute;
-    left:196px;
-    top:1px;
-    width:2364px;
-    height:274px;
+.node-1 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 194px;
+  height: 1166px;
 }
 
-.node-3{
-  position:absolute;
-    left:1912px;
-    top:274px;
-    width:648px;
-    height:892px;
+.node-2 {
+  position: absolute;
+  left: 196px;
+  top: 1px;
+  width: 2364px;
+  height: 274px;
 }
 
-.node-5{
-  position:absolute;
-    left:0px;
-    top:275px;
-    width:1912px;
-    height:891px;
+.node-3 {
+  position: absolute;
+  left: 1912px;
+  top: 274px;
+  width: 648px;
+  height: 892px;
 }
 
-.node-8{
-  position:absolute;
-    left:1910px;
-    top:889px;
-    width:649px;
-    height:277px;
+.node-5 {
+  position: absolute;
+  left: 0px;
+  top: 275px;
+  width: 1912px;
+  height: 891px;
 }
 
-.node-9{
-  position:absolute;
-        left:1939px;
-        top:990px;
-        width:552px;
-        height:50px;
-      display:block;
-      white-space:pre-line;
-      line-height:43px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-8 {
+  position: absolute;
+  left: 1910px;
+  top: 889px;
+  width: 649px;
+  height: 277px;
 }
 
-.node-10{
-  position:absolute;
-        left:2315px;
-        top:926px;
-        width:109px;
-        height:47px;
-      display:block;
-      white-space:normal;
-      line-height:1px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:400;
-    font-size:34px;
+.node-9 {
+  position: absolute;
+  left: 1939px;
+  top: 990px;
+  width: 552px;
+  height: 50px;
+  display: block;
+  white-space: pre-line;
+  line-height: 43px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-11{
-  position:absolute;
-        left:2031px;
-        top:936px;
-        width:100px;
-        height:31px;
-      display:block;
-      white-space:pre-line;
-      line-height:26px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-10 {
+  position: absolute;
+  left: 2315px;
+  top: 926px;
+  width: 109px;
+  height: 47px;
+  display: block;
+  white-space: normal;
+  line-height: 1px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
 }
 
-.node-13{
-  position:absolute;
-    left:1910px;
-    top:801px;
-    width:649px;
-    height:87px;
+.node-11 {
+  position: absolute;
+  left: 2031px;
+  top: 936px;
+  width: 100px;
+  height: 31px;
+  display: block;
+  white-space: pre-line;
+  line-height: 26px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-14{
-  position:absolute;
-        left:2325px;
-        top:827px;
-        width:92px;
-        height:38px;
-      display:block;
-      white-space:pre-line;
-      line-height:29px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-13 {
+  position: absolute;
+  left: 1910px;
+  top: 801px;
+  width: 649px;
+  height: 87px;
 }
 
-.node-15{
-  position:absolute;
-        left:2027px;
-        top:826px;
-        width:145px;
-        height:38px;
-      display:block;
-      white-space:pre-line;
-      line-height:29px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-14 {
+  position: absolute;
+  left: 2325px;
+  top: 827px;
+  width: 92px;
+  height: 38px;
+  display: block;
+  white-space: pre-line;
+  line-height: 29px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-17{
-  position:absolute;
-    left:1910px;
-    top:275px;
-    width:649px;
-    height:525px;
+.node-15 {
+  position: absolute;
+  left: 2027px;
+  top: 826px;
+  width: 145px;
+  height: 38px;
+  display: block;
+  white-space: pre-line;
+  line-height: 29px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-18{
-  position:absolute;
-        left:2319px;
-        top:746px;
-        width:43px;
-        height:29px;
-      display:block;
-      white-space:pre-line;
-      line-height:24px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-17 {
+  position: absolute;
+  left: 1910px;
+  top: 275px;
+  width: 649px;
+  height: 525px;
 }
 
-.node-19{
-  position:absolute;
-        left:2025px;
-        top:745px;
-        width:85px;
-        height:30px;
-      display:block;
-      white-space:pre-line;
-      line-height:24px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-18 {
+  position: absolute;
+  left: 2319px;
+  top: 746px;
+  width: 43px;
+  height: 29px;
+  display: block;
+  white-space: pre-line;
+  line-height: 24px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-20{
-  position:absolute;
-        left:2311px;
-        top:552px;
-        width:69px;
-        height:44px;
-      display:block;
-      white-space:normal;
-      line-height:1px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:400;
-    font-size:34px;
+.node-19 {
+  position: absolute;
+  left: 2025px;
+  top: 745px;
+  width: 85px;
+  height: 30px;
+  display: block;
+  white-space: pre-line;
+  line-height: 24px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-21{
-  position:absolute;
-        left:2032px;
-        top:552px;
-        width:42px;
-        height:44px;
-      display:block;
-      white-space:pre-line;
-      line-height:38px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-20 {
+  position: absolute;
+  left: 2311px;
+  top: 552px;
+  width: 69px;
+  height: 44px;
+  display: block;
+  white-space: normal;
+  line-height: 1px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
 }
 
-.node-22{
-  position:absolute;
-        left:2308px;
-        top:506px;
-        width:73px;
-        height:30px;
-      display:block;
-      white-space:pre-line;
-      line-height:24px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-21 {
+  position: absolute;
+  left: 2032px;
+  top: 552px;
+  width: 42px;
+  height: 44px;
+  display: block;
+  white-space: pre-line;
+  line-height: 38px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-23{
-  position:absolute;
-        left:2015px;
-        top:506px;
-        width:79px;
-        height:30px;
-      display:block;
-      white-space:pre-line;
-      line-height:24px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-22 {
+  position: absolute;
+  left: 2308px;
+  top: 506px;
+  width: 73px;
+  height: 30px;
+  display: block;
+  white-space: pre-line;
+  line-height: 24px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-24{
-  position:absolute;
-        left:2014px;
-        top:425px;
-        width:89px;
-        height:49px;
-      display:block;
-      white-space:normal;
-      line-height:1px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:400;
-    font-size:34px;
+.node-23 {
+  position: absolute;
+  left: 2015px;
+  top: 506px;
+  width: 79px;
+  height: 30px;
+  display: block;
+  white-space: pre-line;
+  line-height: 24px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-25{
-  position:absolute;
-        left:2011px;
-        top:376px;
-        width:175px;
-        height:31px;
-      display:block;
-      white-space:pre-line;
-      line-height:24px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-24 {
+  position: absolute;
+  left: 2014px;
+  top: 425px;
+  width: 89px;
+  height: 49px;
+  display: block;
+  white-space: normal;
+  line-height: 1px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
 }
 
-.node-26{
-  position:absolute;
-    left:1751px;
-    top:348px;
-    width:84px;
-    height:359px;
+.node-25 {
+  position: absolute;
+  left: 2011px;
+  top: 376px;
+  width: 175px;
+  height: 31px;
+  display: block;
+  white-space: pre-line;
+  line-height: 24px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-27{
-  position:absolute;
-    left:691px;
-    top:577px;
-    width:67px;
-    height:35px;
+.node-26 {
+  position: absolute;
+  left: 1751px;
+  top: 348px;
+  width: 84px;
+  height: 359px;
 }
 
-.node-28{
-  position:absolute;
-    left:35px;
-    top:276px;
-    width:661px;
-    height:248px;
+.node-27 {
+  position: absolute;
+  left: 691px;
+  top: 577px;
+  width: 67px;
+  height: 35px;
 }
 
-.node-29{
-  position:absolute;
-    left:191px;
-    top:275px;
-    width:509px;
-    height:244px;
+.node-28 {
+  position: absolute;
+  left: 35px;
+  top: 276px;
+  width: 661px;
+  height: 248px;
 }
 
-.node-30{
-  position:absolute;
-        left:345px;
-        top:787px;
-        width:1335px;
-        height:113px;
-      display:block;
-      white-space:pre-line;
-      line-height:77px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-29 {
+  position: absolute;
+  left: 191px;
+  top: 275px;
+  width: 509px;
+  height: 244px;
 }
 
-.node-31{
-  position:absolute;
-        left:134px;
-        top:672px;
-        width:48px;
-        height:436px;
-      display:block;
-      white-space:pre-line;
-      line-height:58px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-30 {
+  position: absolute;
+  left: 345px;
+  top: 787px;
+  width: 1335px;
+  height: 113px;
+  display: block;
+  white-space: pre-line;
+  line-height: 77px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-32{
-  position:absolute;
-        left:892px;
-        top:558px;
-        width:212px;
-        height:76px;
-      display:block;
-      white-space:pre-line;
-      line-height:67px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-31 {
+  position: absolute;
+  left: 134px;
+  top: 672px;
+  width: 48px;
+  height: 436px;
+  display: block;
+  white-space: pre-line;
+  line-height: 58px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-33{
-  position:absolute;
-        left:355px;
-        top:559px;
-        width:210px;
-        height:75px;
-      display:block;
-      white-space:pre-line;
-      line-height:67px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-32 {
+  position: absolute;
+  left: 892px;
+  top: 558px;
+  width: 212px;
+  height: 76px;
+  display: block;
+  white-space: pre-line;
+  line-height: 67px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-34{
-  position:absolute;
-        left:894px;
-        top:505px;
-        width:72px;
-        height:50px;
-      display:block;
-      white-space:pre-line;
-      line-height:43px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-33 {
+  position: absolute;
+  left: 355px;
+  top: 559px;
+  width: 210px;
+  height: 75px;
+  display: block;
+  white-space: pre-line;
+  line-height: 67px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-35{
-  position:absolute;
-        left:357px;
-        top:502px;
-        width:141px;
-        height:47px;
-      display:block;
-      white-space:pre-line;
-      line-height:38px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:700;
+.node-34 {
+  position: absolute;
+  left: 894px;
+  top: 505px;
+  width: 72px;
+  height: 50px;
+  display: block;
+  white-space: pre-line;
+  line-height: 43px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-37{
-  position:absolute;
-        left:1187px;
-        top:60px;
-        width:828px;
-        height:176px;
-      display:block;
-      white-space:normal;
-      line-height:1px;
-      overflow:hidden;
-      padding:0;
-    font-family:'Inter', sans-serif;
-    font-weight:400;
-    font-size:34px;
+.node-35 {
+  position: absolute;
+  left: 357px;
+  top: 502px;
+  width: 141px;
+  height: 47px;
+  display: block;
+  white-space: pre-line;
+  line-height: 38px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
-.node-38{
-  position:absolute;
-    left:765px;
-    top:13px;
-    width:400px;
-    height:233px;
+.node-37 {
+  position: absolute;
+  left: 1187px;
+  top: 60px;
+  width: 828px;
+  height: 176px;
+  display: block;
+  white-space: normal;
+  line-height: 1px;
+  overflow: hidden;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
 }
 
-.node-39{
-  position:absolute;
-    left:1089px;
-    top:25px;
-    width:25px;
-    height:24px;
+.node-38 {
+  position: absolute;
+  left: 765px;
+  top: 13px;
+  width: 400px;
+  height: 233px;
 }
 
-.node-40{
-  position:absolute;
-    left:0px;
-    top:0px;
-    width:2560px;
-    height:2px;
+.node-39 {
+  position: absolute;
+  left: 1089px;
+  top: 25px;
+  width: 25px;
+  height: 24px;
 }
 
-.coupon-app #stage-wrap, .coupon-app #stageWrapper, .coupon-app .stage-wrapper {
+.node-40 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 2560px;
+  height: 2px;
+}
+
+.coupon-app #stage-wrap,
+.coupon-app #stageWrapper,
+.coupon-app .stage-wrapper {
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -462,7 +483,8 @@
   overflow: hidden;
 }
 
-.coupon-app #stageSizer, .coupon-app .stage-sizer {
+.coupon-app #stageSizer,
+.coupon-app .stage-sizer {
   position: relative;
 }
 
@@ -470,110 +492,193 @@
    POLAROID PRINTER MACHINE UI
 -------------------------------------- */
 
-.generator-machine-container {
-  min-height: 100%;
-  width: 100%;
-  background: transparent;
+/* -------------------------------------
+   NEW DASHBOARD UI LAYOUT
+-------------------------------------- */
+.coupon-app-redesign {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(12, 12, 13, 0.5) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 100px;
-  position: relative;
-  overflow: hidden;
-  font-family: 'Inter', sans-serif;
+  padding: 40px;
+  box-sizing: border-box;
+  z-index: 9999;
 }
 
-@media (max-width: 800px) {
-  .generator-machine-container {
+.voucher-dashboard-card {
+  width: 100%;
+  max-width: 1440px;
+  min-height: 540px;
+  height: auto;
+  background: rgba(18, 16, 15, 0.85);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(210, 180, 134, 0.18);
+  border-radius: 32px;
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.9),
+    0 0 60px rgba(210, 180, 134, 0.03),
+    inset 0 2px 5px rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  /* KEY: nothing bleeds out of the card */
+  position: relative;
+  z-index: 10;
+}
+
+.dashboard-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: rgba(210, 180, 134, 0.1);
+  border: 1px solid rgba(210, 180, 134, 0.2);
+  color: #f7e7c4;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 200;
+  transition: all 0.2s;
+}
+
+.dashboard-close-btn:hover {
+  background: rgba(210, 180, 134, 0.2);
+  border-color: rgba(210, 180, 134, 0.5);
+  transform: scale(1.1);
+  color: #fff;
+}
+
+.dashboard-settings-panel {
+  flex: 0 0 320px;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid rgba(210, 180, 134, 0.15);
+  background: linear-gradient(135deg, rgba(210, 180, 134, 0.03) 0%, transparent 100%);
+}
+
+.dashboard-settings-panel .settings-header h3 {
+  color: #e5cbb3;
+  margin-bottom: 8px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.dashboard-settings-panel .settings-header p {
+  color: #aaa;
+  font-size: 15px;
+  margin-bottom: 30px;
+}
+
+.dashboard-settings-panel .input-group {
+  margin-bottom: 16px;
+}
+
+.dashboard-settings-panel input,
+.dashboard-settings-panel select {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(10, 9, 8, 0.6);
+  border: 1px solid rgba(210, 180, 134, 0.25);
+  border-radius: 12px;
+  color: #FAF5EF;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.dashboard-settings-panel input:focus,
+.dashboard-settings-panel select:focus {
+  border-color: rgba(210, 180, 134, 0.65);
+  box-shadow: 0 0 12px rgba(210, 180, 134, 0.15);
+  background: rgba(10, 9, 8, 0.85);
+}
+
+.dashboard-settings-panel select option {
+  background: #181615;
+  color: #FAF5EF;
+}
+
+.error-banner {
+  color: #ef4444;
+  font-size: 14px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.dashboard-printer-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(210, 180, 134, 0.04) 0%, transparent 70%);
+  position: relative;
+  min-height: 500px;
+}
+
+@media (max-width: 900px) {
+  .voucher-dashboard-card {
     flex-direction: column;
-    gap: 40px;
+    max-width: 100%;
+  }
+
+  .dashboard-settings-panel {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 32px 24px;
+  }
+
+  .dashboard-printer-panel {
+    padding: 24px 0;
+    min-height: 480px;
   }
 }
 
-/* Settings Panel */
-.machine-settings {
-  position: relative;
-  margin-bottom: 0px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 20px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 400px;
-  z-index: 5;
-  transition: opacity 0.5s;
-  backdrop-filter: blur(10px);
+/* ============================================================
+   ULTRA-PREMIUM PRINTER — COMPLETE REDESIGN
+   Dark cinematic, luxury fintech, Tesla/Apple inspired
+   ============================================================ */
+
+/* Ticket clip */
+.ultra-ticket-clip {
+  overflow: hidden;
+  /* We clip from bottom — ticket reveals upward as it emerges */
 }
 
-.settings-header h3 {
-  color: #FFF;
-  margin-bottom: 5px;
-  font-size: 18px;
-}
-
-.settings-header p {
-  color: #888;
-  font-size: 13px;
-  margin-bottom: 15px;
-}
-
-.machine-settings .input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.machine-settings input, .machine-settings select {
-  width: 100%;
-  padding: 12px 15px;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 8px;
-  color: #FFF;
-  outline: none;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-}
-
-.machine-settings select option {
-  background: #222;
-  color: #FFF;
-}
-
-/* Printer Assembly */
-.printer-assembly {
-  position: relative;
-  width: 340px;
-  height: 440px;
-  margin-top: 0; /* Let flexbox center it properly now that settings are relative */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: visible;
-}
-
-/* Printer Slot Mask — perfectly hides the ticket until it slides DOWN */
-.printer-slot-mask {
+.ultra-ticket-wrapper {
   position: absolute;
-  top: 420px; /* Aligns roughly with the slot at the bottom of the machine */
-  left: -200%;
-  width: 500%;
-  height: 1000px; /* Tall enough to show the ticket as it goes down */
-  z-index: 1; /* Below body (3) */
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Align the ticket wrapper to the top edge of this mask */
-}
-
-/* Ticket Wrapper */
-.printer-ticket-wrapper {
-  position: relative;
-  z-index: 1;
+  left: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  transform-origin: left center;
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.85),
+    0 0 40px rgba(210, 180, 134, 0.15);
+  border-radius: 60px;
   will-change: transform;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .ticket-modal-content {
@@ -583,312 +688,372 @@
   align-items: center;
 }
 
-/* Machine Top Lip - Brushed Dark Metal */
-.printer-top-lip {
+/* Ambient glow rings in the printer panel background */
+.printer-env-ring {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 40px;
-  background: linear-gradient(to bottom, #2C2C2C, #1A1A1A);
-  border: 1px solid #444;
-  border-radius: 24px 24px 0 0;
-  z-index: 4;
-  box-shadow: inset 0 2px 5px rgba(255,255,255,0.05), 0 5px 15px rgba(0,0,0,0.5);
-}
-
-/* Amber Indicator Light */
-.blinking-light {
-  position: absolute;
-  top: 15px;
-  left: 24px;
-  width: 8px;
-  height: 8px;
   border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
-}
-
-/* Blinking Light States */
-.state-idle .blinking-light {
-  background: #00FF88;
-  box-shadow: 0 0 10px #00FF88, 0 0 20px rgba(0,255,136,0.5);
-  animation: blink 2.5s infinite ease-in-out;
-}
-.printer-assembly:not(.state-idle):not(.state-printed) .blinking-light {
-  background: #FFAA00;
-  box-shadow: 0 0 12px #FFAA00, 0 0 24px rgba(255,170,0,0.7);
-  animation: blink 0.4s infinite alternate ease-in-out;
-}
-.state-printed .blinking-light {
-  background: #00E5FF;
-  box-shadow: 0 0 10px #00E5FF, 0 0 20px rgba(0,229,255,0.5);
-  animation: blink 3.5s infinite ease-in-out;
-}
-
-/* Machine Body - Matte Dark Finish with premium glowing accents */
-.printer-body {
-  position: absolute;
-  top: 40px;
-  left: 0;
-  width: 100%;
-  height: 400px;
-  background: 
-    linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(10, 10, 10, 0.99) 100%),
-    radial-gradient(ellipse at 50% 0%, rgba(210, 180, 134, 0.15) 0%, transparent 70%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-top: none;
-  border-radius: 0 0 24px 24px;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 0;
-  box-shadow: 
-    inset 0 1px 0 rgba(255,255,255,0.05),
-    0 30px 60px rgba(0,0,0,0.7);
-  overflow: hidden;
-}
-
-/* Subtle accent lines for technical terminal look */
-.printer-body::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 10%;
-  width: 80%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(210, 180, 134, 0.25), transparent);
-}
-
-/* Slot Shadow - Glowing interior */
-.printer-slot-shadow {
-  width: 85%;
-  height: 18px;
-  background: #000;
-  border-radius: 12px 12px 0 0;
-  box-shadow: 
-    inset 0 8px 10px rgba(0,0,0,0.9),
-    0 -1px 0 rgba(255,255,255,0.05);
-  margin-top: auto; 
-  margin-bottom: 20px;
-  border: 1px solid #222;
-  border-bottom: none;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Laser Scanner */
-.laser-scanner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: #00E5FF;
-  box-shadow: 0 0 8px #00E5FF, 0 0 15px rgba(0,229,255,0.8);
-  animation: scanLaser 1.2s infinite ease-in-out;
   pointer-events: none;
+  z-index: 0;
 }
 
-@keyframes scanLaser {
-  0%, 100% {
-    transform: translateY(0);
+.ring-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(120, 80, 20, 0.18) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: ringPulse 6s infinite ease-in-out alternate;
+}
+
+.ring-2 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(100, 60, 180, 0.12) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: ringPulse 4s 1s infinite ease-in-out alternate;
+}
+
+@keyframes ringPulse {
+  0% {
     opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.95);
   }
-  50% {
-    transform: translateY(15px);
+
+  100% {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
   }
 }
 
-/* Slot Glow Effect */
-.printer-slot-shadow::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  width: 80%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #D2B486, transparent);
-  opacity: 0.6;
-}
-
-/* Tactile Hardware Print Button */
-.print-action-btn {
-  margin-top: 50px;
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #D2B486 0%, #b8935c 70%, #8c6b3b 100%);
-  border: 4px solid #1a1a1a;
-  color: #111;
-  font-family: 'Outfit', 'Inter', sans-serif;
-  font-weight: 900;
-  font-size: 13px;
-  letter-spacing: 1.5px;
+.ultra-printer-scene {
+  position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  /* ← horizontal */
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  cursor: pointer;
-  position: relative;
-  box-shadow: 
-    0 10px 25px rgba(210, 180, 134, 0.4),
-    inset 0 2px 4px rgba(255,255,255,0.4),
-    inset 0 -4px 10px rgba(0,0,0,0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 0;
   z-index: 1;
+  width: 100%;
+  height: 100%;
+  animation: ultraSceneFloat 8s infinite ease-in-out;
 }
 
-.print-action-btn::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-  opacity: 0.8;
-  z-index: 2;
-  pointer-events: none;
+@keyframes ultraSceneFloat {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
-.print-action-btn::after {
-  content: '';
-  position: absolute;
-  top: -10px; left: -10px; right: -10px; bottom: -10px;
-  border-radius: 50%;
-  border: 2px dashed rgba(210, 180, 134, 0.5);
-  animation: rotateDashed 20s linear infinite;
-  pointer-events: none;
+/* Outer wrapper holds the upright machine */
+.upm-outer-wrapper {
+  width: 520px;
+  height: 460px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 20;
+}
+
+/* Ticket egress zone — horizontal strip to the RIGHT of the printer */
+.ultra-ticket-egress {
+  flex: 1;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  margin-left: -20px;
+  /* Allow ticket to overlap printer leftward — no left clip */
+  clip-path: inset(-500px -500px -500px -600px);
+  padding-left: 0;
+  z-index: 10;
+}
+
+/* ====================================================
+   MINIMALIST LIGHT-THEMED PRINTER
+   Glassmorphic vertical Braun/Apple-style device
+   ==================================================== */
+.minimal-printer-machine {
+  width: 460px;
+  height: 380px;
+  background: rgba(255, 255, 255, 0.12);
+  /* Frosted white glass */
+  backdrop-filter: blur(25px) saturate(120%);
+  -webkit-backdrop-filter: blur(25px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  /* High-contrast white border */
+  border-radius: 28px;
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.45),
+    0 0 40px rgba(255, 255, 255, 0.05),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 36px 32px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
   transition: all 0.3s ease;
 }
 
-@keyframes rotateDashed {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* Mechanical printing vibration keyframes and classes */
+@keyframes printerVibrate {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  20% {
+    transform: translate(-0.5px, 0.5px);
+  }
+
+  40% {
+    transform: translate(0.5px, -0.5px);
+  }
+
+  60% {
+    transform: translate(-0.4px, -0.4px);
+  }
+
+  80% {
+    transform: translate(0.4px, 0.4px);
+  }
 }
 
-.print-action-btn:hover:not(:disabled) {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 
-    0 15px 30px rgba(210, 180, 134, 0.6),
-    inset 0 2px 4px rgba(255,255,255,0.5),
-    inset 0 -2px 8px rgba(0,0,0,0.2);
-  color: #000;
+.minimal-printer-machine.state-printing-1,
+.minimal-printer-machine.state-printing-2,
+.minimal-printer-machine.state-printing-3 {
+  animation: printerVibrate 0.07s infinite;
 }
 
-.print-action-btn:hover:not(:disabled)::after {
-  border-color: rgba(210, 180, 134, 0.9);
-  top: -15px; left: -15px; right: -15px; bottom: -15px;
+@keyframes ticketPrintVibrate {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-0.3px, 0.4px);
+  }
 }
 
-.print-action-btn:active:not(:disabled) {
-  transform: translateY(1px) scale(0.98);
-  box-shadow: 
-    0 5px 15px rgba(210, 180, 134, 0.3),
-    inset 0 4px 8px rgba(0,0,0,0.4);
+.ticket-print-vibrate {
+  animation: ticketPrintVibrate 0.09s infinite;
 }
 
-/* Faster spinner dashed border during print activity */
-.printer-assembly:not(.state-idle):not(.state-printed) .print-action-btn::after {
-  animation: rotateDashed 4s linear infinite;
-  border-color: rgba(255, 170, 0, 0.85);
-  top: -12px; left: -12px; right: -12px; bottom: -12px;
-}
-
-/* Pulsing aura when printing */
-.printer-assembly:not(.state-idle):not(.state-printed) .print-action-btn {
-  background: radial-gradient(circle, #e29e3b 0%, #b87a27 70%, #8c5211 100%);
-  animation: pulseButton 1s infinite alternate ease-in-out;
-  box-shadow: 
-    0 10px 30px rgba(255, 170, 0, 0.5),
-    inset 0 2px 4px rgba(255,255,255,0.4);
-}
-
-@keyframes pulseButton {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.03); }
-}
-
-.print-action-btn:disabled {
-  background: radial-gradient(circle, #555 0%, #333 100%);
-  border-color: #222;
-  color: #777;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.print-action-btn:disabled::after {
-  display: none;
-}
-
-/* Action buttons below ticket */
-.ticket-actions {
-  display: flex;
-  gap: 15px;
-  z-index: 200;
-  margin-top: 30px; /* Space below the ticket */
-}
-
-.copy-btn, .ticket-actions .reset-btn {
+/* Status Bar */
+.min-printer-status {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 24px;
-  border-radius: 24px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  /* Frosted background */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  /* Sleek white border */
+  border-radius: 8px;
+  align-self: flex-start;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.min-printer-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  /* Green ready */
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+  transition: all 0.3s ease;
+}
+
+.minimal-printer-machine.state-printing-1 .min-printer-led,
+.minimal-printer-machine.state-printing-2 .min-printer-led,
+.minimal-printer-machine.state-printing-3 .min-printer-led,
+.minimal-printer-machine.state-ejecting .min-printer-led {
+  background: #fbbf24;
+  /* Amber printing */
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.9);
+  animation: ledPulseSoft 1s infinite alternate;
+}
+
+.minimal-printer-machine.state-printed .min-printer-led {
+  background: #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.9);
+}
+
+.min-printer-status-text {
   font-family: 'Inter', sans-serif;
-  font-size: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #dda65c;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.minimal-printer-machine:not(.state-idle):not(.state-printed) .min-printer-status-text {
+  color: #fbbf24;
+}
+
+/* Main Body */
+.min-printer-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.min-printer-brand {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Clean Central Button */
+.min-printer-print-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  padding: 18px 28px;
+  background: linear-gradient(135deg, #d2b486 0%, #b89c72 100%);
+  border: none;
+  border-radius: 14px;
+  color: #1e1509;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.min-printer-print-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #e5cfa3 0%, #cbb18a 100%);
+  color: #1c140b;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 15px rgba(210, 180, 134, 0.3);
+  transform: translateY(-1px);
+}
+
+.min-printer-print-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.min-printer-print-btn:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Vertical Output Slot Cover on Right */
+.min-printer-side-slot {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 8px;
+  height: 260px;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  border-left: 1px solid rgba(210, 180, 134, 0.5);
+  border-radius: 3px 0 0 3px;
+  z-index: 30;
+  box-shadow: inset 1px 0 3px rgba(0, 0, 0, 0.6);
+}
+
+/* ====================================================
+   TICKET ACTIONS BELOW TICKET
+   ==================================================== */
+.ticket-actions {
+  position: absolute;
+  bottom: 0px;
+  z-index: 200;
 }
 
 .copy-btn {
-  background: linear-gradient(135deg, #D2B486, #A98C60);
-  color: #000;
-  box-shadow: 0 5px 15px rgba(210,180,134,0.4);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  padding: 16px 36px !important;
+  border-radius: 14px !important;
+  border: 1px solid #d4af37 !important;
+  background: linear-gradient(135deg, #d4af37 0%, #b59023 100%) !important;
+  color: #1a1208 !important;
+  /* High contrast dark text on gold background */
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  letter-spacing: 1.5px !important;
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
 }
 
 .copy-btn:hover {
-  box-shadow: 0 8px 20px rgba(210,180,134,0.6);
+  background: linear-gradient(135deg, #e5bf4c 0%, #c49d2a 100%) !important;
+  color: #110c05 !important;
+  box-shadow:
+    0 12px 30px rgba(212, 175, 55, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-1px) !important;
 }
 
-.ticket-actions .reset-btn {
-  background: rgba(255,255,255,0.1);
-  color: #FFF;
-  border: 1px solid rgba(255,255,255,0.2);
-  backdrop-filter: blur(10px);
-}
-
-.ticket-actions .reset-btn:hover {
-  background: rgba(255,255,255,0.2);
-}
-
-/* Holographic Shimmer Shine Overlay */
+/* ====================================================
+   TICKET SHINE OVERLAY (kept from original)
+   ==================================================== */
 .ticket-shine-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 250%;
   height: 100%;
-  background: linear-gradient(
-    115deg,
-    transparent 0%,
-    transparent 42%,
-    rgba(255, 255, 255, 0.08) 45%,
-    rgba(255, 255, 255, 0.2) 48%,
-    rgba(255, 255, 255, 0.08) 51%,
-    transparent 54%,
-    transparent 100%
-  );
+  background: linear-gradient(115deg,
+      transparent 0%,
+      transparent 42%,
+      rgba(255, 255, 255, 0.08) 45%,
+      rgba(255, 255, 255, 0.2) 48%,
+      rgba(255, 255, 255, 0.08) 51%,
+      transparent 54%,
+      transparent 100%);
   pointer-events: none;
   animation: shineLoop 7s infinite linear;
-  z-index: 99; /* sits on top of everything to give holographic glossy reflection */
+  z-index: 99;
   mix-blend-mode: overlay;
 }
 
@@ -896,12 +1061,13 @@
   0% {
     transform: translateX(-60%);
   }
+
   100% {
     transform: translateX(60%);
   }
 }
 
-/* Ambient floating background glows */
+/* Ambient glows on ticket */
 .ambient-glow-1 {
   position: absolute;
   top: 15%;
@@ -912,7 +1078,7 @@
   background: radial-gradient(circle, rgba(210, 180, 134, 0.18) 0%, transparent 70%);
   animation: floatAmbient1 16s infinite alternate ease-in-out;
   pointer-events: none;
-  z-index: 6; /* sits behind text but above the background cream image card */
+  z-index: 6;
 }
 
 .ambient-glow-2 {
@@ -933,6 +1099,7 @@
     transform: translate(0, 0) scale(1);
     opacity: 0.8;
   }
+
   100% {
     transform: translate(160px, 90px) scale(1.15);
     opacity: 1;
@@ -944,10 +1111,122 @@
     transform: translate(0, 0) scale(1);
     opacity: 0.7;
   }
+
   100% {
     transform: translate(-140px, -110px) scale(1.1);
     opacity: 1;
   }
 }
 
+/* Precise Left Alignment Reset to fix the Printer Overlap and Scaling shifts */
+.ultra-ticket-wrapper .ticket-modal-content {
+  width: 2560px !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
 
+.ultra-ticket-wrapper #stage-wrap {
+  width: 2560px !important;
+  min-height: auto !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  overflow: visible !important;
+}
+
+.ultra-ticket-wrapper #stageSizer {
+  left: 0 !important;
+  top: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+/* === PRINTER THERMAL SMOKE EFFECT === */
+.printer-smoke-container {
+  position: absolute;
+  top: 10%;
+  right: -5px;
+  width: 40px;
+  height: 80%;
+  pointer-events: none;
+  z-index: 50;
+  overflow: visible;
+}
+
+.smoke-particle {
+  position: absolute;
+  top: 30%;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: rgba(245, 240, 230, 0.28);
+  border-radius: 50%;
+  filter: blur(8px);
+  pointer-events: none;
+  opacity: 0;
+}
+
+@keyframes smokeDriftUpward {
+  0% {
+    transform: translate(0px, 0px) scale(0.8);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  20% {
+    opacity: 0.7;
+    background: rgba(255, 245, 230, 0.45);
+  }
+  50% {
+    filter: blur(10px);
+  }
+  100% {
+    transform: translate(80px, -110px) scale(4);
+    opacity: 0;
+    filter: blur(20px);
+  }
+}
+
+@keyframes smokeDriftDownward {
+  0% {
+    transform: translate(0px, 0px) scale(0.8);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  20% {
+    opacity: 0.55;
+    background: rgba(220, 195, 160, 0.35); /* golden tint */
+  }
+  50% {
+    filter: blur(12px);
+  }
+  100% {
+    transform: translate(90px, 70px) scale(4.5);
+    opacity: 0;
+    filter: blur(24px);
+  }
+}
+
+.smoke-particle.p1 {
+  animation: smokeDriftUpward 1.5s infinite linear;
+  animation-delay: 0s;
+  top: 15%;
+}
+
+.smoke-particle.p2 {
+  animation: smokeDriftDownward 1.5s infinite linear;
+  animation-delay: 0.38s;
+  top: 45%;
+}
+
+.smoke-particle.p3 {
+  animation: smokeDriftUpward 1.5s infinite linear;
+  animation-delay: 0.75s;
+  top: 30%;
+}
+
+.smoke-particle.p4 {
+  animation: smokeDriftDownward 1.5s infinite linear;
+  animation-delay: 1.12s;
+  top: 60%;
+}

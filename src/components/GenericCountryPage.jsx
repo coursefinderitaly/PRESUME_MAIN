@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Landmark, Sparkles, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
+import { ArrowRight, Landmark, Sparkles, FileText, CheckCircle2, ChevronRight, X } from 'lucide-react';
 import { Header } from './Header';
 import MinimalFooter from './MinimalFooter';
 import FeesTable from './FeesTable';
 import AuthModal from './AuthModal';
 import EligibilityModal from './EligibilityModal';
 import { countryData } from '../data/countryData';
+import CouponPage from '../coupon_generator/coupon';
 
 const GenericCountryPage = ({ countryId }) => {
     const data = countryData[countryId?.toLowerCase()];
@@ -16,6 +17,7 @@ const GenericCountryPage = ({ countryId }) => {
     const [checkedDocs, setCheckedDocs] = useState({});
     const [modalOpen, setModalOpen] = useState(null);
     const [eligibilityModalLevel, setEligibilityModalLevel] = useState(null);
+    const [isCouponOpen, setIsCouponOpen] = useState(false);
 
     if (!data) {
         return <Navigate to="/" />;
@@ -93,6 +95,13 @@ const GenericCountryPage = ({ countryId }) => {
                                     <span className="relative flex items-center justify-center gap-3 group-hover:text-[#0a0d18] transition-colors duration-500">
                                         START APPLICATION <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                                     </span>
+                                </button>
+                                <button 
+                                    onClick={() => setIsCouponOpen(true)}
+                                    className="w-full sm:w-auto px-8 py-4 md:px-10 md:py-5 bg-transparent border border-accent-gold/40 text-accent-gold rounded-full font-black tracking-widest text-[11px] md:text-[13px] hover:bg-accent-gold/10 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Sparkles className="w-4 h-4" />
+                                    GET VOUCHER
                                 </button>
                             </div>
                         </motion.div>
@@ -430,6 +439,11 @@ const GenericCountryPage = ({ countryId }) => {
                             window.location.href = '/contact';
                         }}
                     />
+                )}
+                {isCouponOpen && (
+                  <CouponPage 
+                    onClose={() => setIsCouponOpen(false)} 
+                  />
                 )}
             </AnimatePresence>
 

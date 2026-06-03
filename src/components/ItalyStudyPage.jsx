@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlaneTakeoff, GraduationCap, Coins, BookOpen, MapPin, Landmark, ArrowRight, ShieldCheck, ChevronDown, Euro, Briefcase, HeartHandshake, Building2, Stethoscope, FileText, CheckCircle2, ChevronRight, Sparkles, Search, FileCheck, ClipboardList, MailOpen, Award, FileEdit, Globe, CheckCircle, Plane, Fingerprint, Home } from 'lucide-react';
+import { PlaneTakeoff, GraduationCap, Coins, BookOpen, MapPin, Landmark, ArrowRight, ShieldCheck, ChevronDown, Euro, Briefcase, HeartHandshake, Building2, Stethoscope, FileText, CheckCircle2, ChevronRight, Sparkles, Search, FileCheck, ClipboardList, MailOpen, Award, FileEdit, Globe, CheckCircle, Plane, Fingerprint, Home, X } from 'lucide-react';
 import { Header } from './Header';
 import FeesTable from './FeesTable';
 import MinimalFooter from './MinimalFooter';
 import AuthModal from './AuthModal';
 import EligibilityModal from './EligibilityModal';
 import ItalyMap from './Map';
+import CouponPage from '../coupon_generator/coupon';
 
 const ItalyStudyPage = () => {
     // State for interactive document checklist
     const [checkedDocs, setCheckedDocs] = useState({});
     const [modalOpen, setModalOpen] = useState(null);
     const [eligibilityModalLevel, setEligibilityModalLevel] = useState(null);
+    const [isCouponOpen, setIsCouponOpen] = useState(false);
 
     const toggleDoc = (category, index) => {
         const key = `${category}-${index}`;
@@ -235,6 +237,13 @@ const ItalyStudyPage = () => {
                                     <span className="relative flex items-center justify-center gap-3 group-hover:text-[#0a0d18] transition-colors duration-500">
                                         START APPLICATION <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                                     </span>
+                                </button>
+                                <button 
+                                    onClick={() => setIsCouponOpen(true)}
+                                    className="w-full sm:w-auto px-8 py-4 md:px-10 md:py-5 bg-transparent border border-accent-gold/40 text-accent-gold rounded-full font-black tracking-widest text-[11px] md:text-[13px] hover:bg-accent-gold/10 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Sparkles className="w-4 h-4" />
+                                    GET VOUCHER
                                 </button>
                                 <button className="w-full sm:w-auto px-8 py-4 md:px-10 md:py-5 bg-transparent border border-white/20 text-white rounded-full font-black tracking-widest text-[11px] md:text-[13px] hover:bg-white/10 transition-all ">
                                     BROWSE COURSES
@@ -654,6 +663,11 @@ const ItalyStudyPage = () => {
                             window.location.href = '/contact';
                         }}
                     />
+                )}
+                {isCouponOpen && (
+                  <CouponPage 
+                    onClose={() => setIsCouponOpen(false)} 
+                  />
                 )}
             </AnimatePresence>
             <MinimalFooter />

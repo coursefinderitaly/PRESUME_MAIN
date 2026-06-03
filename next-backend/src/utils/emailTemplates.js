@@ -299,6 +299,29 @@ const getPaymentFailedEmailHTML = (candidateName, errorMessage) => {
     });
 };
 
+const getVoucherEmailHTML = (data) => {
+    const { name, code, validUntil, destination } = data;
+    
+    let bodyText = `Here are the details for your personalized discount voucher:<br/><br/>
+                    <strong>Voucher Code:</strong> <span style="font-size: 18px; font-weight: bold; color: #d4af37;">${code}</span><br/>
+                    <strong>Discount:</strong> 50% OFF<br/>
+                    <strong>Valid Until:</strong> ${validUntil}<br/>`;
+    
+    if (destination) {
+        bodyText += `<strong>Selected Destination:</strong> ${destination}<br/>`;
+    }
+    
+    bodyText += `<br/>Redeem this code at checkout to claim your premium discount!`;
+
+    return getPremiumEmailTemplate({
+        title: "Your Premium Voucher Code",
+        greeting: name || "Future Global Citizen",
+        body: bodyText,
+        ctaText: 'Redeem Voucher Now',
+        ctaLink: 'https://presumeoverseas.com/dashboard'
+    });
+};
+
 module.exports = {
     getPremiumEmailTemplate,
     getWelcomeEmailHTML,
@@ -307,5 +330,6 @@ module.exports = {
     getExportEmailHTML,
     getPartnerRequestEmailHTML,
     getAdminCredentialsEmailHTML,
-    getInquiryNotificationEmailHTML
+    getInquiryNotificationEmailHTML,
+    getVoucherEmailHTML
 };

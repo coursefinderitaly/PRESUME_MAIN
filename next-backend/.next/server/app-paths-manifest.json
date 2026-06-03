@@ -1,0 +1,8 @@
+{
+  "/api/admin/users/[userId]/toggle-block/route": "app/api/admin/users/[userId]/toggle-block/route.js",
+  "/api/admin/users/[userId]/route": "app/api/admin/users/[userId]/route.js",
+  "/api/erp/students/[studentId]/assign/route": "app/api/erp/students/[studentId]/assign/route.js",
+  "/api/admin/users/[userId]/applications/[appId]/route": "app/api/admin/users/[userId]/applications/[appId]/route.js",
+  "/api/admin/users/[userId]/unlock/route": "app/api/admin/users/[userId]/unlock/route.js",
+  "/api/erp/students/[studentId]/route": "app/api/erp/students/[studentId]/route.js"
+}

@@ -750,6 +750,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
 
           <CouponPage 
             defaultName={profile ? `${profile.firstName || ''} ${profile.lastName || ''}`.trim() : ''}
+            defaultEmail={profile ? profile.email : ''}
             onClose={() => { 
             setShowCouponModal(false);
             // Re-fetch the coupon to show it on the dashboard immediately after generation

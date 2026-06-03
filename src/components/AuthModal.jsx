@@ -336,7 +336,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
           <div className="pt-8 border-t border-slate-800">
             <div className="flex items-center gap-2 text-slate-400">
               <ShieldCheck size={16} className="text-cyan-400" />
-              <span className="text-xs font-medium">Bank-grade encryption</span>
+              <span className="text-xs font-medium">Encrypted</span>
             </div>
           </div>
         </div>

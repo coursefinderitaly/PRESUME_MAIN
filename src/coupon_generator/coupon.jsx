@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Pointer, Printer } from 'lucide-react';
+import { X, Copy, Check, Printer } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import './coupon.css';
 
@@ -35,250 +35,154 @@ function n(id, left, top, width, height, style, children) {
 
 // Extracted Ticket Component
 const CouponTicket = ({ name, destination, voucherCode, date }) => {
-  const wrapRef = useRef(null);
-  const sizerRef = useRef(null);
-
-  useEffect(() => {
-    function updateScale() {
-      if (!wrapRef.current || !sizerRef.current) return;
-      // Make the ticket smaller, max 800px or 90% of screen
-      const maxWidth = Math.min(window.innerWidth * 0.9, 800);
-      const scale = maxWidth / BASE_W;
-      const scaledW = Math.ceil(BASE_W * scale);
-      const scaledH = Math.ceil(BASE_H * scale);
-      sizerRef.current.style.width = scaledW + 'px';
-      sizerRef.current.style.height = scaledH + 'px';
-      if (sizerRef.current.firstChild) {
-        sizerRef.current.firstChild.style.transform = `scale(${scale})`;
-      }
-    }
-    updateScale();
-    // Re-run when it might be shown
-    setTimeout(updateScale, 50);
-    window.addEventListener('resize', updateScale);
-    return () => window.removeEventListener('resize', updateScale);
-  }, []);
-
   return (
-    <div className="ticket-modal-content">
-      <div id="stage-wrap" ref={wrapRef} style={{ justifyContent: 'center', minHeight: 'auto', background: 'transparent' }}>
-        <div id="stageSizer" ref={sizerRef}>
-          <div id="stage" style={{ clipPath: 'inset(15px round 60px)' }}>
-            {/* Node 1 - left gold bar */}
-            {n(1, 0, 0, 194, 1166,
-              { objectFit: 'contain' },
+    <div className="ticket-modal-content" style={{ width: '2560px' }}>
+      <div id="stage-wrap" style={{ justifyContent: 'flex-start', minHeight: 'auto', background: 'transparent' }}>
+        <div id="stageSizer" style={{ width: '2560px', height: '893px' }}>
+          <div id="stage" style={{ borderRadius: '60px', overflow: 'hidden' }}>
+            {n(1, 0, 0, 194, 1166, { objectFit: 'contain' },
               <img src={URLS[10]} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Node 40 - thin top line */}
-            {n(40, 0, 0, 2560, 2,
-              {},
+            {n(40, 0, 0, 2560, 2, {},
               <img src={URLS[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'fill' }} />
             )}
-
-            {/* Node 2 - dark header box */}
             {n(2, 196, 1, 2364, 274,
               { background: '#252525', borderRadius: '0px 69px 0px 0px', border: '1px solid #3E3D3E' },
               null
             )}
-
-            {/* Node 38 - company logo */}
-            {n(38, 765, 13, 400, 233,
-              {},
+            {n(38, 765, 13, 400, 233, {},
               <img src={URLS[7]} alt="Presume Overseas logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Node 39 - registered mark */}
-            {n(39, 1089, 25, 25, 24,
-              {},
+            {n(39, 1089, 25, 25, 24, {},
               <img src={URLS[3]} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Node 37 - company name text */}
             {n(37, 1187, 60, 828, 176,
-              { fontSize: '64px', fontWeight: 700, color: '#D2B486', lineHeight: '1.2', whiteSpace: 'pre-line' },
+              { fontSize: '64px', fontWeight: 700, color: '#D2B486', lineHeight: '1.2', whiteSpace: 'pre-line', overflow: 'visible', display: 'flex', flexDirection: 'column', justifyContent: 'center' },
               "PRESUME OVERSEAS\nEducation (opc)Pvt.Ltd."
             )}
-
-            {/* Node 5 - main cream card background */}
-            {n(5, 0, 275, 1912, 891,
-              {},
+            {n(5, 0, 275, 1912, 891, {},
               <img src={URLS[2]} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Node 3 - right section background */}
-            {n(3, 1912, 274, 648, 892,
-              {},
+            {n(3, 1912, 274, 648, 892, {},
               <img src={URLS[4]} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Ambient background glows */}
             <div className="ambient-glow-1"></div>
             <div className="ambient-glow-2"></div>
-
-            {/* Node 17 - right top white panel */}
             {n(17, 1910, 275, 649, 525,
               { background: '#FAF5EF', border: '1px solid #F0ECE5' },
               null
             )}
-
-            {/* Node 8 - right bottom white panel */}
-            {n(8, 1910, 889, 649, 277,
-              { background: '#FAF5EF' },
-              null
-            )}
-
-            {/* Node 28 - airplane image */}
-            {n(28, 35, 276, 661, 248,
-              {},
+            {n(8, 1910, 889, 649, 277, { background: '#FAF5EF' }, null)}
+            {n(28, 35, 276, 661, 248, {},
               <img src={URLS[6]} alt="Airplane" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Node 29 - FROM label area */}
-            {n(29, 191, 275, 509, 244,
-              {},
+            {n(29, 191, 275, 509, 244, {},
               <img src={URLS[8]} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Node 35 - FROM text */}
             {n(35, 357, 517, 141, 47,
-              { fontSize: '32px', fontWeight: 700, color: '#383634' },
+              { fontSize: '42px', fontWeight: 800, color: '#1a1a1a', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "FROM"
             )}
-
-            {/* Node 34 - TO text */}
             {n(34, 894, 520, 72, 50,
-              { fontSize: '36px', fontWeight: 700, color: '#373635' },
+              { fontSize: '42px', fontWeight: 800, color: '#1a1a1a', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "TO"
             )}
-
-            {/* Node 33 - INDIA text */}
             {n(33, 355, 559, 210, 75,
-              { fontSize: '56px', fontWeight: 700, color: '#8A6E45' },
+              { fontSize: '76px', fontWeight: 800, color: '#5a4220', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "INDIA"
             )}
-
-            {/* Node 32 - DYNAMIC DESTINATION text */}
             {n(32, 892, 558, 250, 76,
-              { fontSize: '56px', fontWeight: 700, color: '#8A6E45' },
+              { fontSize: '76px', fontWeight: 800, color: '#5a4220', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               destination
             )}
-
-            {/* Node 27 - arrow icon */}
-            {n(27, 691, 577, 67, 35,
-              {},
+            {n(27, 691, 577, 67, 35, {},
               <img src={URLS[9]} alt="arrow" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Node 26 - barcode */}
-            {n(26, 1751, 348, 84, 359,
-              {},
+            {n(26, 1751, 348, 84, 359, {},
               <img src={URLS[5]} alt="barcode" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* Node 31 - validity rotated text */}
-            {n(31, 115, 672, 100, 436,
+            {n(31, 57, 590, 80, 436,
               {
-                fontSize: '64px', fontWeight: 700, color: '#F2EDE3',
+                fontSize: '76px', fontWeight: 700, color: '#F2EDE3',
                 writingMode: 'vertical-rl',
                 transform: 'rotate(180deg)',
                 whiteSpace: 'nowrap',
                 overflow: 'visible',
-                lineHeight: 'normal',
+                lineHeight: '1',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               },
               `Validity: ${date}`
             )}
-
-            {/* Node 30 - VOUCHER ID large text */}
             {n(30, 345, 787, 1335, 113,
-              { fontSize: '64px', fontWeight: 700, color: '#8A6E45', whiteSpace: 'nowrap' },
+              { fontSize: '86px', fontWeight: 800, color: '#5a4220', whiteSpace: 'nowrap', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               `VOUCHER ID : ${voucherCode}`
             )}
-
-            {/* Right panel - PASSENGER */}
             {n(25, 2011, 376, 175, 31,
-              { fontSize: '24px', fontWeight: 700, color: '#666', letterSpacing: '0.05em', lineHeight: 'normal' },
+              { fontSize: '36px', fontWeight: 700, color: '#1a1a1a', letterSpacing: '0.05em', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "PASSENGER"
             )}
+            {(() => {
+              const len = name ? name.length : 0;
+              let fs = '64px';
+              if (len > 12 && len <= 16) fs = '52px';
+              else if (len > 16 && len <= 20) fs = '42px';
+              else if (len > 20 && len <= 26) fs = '34px';
+              else if (len > 26) fs = '28px';
 
-            {/* DYNAMIC PASSENGER NAME */}
-            {n(24, 2014, 415, 450, 49,
-              { fontSize: '48px', fontWeight: 800, color: '#111', whiteSpace: 'nowrap', lineHeight: 'normal', overflow: 'visible' },
-              name
-            )}
-
-            {/* GATE */}
+              return n(24, 2014, 410, 450, 85,
+                { fontSize: fs, fontWeight: 800, color: '#000', whiteSpace: 'nowrap', lineHeight: '1.2', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', transition: 'font-size 0.2s ease' },
+                name
+              );
+            })()}
             {n(23, 2015, 506, 79, 30,
-              { fontSize: '24px', fontWeight: 700, color: '#666', letterSpacing: '0.05em', lineHeight: 'normal' },
+              { fontSize: '36px', fontWeight: 700, color: '#1a1a1a', letterSpacing: '0.05em', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "GATE"
             )}
-
-            {/* SEAT */}
             {n(22, 2308, 506, 73, 30,
-              { fontSize: '24px', fontWeight: 700, color: '#666', letterSpacing: '0.05em', lineHeight: 'normal' },
+              { fontSize: '36px', fontWeight: 700, color: '#1a1a1a', letterSpacing: '0.05em', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "SEAT"
             )}
-
-            {/* Gate number */}
-            {n(21, 2032, 542, 42, 44,
-              { fontSize: '42px', fontWeight: 800, color: '#111', lineHeight: 'normal', overflow: 'visible' },
+            {n(21, 2032, 542, 100, 70,
+              { fontSize: '64px', fontWeight: 800, color: '#000', lineHeight: '1.2', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "17"
             )}
-
-            {/* Seat number */}
-            {n(20, 2311, 542, 69, 44,
-              { fontSize: '42px', fontWeight: 800, color: '#111', lineHeight: 'normal', overflow: 'visible' },
+            {n(20, 2311, 542, 120, 70,
+              { fontSize: '64px', fontWeight: 800, color: '#000', lineHeight: '1.2', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "17A"
             )}
-
-            {/* FROM label right panel */}
             {n(19, 2025, 760, 85, 30,
-              { fontSize: '24px', fontWeight: 700, color: '#666', letterSpacing: '0.05em', lineHeight: 'normal' },
+              { fontSize: '36px', fontWeight: 700, color: '#1a1a1a', letterSpacing: '0.05em', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "FROM"
             )}
-
-            {/* TO label right panel */}
             {n(18, 2319, 761, 43, 29,
-              { fontSize: '24px', fontWeight: 700, color: '#666', letterSpacing: '0.05em', lineHeight: 'normal' },
+              { fontSize: '36px', fontWeight: 700, color: '#1a1a1a', letterSpacing: '0.05em', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "TO"
             )}
-
-            {/* Node 13 - gold banner strip for FROM/TO */}
-            {n(13, 1910, 801, 649, 87,
-              {},
+            {n(13, 1910, 801, 649, 87, {},
               <img src={URLS[34]} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             )}
-
-            {/* MUMBAI */}
-            {n(15, 2027, 826, 145, 38,
-              { fontSize: '32px', fontWeight: 800, color: '#FFF', lineHeight: 'normal', overflow: 'visible' },
+            {n(15, 2027, 822, 180, 56,
+              { fontSize: '48px', fontWeight: 800, color: '#FFF', lineHeight: '1.2', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "MUMBAI"
             )}
-            {/* DYNAMIC DESTINATION RIGHT PANEL */}
-            {n(14, 2325, 827, 200, 38,
-              { fontSize: '32px', fontWeight: 800, color: '#FFF', whiteSpace: 'nowrap', lineHeight: 'normal', overflow: 'visible' },
+            {n(14, 2325, 822, 200, 56,
+              { fontSize: '48px', fontWeight: 800, color: '#FFF', whiteSpace: 'nowrap', lineHeight: '1.2', overflow: 'visible', display: 'flex', alignItems: 'center' },
               destination
             )}
-
-            {/* FLIGHT */}
             {n(11, 2031, 936, 100, 31,
-              { fontSize: '26px', fontWeight: 900, color: '#666', letterSpacing: '0.1em', lineHeight: 'normal' },
+              { fontSize: '38px', fontWeight: 900, color: '#1a1a1a', letterSpacing: '0.1em', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "FLIGHT"
             )}
-
-            {/* LP317 */}
-            {n(10, 2315, 926, 109, 47,
-              { fontSize: '42px', fontWeight: 800, color: '#111', lineHeight: 'normal', overflow: 'visible' },
+            {n(10, 2315, 920, 180, 70,
+              { fontSize: '64px', fontWeight: 800, color: '#000', lineHeight: '1.2', overflow: 'visible', display: 'flex', alignItems: 'center' },
               "LP317"
             )}
-
-            {/* Bottom VOUCHER ID */}
             {n(9, 1910, 990, 650, 50,
-              { fontSize: '32px', fontWeight: 700, color: '#666', textAlign: 'center', whiteSpace: 'nowrap', lineHeight: 'normal', overflow: 'visible' },
+              { fontSize: '36px', fontWeight: 700, color: '#1a1a1a', textAlign: 'center', whiteSpace: 'nowrap', lineHeight: '1', overflow: 'visible', display: 'flex', alignItems: 'center', justifyContent: 'center' },
               `VOUCHER ID:${voucherCode}`
             )}
-
-            {/* Holographic reflection sweep overlay */}
             <div className="ticket-shine-overlay"></div>
           </div>
         </div>
@@ -288,44 +192,51 @@ const CouponTicket = ({ name, destination, voucherCode, date }) => {
 };
 
 // ============================================================
-// 🎛️  POSITION & SIZE TUNING — EDIT THESE TO MOVE THINGS
-// Save the file after each change to see results live!
+// TICKET ANIMATION — Left → Right (printer slot faces RIGHT)
 // ============================================================
 
-// --- PRINTER MACHINE ---
-const MACHINE_X = -200;          // Moves machine Left(-) / Right(+) in px
-const MACHINE_Y = 70;          // Moves machine Up(-) / Down(+) in px
-
-// --- VOUCHER DETAILS CARD (Settings) ---
-const SETTINGS_X = -720;         // Let flexbox handle it
-const SETTINGS_Y = -250;         // Let flexbox handle it
-
-// --- GENERATED COUPON (Ticket) ---
-// NOTE: Because the machine is rotated -90deg, local Y = visual Right/Left
-const TICKET_HIDDEN_Y = -350;   // Deeply hidden inside machine
-const TICKET_PEEK_Y = -300;     // Barely peeking out of slot
-const TICKET_FEED1_Y = -220;    // 1/3 out
-const TICKET_FEED2_Y = -120;    // 2/3 out
-const TICKET_ALMOST_Y = -20;    // Fully out of the slot
-const TICKET_FINAL_Y = 340;     // Fully out — how far RIGHT it lands
-const TICKET_FINAL_X = "-30px"; // Vertical nudge when landed (Up- / Down+)
-
-const TICKET_SCALE_INSIDE = 0.45;  // Size while hiding inside the machine
-const TICKET_SCALE_PEEK = 0.45;  // Size while peeking / feeding
-const TICKET_SCALE_FINAL = 1.2;  // Final displayed size after fully printed
-
-// ============================================================
-
-export default function CouponPage({ onClose, defaultName = '' }) {
+export default function CouponPage({ onClose, defaultName = '', defaultEmail = '' }) {
   const [name, setName] = useState(defaultName);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(defaultEmail);
   const [destination, setDestination] = useState('ITALY');
-  const [animationState, setAnimationState] = useState('idle'); // idle | peek | feed1 | feed2 | almost | printed
+  const [animationState, setAnimationState] = useState('idle');
   const [voucherCode, setVoucherCode] = useState('ITA-PE----');
   const [validUntil, setValidUntil] = useState('17-05-26');
   const [copied, setCopied] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Responsive Ticket Scale System
+  const [scaleFactor, setScaleFactor] = useState(0.24);
+  useEffect(() => {
+    function handleResize() {
+      const width = window.innerWidth;
+      if (width < 1000) {
+        setScaleFactor(0.15); // mobile/tablet
+      } else if (width < 1300) {
+        setScaleFactor(0.19); // medium-small
+      } else if (width < 1600) {
+        setScaleFactor(0.22); // medium
+      } else {
+        setScaleFactor(0.24); // default
+      }
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const TICKET_SCALE_INSIDE = scaleFactor * 0.85;
+  const TICKET_SCALE_FINAL = scaleFactor;
+
+  const ticketWidth = 2560 * scaleFactor;
+  // Calculate relative X positions dynamically based on scale
+  const TICKET_HIDDEN_X = -ticketWidth - 50;
+  const TICKET_STAGE1_X = -ticketWidth * 0.7;
+  const TICKET_STAGE2_X = -ticketWidth * 0.4;
+  const TICKET_STAGE3_X = -ticketWidth * 0.15;
+  const TICKET_FINAL_X = -160; // Negative = ticket slides LEFT over printer body
+  const TICKET_FINAL_Y = -35; // Adjust this to shift the voucher vertically (positive values push down, negative values pull up)
 
   const handleCopy = () => {
     navigator.clipboard.writeText(voucherCode);
@@ -335,17 +246,17 @@ export default function CouponPage({ onClose, defaultName = '' }) {
 
   const handleGenerate = async () => {
     if (animationState !== 'idle' || isGenerating) return;
-    
+
     if (!name.trim()) {
       setErrorMsg('Please enter passenger name to print the ticket.');
       return;
     }
-    
+
     if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) {
       setErrorMsg('Please enter a valid email address to receive the coupon.');
       return;
     }
-    
+
     setErrorMsg('');
     setIsGenerating(true);
 
@@ -353,9 +264,7 @@ export default function CouponPage({ onClose, defaultName = '' }) {
       const response = await fetch(`${API_BASE_URL}/coupons/generate`, {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, destination, email })
       });
 
@@ -368,38 +277,22 @@ export default function CouponPage({ onClose, defaultName = '' }) {
       }
 
       setVoucherCode(data.coupon.code);
-      
-      // Format validUntil to DD-MM-YY for the ticket
+
       const dateObj = new Date(data.coupon.validUntil);
       const dd = String(dateObj.getDate()).padStart(2, '0');
       const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
       const yy = String(dateObj.getFullYear()).slice(-2);
       setValidUntil(`${dd}-${mm}-${yy}`);
 
-      // Stage 1: Peek — the front edge of the ticket appears from the slot
-      setAnimationState('peek');
-
+      setAnimationState('printing-1');
+      setTimeout(() => setAnimationState('printing-2'), 800);
+      setTimeout(() => setAnimationState('printing-3'), 1600);
+      setTimeout(() => setAnimationState('ejecting'), 2400);
       setTimeout(() => {
-        // Stage 2: Feed chunk 1
-        setAnimationState('feed1');
-      }, 600);
-
-      setTimeout(() => {
-        // Stage 3: Feed chunk 2
-        setAnimationState('feed2');
-      }, 1400);
-
-      setTimeout(() => {
-        // Stage 4: Almost out
-        setAnimationState('almost');
-      }, 2200);
-
-      setTimeout(() => {
-        // Final Stage: Fully printed & ready to rip
         setAnimationState('printed');
         setIsGenerating(false);
-      }, 3000);
-      
+      }, 3500);
+
     } catch (err) {
       console.error(err);
       setErrorMsg('Network error. Please try again later.');
@@ -412,191 +305,196 @@ export default function CouponPage({ onClose, defaultName = '' }) {
     setVoucherCode('ITA-PE----');
   };
 
-  // Compute ticket Y position based on animation stage
-  const ticketY =
-    animationState === 'idle' ? TICKET_HIDDEN_Y :
-      animationState === 'peek' ? TICKET_PEEK_Y :
-        animationState === 'feed1' ? TICKET_FEED1_Y :
-          animationState === 'feed2' ? TICKET_FEED2_Y :
-            animationState === 'almost' ? TICKET_ALMOST_Y :
-    /* printed */                  TICKET_FINAL_Y;
-
+  // Current X position for the ticket
   const ticketX =
-    animationState === 'printed' ? TICKET_FINAL_X : 0;
+    animationState === 'idle' ? TICKET_HIDDEN_X :
+      animationState === 'printing-1' ? TICKET_STAGE1_X :
+        animationState === 'printing-2' ? TICKET_STAGE2_X :
+          animationState === 'printing-3' ? TICKET_STAGE3_X :
+            animationState === 'ejecting' ? TICKET_FINAL_X :
+    /* printed */                     TICKET_FINAL_X;
 
-  const ticketScale =
-    animationState === 'idle' ? TICKET_SCALE_INSIDE :
-      animationState === 'peek' ? TICKET_SCALE_PEEK :
-        animationState === 'feed1' ? TICKET_SCALE_PEEK :
-          animationState === 'feed2' ? TICKET_SCALE_PEEK :
-            animationState === 'almost' ? TICKET_SCALE_PEEK :
-    /* printed */                  TICKET_SCALE_FINAL;
+  const ticketScale = scaleFactor;
 
-  // Duration varies by stage for the realistic feed feel
   const ticketDuration =
-    animationState === 'peek' ? 0.5 :
-      animationState === 'feed1' ? 0.8 :
-        animationState === 'feed2' ? 0.8 :
-          animationState === 'almost' ? 0.8 :
-            animationState === 'printed' ? 0.8 : 0.3;
+    animationState === 'printing-1' ? 0.25 :
+      animationState === 'printing-2' ? 0.25 :
+        animationState === 'printing-3' ? 0.25 :
+          animationState === 'ejecting' ? 0.25 : 0.15; // Fast snappy mechanical feed
+
+  // Tiny Y settle when fully printed
+  const ticketY = TICKET_FINAL_Y + (animationState === 'printed' ? 3 : 0);
 
   return (
-    <div className="generator-machine-container">
-      {/* Wrapper to contain rotated machine bounding box so it doesn't break flex layout */}
-      <div style={{ width: '450px', height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* The Printer Machine */}
-        <motion.div
-          className={`printer-assembly state-${animationState}`}
-          initial={{ x: MACHINE_X, y: MACHINE_Y, rotate: -90 }}
-          animate={{ x: MACHINE_X, y: MACHINE_Y, rotate: -90 }}
-          transition={{ duration: 0 }}
-        >
-          {/* === TICKET MASK: crops ticket while it feeds through the slot === */}
-          <div
-            className="printer-slot-mask"
-            style={{
-              overflow: animationState === 'printed' ? 'visible' : 'hidden',
-              pointerEvents: animationState === 'printed' ? 'auto' : 'none',
-              zIndex: animationState === 'printed' ? 100 : 1
-            }}
-          >
-            <motion.div
-              className="printer-ticket-wrapper"
-              initial={{ y: TICKET_HIDDEN_Y, scale: TICKET_SCALE_INSIDE, x: 0, rotate: 90 }}
-              animate={{
-                y: ticketY,
-                x: ticketX,
-                rotate: 90,
-                scale: ticketScale,
-              }}
-              transition={{
-                y: {
-                  duration: ticketDuration,
-                  ease: animationState === 'feed' ? [0.25, 0, 0.5, 1] : "easeOut"
-                },
-                x: { duration: 0.8, ease: "easeInOut" },
-                scale: { duration: 0.8, ease: "easeInOut" },
-              }}
-              style={{
-                zIndex: animationState === 'printed' ? 100 : 1,
-                transformOrigin: 'center center',
-                willChange: (animationState === 'peek' || animationState === 'feed1' || animationState === 'feed2' || animationState === 'almost') ? 'transform' : 'auto'
-              }}
-            >
-              <CouponTicket
-                name={name ? name.toUpperCase() : ''}
-                destination={destination.toUpperCase()}
-                voucherCode={voucherCode}
-                date={validUntil}
-              />
+    <div className="coupon-app-redesign">
+      <motion.div
+        className="voucher-dashboard-card"
+        initial={{ opacity: 0, y: 40, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <button className="dashboard-close-btn" onClick={onClose}><X size={22} /></button>
 
-              {/* Copy/Close buttons */}
+        {/* ── LEFT: Settings Panel ── */}
+        <div className="dashboard-settings-panel">
+          <div className="settings-header">
+            <h3>Digital Voucher Console</h3>
+            <p>Configure passenger details to authorize issuance.</p>
+          </div>
+
+          {errorMsg && (
+            <div className="error-banner">{errorMsg}</div>
+          )}
+
+          <div className="input-group">
+            <input
+              type="text"
+              placeholder="Passenger Name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              disabled={animationState !== 'idle' || isGenerating}
+            />
+          </div>
+          <div className="input-group">
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              disabled={animationState !== 'idle' || isGenerating || !!defaultEmail}
+              style={{ opacity: defaultEmail ? 0.7 : 1 }}
+            />
+          </div>
+          <div className="input-group">
+            <select
+              value={destination}
+              onChange={e => setDestination(e.target.value)}
+              disabled={animationState !== 'idle' || isGenerating}
+            >
+              <option value="ITALY">Italy</option>
+              <option value="AUSTRALIA">Australia</option>
+              <option value="CANADA">Canada</option>
+              <option value="FRANCE">France</option>
+              <option value="GERMANY">Germany</option>
+              <option value="IRELAND">Ireland</option>
+              <option value="UK">United Kingdom</option>
+              <option value="USA">United States</option>
+            </select>
+          </div>
+        </div>
+
+        {/* ── RIGHT: Printer Panel ── */}
+        <div className="dashboard-printer-panel">
+          {/* Ambient glow rings */}
+          <div className="printer-env-ring ring-1"></div>
+          <div className="printer-env-ring ring-2"></div>
+
+          <div className="ultra-printer-scene">
+
+            {/* Redesigned Sleek Light-Themed Minimalist Printer */}
+            <div className="upm-outer-wrapper">
+              <div className={`minimal-printer-machine state-${animationState}`}>
+
+                {/* Status indicator */}
+                <div className="min-printer-status">
+                  <div className="min-printer-led"></div>
+                  <span className="min-printer-status-text">
+                    {animationState === 'idle' ? 'System Ready' :
+                      animationState === 'printed' ? 'Voucher Issued' :
+                        animationState === 'ejecting' ? 'Ejecting...' : 'Printing...'}
+                  </span>
+                </div>
+
+                {/* Main Body */}
+                <div className="min-printer-body">
+                  <div className="min-printer-brand">PRESUME CLOUD PRINT</div>
+
+                  {/* Clean Central Button */}
+                  <motion.button
+                    className="min-printer-print-btn"
+                    onClick={handleGenerate}
+                    disabled={animationState !== 'idle' || isGenerating}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Printer size={18} />
+                    <span>{animationState === 'idle' ? 'Print Premium Voucher' : 'Processing...'}</span>
+                  </motion.button>
+                </div>
+
+                {/* Output slot cover/guide to hide paper birth point */}
+                <div className="min-printer-side-slot">
+                  {animationState.startsWith('printing') && (
+                    <div className="printer-smoke-container">
+                      <div className="smoke-particle p1"></div>
+                      <div className="smoke-particle p2"></div>
+                      <div className="smoke-particle p3"></div>
+                      <div className="smoke-particle p4"></div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Ticket egress zone — now on the RIGHT side */}
+            <div className="ultra-ticket-egress">
+              <motion.div
+                className="ultra-ticket-wrapper"
+                initial={{ x: TICKET_HIDDEN_X, y: TICKET_FINAL_Y, scale: scaleFactor, opacity: 0 }}
+                animate={{
+                  x: ticketX,
+                  y: ticketY,
+                  scale: ticketScale,
+                  opacity: animationState === 'idle' ? 0 : 1,
+                }}
+                transition={{
+                  x: animationState.startsWith('printing')
+                    ? { type: 'spring', stiffness: 45, damping: 14, mass: 0.8 }
+                    : { type: 'spring', stiffness: 50, damping: 16 },
+                  y: { duration: 0.5, ease: 'easeOut' },
+                  scale: { duration: 0.4 },
+                  opacity: { duration: 0.4 },
+                }}
+                whileHover={
+                  animationState === 'printed'
+                    ? { scale: TICKET_SCALE_FINAL * 1.04, x: TICKET_FINAL_X - 15, y: TICKET_FINAL_Y, rotate: 1.5, zIndex: 100 }
+                    : {}
+                }
+              >
+                <div className={animationState.startsWith('printing') ? 'ticket-print-vibrate' : ''} style={{ width: '100%', height: '100%' }}>
+                  <CouponTicket
+                    name={name ? name.toUpperCase() : ''}
+                    destination={destination.toUpperCase()}
+                    voucherCode={voucherCode}
+                    date={validUntil}
+                  />
+                </div>
+              </motion.div>
+
+              {/* Copy Code button is moved OUTSIDE of scaled wrapper so it stays native and large */}
               <AnimatePresence>
                 {animationState === 'printed' && (
                   <motion.div
                     className="ticket-actions"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 15, x: '-50%' }}
+                    animate={{ opacity: 1, y: 0, x: '-50%' }}
+                    exit={{ opacity: 0, y: 15, x: '-50%' }}
                     transition={{ delay: 0.6, duration: 0.4 }}
+                    style={{
+                      left: `${TICKET_FINAL_X + (2560 * scaleFactor) / 2}px`,
+                      bottom: '16px'
+                    }}
                   >
                     <button className="copy-btn" onClick={handleCopy}>
-                      {copied ? <Check size={18} /> : <Copy size={18} />}
+                      {copied ? <Check size={28} /> : <Copy size={28} />}
                       <span>{copied ? 'Copied!' : 'Copy Code'}</span>
-                    </button>
-                    <button className="reset-btn" onClick={() => {
-                      resetMachine();
-                      if (onClose) onClose();
-                    }}>
-                      <X size={18} />
-                      <span>Close</span>
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
-          </div>
-
-          {/* === MACHINE TOP LIP === */}
-          <motion.div className="printer-top-lip" animate={{ opacity: 1 }}>
-            <div className="blinking-light"></div>
-          </motion.div>
-
-          {/* === MACHINE BODY === */}
-          <motion.div className="printer-body" animate={{ opacity: 1 }}>
-            <motion.button
-              className="print-action-btn"
-              onClick={handleGenerate}
-              disabled={animationState !== 'idle' || isGenerating}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 3 }}>
-                <Printer size={30} color={animationState === 'idle' ? "#111" : "#777"} style={{ marginBottom: '6px' }} />
-                <span>GENERATE</span>
-              </div>
-            </motion.button>
-
-            <div className="printer-slot-shadow">
-              {animationState !== 'idle' && animationState !== 'printed' && (
-                <div className="laser-scanner"></div>
-              )}
             </div>
-          </motion.div>
-        </motion.div>
-      </div>
 
-      {/* Settings Panel */}
-      <motion.div
-        className="machine-settings"
-        style={{ transform: `translate(${SETTINGS_X}px, ${SETTINGS_Y}px)` }}
-        animate={{ opacity: 1 }}
-      >
-        <div className="settings-header">
-          <h3>Voucher Details</h3>
-          <p>Set your destination before printing.</p>
-        </div>
-        
-        {/* Error Message */}
-        {errorMsg && (
-          <div style={{ color: '#ef4444', fontSize: '13px', marginBottom: '12px', padding: '8px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '6px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-            {errorMsg}
           </div>
-        )}
-
-        <div className="input-group">
-          <input
-            type="text"
-            placeholder="Passenger Name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            disabled={animationState !== 'idle' || isGenerating}
-          />
-        </div>
-        <div className="input-group">
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            disabled={animationState !== 'idle' || isGenerating}
-            style={{ marginTop: '10px' }}
-          />
-        </div>
-        <div className="input-group">
-          <select
-            value={destination}
-            onChange={e => setDestination(e.target.value)}
-            disabled={animationState !== 'idle' || isGenerating}
-          >
-            <option value="ITALY">Italy</option>
-            <option value="AUSTRALIA">Australia</option>
-            <option value="CANADA">Canada</option>
-            <option value="FRANCE">France</option>
-            <option value="GERMANY">Germany</option>
-            <option value="IRELAND">Ireland</option>
-            <option value="UK">United Kingdom</option>
-            <option value="USA">United States</option>
-          </select>
         </div>
       </motion.div>
     </div>

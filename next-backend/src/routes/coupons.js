@@ -3,6 +3,8 @@ const router = express.Router();
 const Coupon = require('../models/Coupon');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const { sendStudentEmail } = require('../utils/mailer');
+const { getVoucherEmailHTML } = require('../utils/emailTemplates');
 
 // POST /api/coupons/generate
 // Generate a new coupon (accessible without account)
@@ -52,12 +54,31 @@ router.post('/generate', async (req, res) => {
 
     await newCoupon.save();
 
+    // Auto-send voucher email
+    try {
+      // Format validUntil to DD-MM-YY for the email template
+      const dd = String(validUntil.getDate()).padStart(2, '0');
+      const mm = String(validUntil.getMonth() + 1).padStart(2, '0');
+      const yy = String(validUntil.getFullYear()).slice(-2);
+      const formattedDate = `${dd}-${mm}-${yy}`;
+
+      const html = getVoucherEmailHTML({ name, code, validUntil: formattedDate, destination });
+      const subject = '🎉 Your Presume Overseas Premium Voucher is Here!';
+
+      await sendStudentEmail(lowerEmail, subject, html);
+    } catch (emailError) {
+      console.error('Error sending auto-voucher email:', emailError);
+      // We don't fail the generation if email fails, just log it.
+    }
+
     res.json({ message: 'Coupon generated successfully', coupon: newCoupon });
   } catch (error) {
     console.error('Error generating coupon:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
 
 // GET /api/coupons/my-coupon
 // Get the active coupon for the authenticated user
