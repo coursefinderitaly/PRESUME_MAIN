@@ -567,54 +567,6 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
 
         </div>
 
-        {/* ── Third Row: Extra Space Filler ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          style={{
-            background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '20px',
-            display: 'flex', flexDirection: 'column', marginBottom: '40px'
-          }}
-        >
-          <h2 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={18} color="var(--accent-primary)" /> Highlights & Opportunities
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Star size={16} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 600 }}>Scholarship Deadline</h3>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Apply for the Global Excellence Scholarship before June 15th to secure your funding.</p>
-            </div>
-
-            <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Globe size={16} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 600 }}>Virtual University Fair</h3>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Meet representatives from top European universities this weekend.</p>
-            </div>
-
-            {isStudent && (
-              <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <FileText size={16} />
-                  </div>
-                  <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 600 }}>Profile Review</h3>
-                </div>
-                <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Complete your missing documents to bump your application readiness to 100%.</p>
-              </div>
-            )}
-          </div>
-        </motion.div>
       </div>
       <PaymentTestingModal
         isOpen={paymentModalOpen}
