@@ -529,8 +529,7 @@
     inset 0 2px 5px rgba(255, 255, 255, 0.02);
   display: flex;
   flex-direction: row;
-  overflow: hidden;
-  /* KEY: nothing bleeds out of the card */
+  /* Removed overflow: hidden so the ticket can safely pop out in 3D when hovered! */
   position: relative;
   z-index: 10;
 }
@@ -568,6 +567,7 @@
   justify-content: center;
   border-right: 1px solid rgba(210, 180, 134, 0.15);
   background: linear-gradient(135deg, rgba(210, 180, 134, 0.03) 0%, transparent 100%);
+  border-radius: 32px 0 0 32px;
 }
 
 .dashboard-settings-panel .settings-header h3 {
@@ -644,6 +644,7 @@
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding: 32px 24px;
+    border-radius: 32px 32px 0 0;
   }
 
   .dashboard-printer-panel {
