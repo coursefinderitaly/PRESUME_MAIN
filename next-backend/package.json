@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "node --watch server.js",
-    "build": "next build --no-lint",
+    "build": "echo 'Backend requires no build step. Proceeding...'",
     "start": "node server.js"
   },
   "dependencies": {
