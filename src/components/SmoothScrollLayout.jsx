@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import useWindowScale from '../hooks/useWindowScale';
 
 // ─── 1. Register GSAP plugins once at module level ───────────────────────────
 gsap.registerPlugin(ScrollTrigger);
@@ -18,6 +19,9 @@ const SmoothScrollLayout = ({ children }) => {
 
   // Detect if user is currently inside operational portal dashboard routes
   const isOperationalView = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin');
+
+  // Trigger scale hook and disable if inside operational view
+  useWindowScale(isOperationalView);
 
   useEffect(() => {
     // IF operational view (Dashboard/Admin), bypass smooth scroll setup and fallback to native

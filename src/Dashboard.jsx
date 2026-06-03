@@ -177,7 +177,7 @@ const Dashboard = () => {
 
   // Chat popup state
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isCouponOpen, setIsCouponOpen] = useState(false);
+
   const [chatInput, setChatInput] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
   const [chatSending, setChatSending] = useState(false);
@@ -1195,41 +1195,7 @@ const Dashboard = () => {
             )}
           </button>
 
-          {/* Floating Coupon Button (Gold) */}
-          <button
-            onClick={() => setIsCouponOpen(true)}
-            title="Generate Premium Voucher"
-            style={{
-              position: 'fixed', bottom: '24px', right: '80px', zIndex: 99998,
-              width: '56px', height: '56px', borderRadius: '50%',
-              background: 'linear-gradient(135deg, #d4af37 0%, #b59023 100%)',
-              border: 'none', cursor: 'pointer', color: '#1a1208',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 8px 25px rgba(181, 144, 35, 0.4), 0 4px 10px rgba(0,0,0,0.3)',
-              transition: 'all 0.3s cubic-bezier(0.175,0.885,0.32,1.275)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.boxShadow = '0 12px 30px rgba(181, 144, 35, 0.6), 0 6px 15px rgba(0,0,0,0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 8px 25px rgba(181, 144, 35, 0.4), 0 4px 10px rgba(0,0,0,0.3)';
-            }}
-          >
-            <Sparkles size={22} />
-          </button>
 
-          {/* Coupon Generator Modal Overlay */}
-          <AnimatePresence>
-            {isCouponOpen && (
-              <CouponPage 
-                onClose={() => setIsCouponOpen(false)} 
-                defaultName={`${profile?.firstName || ''} ${profile?.lastName || ''}`.trim()} 
-                defaultEmail={profile?.email || ''} 
-              />
-            )}
-          </AnimatePresence>
         </>
       )}
 

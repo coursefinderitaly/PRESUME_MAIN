@@ -1,8 +1,14 @@
 import { useEffect } from 'react';
 
-export default function useWindowScale() {
+export default function useWindowScale(isPortal = false) {
   useEffect(() => {
     const handleResize = () => {
+      // If we are in the operational portal, disable zooming.
+      if (isPortal) {
+        document.documentElement.style.zoom = 1;
+        return;
+      }
+
       const windowWidth = window.innerWidth;
       
       // We only want to scale desktop screens, let mobile handle itself
@@ -36,5 +42,5 @@ export default function useWindowScale() {
       // Clean up
       document.documentElement.style.zoom = 1;
     };
-  }, []);
+  }, [isPortal]);
 }

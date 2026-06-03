@@ -25,7 +25,6 @@ import { ThemeProvider } from './ThemeContext';
 import NotFound from './components/NotFound';
 import CouponPage from './coupon_generator/coupon';
 import { API_BASE_URL } from './config';
-import useWindowScale from './hooks/useWindowScale';
 
 import './index.css';
 
@@ -99,7 +98,6 @@ function VisitorTracker() {
 }
 
 function App() {
-  useWindowScale();
   return (
     <ErrorBoundary>
       <ThemeProvider>

@@ -137,9 +137,7 @@ const ProgressBar = ({ label, value, total, color }) => (
 const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiveTab, stats, fetchStats, unreadMsgCount, handleAvatarUpload, avatarUploading }) => {
   const [greeting, setGreeting] = useState('');
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
-  const [showCouponModal, setShowCouponModal] = useState(false);
-  const [activeCoupon, setActiveCoupon] = useState(null);
-  const [couponTimeLeft, setCouponTimeLeft] = useState('');
+
   const fileInputRef = useRef(null);
 
   const handlePhotoClick = () => {
@@ -182,45 +180,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
     fetchStats?.();
     const h = new Date().getHours();
     setGreeting(h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening');
-
-    if (isStudent) {
-      const fetchCoupon = async () => {
-        try {
-          const res = await fetch(`${API_BASE_URL}/coupons/my-coupon`, {
-            credentials: 'include'
-          });
-          const data = await res.json();
-          if (res.ok && data.coupon) {
-            setActiveCoupon(data.coupon);
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      };
-      fetchCoupon();
-    }
-  }, [isStudent]);
-
-  useEffect(() => {
-    if (!activeCoupon) return;
-
-    const calculateTimeLeft = () => {
-      const diff = new Date(activeCoupon.validUntil) - new Date();
-      if (diff <= 0) {
-        setCouponTimeLeft('Expired');
-        return;
-      }
-      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const m = Math.floor((diff / 1000 / 60) % 60);
-      const s = Math.floor((diff / 1000) % 60);
-      setCouponTimeLeft(`${d}d ${h}h ${m}m ${s}s`);
-    };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
-    return () => clearInterval(timer);
-  }, [activeCoupon]);
+  }, [fetchStats]);
 
   const COLORS = {
     indigo: '#6366f1', purple: '#a78bfa', teal: '#14b8a6',
@@ -576,143 +536,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
         }}
       />
 
-      {/* Floating Coupon Button */}
-      {isStudent && (
-        <div 
-          style={{
-            position: 'fixed',
-            right: '20px',
-            bottom: '100px',
-            zIndex: 9999,
-            cursor: activeCoupon ? 'default' : 'pointer',
-            animation: activeCoupon ? 'none' : 'customBounce 2s ease-in-out infinite'
-          }}
-          onClick={() => { if (!activeCoupon) setShowCouponModal(true); }}
-        >
-          <style>{`
-            @keyframes customBounce {
-              0%, 100% { transform: translateY(0); }
-              50% { transform: translateY(-10px); }
-            }
-          `}</style>
-          <div style={{
-            background: 'linear-gradient(135deg, #D2B486, #8A6E45)',
-            color: '#111',
-            border: '2px solid rgba(255,255,255,0.4)',
-            borderRadius: '30px',
-            padding: '12px 24px',
-            fontSize: '1rem',
-            fontWeight: 800,
-            boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px',
-            animation: activeCoupon ? 'none' : 'pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1)'
-          }}>
-            {activeCoupon ? (
-              <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span>🎟️ {activeCoupon.code}</span>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(activeCoupon.code);
-                      const btn = e.currentTarget;
-                      const originalHTML = btn.innerHTML;
-                      btn.innerHTML = '✓ Copied!';
-                      setTimeout(() => btn.innerHTML = originalHTML, 2000);
-                    }}
-                    style={{
-                      background: 'rgba(0,0,0,0.15)',
-                      border: '1px solid rgba(0,0,0,0.2)',
-                      borderRadius: '6px',
-                      padding: '2px 8px',
-                      fontSize: '0.75rem',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      color: 'var(--text-main)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.25)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
-                  >
-                    Copy
-                  </button>
-                </div>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Expires in: {couponTimeLeft}</span>
-              </>
-            ) : (
-              <span>🎫 Generate Coupon</span>
-            )}
-          </div>
-        </div>
-      )}
 
-      {/* Coupon Generator Modal */}
-      {showCouponModal && createPortal(
-        <div style={{
-          position: 'fixed', inset: 0,
-          background: 'rgba(0,0,0,0.6)', // Darker dim
-          backdropFilter: 'blur(15px)', // Stronger background blur
-          WebkitBackdropFilter: 'blur(15px)',
-          zIndex: 100010,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px',
-          animation: 'modalFadeIn 0.3s ease-out'
-        }}>
-          <style>{`
-            @keyframes modalFadeIn {
-              from { opacity: 0; }
-              to { opacity: 1; }
-            }
-            @keyframes modalScaleUp {
-              from { transform: scale(0.95); opacity: 0; }
-              to { transform: scale(1); opacity: 1; }
-            }
-          `}</style>
-          {/* Close Button Floating */}
-          <button
-            onClick={() => setShowCouponModal(false)}
-            style={{
-              position: 'absolute', top: '24px', right: '24px',
-              width: '60px', height: '60px',
-              background: 'rgba(255,255,255,0.05)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              color: '#fff', borderRadius: '50%',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', fontSize: '28px', fontWeight: 300,
-              transition: 'all 0.2s', zIndex: 100011
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-              e.currentTarget.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
-          >✕</button>
-
-          <CouponPage 
-            defaultName={profile ? `${profile.firstName || ''} ${profile.lastName || ''}`.trim() : ''}
-            defaultEmail={profile ? profile.email : ''}
-            onClose={() => { 
-            setShowCouponModal(false);
-            // Re-fetch the coupon to show it on the dashboard immediately after generation
-            fetch(`${API_BASE_URL}/coupons/my-coupon`, {
-              credentials: 'include'
-            }).then(r => r.json()).then(d => { if (d.coupon) setActiveCoupon(d.coupon); }).catch(console.error);
-          }} />
-        </div>,
-        document.body
-      )}
     </div>
   );
 };

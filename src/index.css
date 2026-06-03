@@ -8,6 +8,25 @@
   --color-accent-red: #CD212A;
   --font-sans: 'Inter', system-ui, sans-serif;
 
+  /* =========================================
+     FLUID TYPOGRAPHY (Overrides Tailwind defaults)
+     Math: clamp(MIN, VAL(vw), MAX)
+     Scales text smoothly from 768px to 1920px
+  ========================================= */
+  --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem);
+  --text-sm: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-base: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  --text-lg: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  --text-xl: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+  --text-2xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  --text-3xl: clamp(1.5rem, 1.25rem + 1.25vw, 1.875rem);
+  --text-4xl: clamp(1.875rem, 1.5rem + 1.875vw, 2.25rem);
+  --text-5xl: clamp(2.25rem, 1.75rem + 2.5vw, 3rem);
+  --text-6xl: clamp(3rem, 2.25rem + 3.75vw, 3.75rem);
+  --text-7xl: clamp(3.75rem, 2.75rem + 5vw, 4.5rem);
+  --text-8xl: clamp(4.5rem, 3.25rem + 6.25vw, 6rem);
+  --text-9xl: clamp(6rem, 4.5rem + 7.5vw, 8rem);
+
   --animate-gradient: gradient-flow 3s ease infinite;
 
   @keyframes gradient-flow {
