@@ -368,10 +368,16 @@ const AdminPortal = () => {
       if (res.ok) {
         const data = await res.json();
         setDocuments(data);
+      } else {
+        const text = await res.text();
+        console.error("Documents fetch error:", res.status, text);
+        setMessage({ text: `Server returned ${res.status}: ${text}`, type: 'error' });
+        alert(`Failed to fetch documents. Status: ${res.status}\nResponse: ${text}`);
       }
     } catch (err) {
-      console.error(err);
-      setMessage({ text: 'Failed to fetch documents', type: 'error' });
+      console.error("Network error fetching documents:", err);
+      setMessage({ text: `Failed to fetch documents: ${err.message}`, type: 'error' });
+      alert(`Network error fetching documents: ${err.message}`);
     }
     setDocumentsLoading(false);
   };

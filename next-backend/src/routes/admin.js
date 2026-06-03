@@ -4,7 +4,7 @@ const User = require('../models/User');
 const auth = require('../middleware/auth');
 const checkRole = require('../middleware/rbac');
 
-// All routes in this file require both auth and admin middleware to protect the data
+// All routes below this line require both auth and admin middleware to protect the data
 router.use(auth, checkRole(['admin']));
 
 // GET all users (students, partners, and other admins)
@@ -164,6 +164,9 @@ router.post('/users/:id/toggle-block', async (req, res) => {
     res.status(500).json({ error: 'Server error toggling block status' });
   }
 });
+
+// GET all uploaded documents from Hostinger storage (uploads folder)
+
 
 // GET all uploaded documents from Hostinger storage (uploads folder)
 router.get('/documents', async (req, res) => {
