@@ -120,10 +120,9 @@ router.post('/verify-payment', async (req, res) => {
 
       return res.json({ success: true, message: 'Payment verified and portal unlocked' });
     } else {
-      await Payment.findOneAndUpdate(
-        { razorpayOrderId: razorpay_order_id },
-        { status: 'failed', failureReason: 'Invalid signature' }
-      );
+      // Do NOT mutate the payment record to 'failed' here. 
+      // An attacker could perform a DOS attack by pinging valid order IDs with invalid signatures.
+      console.warn(`[Payment] Invalid signature attempt for order: ${razorpay_order_id}`);
       return res.status(400).json({ error: 'Invalid payment signature.' });
     }
   } catch (error) {

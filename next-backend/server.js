@@ -155,8 +155,8 @@ app.use(cookieParser());
 // Custom CSRF Protection
 app.use((req, res, next) => {
   const mutatingMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
-  // Exempt public visitor tracking endpoint from CSRF (no user session)
-  if (req.path === '/api/visitors' && req.method === 'POST') return next();
+  // Exempt public visitor tracking and external webhooks from CSRF
+  if ((req.path === '/api/visitors' || req.path === '/api/payment/webhook') && req.method === 'POST') return next();
   if (mutatingMethods.includes(req.method)) {
     if (req.headers['x-csrf-protected'] !== '1') {
       return res.status(403).json({ error: 'CSRF Violation: Protected header missing' });

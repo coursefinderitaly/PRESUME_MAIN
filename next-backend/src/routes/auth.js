@@ -34,11 +34,14 @@ router.post('/signup', async (req, res) => {
     // Scramble the password
     const hashedPassword = await bcrypt.hash(password, 10);
     
+    // Prevent Privilege Escalation (Mass Assignment)
+    const assignedRole = (role && role !== 'admin') ? role : 'student';
+
     // Save to database
     const newUser = new User({ 
       firstName, lastName, country, state, city, phoneCode, phone, whatsappCode, whatsapp, email, 
       password: hashedPassword,
-      role: role || 'student',
+      role: assignedRole,
       companyName, companyAddress, teamSize, priorExperience, designation, studentUniqueId
     });
     await newUser.save();
