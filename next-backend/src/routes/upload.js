@@ -378,7 +378,7 @@ router.post('/email-excel', auth, upload.single('excelFile'), async (req, res) =
 
 // Endpoint to download the generated zip file
 // Endpoint to download the generated zip file
-router.get('/download/:key', auth, async (req, res) => {
+router.get('/download/:key', async (req, res) => {
     try {
         const { key } = req.params;
 
