@@ -790,10 +790,7 @@
 .minimal-printer-machine {
   width: 460px;
   height: 380px;
-  background: rgba(255, 255, 255, 0.12);
-  /* Frosted white glass */
-  backdrop-filter: blur(25px) saturate(120%);
-  -webkit-backdrop-filter: blur(25px) saturate(120%);
+  background: #2A2725; /* Solid dark color, no transparency */
   border: 1px solid rgba(255, 255, 255, 0.25);
   /* High-contrast white border */
   border-radius: 28px;
