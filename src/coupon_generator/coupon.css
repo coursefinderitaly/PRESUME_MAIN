@@ -768,7 +768,6 @@
   z-index: 20;
 }
 
-/* Ticket egress zone — horizontal strip to the RIGHT of the printer */
 .ultra-ticket-egress {
   flex: 1;
   height: 420px;
@@ -776,9 +775,9 @@
   align-items: center;
   justify-content: flex-start;
   position: relative;
-  margin-left: -20px;
-  /* Allow ticket to overlap printer leftward — no left clip */
-  clip-path: inset(-500px -500px -500px -600px);
+  margin-left: -10px;
+  /* Strictly clip the left edge so the ticket is invisible while 'inside' the printer */
+  clip-path: inset(-500px -500px -500px 0px);
   padding-left: 0;
   z-index: 10;
 }

@@ -235,8 +235,8 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
   const TICKET_STAGE1_X = -ticketWidth * 0.7;
   const TICKET_STAGE2_X = -ticketWidth * 0.4;
   const TICKET_STAGE3_X = -ticketWidth * 0.15;
-  const TICKET_FINAL_X = -160; // Negative = ticket slides LEFT over printer body
-  const TICKET_FINAL_Y = -35; // Adjust this to shift the voucher vertically (positive values push down, negative values pull up)
+  const TICKET_FINAL_X = 20; // Positive = ticket rests fully outside, no longer underlapping
+  const TICKET_FINAL_Y = -35; // Adjust this to shift the voucher vertically
 
   const handleCopy = () => {
     navigator.clipboard.writeText(voucherCode);
@@ -457,7 +457,7 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
                 }}
                 whileHover={
                   animationState === 'printed'
-                    ? { scale: TICKET_SCALE_FINAL * 1.04, x: TICKET_FINAL_X - 15, y: TICKET_FINAL_Y, rotate: 1.5, zIndex: 100 }
+                    ? { scale: TICKET_SCALE_FINAL * 1.04, x: TICKET_FINAL_X + 15, y: TICKET_FINAL_Y, rotate: 1.5, zIndex: 100 }
                     : {}
                 }
               >
