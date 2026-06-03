@@ -6,21 +6,21 @@ export default function useWindowScale() {
       const windowWidth = window.innerWidth;
       
       // We only want to scale desktop screens, let mobile handle itself
+      // Safely scale only if window is a desktop size
       if (windowWidth >= 1024) {
-        // The design was likely optimized on a high-res display (e.g. 2560px or larger).
-        // By setting targetWidth to 2560, a 1920x1080 display will correctly zoom out 
-        // to ~0.75 scale, fitting the content perfectly as it looked on the large screen.
-        const targetWidth = 2560; 
+        // We use 1536px (standard large laptop / 1080p with 125% scale) as our baseline 1.0 scale.
+        // This ensures the layout doesn't become tiny on standard screens.
+        const baseWidth = 1536;
         
-        let scale = windowWidth / targetWidth;
+        let scale = windowWidth / baseWidth;
         
-        // Cap the scale between 0.4 and 1.2 to prevent extreme sizes
-        scale = Math.max(0.4, Math.min(scale, 1.2));
+        // Cap the maximum scale so it doesn't get massively upscaled on 4K monitors (max 1.05)
+        // Cap the minimum scale so it doesn't become illegible on small 1024px screens (min 0.75)
+        scale = Math.max(0.75, Math.min(scale, 1.05));
 
-        // Apply scale using CSS zoom (supported in all major browsers including Firefox 126+)
         document.documentElement.style.zoom = scale;
       } else {
-        // Reset for mobile/tablet devices
+        // Reset scale for mobile and tablet to let native responsive CSS handle it
         document.documentElement.style.zoom = 1;
       }
     };
