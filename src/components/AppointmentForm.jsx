@@ -335,7 +335,7 @@ const AppointmentForm = () => {
     };
 
     return (
-        <div className="h-screen bg-[#050810] text-white font-sans flex flex-col relative overflow-hidden">
+        <div className="min-h-[100dvh] bg-[#050810] text-white font-sans flex flex-col relative overflow-hidden">
 
             {/* ── ANIMATED CANVAS BACKGROUND ───────────────────────── */}
             <AnimatedBg />

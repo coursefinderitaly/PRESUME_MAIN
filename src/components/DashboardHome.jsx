@@ -374,7 +374,7 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
           </motion.div>
 
           {/* Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
             {isStudent ? (
               <>
                 <MetricCard icon={BookOpen} label="Saved Courses" value={profile?.savedUniversitiesCart?.length || 0} color={COLORS.blue} onClick={() => setActiveTab('course-finder')} />
@@ -455,14 +455,16 @@ const DashboardHome = ({ isPartner, isCounselor, isFreelancer, profile, setActiv
                   <Target size={18} color="var(--accent-primary)" /> Profile Completion
                 </h2>
 
-                <div style={{
+                <div className="no-scrollbar" style={{
                   background: 'var(--bg-primary)',
                   borderRadius: '16px',
                   padding: '20px',
                   border: '1px solid var(--glass-border)',
                   marginBottom: '16px',
                   position: 'relative',
-                  overflow: 'hidden',
+                  overflowY: 'auto',
+                  flex: 1,
+                  minHeight: 0,
                   boxShadow: 'inset 0 0 20px rgba(0,0,0,0.1)'
                 }}>
                   {/* Subtle background decoration inside card */}

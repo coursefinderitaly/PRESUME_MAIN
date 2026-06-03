@@ -80,7 +80,7 @@ export const Hero = () => {
 
   return (
     <>
-      <section className="relative h-screen min-h-[750px] flex items-center overflow-hidden bg-[#020817]">
+      <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-[#020817]">
 
         {/* 🌌 COOL ANIMATED IMAGE BACKGROUND 🌌 */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">

@@ -1392,7 +1392,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
             <div style={{ animation: 'fadeIn 0.3s ease' }}>
               <DocumentUpload profile={formData} setMessage={setMessage} ref={documentUploadRef} />
               {/* Actions */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px', paddingRight: '80px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px', flexWrap: 'wrap', gap: '15px' }}>
                 <button type="button" onClick={() => setActiveTab('applications')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
                   Previous
                 </button>

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import './Dashboard.css';
 import { useTheme } from './ThemeContext';
+import useAntigravityMonitor from './hooks/useAntigravityMonitor';
 
 import DashboardHome from './components/DashboardHome';
 import PaymentTestingModal from './components/PaymentTestingModal';
@@ -29,9 +30,9 @@ import CouponPage from './coupon_generator/coupon';
 import { API_BASE_URL } from './config';
 
 const AnimatedBackground = ({ activeTheme }) => (
-  <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, overflow: 'hidden', background: 'var(--bg-primary)', transition: 'background 0.5s ease' }}>
+  <div style={{ position: 'fixed', top: 0, left: 0, width: 'var(--true-vw, 100vw)', height: 'var(--true-vh, 100vh)', zIndex: -1, overflow: 'hidden', background: 'var(--bg-primary)', transition: 'background 0.5s ease' }}>
     {/* Subtle Grid Overlay */}
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.04, backgroundImage: 'linear-gradient(var(--text-main) 1px, transparent 1px), linear-gradient(90deg, var(--text-main) 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)', WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)' }} />
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.04, backgroundImage: 'linear-gradient(var(--text-main) 1px, transparent 1px), linear-gradient(90deg, var(--text-main) 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)', WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)' }} />
 
     {/* Glowing Orbs using SVG for better performance and scaling */}
     <svg style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0.3 }} xmlns="http://www.w3.org/2000/svg">
@@ -154,6 +155,7 @@ const DesignerTag = ({ isSidebarOpen }) => {
 
 const Dashboard = () => {
   const [profile, setProfile] = useState(null);
+  const antigravityScale = useAntigravityMonitor();
   const [activeTab, setActiveTab] = useState('home'); // which sidebar section is open
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
@@ -516,7 +518,9 @@ const Dashboard = () => {
       />
       <AnimatedBackground activeTheme={activeTheme} />
       <div className="dash-universe" style={{
-        height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'row',
+        ...antigravityScale,
+        margin: '0 auto',
+        overflow: 'hidden', display: 'flex', flexDirection: 'row',
         background: 'transparent', boxSizing: 'border-box'
       }}>
 
@@ -537,7 +541,7 @@ const Dashboard = () => {
             restDelta: 0.5
           }}
           style={{
-            height: 'calc(100vh - 32px)',
+            height: 'calc(var(--true-vh, 100vh) - 32px)',
             margin: '16px',
             background: 'var(--glass-bg)',
             border: '1px solid var(--glass-border)',

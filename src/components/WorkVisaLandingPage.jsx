@@ -9,7 +9,7 @@ const countries = [
   {
     id: 'czech-republic',
     name: 'Czech Republic',
-    flag: '🇨🇿',
+    flagUrl: 'https://flagcdn.com/w80/cz.png',
     tagline: 'Strong industrial & tech base',
     highlight: '€1,000 – €2,000+/month',
     color: 'from-red-600/20 to-blue-800/10',
@@ -24,7 +24,7 @@ const countries = [
   {
     id: 'germany',
     name: 'Germany',
-    flag: '🇩🇪',
+    flagUrl: 'https://flagcdn.com/w80/de.png',
     tagline: 'Skilled worker migration',
     highlight: '€1,500 – €3,500+/month',
     color: 'from-yellow-500/20 to-red-700/20',
@@ -39,7 +39,7 @@ const countries = [
   {
     id: 'poland',
     name: 'Poland',
-    flag: '🇵🇱',
+    flagUrl: 'https://flagcdn.com/w80/pl.png',
     tagline: 'Gateway to Central Europe',
     highlight: '€800 – €1,600+/month',
     color: 'from-red-600/20 to-rose-800/10',
@@ -54,7 +54,7 @@ const countries = [
   {
     id: 'portugal',
     name: 'Portugal',
-    flag: '🇵🇹',
+    flagUrl: 'https://flagcdn.com/w80/pt.png',
     tagline: 'Western European opportunities',
     highlight: '€900 – €1,800+/month',
     color: 'from-emerald-600/20 to-teal-800/10',
@@ -69,7 +69,7 @@ const countries = [
   {
     id: 'moldova',
     name: 'Moldova (Transit visa)',
-    flag: '🇲🇩',
+    flagUrl: 'https://flagcdn.com/w80/md.png',
     tagline: 'Schengen transit solutions',
     highlight: 'Fast transit processing',
     color: 'from-blue-600/20 to-indigo-800/10',
@@ -84,7 +84,7 @@ const countries = [
   {
     id: 'serbia',
     name: 'Serbia',
-    flag: '🇷🇸',
+    flagUrl: 'https://flagcdn.com/w80/rs.png',
     tagline: 'Emerging tech & business hub',
     highlight: '€600 – €1,200+/month',
     color: 'from-indigo-600/20 to-purple-800/10',
@@ -243,9 +243,9 @@ export default function WorkVisaLandingPage() {
               transition={{ delay: i * 0.1, duration: 0.6 }}
               className="group relative"
             >
-              <Link to={country.path}>
+              <Link to={country.path} className="block h-full">
                 <div
-                  className={`relative overflow-hidden rounded-3xl border ${country.border} bg-gradient-to-br ${country.color} backdrop-blur-md p-7 cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl ${country.glow} hover:shadow-current`}
+                  className={`relative h-full overflow-hidden flex flex-col rounded-3xl border ${country.border} bg-gradient-to-br ${country.color} backdrop-blur-md p-7 cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl ${country.glow} hover:shadow-current`}
                   style={{ background: `linear-gradient(135deg, ${country.accent}15, rgba(255,255,255,0.02))` }}
                 >
                   {/* Badge */}
@@ -255,7 +255,7 @@ export default function WorkVisaLandingPage() {
 
                   {/* Flag + Country */}
                   <div className="flex items-start gap-4 mb-6">
-                    <div className="text-5xl leading-none drop-shadow-md">{country.flag}</div>
+                    <img src={country.flagUrl} alt={`${country.name} flag`} className="w-12 h-auto drop-shadow-md rounded-sm" />
                     <div>
                       <h3 className="text-2xl font-black text-white">{country.name}</h3>
                       <p className="text-gray-400 text-sm mt-1 font-medium">{country.tagline}</p>
@@ -263,7 +263,7 @@ export default function WorkVisaLandingPage() {
                   </div>
 
                   {/* Salary */}
-                  <div className="mb-5">
+                  <div className="mb-5 flex-1">
                     <p className="text-gray-500 text-xs uppercase tracking-widest font-bold mb-1">Salary Range</p>
                     <p className="text-white font-black text-xl" style={{ color: country.accent }}>{country.highlight}</p>
                   </div>

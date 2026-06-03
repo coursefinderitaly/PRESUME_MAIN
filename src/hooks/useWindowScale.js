@@ -3,21 +3,20 @@ import { useEffect } from 'react';
 export default function useWindowScale(isPortal = false) {
   useEffect(() => {
     const handleResize = () => {
-      // If we are in the operational portal, disable zooming.
+      const windowWidth = window.innerWidth;
+      
       if (isPortal) {
         document.documentElement.style.zoom = 1;
+        document.documentElement.style.setProperty('--scale-factor', 1);
+        document.documentElement.style.setProperty('--true-vw', `100vw`);
+        document.documentElement.style.setProperty('--true-vh', `100vh`);
         return;
       }
 
-      const windowWidth = window.innerWidth;
-      
-      // We only want to scale desktop screens, let mobile handle itself
-      // Safely scale only if window is a desktop size
+      // External Pages Scaling Logic:
       if (windowWidth >= 1024) {
         // We use 1536px (standard large laptop / 1080p with 125% scale) as our baseline 1.0 scale.
-        // This ensures the layout doesn't become tiny on standard screens.
         const baseWidth = 1536;
-        
         let scale = windowWidth / baseWidth;
         
         // Cap the maximum scale so it doesn't get massively upscaled on 4K monitors (max 1.05)
@@ -25,9 +24,15 @@ export default function useWindowScale(isPortal = false) {
         scale = Math.max(0.75, Math.min(scale, 1.05));
 
         document.documentElement.style.zoom = scale;
+        document.documentElement.style.setProperty('--scale-factor', scale);
+        document.documentElement.style.setProperty('--true-vw', `${window.innerWidth / scale}px`);
+        document.documentElement.style.setProperty('--true-vh', `${window.innerHeight / scale}px`);
       } else {
         // Reset scale for mobile and tablet to let native responsive CSS handle it
         document.documentElement.style.zoom = 1;
+        document.documentElement.style.setProperty('--scale-factor', 1);
+        document.documentElement.style.setProperty('--true-vw', `${window.innerWidth}px`);
+        document.documentElement.style.setProperty('--true-vh', `${window.innerHeight}px`);
       }
     };
 
