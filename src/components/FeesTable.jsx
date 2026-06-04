@@ -249,10 +249,10 @@ const FeesTable = ({
                 "Courier charges",
                 "Pre-enrollment filing",
                 "DOV process assistance",
-                "Financial Guidance",
+                "Scholarship Documents Process",
                 "Scholarship application & submission",
                 "Visa application assistance",
-                "Visa/Scholarship Documents Assistance",
+                "Visa Documents Assistance",
                 "Accommodation proof assistance",
                 "Mock interview prep"
             ]
@@ -270,7 +270,7 @@ const FeesTable = ({
                     "Courier charges",
                     "Pre-enrollment filing",
                     "DOV process assistance",
-                    "Financial Guidance"
+                    "Scholarship Documents Process"
                 ]
             },
             ...(currentPhases[3] > 0 ? [{
@@ -283,7 +283,7 @@ const FeesTable = ({
                 items: [
                     "Scholarship application & submission",
                     "Visa application assistance",
-                    "Visa/Scholarship Documents Assistance",
+                    "Visa Documents Assistance",
                     "Accommodation proof assistance",
                     "Mock interview prep"
                 ]
@@ -866,18 +866,18 @@ const FeesTable = ({
             {/* Coupon Generator Modal */}
             {showCouponModal && createPortal(
                 <div style={{
-                position: 'fixed', inset: 0,
-                background: 'rgba(0,0,0,0.6)', // Darker dim
-                backdropFilter: 'blur(15px)', // Stronger background blur
-                WebkitBackdropFilter: 'blur(15px)',
-                zIndex: 100010,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '20px',
-                animation: 'modalFadeIn 0.3s ease-out'
+                    position: 'fixed', inset: 0,
+                    background: 'rgba(0,0,0,0.6)', // Darker dim
+                    backdropFilter: 'blur(15px)', // Stronger background blur
+                    WebkitBackdropFilter: 'blur(15px)',
+                    zIndex: 100010,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '20px',
+                    animation: 'modalFadeIn 0.3s ease-out'
                 }}>
-                <style>{`
+                    <style>{`
                     @keyframes modalFadeIn {
                     from { opacity: 0; }
                     to { opacity: 1; }
@@ -887,31 +887,31 @@ const FeesTable = ({
                     to { transform: scale(1); opacity: 1; }
                     }
                 `}</style>
-                {/* Close Button Floating */}
-                <button
-                onClick={() => setShowCouponModal(false)}
-                style={{
-                    position: 'absolute', top: '24px', right: '24px',
-                    width: '60px', height: '60px',
-                    background: 'rgba(255,255,255,0.05)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: '#fff', borderRadius: '50%',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', fontSize: '28px', fontWeight: 300,
-                    transition: 'all 0.2s', zIndex: 100011
-                }}
-                onMouseEnter={e => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={e => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                    e.currentTarget.style.transform = 'scale(1)';
-                }}
-                >✕</button>
+                    {/* Close Button Floating */}
+                    <button
+                        onClick={() => setShowCouponModal(false)}
+                        style={{
+                            position: 'absolute', top: '24px', right: '24px',
+                            width: '60px', height: '60px',
+                            background: 'rgba(255,255,255,0.05)',
+                            backdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            color: '#fff', borderRadius: '50%',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', fontSize: '28px', fontWeight: 300,
+                            transition: 'all 0.2s', zIndex: 100011
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >✕</button>
 
-                <CouponPage onClose={() => setShowCouponModal(false)} defaultEmail={userEmail || ''} />
+                    <CouponPage onClose={() => setShowCouponModal(false)} defaultEmail={userEmail || ''} />
                 </div>,
                 document.body
             )}
