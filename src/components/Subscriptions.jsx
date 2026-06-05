@@ -793,7 +793,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                 zIndex: 1,
                 width: '100%',
                 maxWidth: '1300px',
-                height: '92vh',
+                height: '96vh',
                 background: 'var(--glass-bg)',
                 backdropFilter: 'blur(30px)',
                 WebkitBackdropFilter: 'blur(30px)',

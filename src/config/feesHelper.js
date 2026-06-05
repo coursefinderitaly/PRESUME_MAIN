@@ -16,20 +16,21 @@ export const getPhases = (countryId, uniType, level, couponCode) => {
     
     let phases = typeObj.base[baseLevel];
     
+    // Treat dynamically generated PRESUME- coupons exactly like PRESUME50
+    let effectiveCouponCode = couponCode;
+    if (couponCode && couponCode.startsWith('PRESUME-')) {
+        effectiveCouponCode = 'PRESUME50';
+    }
+    
     // 4. Apply explicit coupon structure if defined in JSON
-    if (couponCode && typeObj.coupons && typeObj.coupons[couponCode] && typeObj.coupons[couponCode][baseLevel]) {
-        phases = typeObj.coupons[couponCode][baseLevel];
+    if (effectiveCouponCode && typeObj.coupons && typeObj.coupons[effectiveCouponCode] && typeObj.coupons[effectiveCouponCode][baseLevel]) {
+        phases = typeObj.coupons[effectiveCouponCode][baseLevel];
     } 
     // 5. Fallback percentage application for arbitrary coupons
-    else if (couponCode && COUPONS[couponCode]) {
-        const discountPct = COUPONS[couponCode];
+    else if (effectiveCouponCode && COUPONS[effectiveCouponCode]) {
+        const discountPct = COUPONS[effectiveCouponCode];
         phases = [...phases];
         phases[0] = Math.round(phases[0] * (1 - discountPct / 100));
-    }
-    // 6. Dynamic database coupons support
-    else if (couponCode && couponCode.startsWith('PRESUME-')) {
-        phases = [...phases];
-        phases[0] = Math.round(phases[0] * 0.5); // 50% discount
     }
     
     return phases;

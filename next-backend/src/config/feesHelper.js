@@ -12,10 +12,15 @@ const getPhases = (countryId, uniType, level, couponCode) => {
     
     let phases = typeObj.base[baseLevel];
     
-    if (couponCode && typeObj.coupons && typeObj.coupons[couponCode] && typeObj.coupons[couponCode][baseLevel]) {
-        phases = typeObj.coupons[couponCode][baseLevel];
-    } else if (couponCode && COUPONS[couponCode]) {
-        const discountPct = COUPONS[couponCode];
+    let effectiveCouponCode = couponCode;
+    if (couponCode && couponCode.startsWith('PRESUME-')) {
+        effectiveCouponCode = 'PRESUME50';
+    }
+    
+    if (effectiveCouponCode && typeObj.coupons && typeObj.coupons[effectiveCouponCode] && typeObj.coupons[effectiveCouponCode][baseLevel]) {
+        phases = typeObj.coupons[effectiveCouponCode][baseLevel];
+    } else if (effectiveCouponCode && COUPONS[effectiveCouponCode]) {
+        const discountPct = COUPONS[effectiveCouponCode];
         phases = [...phases];
         phases[0] = Math.round(phases[0] * (1 - discountPct / 100));
     }

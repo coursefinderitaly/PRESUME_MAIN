@@ -308,9 +308,9 @@ const FeesTable = ({
         return (
             <div style={{ width: '100%', height: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', fontFamily: 'inherit', position: 'relative' }}>
 
-                {/* 2x2 Grid Layout Container - Fit on screen completely */}
-                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', height: '100%' }}>
+                {/* Grid Layout Container - Fit on screen completely */}
+                <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }} className="scrollbar-hide">
+                    <div style={{ display: 'grid', gridTemplateColumns: feeStructure.length === 3 ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)', gap: '12px', minHeight: 'min-content', paddingBottom: '4px', margin: 'auto 0' }}>
                         {feeStructure.map((item, idx) => {
                             const { originalPrice, discountedPrice } = getPhasePricingDetails(item.phaseIndex);
                             const displayPrice = !shouldHidePrice && discountedPrice > 0;
@@ -399,9 +399,16 @@ const FeesTable = ({
                                                 }}>₹{Math.round(discountedPrice).toLocaleString('en-IN')}</p>
                                                 <p style={{
                                                     margin: 0,
+                                                    fontSize: '10px',
+                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.5)' : 'rgba(255, 255, 255, 0.4)',
+                                                    fontWeight: 700,
+                                                    textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none'
+                                                }}>+ 18% GST (₹{Math.round(discountedPrice * 0.18).toLocaleString('en-IN')})</p>
+                                                <p style={{
+                                                    margin: 0,
                                                     fontSize: '11px',
-                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'rgba(255, 255, 255, 0.6)',
-                                                    fontWeight: 800,
+                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'rgba(255, 255, 255, 0.8)',
+                                                    fontWeight: 900,
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
                                                     opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
                                                 }}>Total: ₹{Math.round(discountedPrice * 1.18).toLocaleString('en-IN')}</p>
@@ -449,6 +456,27 @@ const FeesTable = ({
                     gap: '10px',
                     flexShrink: 0
                 }}>
+                    {applied && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                background: 'rgba(16, 185, 129, 0.15)',
+                                border: '1px solid rgba(16, 185, 129, 0.3)',
+                                padding: '6px 14px',
+                                borderRadius: '20px',
+                                marginBottom: '2px'
+                            }}
+                        >
+                            <Ticket size={14} color="#10b981" />
+                            <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                                Voucher '{coupon}' Applied
+                            </span>
+                        </motion.div>
+                    )}
                     {!isPhase1Paid && (
                         <motion.div
                             animate={{ scale: [1, 1.03, 1] }}

@@ -12,15 +12,13 @@ const { getPhases } = require('../config/feesHelper');
 
 // Dummy item database - replace with real DB queries later
 const itemDatabase = {
-  'test_item_1': { name: 'Premium Access Unlock', price_inr: 1 },
-  'premium_access': { name: 'Premium Access', price_inr: 999 },
   'application_fee': { name: 'Application Processing Fee', price_inr: 29900 },
   'mbbs_fee': { name: 'MBBS Phase 1 Fee', price_inr: 50000 },
   'bachelors_masters_fee': { name: 'Bachelors/Masters Phase 1 Fee', price_inr: 35000 },
 };
 
 const calculateDynamicFee = (countryId, uniType, selectedLevel, applied, couponCode) => {
-    const activeCouponName = couponCode ? couponCode.toUpperCase() : '';
+    const activeCouponName = (applied && couponCode) ? couponCode.toUpperCase() : '';
     const currentPhases = getPhases(countryId, uniType || 'Public', selectedLevel, activeCouponName);
     const phase1Fee = currentPhases[0];
 
@@ -109,16 +107,19 @@ router.post('/verify-payment', async (req, res) => {
         { new: true }
       );
 
-      // Auto-unlock the user's portal
+      // Auto-unlock the user's portal ONLY for valid initial subscriptions
       if (payment && payment.userEmail) {
-        await User.findOneAndUpdate(
-          { email: payment.userEmail },
-          { portalUnlocked: true }
-        );
-        console.log(`[Payment] Portal unlocked for: ${payment.userEmail}`);
+        const validUnlockItems = ['dynamic_fee', 'application_fee', 'mbbs_fee', 'bachelors_masters_fee'];
+        if (validUnlockItems.includes(payment.itemId)) {
+          await User.findOneAndUpdate(
+            { email: payment.userEmail },
+            { portalUnlocked: true }
+          );
+          console.log(`[Payment] Portal unlocked for: ${payment.userEmail}`);
+        }
       }
 
-      return res.json({ success: true, message: 'Payment verified and portal unlocked' });
+      return res.json({ success: true, message: 'Payment verified successfully' });
     } else {
       // Do NOT mutate the payment record to 'failed' here. 
       // An attacker could perform a DOS attack by pinging valid order IDs with invalid signatures.
@@ -241,9 +242,12 @@ router.post('/webhook', async (req, res) => {
         updateData,
         { new: true }
       );
-      // Also unlock portal via webhook (backup for missed frontend verifications)
+      // Also unlock portal via webhook ONLY for valid initial subscriptions (backup for missed frontend verifications)
       if (payment && payment.userEmail) {
-        await User.findOneAndUpdate({ email: payment.userEmail }, { portalUnlocked: true });
+        const validUnlockItems = ['dynamic_fee', 'application_fee', 'mbbs_fee', 'bachelors_masters_fee'];
+        if (validUnlockItems.includes(payment.itemId)) {
+          await User.findOneAndUpdate({ email: payment.userEmail }, { portalUnlocked: true });
+        }
       }
     } else if (event === 'payment.failed') {
       const orderId = payload.payment.entity.order_id;
