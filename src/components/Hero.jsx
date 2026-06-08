@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, GraduationCap, CheckCircle2, Star, Zap, Globe, MapPin, School } from 'lucide-react';
+import { ArrowRight, GraduationCap, CheckCircle2, Star, Zap, Globe, MapPin, School, Sparkles } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthModal from './AuthModal';
+import CouponPage from '../coupon_generator/coupon';
 
 // Import images from local src/uni folder
 import bologna from '../uni/bologna.jpg';
@@ -58,6 +59,7 @@ export const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState({});
   const [modalOpen, setModalOpen] = useState(null);
+  const [isCouponOpen, setIsCouponOpen] = useState(false);
   const navigate = useNavigate();
 
 
@@ -191,6 +193,29 @@ export const Hero = () => {
                 >
                   Book Your University <ArrowRight size={20} />
                 </motion.button>
+                <motion.button 
+                  animate={{ 
+                    y: [0, -5, 0],
+                    boxShadow: ["0px 0px 0px rgba(197,168,128,0)", "0px 10px 30px rgba(197,168,128,0.3)", "0px 0px 0px rgba(197,168,128,0)"]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0px 15px 40px rgba(197,168,128,0.5)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsCouponOpen(true)}
+                  className="relative group overflow-hidden w-full sm:w-auto px-10 py-4 bg-transparent border border-accent-gold/50 text-accent-gold rounded-2xl font-black flex items-center justify-center gap-2 transition-all"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent-gold/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+                  <motion.div
+                    animate={{ rotate: [0, 15, -15, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Sparkles size={20} className="group-hover:text-yellow-300 transition-colors duration-300" />
+                  </motion.div>
+                  <span className="relative z-10 tracking-widest uppercase text-sm group-hover:text-white transition-colors duration-300">Get Voucher</span>
+                </motion.button>
               </div>
             </motion.div>
 
@@ -273,6 +298,11 @@ export const Hero = () => {
       <AnimatePresence>
         {modalOpen && (
           <AuthModal type={modalOpen} onClose={() => setModalOpen(null)} />
+        )}
+        {isCouponOpen && (
+          <CouponPage 
+            onClose={() => setIsCouponOpen(false)} 
+          />
         )}
       </AnimatePresence>
     </>
