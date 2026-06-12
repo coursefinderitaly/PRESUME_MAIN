@@ -67,16 +67,35 @@ const countriesComparisonData = [
   },
   {
     id: 'germany',
-    name: 'Germany',
+    uniType: 'Public',
+    name: 'Germany (Public)',
     flag: '🇩🇪',
     subtitle: 'Zero Tuition & Tech Hub',
-    univTuition: 'Public: €0 | Private: €10k - €20k / yr',
+    univTuition: '€0 / yr',
     workRights: '18 Months Stay-back',
     benefits: [
       'Zero Tuition at Public Universities',
       '18-Month Job Seeker Visa',
       'Direct Pathways to Global Giants',
       'World-Leading Research Institutes',
+      'Fully English-Taught Degrees'
+    ],
+    themeColor: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.15)'
+  },
+  {
+    id: 'germany',
+    uniType: 'Private',
+    name: 'Germany (Private)',
+    flag: '🇩🇪',
+    subtitle: 'Flexible Admissions & Co-ops',
+    univTuition: '€10k - €20k / yr',
+    workRights: '18 Months Stay-back',
+    benefits: [
+      'Flexible Admissions (Lower GPA)',
+      '18-Month Job Seeker Visa',
+      'Strong Industry Connections',
+      'Fast-track Degree Options',
       'Fully English-Taught Degrees'
     ],
     themeColor: '#f59e0b',
@@ -396,6 +415,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
   };
 
   const [selectedCountry, setSelectedCountry] = useState(profile?.country?.toLowerCase() || 'italy');
+  const [selectedUniType, setSelectedUniType] = useState('Public');
 
   useEffect(() => {
     if (profile?.country) {
@@ -407,10 +427,10 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
   const isPaid = profile?.portalUnlocked;
 
   // 1. Calculate prices using the universal getPhases helper
-  const basePhases = getPhases(countryId, 'Public', selectedProgram, '');
+  const basePhases = getPhases(countryId, selectedUniType, selectedProgram, '');
   const basePrice = basePhases[0];
 
-  const currentPhases = getPhases(countryId, 'Public', selectedProgram, activeCoupon);
+  const currentPhases = getPhases(countryId, selectedUniType, selectedProgram, activeCoupon);
   const discountedPrice = currentPhases[0];
 
   // Calculate tax (18% GST for academic processing)
@@ -418,9 +438,9 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
   const taxAmount = Math.round(discountedPrice * taxRate);
   const totalSecureCheckoutAmount = discountedPrice + taxAmount;
 
-  const getProcessingFeeDetails = (cId) => {
-    const basePhases = getPhases(cId, 'Public', selectedProgram, '');
-    const discPhases = getPhases(cId, 'Public', selectedProgram, activeCoupon);
+  const getProcessingFeeDetails = (cId, uType) => {
+    const basePhases = getPhases(cId, uType || 'Public', selectedProgram, '');
+    const discPhases = getPhases(cId, uType || 'Public', selectedProgram, activeCoupon);
     const baseP = basePhases.reduce((acc, curr) => acc + curr, 0);
     const discP = discPhases.reduce((acc, curr) => acc + curr, 0);
     const rate = getTaxRate(cId);
@@ -615,16 +635,17 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
             padding: '8px 4px 48px 4px',
           }}>
             {countriesComparisonData.map((c) => {
-              const fee = getProcessingFeeDetails(c.id);
-              const isSelected = selectedCountry === c.id;
+              const uType = c.uniType || 'Public';
+              const fee = getProcessingFeeDetails(c.id, uType);
+              const isSelected = selectedCountry === c.id && selectedUniType === uType;
 
               return (
                 <motion.div
-                  key={c.id}
+                  key={`${c.id}-${uType}`}
                   whileHover={{ y: -5 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   style={{
-                    gridColumn: c.id === 'germany' ? 'span 2' : 'span 1',
+                    gridColumn: 'span 1',
                     background: isSelected ? 'rgba(251, 191, 36, 0.06)' : 'rgba(255, 255, 255, 0.01)',
                     border: isSelected ? `2px solid ${c.themeColor}` : '1px solid rgba(150, 150, 150, 0.3)',
                     boxShadow: isSelected ? `0 12px 35px ${c.glowColor}` : 'none',
@@ -679,38 +700,20 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                   </div>
 
                   {/* Micro Info Badges */}
-                  {c.id === 'germany' ? (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                      {countryData.germany.tuitionCards.map((tc, idx) => (
-                        <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 12px', borderRadius: '12px', border: idx === 0 ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)', background: idx === 0 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(245, 158, 11, 0.05)' }}>
-                          <div style={{ fontSize: '0.85rem', color: idx === 0 ? '#10b981' : '#f59e0b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>{tc.university}</div>
-                          {tc.rows.slice(0, 2).map((row, rIdx) => (
-                            <div key={rIdx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                {rIdx === 0 ? <Landmark size={10} /> : <Briefcase size={10} />} {row.year}
-                              </span>
-                              <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{row.total || row.tuition}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '8px 10px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.03)', background: 'rgba(255, 255, 255, 0.01)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Landmark size={10} /> Tuition
+                      </span>
+                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.univTuition}</span>
                     </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '8px 10px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.03)', background: 'rgba(255, 255, 255, 0.01)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Landmark size={10} /> Tuition
-                        </span>
-                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.univTuition}</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Briefcase size={10} /> Visa
-                        </span>
-                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.workRights}</span>
-                      </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Briefcase size={10} /> Visa
+                      </span>
+                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.workRights}</span>
                     </div>
-                  )}
+                  </div>
 
                   {/* Benefits Bullet Points */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -718,12 +721,11 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                       Key Advantages
                     </span>
                     <div style={{ 
-                      display: c.id === 'germany' ? 'grid' : 'flex', 
-                      gridTemplateColumns: c.id === 'germany' ? '1fr 1fr' : 'none', 
-                      flexDirection: c.id === 'germany' ? 'row' : 'column', 
-                      gap: c.id === 'germany' ? '8px 16px' : '4px' 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      gap: '4px' 
                     }}>
-                      {c.benefits.slice(0, c.id === 'germany' ? 4 : 3).map((b, i) => (
+                      {c.benefits.slice(0, 3).map((b, i) => (
                         <div key={i} style={{ display: 'flex', gap: '6px', alignItems: 'start' }}>
                           <Check size={12} color={c.themeColor} className="country-theme-stroke" style={{ marginTop: '2.5px', flexShrink: 0, strokeWidth: 3 }} />
                           <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>{b}</span>
@@ -772,7 +774,9 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                   <button
                     onClick={async () => {
                       setSelectedCountry(c.id);
+                      setSelectedUniType(c.uniType || 'Public');
                       setPopupCountryId(c.id);
+                      setPopupUniType(c.uniType || 'Public');
                       setPopupSelectedLevel(null);
                       setShowConfetti(true);
                       setTimeout(() => setShowConfetti(false), 2000);
