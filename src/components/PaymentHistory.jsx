@@ -146,6 +146,13 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
     return profile?.country?.toLowerCase() || 'italy';
   }, [profile?.country, lockedPayment]);
 
+  const uniType = useMemo(() => {
+    if (lockedPayment && lockedPayment.pricingParams?.uniType) {
+       return lockedPayment.pricingParams.uniType;
+    }
+    return 'Public';
+  }, [lockedPayment]);
+
   useEffect(() => {
     fetchHistory();
   }, [userEmail]);
@@ -411,7 +418,9 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
           pricingParams: {
             amount: phaseObj.totalAmount,
             phaseNumber: phaseObj.phaseNumber,
-            countryName: countryKey
+            countryName: countryKey,
+            selectedLevel: activeLevel,
+            uniType: uniType
           }
         })
       });
@@ -556,7 +565,9 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
       });
 
       // Calculate phases amounts
-      const phases = getPhases(cKey, 'Public', activeLevel, '');
+      const phaseUniType = cKey === countryId ? uniType : 'Public';
+      const phaseActiveLevel = cKey === countryId ? activeLevel : 'Bachelors';
+      const phases = getPhases(cKey, phaseUniType, phaseActiveLevel, '');
       const taxRate = cKey === 'italy' ? 0.18 : 0;
 
       const countryPhaseDetails = phases.map((basePrice, idx) => {
