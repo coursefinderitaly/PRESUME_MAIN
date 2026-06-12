@@ -607,17 +607,12 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
         </div>
 
         {/* Comparison Grid — flex layout to take remaining height */}
-        <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
+        <div style={{ position: 'relative', flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', scrollbarWidth: 'thin', scrollbarColor: 'var(--accent-primary) transparent', paddingRight: '4px' }}>
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '16px',
-            height: '100%',
-            overflowY: 'auto',
-            overflowX: 'visible',
             padding: '8px 4px 48px 4px',
-            scrollbarWidth: 'thin',
-            scrollbarColor: 'var(--accent-primary) transparent',
           }}>
             {countriesComparisonData.map((c) => {
               const fee = getProcessingFeeDetails(c.id);
@@ -718,7 +713,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                   )}
 
                   {/* Benefits Bullet Points */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
                       Key Advantages
                     </span>
