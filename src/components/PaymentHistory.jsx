@@ -134,53 +134,29 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
     return capturedPayments.find(p => getPhaseNumberFromPayment(p) === 1);
   }, [capturedPayments]);
 
+  const countryId = profile?.country?.toLowerCase() || 'italy';
   const activeLevel = useMemo(() => {
-    const params = parsePricingParams(lockedPayment);
-    if (params.selectedLevel) return params.selectedLevel;
-    
-    // Check item name fallback
-    const itemName = (lockedPayment?.itemName || '').toLowerCase();
-    if (itemName.includes('master')) return 'Masters';
-    if (itemName.includes('mbbs')) return 'MBBS';
-    if (itemName.includes('bachelor')) return 'Bachelors';
-
     const currentEdu = profile?.highestLevelOfEducation;
-    if (['Bachelors', 'Masters', 'MBBS'].includes(currentEdu)) {
-      return currentEdu;
-    }
-    if (currentEdu === '12th or equivalent') {
-      return 'Bachelors';
-    }
+    if (['Bachelors', 'Masters', 'MBBS'].includes(currentEdu)) return currentEdu;
+    if (currentEdu === '12th or equivalent') return 'Bachelors';
     return 'Bachelors'; // Default fallback
-  }, [profile?.highestLevelOfEducation, lockedPayment]);
+  }, [profile?.highestLevelOfEducation]);
+  const uniType = 'Public';
 
-  const countryId = useMemo(() => {
-    const params = parsePricingParams(lockedPayment);
+  const getPaymentCountry = (p) => {
+    const params = parsePricingParams(p);
     if (params.countryId) return params.countryId.toLowerCase();
     if (params.countryName) return params.countryName.toLowerCase();
     
-    // Check item name fallback
-    const itemName = (lockedPayment?.itemName || '').toLowerCase();
-    if (itemName.includes('italy')) return 'italy';
-    if (itemName.includes('germany')) return 'germany';
-    if (itemName.includes('france')) return 'france';
-
-    // IMPORTANT FALLBACK FIX: If locked payment exists but no country info, 
-    // we MUST NOT fall back to profile.country if we want to avoid it jumping.
-    // However, if we don't know the country, we have to default somewhere.
-    return profile?.country?.toLowerCase() || 'italy';
-  }, [profile?.country, lockedPayment]);
-
-  const uniType = useMemo(() => {
-    const params = parsePricingParams(lockedPayment);
-    if (params.uniType) return params.uniType;
+    const name = (p.itemName || '').toLowerCase();
+    if (name.includes('italy')) return 'italy';
+    if (name.includes('germany')) return 'germany';
     
-    // Check item name fallback
-    const itemName = (lockedPayment?.itemName || '').toLowerCase();
-    if (itemName.includes('private')) return 'Private';
+    // For test payments (dynamic_fee) with no metadata, lock to italy to prevent jumping
+    return 'italy';
+  };
 
-    return 'Public';
-  }, [lockedPayment]);
+
 
   useEffect(() => {
     fetchHistory();
@@ -508,8 +484,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
 
       const rzp = new window.Razorpay(options);
       rzp.open();
-
-    } catch (err) {
+} catch (err) {
       setError(err.message || 'Payment setup failed.');
       setPayingIndex(null);
     }
@@ -519,59 +494,57 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
   const activePackages = [];
   const availableCountries = ['italy', 'germany', 'other'];
 
+  const paymentsByCountry = { italy: [], germany: [], other: [] };
+  capturedPayments.forEach(p => {
+    const pCountry = getPaymentCountry(p);
+    if (paymentsByCountry[pCountry]) {
+      paymentsByCountry[pCountry].push(p);
+    } else {
+      paymentsByCountry.other.push(p);
+    }
+  });
+
+  const hasAnyPayments = capturedPayments.length > 0;
+
   availableCountries.forEach(cKey => {
-    // Check if user is enrolled in this country or has made payments for it
-    const isPrimary = countryId === cKey;
-    const hasPayments = capturedPayments.some(p => {
-      const name = (p.itemName || '').toUpperCase();
-      const itemId = p.itemId;
-      if (cKey === 'italy') {
-        return name.includes('ITALY') ||
-          (itemId === 'dynamic_fee' && countryId === 'italy') ||
-          ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'italy');
-      }
-      if (cKey === 'germany') {
-        return name.includes('GERMANY') ||
-          (itemId === 'dynamic_fee' && countryId === 'germany') ||
-          ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'germany');
-      }
-      return name.includes('OTHER') ||
-        name.includes('CUSTOM') ||
-        (itemId === 'dynamic_fee' && countryId === 'other') ||
-        ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'other');
-    });
+    const countryPayments = paymentsByCountry[cKey];
+    const hasPayments = countryPayments.length > 0;
+    
+    // Show a package if it has payments. 
+    // If user has NO payments at all, show their active profile country as an empty tracker.
+    const showPackage = hasPayments || (!hasAnyPayments && countryId === cKey);
 
-    if (isPrimary || hasPayments) {
-      // Find phase payments for this country
-      const countryPhasePayments = capturedPayments.filter(p => {
-        const name = (p.itemName || '').toUpperCase();
-        const itemId = p.itemId;
-
-        let isForCountry = false;
-        if (cKey === 'italy') {
-          isForCountry = name.includes('ITALY') ||
-            (itemId === 'dynamic_fee' && countryId === 'italy') ||
-            ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'italy');
-        } else if (cKey === 'germany') {
-          isForCountry = name.includes('GERMANY') ||
-            (itemId === 'dynamic_fee' && countryId === 'germany') ||
-            ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'germany');
-        } else {
-          isForCountry = name.includes('OTHER') ||
-            name.includes('CUSTOM') ||
-            name.includes('STUDY ABROAD') ||
-            (itemId === 'dynamic_fee' && countryId === 'other') ||
-            ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'other');
+    if (showPackage) {
+      // Find the Phase 1 payment for THIS specific country package to lock its specific level/type
+      const firstPhasePayment = countryPayments.find(p => getPhaseNumberFromPayment(p) === 1);
+      
+      const pLevel = (() => {
+        if (firstPhasePayment) {
+          const params = parsePricingParams(firstPhasePayment);
+          if (params.selectedLevel) return params.selectedLevel;
+          const name = (firstPhasePayment.itemName || '').toLowerCase();
+          if (name.includes('master')) return 'Masters';
+          if (name.includes('mbbs')) return 'MBBS';
+          if (name.includes('bachelor')) return 'Bachelors';
         }
+        return activeLevel;
+      })();
 
-        if (!isForCountry) return false;
-        return name.includes('PHASE') ||
-          name.includes('APPLICATION') ||
-          itemId === 'dynamic_fee' ||
-          itemId === 'phase_payment' ||
-          itemId === 'application_fee' ||
-          itemId === 'bachelors_masters_fee' ||
-          itemId === 'mbbs_fee';
+      const pUniType = (() => {
+        if (firstPhasePayment) {
+          const params = parsePricingParams(firstPhasePayment);
+          if (params.uniType) return params.uniType;
+          const name = (firstPhasePayment.itemName || '').toLowerCase();
+          if (name.includes('private')) return 'Private';
+        }
+        return uniType;
+      })();
+
+      // Phase payments for this specific package
+      const countryPhasePayments = countryPayments.filter(p => {
+        const num = getPhaseNumberFromPayment(p);
+        const itemId = p.itemId;
+        return num !== null || itemId === 'dynamic_fee' || itemId === 'phase_payment';
       });
 
       const paidPhases = new Set();
@@ -593,10 +566,8 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
         }
       });
 
-      // Calculate phases amounts
-      const phaseUniType = cKey === countryId ? uniType : 'Public';
-      const phaseActiveLevel = cKey === countryId ? activeLevel : 'Bachelors';
-      const phases = getPhases(cKey, phaseUniType, phaseActiveLevel, '');
+      // Calculate phases amounts using the locked parameters for THIS package
+      const phases = getPhases(cKey, pUniType, pLevel, '');
       const taxRate = cKey === 'italy' ? 0.18 : 0;
 
       const countryPhaseDetails = phases.map((basePrice, idx) => {
@@ -618,33 +589,11 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
         };
       });
 
-      const totalPaidForCountry = capturedPayments
-        .filter(p => {
-          const name = (p.itemName || '').toUpperCase();
-          const itemId = p.itemId;
-          if (cKey === 'italy') {
-            return name.includes('ITALY') ||
-              (itemId === 'dynamic_fee' && countryId === 'italy') ||
-              ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'italy');
-          }
-          if (cKey === 'germany') {
-            return name.includes('GERMANY') ||
-              (itemId === 'dynamic_fee' && countryId === 'germany') ||
-              ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'germany');
-          }
-          return name.includes('OTHER') ||
-            name.includes('CUSTOM') ||
-            (itemId === 'dynamic_fee' && countryId === 'other') ||
-            ((itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') && countryId === 'other');
-        })
-        .reduce((sum, p) => sum + p.amount, 0);
+      const totalPaidForCountry = countryPayments.reduce((sum, p) => sum + p.amount, 0);
 
       const packageTotal = countryPhaseDetails.reduce((sum, p) => sum + p.totalAmount, 0);
       const remaining = Math.max(0, packageTotal - totalPaidForCountry);
-      const paidPhasesCount = countryPhaseDetails.filter(p => p.isPaid).length;
-      const percentPaid = countryPhaseDetails.length > 0
-        ? Math.min(100, Math.round((paidPhasesCount / countryPhaseDetails.length) * 100))
-        : 0;
+      const percentPaid = packageTotal > 0 ? Math.min(100, Math.round((totalPaidForCountry / packageTotal) * 100)) : 0;
 
       const packageName = cKey === 'italy'
         ? 'Italy Study Visa Package'
@@ -661,7 +610,8 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
         paid: totalPaidForCountry,
         remaining,
         percent: percentPaid,
-        track: activeLevel,
+        track: pLevel,
+        uniType: pUniType,
         phases: countryPhaseDetails,
         nextPendingPhase
       });
@@ -697,15 +647,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
             <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Track academic processing phase milestones and pay your remains.</p>
           </div>
           
-          {/* Purchased Package Label */}
-          {lockedPayment && (
-            <div style={{ marginLeft: 'auto', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '8px 16px', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-              <span style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: '#10b981', letterSpacing: '0.5px' }}>Active Purchased Package</span>
-              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                {countryId.charAt(0).toUpperCase() + countryId.slice(1)} • {uniType} • {activeLevel}
-              </span>
-            </div>
-          )}
+          {/* Purchased Package Labels Removed as cards now self-identify */}
         </div>
 
         {error && (
@@ -776,7 +718,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
                         <div>
                           <h4 style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--text-main)', margin: 0 }}>{pkg.name}</h4>
                           <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            {pkg.track} track
+                            {pkg.uniType} • {pkg.track} track
                           </span>
                         </div>
                         <span style={{
