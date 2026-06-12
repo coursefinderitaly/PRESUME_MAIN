@@ -16,7 +16,7 @@ const paymentLimiter = rateLimit({
 });
 
 const { COUPONS } = require('../config/coupons');
-const { getPhases } = require('../config/feesHelper');
+const { getPhases, getTaxRate } = require('../config/feesHelper');
 
 // Dummy item database - replace with real DB queries later
 const itemDatabase = {
@@ -29,11 +29,9 @@ const calculateDynamicFee = (countryId, uniType, selectedLevel, applied, couponC
     const activeCouponName = (applied && couponCode) ? couponCode.toUpperCase() : '';
     const currentPhases = getPhases(countryId, uniType || 'Public', selectedLevel, activeCouponName);
     const phase1Fee = currentPhases[0];
+    const taxRate = getTaxRate(countryId);
 
-    if (['italy', 'germany', 'russia', 'georgia'].includes(countryId.toLowerCase())) {
-        return Math.round(phase1Fee * 1.18);
-    }
-    return phase1Fee;
+    return Math.round(phase1Fee * (1 + taxRate));
 };
 
 // 1. Create Order
@@ -81,11 +79,8 @@ router.post('/create-order', auth, paymentLimiter, async (req, res) => {
           return res.status(400).json({ error: 'Invalid phase number' });
       }
 
-      if (['italy', 'germany', 'russia', 'georgia'].includes(countryId.toLowerCase())) {
-          finalAmount = Math.round(baseFee * 1.18);
-      } else {
-          finalAmount = baseFee;
-      }
+      const taxRate = getTaxRate(countryId);
+      finalAmount = Math.round(baseFee * (1 + taxRate));
       
       finalItemName = `${pricingParams.countryName ? pricingParams.countryName.toUpperCase() : 'Study Abroad'} - Phase ${pricingParams.phaseNumber} Payment`;
     } else if (itemId && itemDatabase[itemId]) {

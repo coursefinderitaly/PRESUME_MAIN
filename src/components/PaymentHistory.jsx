@@ -5,7 +5,7 @@ import {
   ShieldCheck, Loader2, Sparkles, CheckCircle2, Lock, ArrowRight, Award, Compass, Landmark, Briefcase
 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
-import { getPhases } from '../config/feesHelper';
+import { getPhases, getTaxRate } from '../config/feesHelper';
 
 const COUNTRY_PHASE_INFOS = {
   italy: [
@@ -568,7 +568,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
 
       // Calculate phases amounts using the locked parameters for THIS package
       const phases = getPhases(cKey, pUniType, pLevel, '');
-      const taxRate = cKey === 'italy' ? 0.18 : 0;
+      const taxRate = getTaxRate(cKey);
 
       const countryPhaseDetails = phases.map((basePrice, idx) => {
         const phaseNum = idx + 1;

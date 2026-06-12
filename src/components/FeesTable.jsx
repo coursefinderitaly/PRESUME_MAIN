@@ -8,7 +8,7 @@ import RazorpayGateway from './RazorpayGateway';
 import CouponPage from '../coupon_generator/coupon';
 import { API_BASE_URL } from '../config';
 import { COUPONS } from '../config/coupons';
-import { getPhases } from '../config/feesHelper';
+import { getPhases, getTaxRate } from '../config/feesHelper';
 import { countryData } from '../data/countryData';
 
 const ConfettiBlast = () => {
@@ -441,21 +441,25 @@ const FeesTable = ({
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
                                                     opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
                                                 }}>₹{Math.round(discountedPrice).toLocaleString('en-IN')}</p>
-                                                <p className={idx === 0 && isPhase1Paid ? "success-text-muted" : ""} style={{
-                                                    margin: 0,
-                                                    fontSize: '10px',
-                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.5)' : 'var(--text-main)',
-                                                    fontWeight: 800,
-                                                    textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none'
-                                                }}>+ 18% GST (₹{Math.round(discountedPrice * 0.18).toLocaleString('en-IN')})</p>
-                                                <p className={idx === 0 && isPhase1Paid ? "success-text-muted" : ""} style={{
-                                                    margin: 0,
-                                                    fontSize: '11px',
-                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'var(--text-main)',
-                                                    fontWeight: 900,
-                                                    textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
-                                                    opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
-                                                }}>Total: ₹{Math.round(discountedPrice * 1.18).toLocaleString('en-IN')}</p>
+                                                {getTaxRate(countryId) > 0 && (
+                                                    <>
+                                                        <p className={idx === 0 && isPhase1Paid ? "success-text-muted" : ""} style={{
+                                                            margin: 0,
+                                                            fontSize: '10px',
+                                                            color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.5)' : 'var(--text-main)',
+                                                            fontWeight: 800,
+                                                            textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none'
+                                                        }}>+ {getTaxRate(countryId) * 100}% GST (₹{Math.round(discountedPrice * getTaxRate(countryId)).toLocaleString('en-IN')})</p>
+                                                        <p className={idx === 0 && isPhase1Paid ? "success-text-muted" : ""} style={{
+                                                            margin: 0,
+                                                            fontSize: '11px',
+                                                            color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'var(--text-main)',
+                                                            fontWeight: 900,
+                                                            textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
+                                                            opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
+                                                        }}>Total: ₹{Math.round(discountedPrice * (1 + getTaxRate(countryId))).toLocaleString('en-IN')}</p>
+                                                    </>
+                                                )}
                                                 {idx === 0 && isPhase1Paid && (
                                                     <span className="success-text" style={{ fontSize: '10px', color: '#10b981', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.5px' }}>✓ PAID</span>
                                                 )}

@@ -35,3 +35,11 @@ export const getPhases = (countryId, uniType, level, couponCode) => {
     }
     return phases;
 };
+
+export const getTaxRate = (countryId) => {
+    const cId = (countryId || '').toLowerCase();
+    if (['italy', 'germany', 'russia', 'georgia'].includes(cId)) {
+        return 0.18;
+    }
+    return 0; // Default no tax for other countries
+};

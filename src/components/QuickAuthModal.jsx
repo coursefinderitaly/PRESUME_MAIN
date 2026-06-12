@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, Eye, EyeOff, User as UserIcon, ArrowRight, ShieldCheck, ChevronDown, CreditCard, Ticket, Sparkles, Info } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { COUPONS } from '../config/coupons';
-import { getPhases } from '../config/feesHelper';
+import { getPhases, getTaxRate } from '../config/feesHelper';
 
 const ConfettiBlast = () => {
   const particles = Array.from({ length: 15 });
@@ -136,8 +136,8 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
 
   const phase1Base = basePhases[0] || 0;
   const phase1Discounted = currentPhases[0] || 0;
-  const hasItalyGST = countryId === 'italy';
-  const gstRate = 0.18;
+  const gstRate = getTaxRate(countryId);
+  const hasGST = gstRate > 0;
 
   const getPhaseNameShort = (idx, totalCount) => {
     if (idx === 0) return "Phase 1: Admission Process";

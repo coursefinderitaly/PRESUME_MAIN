@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import FeesTable from './FeesTable';
 import { API_BASE_URL } from '../config';
-import { getPhases } from '../config/feesHelper';
+import { getPhases, getTaxRate } from '../config/feesHelper';
 import { COUPONS } from '../config/coupons';
 import { countryData } from '../data/countryData';
 import { useTheme } from '../ThemeContext';
@@ -414,7 +414,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
   const discountedPrice = currentPhases[0];
 
   // Calculate tax (18% GST for academic processing)
-  const taxRate = 0.18;
+  const taxRate = getTaxRate(countryId);
   const taxAmount = Math.round(discountedPrice * taxRate);
   const totalSecureCheckoutAmount = discountedPrice + taxAmount;
 
@@ -423,7 +423,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
     const discPhases = getPhases(cId, 'Public', selectedProgram, activeCoupon);
     const baseP = basePhases.reduce((acc, curr) => acc + curr, 0);
     const discP = discPhases.reduce((acc, curr) => acc + curr, 0);
-    const rate = 0.18;
+    const rate = getTaxRate(cId);
 
     const baseT = Math.round(baseP * rate);
     const discT = Math.round(discP * rate);

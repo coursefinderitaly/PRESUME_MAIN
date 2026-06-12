@@ -28,4 +28,12 @@ const getPhases = (countryId, uniType, level, couponCode) => {
     return phases;
 };
 
-module.exports = { getPhases };
+const getTaxRate = (countryId) => {
+    const cId = (countryId || '').toLowerCase();
+    if (['italy', 'germany', 'russia', 'georgia'].includes(cId)) {
+        return 0.18;
+    }
+    return 0;
+};
+
+module.exports = { getPhases, getTaxRate };
