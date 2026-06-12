@@ -66,45 +66,11 @@ const countriesComparisonData = [
     glowColor: 'rgba(251, 191, 36, 0.15)'
   },
   {
-    id: 'georgia',
-    name: 'Georgia',
-    flag: '🇬🇪',
-    subtitle: 'Premier Medical Destination',
-    univTuition: '$4,000 - $8,000 / yr',
-    workRights: '1 Year Stay-back',
-    benefits: [
-      'WHO & NMC Recognized Universities',
-      'English-Taught MBBS Programs',
-      'No Entrance Exams (No IELTS/TOEFL)',
-      'High FMGE Passing Rate',
-      'European Standard of Living'
-    ],
-    themeColor: '#ef4444',
-    glowColor: 'rgba(239, 68, 68, 0.15)'
-  },
-  {
-    id: 'russia',
-    name: 'Russia',
-    flag: '🇷🇺',
-    subtitle: 'World-Class Medical Education',
-    univTuition: '$3,000 - $6,000 / yr',
-    workRights: 'Work Alongside Study',
-    benefits: [
-      'Top Ranked Medical Universities',
-      'Highly Subsidized Education',
-      'English-Taught MBBS Programs',
-      'WHO, NMC, ECFMG Recognized',
-      'Advanced Clinical Training'
-    ],
-    themeColor: '#3b82f6',
-    glowColor: 'rgba(59, 130, 246, 0.15)'
-  },
-  {
     id: 'germany',
     name: 'Germany',
     flag: '🇩🇪',
     subtitle: 'Zero Tuition & Tech Hub',
-    univTuition: '€1,500-€20,000 at Public/Private Universities',
+    univTuition: 'Public: €0 | Private: €10k - €20k / yr',
     workRights: '18 Months Stay-back',
     benefits: [
       'Zero Tuition at Public Universities',
@@ -162,7 +128,7 @@ const countriesComparisonData = [
       'Flexible Majors & Curriculum',
       'Unmatched Campus & Sports Life',
       'High Availability of RA/TA Funding',
-      'Network in the World\'s Largest Economy'
+      "Network in the World's Largest Economy"
     ],
     themeColor: '#f59e0b',
     glowColor: 'rgba(245, 158, 11, 0.15)'
@@ -171,11 +137,11 @@ const countriesComparisonData = [
     id: 'uk',
     name: 'United Kingdom',
     flag: '🇬🇧',
-    subtitle: '1-Year Master\'s & Legacy',
+    subtitle: "1-Year Master's & Legacy",
     univTuition: '£15,000 - £35,000 / yr',
     workRights: '2 Years Graduate Route',
     benefits: [
-      'Intensive 1-Year Master\'s Degrees',
+      "Intensive 1-Year Master's Degrees",
       '2-Year Graduate Work Route',
       '24 Russell Group Universities',
       'Premium Academic Quality Standards',
@@ -217,7 +183,42 @@ const countriesComparisonData = [
     ],
     themeColor: '#f59e0b',
     glowColor: 'rgba(245, 158, 11, 0.15)'
-  }
+  },
+  {
+    id: 'georgia',
+    name: 'Georgia',
+    flag: '🇬🇪',
+    subtitle: 'Premier Medical Destination',
+    univTuition: '$4,000 - $8,000 / yr',
+    workRights: '1 Year Stay-back',
+    benefits: [
+      'WHO & NMC Recognized Universities',
+      'English-Taught MBBS Programs',
+      'No Entrance Exams (No IELTS/TOEFL)',
+      'High FMGE Passing Rate',
+      'European Standard of Living'
+    ],
+    themeColor: '#ef4444',
+    glowColor: 'rgba(239, 68, 68, 0.15)'
+  },
+  {
+    id: 'russia',
+    name: 'Russia',
+    flag: '🇷🇺',
+    subtitle: 'World-Class Medical Education',
+    univTuition: '$3,000 - $6,000 / yr',
+    workRights: 'Work Alongside Study',
+    benefits: [
+      'Top Ranked Medical Universities',
+      'Highly Subsidized Education',
+      'English-Taught MBBS Programs',
+      'WHO, NMC, ECFMG Recognized',
+      'Advanced Clinical Training'
+    ],
+    themeColor: '#3b82f6',
+    glowColor: 'rgba(59, 130, 246, 0.15)'
+  },
+
 ];
 
 const italyData = {
@@ -628,6 +629,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                   whileHover={{ y: -5 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   style={{
+                    gridColumn: c.id === 'germany' ? 'span 2' : 'span 1',
                     background: isSelected ? 'rgba(251, 191, 36, 0.06)' : 'rgba(255, 255, 255, 0.01)',
                     border: isSelected ? `2px solid ${c.themeColor}` : '1px solid rgba(150, 150, 150, 0.3)',
                     boxShadow: isSelected ? `0 12px 35px ${c.glowColor}` : 'none',
@@ -999,8 +1001,9 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                           pointerEvents: 'none'
                         }}>
                           <div style={{
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-border)',
+                            minWidth: c.id === 'germany' ? '360px' : '320px',
+                            background: 'var(--card-bg)',
+                            border: `1px solid ${selectedCountry === c.id ? c.themeColor : 'var(--glass-border)'}`,
                             padding: '20px 36px',
                             borderRadius: '24px',
                             boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
