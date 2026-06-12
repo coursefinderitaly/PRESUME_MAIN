@@ -593,7 +593,7 @@ const FeesTable = ({
                     isOpen={isQuickAuthOpen} onClose={() => setIsQuickAuthOpen(false)}
                     onSuccess={handleQuickAuthSuccess} initialProgram={selectedLevel}
                     getFirstPhaseFee={getPhasePriceForLevel} getOriginalFirstPhaseFee={getOriginalPhasePriceForLevel}
-                    countryId={countryId} initialCoupon={coupon} initialDiscount={couponDiscount}
+                    countryId={countryId} uniType={uniType} initialCoupon={coupon} initialDiscount={couponDiscount}
                     hideRegistration={hideControls}
                     loggedInEmail={userEmail}
                     isPhase1Paid={isPhase1Paid}
@@ -939,6 +939,7 @@ const FeesTable = ({
                 getFirstPhaseFee={getPhasePriceForLevel}
                 getOriginalFirstPhaseFee={getOriginalPhasePriceForLevel}
                 countryId={countryId}
+                uniType={uniType}
                 initialCoupon={coupon}
                 initialDiscount={couponDiscount}
                 hideRegistration={hideControls}

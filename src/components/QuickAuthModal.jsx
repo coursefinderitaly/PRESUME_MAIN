@@ -40,7 +40,7 @@ const ConfettiBlast = () => {
   );
 };
 
-const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelors', getFirstPhaseFee, getOriginalFirstPhaseFee, countryId, initialCoupon = '', initialDiscount = 0, hideRegistration = false, loggedInEmail = '', isPhase1Paid = false }) => {
+const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelors', uniType = 'Public', getFirstPhaseFee, getOriginalFirstPhaseFee, countryId, initialCoupon = '', initialDiscount = 0, hideRegistration = false, loggedInEmail = '', isPhase1Paid = false }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     email: loggedInEmail || '',
