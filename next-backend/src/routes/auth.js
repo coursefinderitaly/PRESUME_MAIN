@@ -275,8 +275,8 @@ router.post('/partner-request', async (req, res) => {
   }
 });
 
-// 6. SEND WELCOME EMAIL POST-PAYMENT (auth required — prevents arbitrary email spam)
-router.post('/send-welcome', auth, async (req, res) => {
+// 6. SEND WELCOME EMAIL POST-PAYMENT
+router.post('/send-welcome', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email) return res.status(400).json({ error: "Email is required" });
@@ -299,8 +299,8 @@ router.post('/send-welcome', auth, async (req, res) => {
   }
 });
 
-// 7. SEND PAYMENT FAILED EMAIL (auth required — prevents phishing/spam abuse)
-router.post('/send-payment-failed', auth, async (req, res) => {
+// 7. SEND PAYMENT FAILED EMAIL
+router.post('/send-payment-failed', async (req, res) => {
   try {
     const { email, errorMessage } = req.body;
     if (!email) return res.status(400).json({ error: "Email is required" });

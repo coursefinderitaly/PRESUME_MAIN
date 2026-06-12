@@ -72,6 +72,12 @@ const getFieldValue = (item, possibleKeys) => {
 let cachedSheetData = null;
 let currentFetchPromise = null;
 
+const getSelectedValues = (param) => {
+  if (!param) return [];
+  if (Array.isArray(param)) return param.map(p => p.value);
+  return param.value ? [param.value] : [];
+};
+
 const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, proceedLabel = "Proceed to Apply", onSelectionChange, onFilterChange, gridCols = 0, compactOnScroll = false }) => {
   const [searchParams, setSearchParams] = useState({
     programLevel: null,
@@ -248,10 +254,11 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       });
     }
 
-    if (searchParams.interestedField && searchParams.interestedField.value) {
+    const intFieldVals = getSelectedValues(searchParams.interestedField).map(v => v.toLowerCase());
+    if (intFieldVals.length > 0 && !intFieldVals.includes('')) {
       filteredData = filteredData.filter(u => {
-        const val = getFieldValue(u, ['interestedfield']);
-        return val && String(val).trim() === searchParams.interestedField.value;
+        const val = (getFieldValue(u, ['interestedfield']) || "").toLowerCase().trim();
+        return intFieldVals.some(v => val.includes(v) || val === v);
       });
     }
     return [
@@ -271,18 +278,22 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       });
     }
 
-    if (searchParams.interestedField && searchParams.interestedField.value) {
+    const intFieldVals = getSelectedValues(searchParams.interestedField).map(v => v.toLowerCase());
+    if (intFieldVals.length > 0 && !intFieldVals.includes('')) {
       filteredData = filteredData.filter(u => {
-        const val = getFieldValue(u, ['interestedfield']);
-        return val && String(val).trim() === searchParams.interestedField.value;
+        const val = (getFieldValue(u, ['interestedfield']) || "").toLowerCase().trim();
+        return intFieldVals.some(v => val.includes(v) || val === v);
       });
     }
-    if (searchParams.subField && searchParams.subField.value) {
+
+    const subFieldVals = getSelectedValues(searchParams.subField).map(v => v.toLowerCase());
+    if (subFieldVals.length > 0 && !subFieldVals.includes('')) {
       filteredData = filteredData.filter(u => {
-        const val = getFieldValue(u, ['subfield']);
-        return val && String(val).trim() === searchParams.subField.value;
+        const val = (getFieldValue(u, ['subfield']) || "").toLowerCase().trim();
+        return subFieldVals.some(v => val.includes(v) || val === v);
       });
     }
+    
     return [
       { value: '', label: 'Any Program' },
       ...extractUniqueOptions(filteredData, ['programname', 'program', 'name'])
@@ -297,9 +308,9 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
   const hasActiveFilters = useMemo(() => {
     return Boolean(
       (searchParams.programLevel && searchParams.programLevel.value) ||
-      (searchParams.interestedField && searchParams.interestedField.value) ||
-      (searchParams.subField && searchParams.subField.value) ||
-      (searchParams.programName && searchParams.programName.value) ||
+      (searchParams.interestedField && getSelectedValues(searchParams.interestedField).length > 0) ||
+      (searchParams.subField && getSelectedValues(searchParams.subField).length > 0) ||
+      (searchParams.programName && getSelectedValues(searchParams.programName).length > 0) ||
       (searchParams.intake && searchParams.intake.value) ||
       (searchParams.percentage && String(searchParams.percentage).trim() !== '')
     );
@@ -314,7 +325,6 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       boxShadow: state.isFocused ? '0 0 0 3px rgba(251, 191, 36, 0.15)' : 'none',
       cursor: 'pointer',
       minHeight: '36px',
-      height: '36px',
       borderRadius: '8px',
       fontSize: '0.8rem',
       '&:hover': { borderColor: '#fbbf24' },
@@ -343,6 +353,25 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       fontWeight: state.isSelected ? 700 : 500,
       '&:hover': { backgroundColor: 'rgba(251, 191, 36, 0.08)' }
     }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: 'rgba(251, 191, 36, 0.15)',
+      borderRadius: '4px',
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: '#fbbf24',
+      fontSize: '0.75rem',
+      padding: '2px 4px',
+    }),
+    multiValueRemove: (base) => ({
+      ...base,
+      color: '#fbbf24',
+      ':hover': {
+        backgroundColor: 'rgba(251, 191, 36, 0.3)',
+        color: '#f59e0b',
+      },
+    }),
     singleValue: (base) => ({ ...base, color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 500 }),
     valueContainer: (base) => ({ ...base, padding: '0 12px' }),
     input: (base) => ({ ...base, color: 'var(--text-main)', fontSize: '0.85rem' }),
@@ -366,12 +395,6 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       }
     }
   }, [searchParams, universitySearchQuery, hasSearched]);
-
-  const getSelectedValues = (param) => {
-    if (!param) return [];
-    if (Array.isArray(param)) return param.map(p => p.value);
-    return param.value ? [param.value] : [];
-  };
 
   const handleSelectChange = (name, selectedOption) => {
     setSearchParams(prev => {

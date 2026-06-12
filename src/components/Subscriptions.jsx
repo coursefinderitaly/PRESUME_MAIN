@@ -37,8 +37,8 @@ const ConfettiBlast = () => {
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="absolute left-1/2 top-1/2 w-2.5 h-2.5 rounded-full"
             style={{
-              backgroundColor: i % 3 === 0 ? '#fbbf24' : i % 3 === 1 ? '#f59e0b' : '#d97706',
-              boxShadow: '0 0 8px rgba(245, 158, 11, 0.8)'
+              backgroundColor: i % 3 === 0 ? '#818cf8' : i % 3 === 1 ? '#a78bfa' : '#c084fc',
+              boxShadow: '0 0 8px rgba(167, 139, 250, 0.8)'
             }}
           />
         );
@@ -198,8 +198,8 @@ const countriesComparisonData = [
       'High FMGE Passing Rate',
       'European Standard of Living'
     ],
-    themeColor: '#f59e0b',
-    glowColor: 'rgba(245, 158, 11, 0.15)'
+    themeColor: '#ef4444',
+    glowColor: 'rgba(239, 68, 68, 0.15)'
   },
   {
     id: 'russia',
@@ -215,8 +215,8 @@ const countriesComparisonData = [
       'WHO, NMC, ECFMG Recognized',
       'Advanced Clinical Training'
     ],
-    themeColor: '#d97706',
-    glowColor: 'rgba(217, 119, 6, 0.15)'
+    themeColor: '#3b82f6',
+    glowColor: 'rgba(59, 130, 246, 0.15)'
   },
 
 ];
@@ -533,7 +533,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
           email: profile?.email || '',
         },
         theme: {
-          color: '#f59e0b' // Amber - matches site theme
+          color: '#6366f1' // Indigo
         },
         modal: {
           ondismiss: function () {
@@ -789,7 +789,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                           body: JSON.stringify({ country: c.name })
                         });
                         if (res.ok && refreshProfile) {
-                          try { await refreshProfile(); } catch(e) { /* silent - public page */ }
+                          await refreshProfile();
                         }
                       } catch (err) {
                         console.error("Failed to update profile country", err);
