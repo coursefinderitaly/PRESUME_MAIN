@@ -109,6 +109,18 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
 
+      // Auto-login to obtain the auth cookie for secure payment routes
+      const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+        body: JSON.stringify({ identifier: formData.email, password: formData.password })
+      });
+      
+      if (!loginRes.ok) {
+        throw new Error('Registration succeeded, but auto-login failed. Please log in manually.');
+      }
+
       onSuccess(formData.email, formData.password, formData.program, couponDiscount > 0 ? couponInput : '', couponDiscount);
     } catch (err) {
       setError(err.message);
