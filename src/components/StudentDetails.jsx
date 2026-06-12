@@ -11,6 +11,7 @@ import nationality from 'i18n-nationality';
 import enNationality from 'i18n-nationality/langs/en.json';
 import DocumentUpload from './DocumentUpload';
 import SearchProgram from './SearchProgram';
+import useLocalLayoutScale from '../hooks/useLocalLayoutScale';
 
 nationality.registerLocale(enNationality);
 
@@ -27,11 +28,12 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [hasAttachmentsWarning, setHasAttachmentsWarning] = useState(false);
-  const [showNoDocsError, setShowNoDocsError] = useState(false);
+  const [missingDocsError, setMissingDocsError] = useState('');
   const [expandedUniIds, setExpandedUniIds] = useState([]);
   const [razorpayOrderId, setRazorpayOrderId] = useState('');
   const [paymentError, setPaymentError] = useState(null);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [searchProgramLevel, setSearchProgramLevel] = useState('');
   const [selectedForApplication, setSelectedForApplication] = useState(() => {
     let initial = [];
     if (student.savedUniversitiesCart && student.savedUniversitiesCart.length > 0) {
@@ -56,6 +58,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
   }, [pendingApplications]);
 
   const documentUploadRef = useRef(null);
+  const layoutScale = useLocalLayoutScale(1536);
 
   // Dropdown options state
   const [countries] = useState(() => {
@@ -157,7 +160,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
       minHeight: '36px',
       cursor: 'pointer',
       fontSize: '0.9rem',
-      boxShadow: state.isFocused ? '0 0 0 3px rgba(14, 165, 233, 0.15)' : 'none',
+      boxShadow: state.isFocused ? '0 0 0 3px rgba(251, 191, 36, 0.15)' : 'none',
       '&:hover': { borderColor: 'var(--accent-secondary)' },
     }),
     menu: (base) => ({
@@ -172,7 +175,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
     option: (base, state) => ({
       ...base,
       backgroundColor: state.isSelected
-        ? 'rgba(14, 165, 233, 0.15)'
+        ? 'rgba(251, 191, 36, 0.15)'
         : state.isFocused ? 'rgba(128, 128, 128, 0.1)' : 'transparent',
       color: state.isSelected ? 'var(--accent-secondary)' : 'var(--text-main)',
       cursor: 'pointer',
@@ -491,7 +494,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
   };
 
   return (
-    <div className="view-standard student-details-wrapper" style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', height: '100%', flex: 1, minHeight: 0 }}>
+    <div className="view-standard student-details-wrapper" style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', height: '100%', flex: 1, minHeight: 0, zoom: layoutScale }}>
 
       {/* ULTRA COMPACT INLINE HEADER */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0, padding: '4px 8px 12px 4px', borderBottom: '1px solid var(--glass-border)', animation: 'fadeUp 0.3s ease' }}>
@@ -529,15 +532,15 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
       </div>
 
       {message && (
-        <div style={{ padding: '12px 20px', background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '12px', marginTop: '16px', fontWeight: '600', flexShrink: 0 }}>
+        <div style={{ padding: '12px 20px', background: 'rgba(251, 191, 36, 0.08)', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.25)', borderRadius: '12px', marginTop: '16px', fontWeight: '600', flexShrink: 0 }}>
           {message}
         </div>
       )}
 
-      {showNoDocsError && (
+      {missingDocsError && (
         <div style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid #ef4444', color: '#dc2626', padding: '12px 20px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 700, animation: 'shake 0.5s ease', display: 'flex', alignItems: 'center', gap: '12px', marginTop: '16px', flexShrink: 0 }}>
           <AlertTriangle size={20} />
-          <span>CRITICAL: You must select and attach at least one document before submission.</span>
+          <span>CRITICAL: {missingDocsError}</span>
         </div>
       )}
 
@@ -600,7 +603,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
           border: '1px solid var(--glass-border)',
           borderRadius: '24px',
           overflowY: activeTab === 'applications' ? 'hidden' : 'auto',
-          padding: activeTab === 'applications' ? '16px 20px 20px 20px' : '30px',
+          padding: activeTab === 'applications' ? '0px 10px 10px 10px' : '30px',
           boxShadow: 'inset 0 0 40px rgba(0,0,0,0.1)'
         }}>
           <div style={{ display: activeTab === 'profile' ? 'block' : 'none' }}>
@@ -1198,7 +1201,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
           <div style={{ display: activeTab === 'applications' ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0 }}>
             <div style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
 
-              <div style={{ display: 'flex', justifyContent: 'center', borderBottom: '1px solid var(--glass-border)', marginBottom: '20px', gap: '30px', padding: '0 10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', borderBottom: '1px solid var(--glass-border)', marginBottom: '10px', gap: '30px', padding: '16px 10px 0px' }}>
                 <button
                   type="button"
                   onClick={() => setApplicationSubTab('apply')}
@@ -1216,10 +1219,20 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
               </div>
 
               {applicationSubTab === 'apply' && (
-                <div style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+                <div className="application-search-wrapper" style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+                  <style>{`.application-search-wrapper .dash-header { display: none !important; }`}</style>
                   <SearchProgram
                     preselectedUnis={selectedForApplication}
                     hideFooter={true}
+                    gridCols={4}
+                    compactOnScroll={true}
+                    onFilterChange={(params) => {
+                      if (params.programLevel) {
+                        setSearchProgramLevel(params.programLevel.value || '');
+                      } else {
+                        setSearchProgramLevel('');
+                      }
+                    }}
                     onSelectionChange={(uni, isSelected) => {
                       if (isSelected) {
                         setSelectedForApplication(prev => {
@@ -1235,7 +1248,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
 
                   {/* Actions at bottom */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px', marginTop: '15px', padding: '0 260px 0 5px' }}>
-                    <button type="button" onClick={() => setActiveTab('documents')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
+                    <button type="button" onClick={() => setActiveTab('academic')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
                       Previous
                     </button>
                     <div style={{ display: 'flex', gap: '15px' }}>
@@ -1257,27 +1270,33 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                       >
                         <Save size={18} /> Save Profile
                       </button>
-                      {selectedForApplication.length > 0 && (
+                      
                         <button
                           type="button"
-                          onClick={() => setApplicationSubTab('applied')}
+                          onClick={() => {
+                            if (selectedForApplication.length > 0) {
+                              setApplicationSubTab('applied');
+                            } else {
+                              setActiveTab('documents');
+                            }
+                          }}
                           className="btn-save"
                           style={{
                             padding: '12px 30px',
-                            background: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)',
-                            color: '#fff',
+                            background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                            color: '#000',
                             border: 'none',
                             fontSize: '1.05rem',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '8px',
-                            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)',
+                            boxShadow: '0 4px 12px rgba(245, 158, 11, 0.25)',
                             borderRadius: '12px'
                           }}
                         >
                           Next <ArrowRight size={18} />
                         </button>
-                      )}
+                      
                     </div>
                   </div>
                 </div>
@@ -1307,15 +1326,20 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                           }) : [];
 
                           return (
-                            <div key={uni.id || idx} style={{ padding: '20px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--glass-border)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                            <div className="selected-uni-card" key={uni.id || idx} style={{ padding: '20px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--glass-border)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                              <style>{`
+                                [data-theme="light"] .selected-uni-card {
+                                  background: rgba(255, 255, 255, 0.7) !important;
+                                }
+                              `}</style>
                               <div style={{ fontWeight: 900, color: '#f59e0b', marginBottom: '5px', paddingRight: '25px', fontSize: '1.15rem', wordBreak: 'break-word' }}>{uni.name}</div>
                               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}><MapPin size={14} /> {uni.location}</div>
 
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', background: 'rgba(99, 102, 241, 0.1)', padding: '5px 12px', borderRadius: '6px', fontWeight: 900, wordBreak: 'break-word', width: '100%', boxSizing: 'border-box' }}>Programs: {uni.programs.join(', ')}</div>
-                                {uni.intake && <span style={{ fontSize: '0.8rem', color: '#8b5cf6', background: 'rgba(139, 92, 246, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Intake: {uni.intake}</span>}
-                                {uni.level && uni.level !== "N/A" && <span style={{ fontSize: '0.8rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>{uni.level}</span>}
-                                {uni.minPercentage && uni.minPercentage !== "0" && <span style={{ fontSize: '0.8rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Min {uni.minPercentage}%</span>}
+                                <div style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', background: 'rgba(251, 191, 36, 0.08)', border: '1px solid rgba(251, 191, 36, 0.15)', padding: '5px 12px', borderRadius: '6px', fontWeight: 900, wordBreak: 'break-word', width: '100%', boxSizing: 'border-box' }}>Programs: {uni.programs.join(', ')}</div>
+                                {uni.intake && <span style={{ fontSize: '0.8rem', color: '#fbbf24', background: 'rgba(251, 191, 36, 0.08)', border: '1px solid rgba(251, 191, 36, 0.15)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Intake: {uni.intake}</span>}
+                                {uni.level && uni.level !== "N/A" && <span style={{ fontSize: '0.8rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.15)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>{uni.level}</span>}
+                                {uni.minPercentage && uni.minPercentage !== "0" && <span style={{ fontSize: '0.8rem', color: '#d97706', background: 'rgba(217, 119, 6, 0.08)', border: '1px solid rgba(217, 119, 6, 0.15)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>Min {uni.minPercentage}%</span>}
                               </div>
 
                               <button
@@ -1390,7 +1414,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
           </div>
           <div style={{ display: activeTab === 'documents' ? 'block' : 'none' }}>
             <div style={{ animation: 'fadeIn 0.3s ease' }}>
-              <DocumentUpload profile={formData} setMessage={setMessage} ref={documentUploadRef} />
+              <DocumentUpload profile={formData} searchProgramLevel={searchProgramLevel} setMessage={setMessage} ref={documentUploadRef} />
               {/* Actions */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '30px', flexWrap: 'wrap', gap: '15px' }}>
                 <button type="button" onClick={() => setActiveTab('applications')} className="btn-save" style={{ padding: '12px 20px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
@@ -1401,13 +1425,33 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                     type="button"
                     onClick={async () => {
                       const docsInfo = documentUploadRef.current?.getAttachedFilesInfo() || [];
-                      if (docsInfo.length === 0) {
-                        setShowNoDocsError(true);
-                        setTimeout(() => setShowNoDocsError(false), 5000);
+                      const uploadedIds = docsInfo.map(d => d.id);
+                      
+                      const isBachelorsOrMBBS = searchProgramLevel.toLowerCase().includes('bachelor') || searchProgramLevel.toLowerCase().includes('mbbs');
+                      const requiresDegree = !isBachelorsOrMBBS;
+                      
+                      const mandatory = ['tenth', 'twelfth', 'passport', 'photo', 'sop', 'moi', 'lor1', 'lor2'];
+                      if (requiresDegree) {
+                          mandatory.push('degree', 'transcript');
+                      }
+                      
+                      const missing = mandatory.filter(id => !uploadedIds.includes(id));
+                      
+                      if (missing.length > 0) {
+                        const labels = missing.map(id => {
+                            const mapping = {
+                                tenth: '10th Marksheet', twelfth: '12th Marksheet', degree: 'Degree',
+                                transcript: 'Transcript', passport: 'Passport', photo: 'Photograph',
+                                sop: 'SOP', moi: 'MOI', lor1: 'LOR 1', lor2: 'LOR 2'
+                            };
+                            return mapping[id];
+                        });
+                        setMissingDocsError(`Missing required documents: ${labels.join(', ')}`);
+                        setTimeout(() => setMissingDocsError(''), 7000);
                         return;
                       }
 
-                      setShowNoDocsError(false);
+                      setMissingDocsError('');
                       setHasAttachmentsWarning(false); // Reset in modal if we have docs
 
                       const success = await handleSaveProfile();
@@ -1417,7 +1461,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
                       }
                     }}
                     className="btn-save"
-                    style={{ padding: '12px 30px', background: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)', color: '#fff', border: 'none', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}
+                    style={{ padding: '12px 30px', background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', color: '#000', border: 'none', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}
                   >
                     Review & Submit <ArrowRight size={18} />
                   </button>
@@ -1426,7 +1470,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
             </div>
         </div>
       </div>
-        </div>
+         </div>
       {/* END MAIN SPLIT LAYOUT */}
 
         {isUploading && (
@@ -1434,7 +1478,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
             <div style={{ width: '380px', textAlign: 'center', background: 'rgba(255,255,255,0.05)', padding: '30px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
               <div style={{ color: '#fff', marginBottom: '20px', fontSize: '1.25rem', fontWeight: 800 }}>{uploadProgress < 100 ? 'SUBMITTING...' : 'TRANSMISSION COMPLETE!'}</div>
               <div style={{ height: '12px', background: 'rgba(255,255,255,0.1)', borderRadius: '10px', overflow: 'hidden', position: 'relative', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ height: '100%', background: 'linear-gradient(90deg, #38bdf8, #10b981)', width: `${uploadProgress}%`, transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }} />
+                <div style={{ height: '100%', background: 'linear-gradient(90deg, #fbbf24, #d97706)', width: `${uploadProgress}%`, transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }} />
               </div>
               <div style={{ color: '#94a3b8', marginTop: '15px', fontSize: '1rem', fontWeight: 600 }}>{uploadProgress}% PROCESSED</div>
             </div>

@@ -18,11 +18,10 @@ export default function useAntigravityMonitor() {
       const currentHeight = window.innerHeight;
       
       // We only scale based on width to prevent horizontal squishing.
-      // This allows the height to flow naturally based on browser UI (tabs, taskbar, etc)
       const scaleFactor = Math.min(currentWidth / 1920, 1);
       
       // Calculate inverse dimensions so that after scaling, it exactly fills the physical viewport
-      const targetWidth = currentWidth > 1920 ? 1920 : currentWidth / scaleFactor;
+      const targetWidth = currentWidth / scaleFactor;
       const targetHeight = currentHeight / scaleFactor;
       
       setScaleStyle({

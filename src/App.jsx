@@ -13,7 +13,7 @@ import ContactUsPage from './components/ContactUsPage';
 import OurStoryPage from './components/OurStoryPage';
 import AppleAcademyPage from './components/AppleAcademyPage';
 import WorkVisaLandingPage from './components/WorkVisaLandingPage';
-import GermanyWorkVisaPage from './components/GermanyWorkVisaPage';
+
 import CzechRepublicWorkVisaPage from './components/CzechRepublicWorkVisaPage';
 import SerbiaWorkVisaPage from './components/SerbiaWorkVisaPage';
 import PolandWorkVisaPage from './components/PolandWorkVisaPage';
@@ -23,6 +23,9 @@ import ScrollToTop from './components/ScrollToTop';
 import SmoothScrollLayout from './components/SmoothScrollLayout';
 import { ThemeProvider } from './ThemeContext';
 import NotFound from './components/NotFound';
+import MbbsLandingPage from './components/MbbsLandingPage';
+import MbbsCountryPage from './components/MbbsCountryPage';
+import FeeStructurePage from './components/FeeStructurePage';
 import CouponPage from './coupon_generator/coupon';
 import { API_BASE_URL } from './config';
 
@@ -70,7 +73,12 @@ function VisitorTracker() {
       '/contact',
       '/our-story',
       '/apple-academy',
-      '/coupon'
+      '/coupon',
+      '/mbbs',
+      '/mbbs/italy',
+      '/mbbs/georgia',
+      '/mbbs/russia',
+      '/fee-structure'
     ]);
 
     // If page is not in our active pages, default track it as '/' root
@@ -131,7 +139,7 @@ function App() {
               
               {/* Work Visa Routes */}
               <Route path="/services/work-visa" element={<WorkVisaLandingPage />} />
-              <Route path="/services/work-visa/germany" element={<GermanyWorkVisaPage />} />
+
               <Route path="/services/work-visa/czech-republic" element={<CzechRepublicWorkVisaPage />} />
               <Route path="/services/work-visa/serbia" element={<SerbiaWorkVisaPage />} />
               <Route path="/services/work-visa/poland" element={<PolandWorkVisaPage />} />
@@ -144,6 +152,9 @@ function App() {
               <Route path="/our-story" element={<OurStoryPage />} />
               <Route path="/apple-academy" element={<AppleAcademyPage />} />
               <Route path="/coupon" element={<CouponPage />} />
+              <Route path="/mbbs" element={<MbbsLandingPage />} />
+              <Route path="/mbbs/:countryId" element={<MbbsCountryPage />} />
+              <Route path="/fee-structure" element={<FeeStructurePage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </IdleTimeout>

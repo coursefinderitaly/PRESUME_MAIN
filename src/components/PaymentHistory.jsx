@@ -387,6 +387,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
 
       const response = await fetch(`${API_BASE_URL}/payment/create-order`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
         body: JSON.stringify({
           itemId: 'phase_payment',
@@ -612,255 +613,361 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
   });
 
   return (
-    <div style={{ padding: '24px', background: 'var(--bg-primary)', minHeight: '100%', borderRadius: '24px', border: '1px solid var(--glass-border)' }}>
+    <>
+      <style>{`
+        [data-theme="light"] .payment-history-container {
+          background: var(--bg-main) !important;
+          animation: none !important;
+        }
+      `}</style>
+      <div className="payment-history-container" style={{
+        padding: '24px',
+        background: 'linear-gradient(-45deg, #07070a, #1a0f08, #1c0e2b, #150909)',
+        backgroundSize: '400% 400%',
+        animation: 'gradientBG 15s ease infinite',
+        minHeight: '100%',
+        borderRadius: '24px',
+        border: '1px solid var(--glass-border)',
+        position: 'relative'
+      }}>
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '30px' }}>
-        <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: 'var(--accent-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-secondary)', boxShadow: '0 8px 24px rgba(99,102,241,0.2)' }}>
-          <Receipt size={24} />
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '30px' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: 'var(--accent-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-secondary)', boxShadow: '0 8px 24px rgba(99,102,241,0.2)' }}>
+            <Receipt size={24} />
+          </div>
+          <div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', margin: 0, letterSpacing: '-0.5px' }}>Payments</h2>
+            <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Track academic processing phase milestones and pay your remains.</p>
+          </div>
         </div>
-        <div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', margin: 0, letterSpacing: '-0.5px' }}>Billing & Payments</h2>
-          <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Track academic processing phase milestones and pay your remains.</p>
-        </div>
-      </div>
 
-      {error && (
-        <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '14px', padding: '12px 18px', fontSize: '0.85rem', fontWeight: 600, marginBottom: '24px' }}>
-          {error}
-        </div>
-      )}
+        {error && (
+          <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '14px', padding: '12px 18px', fontSize: '0.85rem', fontWeight: 600, marginBottom: '24px' }}>
+            {error}
+          </div>
+        )}
 
-      {isStudent ? (
-        <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          {/* Left Column: Enrolled Packages with their specific Phase records */}
-          <div style={{ flex: '2 1 500px', display: 'flex', flexDirection: 'column', gap: '24px', minWidth: '320px' }}>
+        {isStudent ? (
+          <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            {/* Left Column: Enrolled Packages with their specific Phase records */}
+            <div style={{ flex: '2 1 500px', display: 'flex', flexDirection: 'column', gap: '24px', minWidth: '320px' }}>
 
-            {/* Header row */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Briefcase size={20} style={{ color: 'var(--accent-primary)' }} />
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 850, color: 'var(--text-main)', margin: 0 }}>Purchased Packages & Records</h3>
+              {/* Header row */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Briefcase size={20} style={{ color: 'var(--accent-primary)' }} />
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 850, color: 'var(--text-main)', margin: 0 }}>Purchased Packages & Records</h3>
+                </div>
+
+                {/* Study Track Read-only badge */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Current Track:
+                  </span>
+                  <span style={{
+                    background: 'var(--accent-glow)',
+                    color: 'var(--accent-secondary)',
+                    padding: '5px 12px',
+                    borderRadius: '10px',
+                    border: '1px solid var(--glass-border)',
+                    fontSize: '0.72rem',
+                    fontWeight: 900,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    {activeLevel}
+                  </span>
+                </div>
               </div>
 
-              {/* Study Track Read-only badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Current Track:
-                </span>
-                <span style={{
-                  background: 'var(--accent-glow)',
-                  color: 'var(--accent-secondary)',
-                  padding: '5px 12px',
-                  borderRadius: '10px',
-                  border: '1px solid var(--glass-border)',
-                  fontSize: '0.72rem',
-                  fontWeight: 900,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  {activeLevel}
-                </span>
-              </div>
+              {/* Packages Grid */}
+              {activePackages.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '60px', background: 'var(--glass-bg)', borderRadius: '24px', border: '1px solid var(--glass-border)' }}>
+                  <Briefcase size={40} style={{ opacity: 0.2, margin: '0 auto 16px' }} />
+                  <h4 style={{ fontSize: '1.1rem', color: 'var(--text-main)', margin: 0 }}>No Purchased Packages</h4>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '8px' }}>You have not enrolled in any study visa packages yet.</p>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+                  {activePackages.map((pkg) => (
+                    <div
+                      key={pkg.key}
+                      style={{
+                        background: 'var(--glass-bg)',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '24px',
+                        padding: '24px',
+                        backdropFilter: 'blur(20px)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '20px',
+                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+                      }}
+                    >
+                      {/* Package Title & Percent */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <h4 style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--text-main)', margin: 0 }}>{pkg.name}</h4>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            {pkg.track} track
+                          </span>
+                        </div>
+                        <span style={{
+                          fontSize: '0.68rem',
+                          background: pkg.remaining === 0 ? 'rgba(16, 185, 129, 0.15)' : 'var(--accent-glow)',
+                          color: pkg.remaining === 0 ? '#10b981' : 'var(--accent-secondary)',
+                          padding: '4px 12px',
+                          borderRadius: '20px',
+                          fontWeight: 900,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
+                        }}>
+                          {pkg.percent}% Paid
+                        </span>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div style={{ width: '100%', height: '6px', background: 'var(--input-border)', borderRadius: '3px', overflow: 'hidden' }}>
+                        <div style={{
+                          width: `${pkg.percent}%`,
+                          height: '100%',
+                          background: pkg.remaining === 0 ? '#10b981' : 'linear-gradient(90deg, #10b981, var(--accent-primary))',
+                          borderRadius: '3px',
+                          boxShadow: pkg.remaining === 0 ? '0 0 10px rgba(16,185,129,0.3)' : '0 0 10px rgba(99, 102, 241, 0.3)'
+                        }} />
+                      </div>
+
+                      {/* Package Cost Ledger Breakdown */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', background: 'var(--input-bg)', padding: '14px', borderRadius: '18px', border: '1px solid var(--glass-border)' }}>
+                        <div>
+                          <span style={{ display: 'block', fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>Total Cost</span>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-main)' }}>₹{Math.round(pkg.total).toLocaleString('en-IN')}</span>
+                        </div>
+                        <div>
+                          <span style={{ display: 'block', fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>Paid</span>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#10b981' }}>₹{Math.round(pkg.paid).toLocaleString('en-IN')}</span>
+                        </div>
+                        <div>
+                          <span style={{ display: 'block', fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>Remaining</span>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 800, color: pkg.remaining === 0 ? '#10b981' : '#f59e0b' }}>
+                            {pkg.remaining === 0 ? '✓ Paid' : `₹${Math.round(pkg.remaining).toLocaleString('en-IN')}`}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Specific Phase Stepper Component */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: 'var(--glass-bg)', padding: '16px', borderRadius: '18px', border: '1px solid var(--glass-border)' }}>
+                        <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Phases Funding Progress
+                        </span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', padding: '0 8px' }}>
+                          {/* Background progress line */}
+                          <div style={{ position: 'absolute', left: '16px', right: '16px', height: '2px', background: 'var(--input-border)', zIndex: 0 }} />
+
+                          {pkg.phases.map((ph, idx) => {
+                            const isCurrentPending = pkg.nextPendingPhase?.phaseNumber === ph.phaseNumber;
+
+                            return (
+                              <div key={idx} style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                                <div
+                                  style={{
+                                    width: '24px', height: '24px', borderRadius: '50%',
+                                    background: ph.isPaid ? 'rgba(16, 185, 129, 0.2)' : isCurrentPending ? 'rgba(99, 102, 241, 0.2)' : 'var(--input-bg)',
+                                    border: ph.isPaid ? '1px solid #10b981' : isCurrentPending ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: ph.isPaid ? '#10b981' : isCurrentPending ? 'var(--accent-primary)' : 'var(--text-muted)',
+                                    fontSize: '0.65rem', fontWeight: 900
+                                  }}
+                                  title={`${ph.title}: ${ph.isPaid ? 'Paid' : 'Pending'}`}
+                                >
+                                  {ph.isPaid ? '✓' : ph.phaseNumber}
+                                </div>
+                                <span style={{ fontSize: '0.6rem', fontWeight: 700, color: ph.isPaid ? '#10b981' : isCurrentPending ? 'var(--text-main)' : 'var(--text-muted)' }}>
+                                  Ph {ph.phaseNumber}
+                                </span>
+                                <span style={{ fontSize: '0.55rem', fontWeight: 800, color: ph.isPaid ? '#10b981' : 'var(--text-dim)', letterSpacing: '0.5px' }}>
+                                  ₹{ph.totalAmount.toLocaleString('en-IN')}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Pending Phase Checkout Action */}
+                      {pkg.nextPendingPhase ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                            <span style={{ fontWeight: 800, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <Sparkles size={12} style={{ color: pkg.nextPendingPhase.color }} /> Next Phase Pending:
+                            </span>
+                            <span style={{ color: 'var(--text-main)', fontWeight: 700 }}>Phase {pkg.nextPendingPhase.phaseNumber} - {pkg.nextPendingPhase.title}</span>
+                            <span style={{ fontSize: '0.68rem', fontStyle: 'italic' }}>({pkg.nextPendingPhase.desc})</span>
+                          </div>
+
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => handlePayPhase(pkg.nextPendingPhase, pkg.key)}
+                            disabled={payingIndex === `${pkg.key}_${pkg.nextPendingPhase.index}`}
+                            style={{
+                              background: `linear-gradient(90deg, ${pkg.nextPendingPhase.color}, ${pkg.nextPendingPhase.color}dd)`,
+                              color: '#000',
+                              border: 'none',
+                              borderRadius: '12px',
+                              padding: '10px 16px',
+                              fontSize: '0.75rem',
+                              fontWeight: 900,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              boxShadow: `0 4px 12px ${pkg.nextPendingPhase.glowColor}`,
+                              transition: 'all 0.3s',
+                              marginTop: '4px'
+                            }}
+                          >
+                            {payingIndex === `${pkg.key}_${pkg.nextPendingPhase.index}` ? (
+                              <>
+                                <Loader2 size={12} className="animate-spin" />
+                                <span>Processing...</span>
+                              </>
+                            ) : (
+                              <>
+                                <CreditCard size={12} />
+                                <span>Pay Phase {pkg.nextPendingPhase.phaseNumber} (₹{pkg.nextPendingPhase.totalAmount.toLocaleString('en-IN')})</span>
+                                <ArrowRight size={12} />
+                              </>
+                            )}
+                          </motion.button>
+                        </div>
+                      ) : (
+                        <div style={{
+                          background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.3)',
+                          borderRadius: '12px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '8px',
+                          color: '#10b981', fontSize: '0.75rem', fontWeight: 800, marginTop: '8px'
+                        }}>
+                          <ShieldCheck size={16} />
+                          <span>All Phases Fully Funded!</span>
+                        </div>
+                      )}
+
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Packages Grid */}
-            {activePackages.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '60px', background: 'var(--glass-bg)', borderRadius: '24px', border: '1px solid var(--glass-border)' }}>
-                <Briefcase size={40} style={{ opacity: 0.2, margin: '0 auto 16px' }} />
-                <h4 style={{ fontSize: '1.1rem', color: 'var(--text-main)', margin: 0 }}>No Purchased Packages</h4>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '8px' }}>You have not enrolled in any study visa packages yet.</p>
+            {/* Right Column: Transaction History ledger (Sticky sidebar styling) */}
+            <div style={{
+              flex: '0.3 1 350px',
+              minWidth: '350px',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--glass-border)',
+              borderRadius: '24px',
+              padding: '24px',
+              backdropFilter: 'blur(20px)',
+              alignSelf: 'stretch',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                <Compass size={18} style={{ color: 'var(--accent-primary)' }} />
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>Transaction & Invoices</h3>
               </div>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-                {activePackages.map((pkg) => (
-                  <div
-                    key={pkg.key}
-                    style={{
-                      background: 'var(--glass-bg)',
-                      border: '1px solid var(--glass-border)',
-                      borderRadius: '24px',
-                      padding: '24px',
-                      backdropFilter: 'blur(20px)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '20px',
-                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
-                    }}
-                  >
-                    {/* Package Title & Percent */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
-                        <h4 style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--text-main)', margin: 0 }}>{pkg.name}</h4>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          {pkg.track} track
-                        </span>
-                      </div>
-                      <span style={{
-                        fontSize: '0.68rem',
-                        background: pkg.remaining === 0 ? 'rgba(16, 185, 129, 0.15)' : 'var(--accent-glow)',
-                        color: pkg.remaining === 0 ? '#10b981' : 'var(--accent-secondary)',
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        fontWeight: 900,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        {pkg.percent}% Paid
-                      </span>
-                    </div>
 
-                    {/* Progress Bar */}
-                    <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{
-                        width: `${pkg.percent}%`,
-                        height: '100%',
-                        background: pkg.remaining === 0 ? '#10b981' : 'linear-gradient(90deg, #10b981, var(--accent-primary))',
-                        borderRadius: '3px',
-                        boxShadow: pkg.remaining === 0 ? '0 0 10px rgba(16,185,129,0.3)' : '0 0 10px rgba(99, 102, 241, 0.3)'
-                      }} />
-                    </div>
-
-                    {/* Package Cost Ledger Breakdown */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', background: 'rgba(0,0,0,0.15)', padding: '14px', borderRadius: '18px', border: '1px solid var(--glass-border)' }}>
-                      <div>
-                        <span style={{ display: 'block', fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>Total Cost</span>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-main)' }}>₹{Math.round(pkg.total).toLocaleString('en-IN')}</span>
-                      </div>
-                      <div>
-                        <span style={{ display: 'block', fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>Paid</span>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#10b981' }}>₹{Math.round(pkg.paid).toLocaleString('en-IN')}</span>
-                      </div>
-                      <div>
-                        <span style={{ display: 'block', fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>Remaining</span>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 800, color: pkg.remaining === 0 ? '#10b981' : '#f59e0b' }}>
-                          {pkg.remaining === 0 ? '✓ Paid' : `₹${Math.round(pkg.remaining).toLocaleString('en-IN')}`}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Specific Phase Stepper Component */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '18px', border: '1px solid var(--glass-border)' }}>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        Phases Funding Progress
-                      </span>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', padding: '0 8px' }}>
-                        {/* Background progress line */}
-                        <div style={{ position: 'absolute', left: '16px', right: '16px', height: '2px', background: 'rgba(255,255,255,0.05)', zIndex: 0 }} />
-
-                        {pkg.phases.map((ph, idx) => {
-                          const isCurrentPending = pkg.nextPendingPhase?.phaseNumber === ph.phaseNumber;
-
-                          return (
-                            <div key={idx} style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                              <div
-                                style={{
-                                  width: '24px', height: '24px', borderRadius: '50%',
-                                  background: ph.isPaid ? 'rgba(16, 185, 129, 0.2)' : isCurrentPending ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255,255,255,0.03)',
-                                  border: ph.isPaid ? '1px solid #10b981' : isCurrentPending ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)',
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  color: ph.isPaid ? '#10b981' : isCurrentPending ? 'var(--accent-primary)' : 'var(--text-muted)',
-                                  fontSize: '0.65rem', fontWeight: 900
-                                }}
-                                title={`${ph.title}: ${ph.isPaid ? 'Paid' : 'Pending'}`}
-                              >
-                                {ph.isPaid ? '✓' : ph.phaseNumber}
-                              </div>
-                              <span style={{ fontSize: '0.6rem', fontWeight: 700, color: ph.isPaid ? '#10b981' : isCurrentPending ? 'var(--text-main)' : 'var(--text-muted)' }}>
-                                Ph {ph.phaseNumber}
-                              </span>
-                              <span style={{ fontSize: '0.55rem', fontWeight: 800, color: ph.isPaid ? '#10b981' : 'var(--text-dim)', letterSpacing: '0.5px' }}>
-                                ₹{ph.totalAmount.toLocaleString('en-IN')}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Pending Phase Checkout Action */}
-                    {pkg.nextPendingPhase ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <span style={{ fontWeight: 800, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <Sparkles size={12} style={{ color: pkg.nextPendingPhase.color }} /> Next Phase Pending:
-                          </span>
-                          <span style={{ color: 'var(--text-main)', fontWeight: 700 }}>Phase {pkg.nextPendingPhase.phaseNumber} - {pkg.nextPendingPhase.title}</span>
-                          <span style={{ fontSize: '0.68rem', fontStyle: 'italic' }}>({pkg.nextPendingPhase.desc})</span>
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                  <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto 12px' }} />
+                  <span>Loading records...</span>
+                </div>
+              ) : payments.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(0,0,0,0.1)', borderRadius: '20px', border: '1px solid var(--glass-border)' }}>
+                  <CreditCard size={32} style={{ opacity: 0.2, margin: '0 auto 12px' }} />
+                  <h4 style={{ fontSize: '0.9rem', color: 'var(--text-main)', margin: 0 }}>No payments found</h4>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', maxHeight: '420px', overflowY: 'auto', paddingRight: '4px' }}>
+                  {payments.map((payment, i) => (
+                    <motion.div
+                      key={payment._id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      style={{
+                        borderBottom: i === payments.length - 1 ? 'none' : '1px solid var(--glass-border)',
+                        padding: '12px 0',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '8px'
+                      }}
+                    >
+                      {/* Top Row: Icon + Name (Wrapped, no clipping) */}
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', width: '100%' }}>
+                        <div style={{
+                          width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
+                          background: payment.status === 'captured' ? 'rgba(16, 185, 129, 0.1)' : (payment.status === 'failed' || payment.status === 'created') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                          color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2px'
+                        }}>
+                          {payment.status === 'captured' ? <CheckCircle size={14} /> : (payment.status === 'failed' || payment.status === 'created') ? <XCircle size={14} /> : <Clock size={14} />}
                         </div>
 
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => handlePayPhase(pkg.nextPendingPhase, pkg.key)}
-                          disabled={payingIndex === `${pkg.key}_${pkg.nextPendingPhase.index}`}
-                          style={{
-                            background: `linear-gradient(90deg, ${pkg.nextPendingPhase.color}, ${pkg.nextPendingPhase.color}dd)`,
-                            color: '#000',
-                            border: 'none',
-                            borderRadius: '12px',
-                            padding: '10px 16px',
-                            fontSize: '0.75rem',
-                            fontWeight: 900,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '6px',
-                            boxShadow: `0 4px 12px ${pkg.nextPendingPhase.glowColor}`,
-                            transition: 'all 0.3s',
-                            marginTop: '4px'
-                          }}
-                        >
-                          {payingIndex === `${pkg.key}_${pkg.nextPendingPhase.index}` ? (
-                            <>
-                              <Loader2 size={12} className="animate-spin" />
-                              <span>Processing...</span>
-                            </>
-                          ) : (
-                            <>
-                              <CreditCard size={12} />
-                              <span>Pay Phase {pkg.nextPendingPhase.phaseNumber} (₹{pkg.nextPendingPhase.totalAmount.toLocaleString('en-IN')})</span>
-                              <ArrowRight size={12} />
-                            </>
-                          )}
-                        </motion.button>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: '1.3', wordBreak: 'break-word' }}>
+                            {payment.itemName || 'Premium Service'}
+                          </div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px', display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                            <span>{new Date(payment.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                            <span style={{ color: 'var(--glass-border)' }}>|</span>
+                            <span style={{ fontFamily: 'monospace', fontSize: '0.62rem' }}>{payment.razorpayOrderId}</span>
+                          </div>
+                        </div>
                       </div>
-                    ) : (
-                      <div style={{
-                        background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.3)',
-                        borderRadius: '12px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '8px',
-                        color: '#10b981', fontSize: '0.75rem', fontWeight: 800, marginTop: '8px'
-                      }}>
-                        <ShieldCheck size={16} />
-                        <span>All Phases Fully Funded!</span>
-                      </div>
-                    )}
 
-                  </div>
-                ))}
-              </div>
-            )}
+                      {/* Bottom Row: Amount & Invoice Trigger */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '42px' }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)' }}>₹{payment.amount}</span>
+                          <span style={{
+                            fontSize: '0.6rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px',
+                            color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b'
+                          }}>
+                            ({payment.status === 'created' ? 'failed' : payment.status})
+                          </span>
+                        </div>
+
+                        {payment.status === 'captured' && (
+                          <button
+                            onClick={() => generateInvoice(payment)}
+                            style={{
+                              background: 'var(--accent-glow)', border: 'none', color: 'var(--accent-secondary)',
+                              padding: '4px 10px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '4px',
+                              cursor: 'pointer', fontWeight: 800, fontSize: '0.65rem', transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-primary)'; e.currentTarget.style.color = '#fff'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--accent-glow)'; e.currentTarget.style.color = 'var(--accent-secondary)'; }}
+                          >
+                            <Download size={10} /> Invoice
+                          </button>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-
-          {/* Right Column: Transaction History ledger (Sticky sidebar styling) */}
-          <div style={{
-            flex: '0.3 1 350px',
-            minWidth: '350px',
-            background: 'var(--glass-bg)',
-            border: '1px solid var(--glass-border)',
-            borderRadius: '24px',
-            padding: '24px',
-            backdropFilter: 'blur(20px)',
-            alignSelf: 'stretch',
-            display: 'flex',
-            flexDirection: 'column'
-          }}>
+        ) : (
+          /* Full width layout for admin/counselors/partners */
+          <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
               <Compass size={18} style={{ color: 'var(--accent-primary)' }} />
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>Transaction & Invoices</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>Transaction & Invoices History</h3>
             </div>
 
             {loading ? (
@@ -869,12 +976,13 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
                 <span>Loading records...</span>
               </div>
             ) : payments.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(0,0,0,0.1)', borderRadius: '20px', border: '1px solid var(--glass-border)' }}>
-                <CreditCard size={32} style={{ opacity: 0.2, margin: '0 auto 12px' }} />
-                <h4 style={{ fontSize: '0.9rem', color: 'var(--text-main)', margin: 0 }}>No payments found</h4>
+              <div style={{ textAlign: 'center', padding: '60px', background: 'var(--glass-bg)', borderRadius: '20px', border: '1px solid var(--glass-border)' }}>
+                <CreditCard size={48} style={{ opacity: 0.2, margin: '0 auto 16px' }} />
+                <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', margin: 0 }}>No payments found</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '8px' }}>Your transaction history is empty.</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', maxHeight: '720px', overflowY: 'auto', paddingRight: '4px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {payments.map((payment, i) => (
                   <motion.div
                     key={payment._id}
@@ -882,46 +990,50 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     style={{
-                      borderBottom: i === payments.length - 1 ? 'none' : '1px solid var(--glass-border)',
-                      padding: '12px 0',
+                      background: 'var(--glass-bg)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid var(--glass-border)',
+                      borderRadius: '20px',
+                      padding: '20px',
                       display: 'flex',
-                      flexDirection: 'column',
-                      gap: '8px'
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
                     }}
+                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'var(--accent-primary)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
                   >
-                    {/* Top Row: Icon + Name (Wrapped, no clipping) */}
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <div style={{
-                        width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
+                        width: '44px', height: '44px', borderRadius: '12px',
                         background: payment.status === 'captured' ? 'rgba(16, 185, 129, 0.1)' : (payment.status === 'failed' || payment.status === 'created') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
                         color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2px'
+                        display: 'flex', alignItems: 'center', justifyContent: 'center'
                       }}>
-                        {payment.status === 'captured' ? <CheckCircle size={14} /> : (payment.status === 'failed' || payment.status === 'created') ? <XCircle size={14} /> : <Clock size={14} />}
+                        {payment.status === 'captured' ? <CheckCircle size={20} /> : (payment.status === 'failed' || payment.status === 'created') ? <XCircle size={20} /> : <Clock size={20} />}
                       </div>
 
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: '1.3', wordBreak: 'break-word' }}>
+                      <div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '4px' }}>
                           {payment.itemName || 'Premium Service'}
                         </div>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px', display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
-                          <span>{new Date(payment.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                          <span style={{ color: 'var(--glass-border)' }}>|</span>
-                          <span style={{ fontFamily: 'monospace', fontSize: '0.62rem' }}>{payment.razorpayOrderId}</span>
+                        <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} /> {new Date(payment.createdAt).toLocaleString()}</span>
+                          <span>Order: {payment.razorpayOrderId}</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Bottom Row: Amount & Invoice Trigger */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '42px' }}>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)' }}>₹{payment.amount}</span>
-                        <span style={{
-                          fontSize: '0.6rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px',
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)' }}>₹{payment.amount.toFixed(2)}</div>
+                        <div style={{
+                          fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2px',
                           color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b'
                         }}>
-                          ({payment.status === 'created' ? 'failed' : payment.status})
-                        </span>
+                          {payment.status === 'created' ? 'failed' : payment.status}
+                        </div>
                       </div>
 
                       {payment.status === 'captured' && (
@@ -929,13 +1041,13 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
                           onClick={() => generateInvoice(payment)}
                           style={{
                             background: 'var(--accent-glow)', border: 'none', color: 'var(--accent-secondary)',
-                            padding: '4px 10px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '4px',
-                            cursor: 'pointer', fontWeight: 800, fontSize: '0.65rem', transition: 'all 0.2s'
+                            padding: '10px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px',
+                            cursor: 'pointer', fontWeight: 700, fontSize: '0.8rem', transition: 'all 0.2s'
                           }}
                           onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-primary)'; e.currentTarget.style.color = '#fff'; }}
                           onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--accent-glow)'; e.currentTarget.style.color = 'var(--accent-secondary)'; }}
                         >
-                          <Download size={10} /> Invoice
+                          <Download size={14} /> Download Invoice
                         </button>
                       )}
                     </div>
@@ -944,104 +1056,10 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
               </div>
             )}
           </div>
-        </div>
-      ) : (
-        /* Full width layout for admin/counselors/partners */
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-            <Compass size={18} style={{ color: 'var(--accent-primary)' }} />
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>Transaction & Invoices History</h3>
-          </div>
+        )}
 
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-              <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto 12px' }} />
-              <span>Loading records...</span>
-            </div>
-          ) : payments.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px', background: 'var(--glass-bg)', borderRadius: '20px', border: '1px solid var(--glass-border)' }}>
-              <CreditCard size={48} style={{ opacity: 0.2, margin: '0 auto 16px' }} />
-              <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', margin: 0 }}>No payments found</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '8px' }}>Your transaction history is empty.</p>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {payments.map((payment, i) => (
-                <motion.div
-                  key={payment._id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  style={{
-                    background: 'var(--glass-bg)',
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid var(--glass-border)',
-                    borderRadius: '20px',
-                    padding: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'var(--accent-primary)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{
-                      width: '44px', height: '44px', borderRadius: '12px',
-                      background: payment.status === 'captured' ? 'rgba(16, 185, 129, 0.1)' : (payment.status === 'failed' || payment.status === 'created') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                      color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                      {payment.status === 'captured' ? <CheckCircle size={20} /> : (payment.status === 'failed' || payment.status === 'created') ? <XCircle size={20} /> : <Clock size={20} />}
-                    </div>
-
-                    <div>
-                      <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '4px' }}>
-                        {payment.itemName || 'Premium Service'}
-                      </div>
-                      <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} /> {new Date(payment.createdAt).toLocaleString()}</span>
-                        <span>Order: {payment.razorpayOrderId}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)' }}>₹{payment.amount.toFixed(2)}</div>
-                      <div style={{
-                        fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginTop: '2px',
-                        color: payment.status === 'captured' ? '#10b981' : (payment.status === 'failed' || payment.status === 'created') ? '#ef4444' : '#f59e0b'
-                      }}>
-                        {payment.status === 'created' ? 'failed' : payment.status}
-                      </div>
-                    </div>
-
-                    {payment.status === 'captured' && (
-                      <button
-                        onClick={() => generateInvoice(payment)}
-                        style={{
-                          background: 'var(--accent-glow)', border: 'none', color: 'var(--accent-secondary)',
-                          padding: '10px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px',
-                          cursor: 'pointer', fontWeight: 700, fontSize: '0.8rem', transition: 'all 0.2s'
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-primary)'; e.currentTarget.style.color = '#fff'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--accent-glow)'; e.currentTarget.style.color = 'var(--accent-secondary)'; }}
-                      >
-                        <Download size={14} /> Download Invoice
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-    </div>
+      </div>
+    </>
   );
 };
 

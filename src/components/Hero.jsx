@@ -180,7 +180,7 @@ export const Hero = () => {
               >
                 <FeatureItem Icon={School} title="Public Universities" />
                 <FeatureItem Icon={Star} title="Zero Tuition" />
-                <FeatureItem Icon={Globe} title="100% Scholarship" />
+                <FeatureItem Icon={Globe} title="Top Scholarships" />
                 <FeatureItem Icon={GraduationCap} title="Expert Mentors" />
               </motion.div>
 

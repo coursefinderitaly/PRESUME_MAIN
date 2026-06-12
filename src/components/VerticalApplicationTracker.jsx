@@ -1,151 +1,162 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Dot, ArrowRight } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
+import { PORTAL_LAYOUT_CONFIG } from '../Dashboard';
+import { useTheme } from '../ThemeContext';
 
-const VerticalApplicationTracker = ({ profile }) => {
-  // Enforce strictly linear progress logic
-  const isProfileComplete = Boolean(profile?.firstName && profile?.phone && profile?.nationality);
-  const isAcademicComplete = isProfileComplete && Boolean(profile?.tenthPercentage || profile?.twelfthPercentage || profile?.ugCGPA);
-  const hasApplied = isAcademicComplete && Boolean(profile?.appliedUniversities?.length > 0 || profile?.savedUniversitiesCart?.length > 0);
-  const isDocsUploaded = hasApplied && Boolean(profile?.documentZip || profile?.documents?.length > 0);
-  const isApproved = isDocsUploaded && Boolean(profile?.applicationStatus === 'approved' || profile?.applicationStatus === 'enrolled');
+const STEPS = [
+  { id: 1, label: 'Profile',   desc: 'Personal info'    },
+  { id: 2, label: 'Academic',  desc: 'Education records' },
+  { id: 3, label: 'Apply',     desc: 'University picks'  },
+  { id: 4, label: 'Docs',      desc: 'Upload files'      },
+  { id: 5, label: 'Decision',  desc: 'Await result'      },
+];
 
-  const steps = [
-    { id: 1, label: 'Profile', completed: isProfileComplete, active: !isProfileComplete },
-    { id: 2, label: 'Academic', completed: isAcademicComplete, active: isProfileComplete && !isAcademicComplete },
-    { id: 3, label: 'Apply', completed: hasApplied, active: isAcademicComplete && !hasApplied },
-    { id: 4, label: 'Documents', completed: isDocsUploaded, active: hasApplied && !isDocsUploaded },
-    { id: 5, label: 'Decision', completed: isApproved, active: isDocsUploaded && !isApproved }
-  ];
+const VerticalApplicationTracker = ({ profile, sidebarExpanded }) => {
+  const { activeTheme } = useTheme();
+  const isProfileComplete  = Boolean(profile?.firstName && profile?.phone);
+  const isAcademicComplete = isProfileComplete && Boolean(profile?.highestLevelOfEducation || profile?.educationHistory?.some(edu => edu.universityName || edu.percentageObtained));
+  const hasApplied         = isAcademicComplete && Boolean(profile?.country || profile?.appliedUniversities?.length > 0 || profile?.savedUniversitiesCart?.length > 0);
+  const isDocsUploaded     = hasApplied && Boolean(profile?.documentZip || profile?.documents?.length > 0 || profile?.passportNo);
+  const isApproved         = isDocsUploaded && Boolean(profile?.studentStatus === 'Active' || profile?.applicationStatus === 'approved');
 
-  const [hoveredStep, setHoveredStep] = useState(null);
+  const isSubmitted        = Boolean(profile?.documentZip || profile?.applications?.length > 0);
 
-  // Calculate active progress height for the connecting line
-  const activeIndex = steps.findIndex(s => s.active);
-  const progressPercentage = activeIndex === -1 ? 100 : (activeIndex / (steps.length - 1)) * 100;
+  const completed = isSubmitted
+    ? [true, true, true, true, true]
+    : [isProfileComplete, isAcademicComplete, hasApplied, isDocsUploaded, isApproved];
+  const activeIdx  = completed.findIndex(c => !c);
+  const doneCount  = completed.filter(Boolean).length;
+  const pct        = Math.round((doneCount / STEPS.length) * 100);
+  const lineH      = activeIdx === -1 ? 100 : (activeIdx / (STEPS.length - 1)) * 100;
+
+  const [hov, setHov] = useState(null);
 
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      whileHover={{
+        scale: 1.02,
+        boxShadow: 'var(--card-shadow)',
+        background: activeTheme === 'light' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(10, 10, 10, 0.6)',
+        borderColor: 'var(--accent-primary)'
+      }}
+      className="vertical-journey-tracker"
       style={{
-        width: '45px',
-        height: 'calc(91vh - 32px)',
-        margin: '16px 16px 16px 0',
-        background: 'var(--card-bg-solid)',
-        backdropFilter: 'blur(30px)',
-        WebkitBackdropFilter: 'blur(30px)',
-        border: '1px solid var(--glass-border)',
-        borderRadius: '24px',
+        position: 'relative',
+        flexShrink: 0,
+        width: PORTAL_LAYOUT_CONFIG.journeyTracker.width,
+        height: 'calc(100% - 80px)',
+        alignSelf: 'flex-start',
+        background: activeTheme === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(10, 10, 10, 0.4)',
+        backdropFilter: 'blur(30px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(30px) saturate(180%)',
+        border: activeTheme === 'light' ? '1px solid rgba(0, 0, 0, 0.05)' : '1px solid rgba(255, 255, 255, 0.05)',
+        borderRadius: '20px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '30px 0',
-        gap: '20px',
+        padding: '20px 0 16px',
+        gap: 0,
         zIndex: 90,
-        position: 'relative',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+        boxShadow: 'var(--card-shadow)',
+        overflow: 'visible',
       }}>
-      {/* Inner container for background effects to clip them inside rounded corners without clipping tooltips */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden', borderRadius: '24px', zIndex: 0, pointerEvents: 'none' }}>
-        {/* Animated Background Orbs */}
-        <motion.div
-          animate={{ y: [0, 50, 0], opacity: [0.05, 0.15, 0.05] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: 'absolute', top: '-10px', left: '-10px', width: '60px', height: '60px', background: 'var(--accent-primary)', filter: 'blur(20px)', borderRadius: '50%' }}
-        />
-        <motion.div
-          animate={{ y: [0, -50, 0], opacity: [0.05, 0.1, 0.05] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: 'absolute', bottom: '-10px', left: '-10px', width: '50px', height: '50px', background: 'var(--accent-secondary)', filter: 'blur(20px)', borderRadius: '50%' }}
-        />
+
+      {/* Background glow orbs */}
+      <div style={{ position:'absolute', inset:0, borderRadius:'20px', overflow:'hidden', pointerEvents:'none', zIndex:0 }}>
+        <motion.div animate={{ y:[0,30,0], opacity:[0.06,0.14,0.06] }} transition={{ duration:5, repeat:Infinity, ease:'easeInOut' }}
+          style={{ position:'absolute', top:'-10px', left:'-10px', width:'70px', height:'70px', background: activeTheme === 'light' ? '#3B82F6' : '#d97706', filter:'blur(22px)', borderRadius:'50%' }} />
+        <motion.div animate={{ y:[0,-30,0], opacity:[0.04,0.1,0.04] }} transition={{ duration:7, repeat:Infinity, ease:'easeInOut' }}
+          style={{ position:'absolute', bottom:'-10px', left:'-10px', width:'55px', height:'55px', background: activeTheme === 'light' ? '#60A5FA' : '#fcd34d', filter:'blur(20px)', borderRadius:'50%' }} />
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, writingMode: 'vertical-rl', transform: 'rotate(180deg)', fontSize: '0.55rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '10px' }}>
+      {/* "Journey" label */}
+      <div style={{ position:'relative', zIndex:1, writingMode:'vertical-rl', transform:'rotate(180deg)', fontSize:'0.5rem', fontWeight:800, color:'var(--text-dim)', letterSpacing:'3px', textTransform:'uppercase', marginBottom:'16px' }}>
         Journey
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', width: '100%', position: 'relative' }}>
+      {/* Steps + track */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-between', width:'100%', position:'relative', zIndex:1 }}>
 
-        {/* Background Track Line */}
-        <div style={{ position: 'absolute', top: '15px', bottom: '15px', width: '2px', background: 'var(--glass-border)', borderRadius: '2px', zIndex: 0 }}></div>
+        {/* Track background */}
+        <div style={{ position:'absolute', top:'12px', bottom:'12px', width:'2px', background: activeTheme === 'light' ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)', borderRadius:'2px' }} />
 
-        {/* Active Glow Track Line */}
+        {/* Animated progress fill */}
         <motion.div
           initial={{ height: 0 }}
-          animate={{ height: `${progressPercentage}%` }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          style={{ position: 'absolute', top: '15px', width: '2px', background: 'linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary))', borderRadius: '2px', zIndex: 0, boxShadow: '0 0 10px var(--accent-glow)' }}
+          animate={{ height: `${lineH}%` }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+          style={{ position:'absolute', top:'12px', width:'2px', background:'linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary))', borderRadius:'2px', boxShadow:'0 0 10px var(--accent-glow)' }}
         />
 
-        {steps.map((step, idx) => {
-          const isCompleted = step.completed;
-          const isActive = step.active;
-
+        {STEPS.map((step, idx) => {
+          const done   = completed[idx];
+          const active = activeIdx === idx;
           return (
-            <div
-              key={step.id}
-              onMouseEnter={() => setHoveredStep(step.id)}
-              onMouseLeave={() => setHoveredStep(null)}
-              style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'center', width: '100%', cursor: 'pointer' }}
-            >
-              <motion.div
-                whileHover={{ scale: 1.2 }}
+            <div key={step.id}
+              onMouseEnter={() => setHov(step.id)}
+              onMouseLeave={() => setHov(null)}
+              style={{ position:'relative', zIndex:1, display:'flex', justifyContent:'center', width:'100%', cursor:'pointer' }}>
+
+              {/* Node */}
+              <motion.div whileHover={{ scale: 1.25 }}
                 style={{
-                  width: isActive ? '20px' : '16px',
-                  height: isActive ? '20px' : '16px',
+                  width: active ? '22px' : '16px',
+                  height: active ? '22px' : '16px',
                   borderRadius: '50%',
-                  background: isCompleted ? 'var(--accent-primary)' : isActive ? 'var(--bg-primary)' : 'var(--glass-bg)',
-                  border: `2px solid ${isCompleted ? 'var(--accent-primary)' : isActive ? 'var(--accent-secondary)' : 'var(--glass-border)'}`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: isCompleted ? '#fff' : 'var(--text-muted)',
-                  boxShadow: isCompleted || isActive ? '0 0 12px var(--accent-glow)' : 'none',
-                  transition: 'all 0.3s'
+                  background: done ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))' : active ? 'var(--bg-primary)' : (activeTheme === 'light' ? 'rgba(0,0,0,0.05)' : 'rgba(128,128,128,0.1)'),
+                  border: `2px solid ${done ? 'var(--accent-primary)' : active ? 'var(--accent-secondary)' : (activeTheme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(128,128,128,0.2)')}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: done ? '0 0 14px var(--accent-glow)' : active ? '0 0 12px var(--accent-glow)' : 'none',
+                  transition: 'all 0.3s',
                 }}>
-                {isCompleted ? <Check size={10} strokeWidth={3} /> : isActive ? <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: '6px', height: '6px', background: 'var(--accent-secondary)', borderRadius: '50%', boxShadow: '0 0 8px var(--accent-secondary)' }} /> : null}
+                {done
+                  ? <Check size={9} strokeWidth={3} color="#fff" />
+                  : active
+                    ? <motion.div animate={{ scale:[1,1.6,1], opacity:[0.6,1,0.6] }} transition={{ duration:1.8, repeat:Infinity }}
+                        style={{ width:'6px', height:'6px', borderRadius:'50%', background:'var(--accent-secondary)', boxShadow:'0 0 8px var(--accent-secondary)' }} />
+                    : null}
               </motion.div>
 
-              {/* Minimal Tooltip */}
+              {/* Tooltip */}
               <AnimatePresence>
-                {hoveredStep === step.id && (
+                {hov === step.id && (
                   <motion.div
-                    initial={{ opacity: 0, x: 10, filter: 'blur(4px)' }}
-                    animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, x: 5, filter: 'blur(4px)' }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ opacity:0, x:8 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:6 }}
+                    transition={{ duration: 0.18 }}
                     style={{
-                      position: 'absolute',
-                      right: '35px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'rgba(10, 10, 15, 0.9)',
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      padding: '6px 12px',
-                      borderRadius: '8px',
-                      fontSize: '0.65rem',
-                      fontWeight: 600,
-                      color: 'var(--text-main)',
-                      whiteSpace: 'nowrap',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      boxShadow: '-4px 4px 15px rgba(0,0,0,0.3)',
-                      pointerEvents: 'none'
-                    }}
-                  >
-                    {step.label}
-                    {isCompleted && <Check size={10} color="var(--accent-primary)" />}
-                    {isActive && <ArrowRight size={10} color="var(--accent-secondary)" />}
+                      position:'absolute', right:'60px', top:'50%', transform:'translateY(-50%)',
+                      background:'var(--bg-secondary)', backdropFilter:'blur(12px)',
+                      border:'1px solid var(--glass-border)', borderRadius:'10px',
+                      padding:'7px 12px', whiteSpace:'nowrap', pointerEvents:'none',
+                      boxShadow:'var(--card-shadow)',
+                    }}>
+                    <div style={{ fontSize:'0.68rem', fontWeight:700, color:'var(--text-main)', marginBottom:'2px', display:'flex', alignItems:'center', gap:'6px' }}>
+                      {step.label}
+                      {done && <Check size={10} color="var(--accent-primary)" />}
+                      {active && <ArrowRight size={10} color="var(--accent-secondary)" />}
+                    </div>
+                    <div style={{ fontSize:'0.58rem', color:'var(--text-muted)', fontWeight:500 }}>{step.desc}</div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           );
         })}
+      </div>
+
+      {/* Progress % */}
+      <div style={{ position:'relative', zIndex:1, marginTop:'12px', display:'flex', flexDirection:'column', alignItems:'center', gap:'2px' }}>
+        <div style={{ fontSize:'0.75rem', fontWeight:900, color: pct > 0 ? 'var(--accent-primary)' : 'var(--text-dim)', textShadow: pct > 0 ? '0 0 10px var(--accent-glow)' : 'none' }}>
+          {pct}%
+        </div>
+        <div style={{ width:'24px', height:'3px', background: activeTheme === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)', borderRadius:'2px', overflow:'hidden' }}>
+          <motion.div initial={{ width:0 }} animate={{ width:`${pct}%` }} transition={{ duration:1.2, ease:'easeOut' }}
+            style={{ height:'100%', background:'linear-gradient(to right, var(--accent-primary), var(--accent-secondary))', borderRadius:'2px' }} />
+        </div>
       </div>
     </motion.div>
   );

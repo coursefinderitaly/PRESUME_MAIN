@@ -362,29 +362,7 @@ const AuthModal = ({ type: initialProp, onClose }) => {
               </motion.div>
             )}
 
-            {/* Segmented Control for Role (Signup only) */}
-            {type === 'signup' && (
-              <div className="flex p-1 bg-slate-950/50 border border-slate-800 rounded-xl mb-8 relative">
-                <button
-                  type="button"
-                  onClick={() => handleInputChange('role', 'student')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all relative z-10 ${formData.role === 'student' ? 'text-white' : 'text-slate-400 hover:text-slate-300'}`}
-                >
-                  Student
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleInputChange('role', 'freelancer')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all relative z-10 ${formData.role === 'freelancer' ? 'text-white' : 'text-slate-400 hover:text-slate-300'}`}
-                >
-                  Freelancer
-                </button>
-                {/* Active Pill Background */}
-                <div
-                  className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-slate-800 rounded-lg shadow transition-all duration-300 z-0 ${formData.role === 'freelancer' ? 'translate-x-full left-[calc(0%+4px)]' : 'left-1'}`}
-                />
-              </div>
-            )}
+
 
             <form onSubmit={type === 'login' ? handleLogin : (e) => e.preventDefault()} className="flex-1 flex flex-col">
               {type === 'login' ? (

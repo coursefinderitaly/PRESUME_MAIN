@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const CouponSchema = new mongoose.Schema({
   code: { type: String, required: true, unique: true },
   userEmail: { type: String, required: true },
+  phone: { type: String },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   name: { type: String },
   destination: { type: String },

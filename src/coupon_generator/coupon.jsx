@@ -195,9 +195,11 @@ const CouponTicket = ({ name, destination, voucherCode, date }) => {
 // TICKET ANIMATION — Left → Right (printer slot faces RIGHT)
 // ============================================================
 
-export default function CouponPage({ onClose, defaultName = '', defaultEmail = '' }) {
+export default function CouponPage({ onClose, defaultName = '', defaultEmail = '', onGenerateSuccess }) {
   const [name, setName] = useState(defaultName);
   const [email, setEmail] = useState(defaultEmail);
+  const [countryCode, setCountryCode] = useState('+91');
+  const [phone, setPhone] = useState('');
   const [destination, setDestination] = useState('ITALY');
   const [animationState, setAnimationState] = useState('idle');
   const [voucherCode, setVoucherCode] = useState('ITA-PE----');
@@ -207,19 +209,29 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
   const [errorMsg, setErrorMsg] = useState('');
 
   // Responsive Ticket Scale System
-  const [scaleFactor, setScaleFactor] = useState(0.24);
+  const [scaleFactor, setScaleFactor] = useState(0.22);
   useEffect(() => {
     function handleResize() {
       const width = window.innerWidth;
-      if (width < 1000) {
-        setScaleFactor(0.15); // mobile/tablet
-      } else if (width < 1300) {
-        setScaleFactor(0.19); // medium-small
-      } else if (width < 1600) {
-        setScaleFactor(0.22); // medium
+      let newScale = 0.22;
+      
+      // Calculate exactly how much space we have to the right of the printer
+      if (width >= 900) {
+        // card max width is 1440, padding is 80
+        const cardWidth = Math.min(width - 80, 1440);
+        // left panel = 320, printer = 520, padding = 40. Total = 880.
+        // We allow the ticket to overlap the printer by 20% of its width.
+        const egress = cardWidth - 880;
+        newScale = egress / (2560 * 0.8); // 80% of ticket needs to fit in egress
       } else {
-        setScaleFactor(0.24); // default
+        const egress = width - 80 - 450; // mobile approximation
+        newScale = egress / (2560 * 0.8);
       }
+      
+      if (newScale > 0.23) newScale = 0.23;
+      if (newScale < 0.11) newScale = 0.11;
+      
+      setScaleFactor(newScale);
     }
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -235,7 +247,7 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
   const TICKET_STAGE1_X = -ticketWidth * 0.7;
   const TICKET_STAGE2_X = -ticketWidth * 0.4;
   const TICKET_STAGE3_X = -ticketWidth * 0.15;
-  const TICKET_FINAL_X = 20; // Positive = ticket rests fully outside, no longer underlapping
+  const TICKET_FINAL_X = -ticketWidth * 0.15; // Negative = ticket rests partially inside the printer, overlapping it
   const TICKET_FINAL_Y = -35; // Adjust this to shift the voucher vertically
 
   const handleCopy = () => {
@@ -257,6 +269,11 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
       return;
     }
 
+    if (!phone.trim()) {
+      setErrorMsg('Please enter a valid phone number.');
+      return;
+    }
+
     setErrorMsg('');
     setIsGenerating(true);
 
@@ -265,7 +282,7 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, destination, email })
+        body: JSON.stringify({ name, destination, email, phone: `${countryCode}${phone}` })
       });
 
       const data = await response.json();
@@ -291,6 +308,7 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
       setTimeout(() => {
         setAnimationState('printed');
         setIsGenerating(false);
+        if (onGenerateSuccess) onGenerateSuccess(data.coupon);
       }, 3500);
 
     } catch (err) {
@@ -363,6 +381,31 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
               onChange={e => setEmail(e.target.value)}
               disabled={animationState !== 'idle' || isGenerating || !!defaultEmail}
               style={{ opacity: defaultEmail ? 0.7 : 1 }}
+            />
+          </div>
+          <div className="input-group" style={{ display: 'flex', gap: '8px' }}>
+            <select
+              value={countryCode}
+              onChange={e => setCountryCode(e.target.value)}
+              disabled={animationState !== 'idle' || isGenerating}
+              style={{ width: '100px', flexShrink: 0, padding: '16px 12px' }}
+            >
+              <option value="+91">IN (+91)</option>
+              <option value="+1">US (+1)</option>
+              <option value="+44">UK (+44)</option>
+              <option value="+61">AU (+61)</option>
+              <option value="+971">AE (+971)</option>
+            </select>
+            <input
+              type="tel"
+              placeholder="Phone Number"
+              value={phone}
+              onChange={e => {
+                const val = e.target.value.replace(/\D/g, '');
+                if (val.length <= 10) setPhone(val);
+              }}
+              disabled={animationState !== 'idle' || isGenerating}
+              style={{ flex: 1 }}
             />
           </div>
           <div className="input-group">

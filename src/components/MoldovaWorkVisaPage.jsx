@@ -53,24 +53,20 @@ export default function MoldovaWorkVisaPage() {
 
       <section className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-10 px-4 overflow-hidden z-10">
         <div className="max-w-[1400px] mx-auto relative z-10 w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1">
-            <div className="flex items-center justify-center lg:justify-start gap-3 mb-6 bg-white/[0.03] backdrop-blur-md px-6 py-2 rounded-full border border-white/10 w-fit">
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 lg:pl-12 xl:pl-24">
+            <div className="flex items-center justify-center lg:justify-start gap-3 mb-4 bg-white/[0.03] backdrop-blur-md px-6 py-2 rounded-full border border-white/10 w-fit">
               <Link to="/services/work-visa" className="text-gray-400 text-xs font-medium hover:text-blue-400 transition-colors uppercase tracking-wider">Visas</Link>
               <span className="text-gray-600">•</span>
               <span className="text-blue-400 text-xs font-black tracking-widest uppercase">Moldova</span>
             </div>
 
-            <div className="inline-flex items-center justify-center lg:justify-start gap-4 mb-4">
-              <span className="text-6xl md:text-7xl lg:text-8xl drop-shadow-2xl">🇲🇩</span>
-            </div>
-
             <p className="text-blue-400 text-[10px] md:text-xs font-black tracking-[0.4em] uppercase mb-3">Transit Program</p>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[1.05] mb-6 tracking-tighter">
-              Transit <br className="hidden md:block" /><span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">Moldova</span>
+            <h1 className="flex items-center justify-center lg:justify-start gap-4 flex-wrap text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] mb-4 tracking-tighter">
+              <span>Transit</span> <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">Moldova</span> <span className="drop-shadow-2xl">🇲🇩</span>
             </h1>
 
-            <p className="text-gray-400 text-base md:text-lg max-w-2xl leading-relaxed mb-8">
+            <p className="text-gray-400 text-base md:text-lg max-w-2xl leading-relaxed mb-6">
               Fast and reliable transit processing. Secure a Type B transit visa for your journey with streamlined electronic applications.
             </p>
 

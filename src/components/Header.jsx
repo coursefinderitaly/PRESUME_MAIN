@@ -10,6 +10,7 @@ import logo from '../assets/logo.png';
 export const Header = ({ compact = false }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(null);
+  const navigate = useNavigate();
   
   // Use refs for scroll state to prevent React re-renders on scroll
   const headerRef = useRef(null);
@@ -126,22 +127,25 @@ export const Header = ({ compact = false }) => {
                     path: '/services/work-visa',
                     subItems: [
                       { label: 'Czech Republic', desc: 'Strong industrial & tech base', path: '/services/work-visa/czech-republic' },
-                      { label: 'Germany', desc: 'Skilled worker migration', path: '/services/work-visa/germany' },
+
                       { label: 'Moldova (Transit)', desc: 'Schengen transit solutions', path: '/services/work-visa/moldova' },
                       { label: 'Poland', desc: 'Work permit & settlement', path: '/services/work-visa/poland' },
                       { label: 'Portugal', desc: 'Agricultural & hospitality roles', path: '/services/work-visa/portugal' },
                       { label: 'Serbia', desc: 'Emerging tech & business hub', path: '/services/work-visa/serbia' }
                     ]
-                  }
+                  },
+                  { label: 'Apple Academy', desc: 'Premium coding & design programs', path: '/apple-academy' }
                 ]}
               />,
               <NavItem
-                key="programs"
+                key="mbbs"
                 isDarkHeader={isDarkHeader}
                 compact={compact}
-                title="PROGRAMS"
+                title="MBBS"
                 items={[
-                  { label: 'Apple Academy', desc: 'Premium coding & design programs', path: '/apple-academy' }
+                  { label: 'MBBS in Italy', desc: 'Study Medicine in Italy', path: '/mbbs/italy' },
+                  { label: 'MBBS in Georgia', desc: 'Affordable & English Medium', path: '/mbbs/georgia' },
+                  { label: 'MBBS in Russia', desc: 'Govt. Subsidized Education', path: '/mbbs/russia' }
                 ]}
               />,
 
@@ -181,8 +185,8 @@ export const Header = ({ compact = false }) => {
           <div className="hidden md:flex items-center gap-6">
             {[
               <motion.button
-                key="coursefinder"
-                onClick={() => setModalOpen('signup')}
+                key="feestructure"
+                onClick={() => navigate('/fee-structure')}
                 className="font-black text-[15px] tracking-[0.18em] bg-gradient-to-r from-amber-300 via-orange-200 to-rose-300 bg-clip-text text-transparent hover:from-amber-200 hover:via-white hover:to-rose-200 hover:scale-105 transition-all duration-300 uppercase border-b border-amber-400/40 pb-0.5"
                 animate={{ 
                   scale: [1, 1.04, 1], 
@@ -194,7 +198,7 @@ export const Header = ({ compact = false }) => {
                   ease: "easeInOut" 
                 }}
               >
-                COURSEFINDER
+                FEE STRUCTURE
               </motion.button>,
               <div key="auth-group" className="flex items-center gap-1.5 p-1 bg-white/[0.04] border border-white/10 rounded-full backdrop-blur-md">
                 {/* LOGIN ITEM */}
@@ -211,12 +215,6 @@ export const Header = ({ compact = false }) => {
                       className="px-4 py-2.5 text-[10px] font-black tracking-widest text-white/60 hover:text-cyan-400 hover:bg-white/5 rounded-xl transition-all uppercase text-left"
                     >
                       As Student
-                    </button>
-                    <button
-                      onClick={() => setModalOpen({ type: 'login', role: 'freelancer' })}
-                      className="px-4 py-2.5 text-[10px] font-black tracking-widest text-white/60 hover:text-cyan-400 hover:bg-white/5 rounded-xl transition-all uppercase text-left"
-                    >
-                      As Freelancer
                     </button>
                   </div>
                 </div>
@@ -237,12 +235,6 @@ export const Header = ({ compact = false }) => {
                       className="px-4 py-2.5 text-[10px] font-black tracking-widest text-white/60 hover:text-cyan-400 hover:bg-white/5 rounded-xl transition-all uppercase text-left"
                     >
                       As Student
-                    </button>
-                    <button
-                      onClick={() => setModalOpen({ type: 'signup', role: 'freelancer' })}
-                      className="px-4 py-2.5 text-[10px] font-black tracking-widest text-white/60 hover:text-cyan-400 hover:bg-white/5 rounded-xl transition-all uppercase text-left"
-                    >
-                      As Freelancer
                     </button>
                   </div>
                 </div>
@@ -290,15 +282,22 @@ export const Header = ({ compact = false }) => {
                     { label: 'Student Visa', subItems: ['Italy', 'Australia', 'Canada', 'France', 'Germany', 'Ireland', 'United Kingdom', 'United States'] },
                     { label: 'Work Visa', path: '/services/work-visa', subItems: [
                       { label: 'Czech Republic', path: '/services/work-visa/czech-republic' },
-                      { label: 'Germany', path: '/services/work-visa/germany' },
+
                       { label: 'Moldova (Transit)', path: '/services/work-visa/moldova' },
                       { label: 'Poland', path: '/services/work-visa/poland' },
                       { label: 'Portugal', path: '/services/work-visa/portugal' },
                       { label: 'Serbia', path: '/services/work-visa/serbia' }
-                    ] }
+                    ] },
+                    { label: 'Apple Academy', path: '/apple-academy' }
                   ]
                 },
-                { title: 'PROGRAMS', items: [{ label: 'Apple Academy', path: '/apple-academy' }] },
+                {
+                  title: 'MBBS', items: [
+                    { label: 'MBBS in Italy', path: '/mbbs/italy' },
+                    { label: 'MBBS in Georgia', path: '/mbbs/georgia' },
+                    { label: 'MBBS in Russia', path: '/mbbs/russia' }
+                  ]
+                },
                 {
                   title: 'FORMS', items: [
                     { label: 'Business Partner Registration', path: '/partner-registration' },
@@ -313,46 +312,28 @@ export const Header = ({ compact = false }) => {
 
             <div className="mt-auto pt-10 grid grid-cols-1 gap-4">
               <button
-                onClick={() => { setModalOpen('signup'); setMobileMenuOpen(false); }}
+                onClick={() => { navigate('/fee-structure'); setMobileMenuOpen(false); }}
                 className="py-6 border-2 border-amber-400/20 hover:border-amber-400/50 transition-all rounded-2xl bg-black/40 flex items-center justify-center overflow-hidden relative group"
               >
-                <span className="font-black text-[28px] tracking-[0.2em] bg-gradient-to-r from-amber-300 via-orange-200 to-rose-300 bg-clip-text text-transparent uppercase">COURSEFINDER</span>
+                <span className="font-black text-[28px] tracking-[0.2em] bg-gradient-to-r from-amber-300 via-orange-200 to-rose-300 bg-clip-text text-transparent uppercase">FEE STRUCTURE</span>
                 <div className="absolute inset-0 bg-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
-              <Link
-                to="/test"
-                target="_blank"
-                className="py-5 font-black tracking-widest text-white border-2 border-white/10 hover:border-cyan-400 transition-colors rounded-2xl bg-white/5 flex items-center justify-center"
-              >
-                VIEW ANIMATION
-              </Link>
-              <div className="grid grid-cols-2 gap-3">
+
+              <div className="grid grid-cols-1 gap-3">
                 <button
                   onClick={() => { setModalOpen({ type: 'login', role: 'student' }); setMobileMenuOpen(false); }}
                   className="py-4 font-black tracking-wider text-xs text-white border border-white/10 hover:border-cyan-400 transition-colors rounded-xl bg-white/5 uppercase"
                 >
                   Student Login
                 </button>
-                <button
-                  onClick={() => { setModalOpen({ type: 'login', role: 'freelancer' }); setMobileMenuOpen(false); }}
-                  className="py-4 font-black tracking-wider text-xs text-white border border-white/10 hover:border-cyan-400 transition-colors rounded-xl bg-white/5 uppercase"
-                >
-                  Freelancer Login
-                </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 <button
                   onClick={() => { setModalOpen({ type: 'signup', role: 'student' }); setMobileMenuOpen(false); }}
                   className="py-4 font-black tracking-wider text-xs text-primary-blue bg-accent-gold hover:bg-yellow-400 transition-all rounded-xl uppercase shadow-md"
                 >
                   Student Sign Up
-                </button>
-                <button
-                  onClick={() => { setModalOpen({ type: 'signup', role: 'freelancer' }); setMobileMenuOpen(false); }}
-                  className="py-4 font-black tracking-wider text-xs text-primary-blue bg-accent-gold hover:bg-yellow-400 transition-all rounded-xl uppercase shadow-md"
-                >
-                  Freelancer Sign Up
                 </button>
               </div>
             </div>
@@ -390,8 +371,13 @@ const NavItem = ({ title, items, isDarkHeader, compact }) => {
       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,transform,visibility] duration-250 ease-out translate-y-2 group-hover:translate-y-0 z-50 will-change-[transform,opacity] transform-gpu">
         <div className="relative rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.8),0_0_20px_rgba(255,255,255,0.03)] p-3 overflow-hidden border border-white/10 bg-[#0a0d18]">
 
+          {/* Ambient Inner Glows */}
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+          <div className="absolute -top-16 -right-16 w-32 h-32 bg-amber-500/10 blur-[40px] pointer-events-none" />
+          <div className="absolute -bottom-16 -left-16 w-32 h-32 bg-cyan-500/10 blur-[40px] pointer-events-none" />
+
           {/* Top gradient border line */}
-          <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent" />
 
           <div className="relative z-10">
             {items.map((item, idx) => (
@@ -435,8 +421,13 @@ const NavItem = ({ title, items, isDarkHeader, compact }) => {
               className="absolute top-0 left-[calc(100%+0.4rem)] w-[26rem] rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.8),0_0_20px_rgba(255,255,255,0.03)] p-3 z-[60] overflow-hidden transform-gpu max-h-[calc(100vh-100px)] border border-white/10 bg-[#0a0d18]"
             >
 
+              {/* Ambient Inner Glows */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-rose-500/5 pointer-events-none" />
+              <div className="absolute -top-20 -left-20 w-40 h-40 bg-cyan-500/10 blur-[50px] pointer-events-none" />
+              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-rose-500/10 blur-[50px] pointer-events-none" />
+
               {/* Top gradient border line */}
-              <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+              <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
 
               <div className="relative z-10">
                 <div className="px-4 py-3 border-b border-white/10 mb-3 flex items-center gap-2">

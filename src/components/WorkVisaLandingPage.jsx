@@ -21,21 +21,7 @@ const countries = [
     badgeColor: 'bg-red-500/20 text-red-400 border-red-500/30',
     path: '/services/work-visa/czech-republic',
   },
-  {
-    id: 'germany',
-    name: 'Germany',
-    flagUrl: 'https://flagcdn.com/w80/de.png',
-    tagline: 'Skilled worker migration',
-    highlight: '€1,500 – €3,500+/month',
-    color: 'from-yellow-500/20 to-red-700/20',
-    accent: '#F5C518',
-    border: 'border-yellow-500/30',
-    glow: 'shadow-yellow-500/10',
-    jobs: ['Warehouse Staff', 'Logistics', 'Manufacturing'],
-    badge: 'Most Popular',
-    badgeColor: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-    path: '/services/work-visa/germany',
-  },
+
   {
     id: 'poland',
     name: 'Poland',

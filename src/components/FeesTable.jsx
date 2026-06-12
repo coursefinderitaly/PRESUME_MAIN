@@ -50,6 +50,7 @@ const FeesTable = ({
     showUniversityFees = false,
     isDark = false,
     hideControls = false,
+    hideLevelSwitcher = false,
     externalLevel,
     onExternalLevelChange,
     externalUniType,
@@ -80,6 +81,7 @@ const FeesTable = ({
     const [error, setError] = useState('');
     const [showPromoSuccess, setShowPromoSuccess] = useState(false);
     const [showCouponModal, setShowCouponModal] = useState(false);
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
 
     // Internal state overrides if props are absent
     const [internalLevel, setInternalLevel] = useState('Bachelors');
@@ -205,13 +207,15 @@ const FeesTable = ({
         window.location.href = '/dashboard';
     };
 
-    const shouldHidePrice = uniType === 'Private' || !(countryId === 'germany' || countryId === 'italy');
+    const shouldHidePrice = false;
+
+    const isCombinedPhase = isCombined50 || (externalLevel === 'MBBS' && countryId === 'italy');
 
     const feeStructure = [
         {
             title: "Admission Process",
             phaseIndex: 0,
-            price: shouldHidePrice ? null : `₹ ${getPhasePrice(0).toLocaleString('en-IN')}`,
+            price: (shouldHidePrice || getPhasePrice(0) === undefined) ? null : `₹ ${getPhasePrice(0).toLocaleString('en-IN')}`,
             icon: <FileText className="text-cyan-400" size={18} />,
             color: "from-cyan-500/10 to-blue-500/10 hover:border-cyan-400/40",
             glow: "bg-cyan-500/10",
@@ -225,25 +229,24 @@ const FeesTable = ({
         ...(currentPhases[1] > 0 ? [{
             title: "After Admission",
             phaseIndex: 1,
-            price: shouldHidePrice ? null : `₹ ${getPhasePrice(1).toLocaleString('en-IN')}`,
+            price: (shouldHidePrice || getPhasePrice(1) === undefined) ? null : `₹ ${getPhasePrice(1).toLocaleString('en-IN')}`,
             icon: <CheckCircle2 className="text-indigo-400" size={18} />,
             color: "from-indigo-500/10 to-purple-500/10 hover:border-indigo-400/40",
             glow: "bg-indigo-500/10",
             items: [
                 "University Acceptance Letter",
                 "Interview Guidance",
-                "Pre Enrollment Assistance",
                 "Documents Verification"
             ]
         }] : []),
-        ...(isCombined50 ? [{
-            title: "Pre-enrollment, Scholarship & Visa",
+        ...(isCombinedPhase ? [{
+            title: isCombined50 ? "Pre-enrollment, Scholarship & Visa" : "Visa & Documentation Processing",
             phaseIndex: 'combined',
-            price: shouldHidePrice ? null : `₹ ${getPhasePrice(2).toLocaleString('en-IN')}`,
+            price: (shouldHidePrice || getPhasePrice(2) === undefined) ? null : `₹ ${getPhasePrice(2).toLocaleString('en-IN')}`,
             icon: <Compass className="text-yellow-400" size={18} />,
             color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
             glow: "bg-yellow-500/10",
-            items: [
+            items: isCombined50 ? [
                 "HRD attestation assistance",
                 "Apostille, translation & legalization",
                 "Courier charges",
@@ -255,16 +258,29 @@ const FeesTable = ({
                 "Visa Documents Assistance",
                 "Accommodation proof assistance",
                 "Mock interview prep"
+            ] : [
+                "Visa application assistance",
+                "Visa Documents Assistance",
+                "Accommodation proof assistance",
+                "Mock interview prep",
+                "Final Documentation",
+                "Pre-departure briefing"
             ]
         }] : [
             {
-                title: "Pre-enrollment & Scholarship Docs",
+                title: (countryId === 'georgia' || countryId === 'russia') ? "Pre-enrollment & Documentation" : "Pre-enrollment & Scholarship Docs",
                 phaseIndex: 2,
-                price: shouldHidePrice ? null : `₹ ${getPhasePrice(2).toLocaleString('en-IN')}`,
+                price: (shouldHidePrice || getPhasePrice(2) === undefined) ? null : `₹ ${getPhasePrice(2).toLocaleString('en-IN')}`,
                 icon: <Compass className="text-yellow-400" size={18} />,
                 color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
                 glow: "bg-yellow-500/10",
-                items: [
+                items: (countryId === 'georgia' || countryId === 'russia') ? [
+                    "HRD attestation assistance",
+                    "Apostille, translation & legalization",
+                    "Courier charges",
+                    "Pre-enrollment filing",
+                    "Document translation"
+                ] : [
                     "HRD attestation assistance",
                     "Apostille, translation & legalization",
                     "Courier charges",
@@ -274,13 +290,20 @@ const FeesTable = ({
                 ]
             },
             ...(currentPhases[3] > 0 ? [{
-                title: "Scholarship application + Visa process",
+                title: (countryId === 'georgia' || countryId === 'russia') ? "Visa application & Pre-departure process" : "Scholarship application + Visa process",
                 phaseIndex: 3,
-                price: shouldHidePrice ? null : `₹ ${getPhasePrice(3).toLocaleString('en-IN')}`,
+                price: (shouldHidePrice || getPhasePrice(3) === undefined) ? null : `₹ ${getPhasePrice(3).toLocaleString('en-IN')}`,
                 icon: <ShieldCheck className="text-emerald-400" size={18} />,
                 color: "from-emerald-500/10 to-teal-500/10 hover:border-emerald-400/40",
                 glow: "bg-emerald-500/10",
-                items: [
+                items: (countryId === 'georgia' || countryId === 'russia') ? [
+                    "Visa application assistance",
+                    "Visa Documents Assistance",
+                    "Accommodation proof assistance",
+                    "Final Documentation",
+                    "Pre-departure briefing",
+                    "Mock interview prep"
+                ] : [
                     "Scholarship application & submission",
                     "Visa application assistance",
                     "Visa Documents Assistance",
@@ -359,8 +382,8 @@ const FeesTable = ({
                                     {/* Header */}
                                     <div style={{
                                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        padding: '14px 18px', background: 'rgba(255, 255, 255, 0.02)',
-                                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)', flexShrink: 0
+                                        padding: '14px 18px', background: 'var(--input-bg)',
+                                        borderBottom: '1px solid var(--glass-border)', flexShrink: 0
                                     }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                             <span style={{
@@ -377,7 +400,7 @@ const FeesTable = ({
                                                     margin: 0,
                                                     fontSize: '16px',
                                                     fontWeight: 800,
-                                                    color: '#ffffff',
+                                                    color: 'var(--text-main)',
                                                     lineHeight: 1.2,
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
                                                     opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
@@ -387,9 +410,9 @@ const FeesTable = ({
                                         {displayPrice && (
                                             <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                                                 {applied && discountedPrice < originalPrice && (
-                                                    <p style={{ margin: 0, fontSize: '11px', color: muted, textDecoration: 'line-through', fontWeight: 700 }}>₹{Math.round(originalPrice).toLocaleString('en-IN')}</p>
+                                                    <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-main)', textDecoration: 'line-through', fontWeight: 700 }}>₹{Math.round(originalPrice).toLocaleString('en-IN')}</p>
                                                 )}
-                                                <p style={{
+                                                <p className={idx === 0 && isPhase1Paid ? "success-text" : ""} style={{
                                                     margin: 0,
                                                     fontSize: '18px',
                                                     fontWeight: 950,
@@ -397,23 +420,23 @@ const FeesTable = ({
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
                                                     opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
                                                 }}>₹{Math.round(discountedPrice).toLocaleString('en-IN')}</p>
-                                                <p style={{
+                                                <p className={idx === 0 && isPhase1Paid ? "success-text-muted" : ""} style={{
                                                     margin: 0,
                                                     fontSize: '10px',
-                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.5)' : 'rgba(255, 255, 255, 0.4)',
-                                                    fontWeight: 700,
+                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.5)' : 'var(--text-main)',
+                                                    fontWeight: 800,
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none'
                                                 }}>+ 18% GST (₹{Math.round(discountedPrice * 0.18).toLocaleString('en-IN')})</p>
-                                                <p style={{
+                                                <p className={idx === 0 && isPhase1Paid ? "success-text-muted" : ""} style={{
                                                     margin: 0,
                                                     fontSize: '11px',
-                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'rgba(255, 255, 255, 0.8)',
+                                                    color: (idx === 0 && isPhase1Paid) ? 'rgba(16, 185, 129, 0.6)' : 'var(--text-main)',
                                                     fontWeight: 900,
                                                     textDecoration: (idx === 0 && isPhase1Paid) ? 'line-through' : 'none',
                                                     opacity: (idx === 0 && isPhase1Paid) ? 0.6 : 1
                                                 }}>Total: ₹{Math.round(discountedPrice * 1.18).toLocaleString('en-IN')}</p>
                                                 {idx === 0 && isPhase1Paid && (
-                                                    <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.5px' }}>✓ PAID</span>
+                                                    <span className="success-text" style={{ fontSize: '10px', color: '#10b981', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.5px' }}>✓ PAID</span>
                                                 )}
                                             </div>
                                         )}
@@ -424,14 +447,14 @@ const FeesTable = ({
                                         {item.items.map((lineItem, lIdx) => (
                                             <div key={lIdx} style={{
                                                 display: 'flex', alignItems: 'center', gap: '8px',
-                                                background: 'rgba(255, 255, 255, 0.015)',
-                                                border: '1px solid rgba(255, 255, 255, 0.03)',
+                                                background: 'var(--glass-highlight)',
+                                                border: '1px solid var(--glass-border)',
                                                 borderRadius: '8px',
                                                 padding: '8px 12px'
                                             }}>
                                                 <CheckCircle2 size={15} color={phaseAccent} style={{ flexShrink: 0 }} />
                                                 <span style={{
-                                                    fontSize: '13px', color: 'rgba(255, 255, 255, 0.85)',
+                                                    fontSize: '13px', color: 'var(--text-main)',
                                                     fontWeight: 600, lineHeight: 1.35
                                                 }}>
                                                     {lineItem}
@@ -456,6 +479,20 @@ const FeesTable = ({
                     gap: '10px',
                     flexShrink: 0
                 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-muted)' }}>Total Processing Fee:</span>
+                        <span style={{ fontSize: '20px', fontWeight: 900, color: 'var(--accent-primary, #0ea5e9)' }}>
+                            {applied ? (
+                                <>
+                                    <span style={{ textDecoration: 'line-through', opacity: 0.5, fontSize: '14px', marginRight: '8px' }}>₹ {totalFee.toLocaleString('en-IN')}</span>
+                                    ₹ {discountedTotal.toLocaleString('en-IN')}
+                                </>
+                            ) : (
+                                `₹ ${totalFee.toLocaleString('en-IN')}`
+                            )}
+                        </span>
+                        <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>+ 18% GST</span>
+                    </div>
                     {applied && (
                         <motion.div
                             initial={{ opacity: 0, y: 5 }}
@@ -498,14 +535,17 @@ const FeesTable = ({
                         </motion.div>
                     )}
                     <motion.button
+                        className={isPhase1Paid ? "success-btn" : ""}
                         whileHover={isPhase1Paid ? {} : { scale: 1.02 }} whileTap={isPhase1Paid ? {} : { scale: 0.97 }}
                         onClick={handlePayNowClick}
                         style={{
                             width: '100%', maxWidth: '400px', padding: '14px', borderRadius: '12px', cursor: isPhase1Paid ? 'default' : 'pointer',
-                            background: isPhase1Paid ? 'rgba(16, 185, 129, 0.2)' : '#16a34a', color: isPhase1Paid ? '#10b981' : '#fff', fontSize: '16px', fontWeight: 900,
+                            background: isPhase1Paid ? (isLight ? '#059669' : 'rgba(16, 185, 129, 0.2)') : '#16a34a',
+                            color: isPhase1Paid ? (isLight ? '#ffffff' : '#10b981') : '#fff',
+                            fontSize: '16px', fontWeight: 900,
                             letterSpacing: '0.5px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                             boxShadow: isPhase1Paid ? 'none' : '0 4px 14px rgba(22,163,74,0.4)', boxSizing: 'border-box',
-                            border: isPhase1Paid ? '1px solid rgba(16, 185, 129, 0.4)' : 'none'
+                            border: isPhase1Paid ? (isLight ? '1px solid #047857' : '1px solid rgba(16, 185, 129, 0.4)') : 'none'
                         }}
                     >
                         {isPhase1Paid ? (
@@ -593,20 +633,22 @@ const FeesTable = ({
                 </motion.div>
 
                 {/* Level Switcher (Now below and centered) */}
-                <div className="flex flex-wrap justify-center gap-3">
-                    {['Bachelors', 'Masters', 'MBBS'].map((level) => (
-                        <button
-                            key={level}
-                            onClick={() => setSelectedLevel(level)}
-                            className={`px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 border-2 ${selectedLevel === level
-                                ? 'bg-accent-gold border-accent-gold text-black shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] scale-105'
-                                : 'bg-white/[0.05] border-white/10 text-white/60 hover:border-white/30 hover:text-white hover:bg-white/10'
-                                }`}
-                        >
-                            {level}
-                        </button>
-                    ))}
-                </div>
+                {!hideLevelSwitcher && (
+                    <div className="flex flex-wrap justify-center gap-3">
+                        {['Bachelors', 'Masters', 'MBBS'].filter(level => !(countryId === 'germany' && level === 'MBBS')).map((level) => (
+                            <button
+                                key={level}
+                                onClick={() => setSelectedLevel(level)}
+                                className={`px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 border-2 ${selectedLevel === level
+                                    ? 'bg-accent-gold border-accent-gold text-black shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] scale-105'
+                                    : 'bg-white/[0.05] border-white/10 text-white/60 hover:border-white/30 hover:text-white hover:bg-white/10'
+                                    }`}
+                            >
+                                {level}
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Two Column Side-By-Side Layout */}
@@ -654,16 +696,16 @@ const FeesTable = ({
                                                             ₹ {Math.round(originalPrice).toLocaleString('en-IN')}
                                                         </span>
                                                     )}
-                                                    <span className={`text-lg font-black text-accent-gold tracking-tight ${(idx === 0 && isPhase1Paid) ? 'line-through text-emerald-500' : ''}`}>
+                                                    <span className={`text-lg font-black text-accent-gold tracking-tight ${(idx === 0 && isPhase1Paid) ? 'line-through text-emerald-500 success-text' : ''}`}>
                                                         ₹ {Math.round(discountedPrice).toLocaleString('en-IN')}
                                                     </span>
                                                 </div>
-                                                <div className={`text-right text-[10px] text-gray-400 font-bold leading-normal ${(idx === 0 && isPhase1Paid) ? 'text-gray-500' : ''}`}>
+                                                <div className={`text-right text-[10px] text-gray-400 font-bold leading-normal ${(idx === 0 && isPhase1Paid) ? 'text-gray-500 success-text-muted' : ''}`}>
                                                     <p className={`m-0 select-none ${(idx === 0 && isPhase1Paid) ? 'line-through' : ''}`}>+ 18% GST (₹ {Math.round(discountedPrice * 0.18).toLocaleString('en-IN')})</p>
-                                                    <p className={`m-0 text-white font-extrabold select-none ${(idx === 0 && isPhase1Paid) ? 'line-through text-white/40' : ''}`}>Total: ₹ {Math.round(discountedPrice * 1.18).toLocaleString('en-IN')}</p>
+                                                    <p className={`m-0 text-white font-extrabold select-none ${(idx === 0 && isPhase1Paid) ? 'line-through text-white/40 success-text-muted' : ''}`}>Total: ₹ {Math.round(discountedPrice * 1.18).toLocaleString('en-IN')}</p>
                                                 </div>
                                                 {idx === 0 && isPhase1Paid && (
-                                                    <span className="text-[10px] text-emerald-400 font-black uppercase tracking-wider mt-1">✓ PAID</span>
+                                                    <span className="text-[10px] text-emerald-400 success-text font-black uppercase tracking-wider mt-1">✓ PAID</span>
                                                 )}
                                             </>
                                         )}
@@ -691,7 +733,7 @@ const FeesTable = ({
                         whileHover={isPhase1Paid ? {} : { scale: 1.02 }}
                         whileTap={isPhase1Paid ? {} : { scale: 0.98 }}
                         onClick={handlePayNowClick}
-                        className={`w-full mt-2 py-5 rounded-2xl font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all duration-300 text-sm ${isPhase1Paid ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 cursor-default shadow-none' : 'bg-gradient-to-r from-accent-gold via-yellow-400 to-amber-500 text-black shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] hover:shadow-[0_20px_40px_-10px_rgba(245,158,11,0.7)]'}`}
+                        className={`w-full mt-2 py-5 rounded-2xl font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all duration-300 text-sm ${isPhase1Paid ? (isLight ? 'bg-emerald-600 border border-emerald-700 text-white shadow-md' : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-none cursor-default') : 'bg-gradient-to-r from-accent-gold via-yellow-400 to-amber-500 text-black shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] hover:shadow-[0_20px_40px_-10px_rgba(245,158,11,0.7)]'}`}
                     >
                         {isPhase1Paid ? (
                             <>
@@ -943,6 +985,13 @@ const FeesTable = ({
                 </div>,
                 document.body
             )}
+
+            {/* --- LIGHT THEME OVERRIDES --- */}
+            <style>{`
+                [data-theme="light"] .success-text { color: #047857 !important; opacity: 1 !important; }
+                [data-theme="light"] .success-text-muted { color: #047857 !important; opacity: 0.9 !important; }
+                [data-theme="light"] .success-btn { background: #059669 !important; border: 1px solid #047857 !important; color: #ffffff !important; font-weight: 900 !important; }
+            `}</style>
         </div>
     );
 };

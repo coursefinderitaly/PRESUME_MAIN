@@ -512,6 +512,7 @@
   padding: 40px;
   box-sizing: border-box;
   z-index: 9999;
+  overflow-x: hidden; /* Prevent the ticket from creating horizontal scrollbars */
 }
 
 .voucher-dashboard-card {
@@ -733,9 +734,9 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  /* ← horizontal */
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Align left to give maximum room for the ticket */
+  padding-left: 40px; /* Give some breathing room from the settings panel */
   gap: 0;
   z-index: 1;
   width: 100%;

@@ -192,6 +192,7 @@ const AdminCoupons = () => {
                 </th>
                 <th style={{ padding: '16px', borderBottom: '1px solid var(--glass-border)' }}>Code</th>
                 <th style={{ padding: '16px', borderBottom: '1px solid var(--glass-border)' }}>Student Email</th>
+                <th style={{ padding: '16px', borderBottom: '1px solid var(--glass-border)' }}>Phone</th>
                 <th style={{ padding: '16px', borderBottom: '1px solid var(--glass-border)' }}>Generated On</th>
                 <th style={{ padding: '16px', borderBottom: '1px solid var(--glass-border)' }}>Valid Until</th>
                 <th style={{ padding: '16px', borderBottom: '1px solid var(--glass-border)' }}>Status</th>
@@ -206,6 +207,7 @@ const AdminCoupons = () => {
                   </td>
                   <td style={{ padding: '16px', fontWeight: 'bold', color: 'var(--accent-primary)' }}>{c.code}</td>
                   <td style={{ padding: '16px', color: 'var(--text-main)' }}>{c.userEmail}</td>
+                  <td style={{ padding: '16px', color: 'var(--text-main)' }}>{c.phone || 'N/A'}</td>
                   <td style={{ padding: '16px', color: 'var(--text-muted)' }}>{new Date(c.createdAt).toLocaleDateString()}</td>
                   <td style={{ padding: '16px', color: new Date(c.validUntil) < new Date() ? '#ef4444' : 'var(--text-main)' }}>
                     {new Date(c.validUntil).toLocaleString()}
@@ -253,7 +255,7 @@ const AdminCoupons = () => {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan="7" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>No coupons found.</td>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>No coupons found.</td>
                 </tr>
               )}
             </tbody>

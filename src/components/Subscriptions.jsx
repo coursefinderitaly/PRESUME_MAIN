@@ -11,6 +11,7 @@ import { getPhases } from '../config/feesHelper';
 import { COUPONS } from '../config/coupons';
 import { countryData } from '../data/countryData';
 import { useTheme } from '../ThemeContext';
+import useLocalLayoutScale from '../hooks/useLocalLayoutScale';
 
 const ConfettiBlast = () => {
   const particles = Array.from({ length: 30 });
@@ -51,35 +52,69 @@ const countriesComparisonData = [
     id: 'italy',
     name: 'Italy',
     flag: '🇮🇹',
-    subtitle: '100% Scholarships & Stipends',
-    univTuition: '€1,000 - €3,000 / yr',
+    subtitle: 'Top Scholarships & Stipends',
+    univTuition: 'No Tuition Fee',
     workRights: '12 Months Stay-back',
     benefits: [
-      'Need-based scholarships from regional governments covering tuition, accommodation, and offering a yearly €8,000 stipend.',
-      'Non-EU graduates can apply for a 12-month work visa.',
-      'Live in an \'outdoor classroom\' surrounded by thousands of years of history and art.',
-      'Access to prestigious, globally-ranked institutions with very low tuition fees.',
-      'With/Without IELTS. Full degree programs taught entirely in English.'
+      '€7,000 Stipend*/year',
+      '12-Month Post-Study Work Visa',
+      'Rich Culture, History & Art',
+      'Globally Ranked Universities',
+      'English-Taught Degrees (No IELTS Req.)'
     ],
-    themeColor: '#10b981',
-    glowColor: 'rgba(16, 185, 129, 0.15)'
+    themeColor: '#fbbf24',
+    glowColor: 'rgba(251, 191, 36, 0.15)'
+  },
+  {
+    id: 'georgia',
+    name: 'Georgia',
+    flag: '🇬🇪',
+    subtitle: 'Premier Medical Destination',
+    univTuition: '$4,000 - $8,000 / yr',
+    workRights: '1 Year Stay-back',
+    benefits: [
+      'WHO & NMC Recognized Universities',
+      'English-Taught MBBS Programs',
+      'No Entrance Exams (No IELTS/TOEFL)',
+      'High FMGE Passing Rate',
+      'European Standard of Living'
+    ],
+    themeColor: '#ef4444',
+    glowColor: 'rgba(239, 68, 68, 0.15)'
+  },
+  {
+    id: 'russia',
+    name: 'Russia',
+    flag: '🇷🇺',
+    subtitle: 'World-Class Medical Education',
+    univTuition: '$3,000 - $6,000 / yr',
+    workRights: 'Work Alongside Study',
+    benefits: [
+      'Top Ranked Medical Universities',
+      'Highly Subsidized Education',
+      'English-Taught MBBS Programs',
+      'WHO, NMC, ECFMG Recognized',
+      'Advanced Clinical Training'
+    ],
+    themeColor: '#3b82f6',
+    glowColor: 'rgba(59, 130, 246, 0.15)'
   },
   {
     id: 'germany',
     name: 'Germany',
     flag: '🇩🇪',
     subtitle: 'Zero Tuition & Tech Hub',
-    univTuition: '€1,500-€20,000 at Public Universities',
+    univTuition: '€1,500-€20,000 at Public/Private Universities',
     workRights: '18 Months Stay-back',
     benefits: [
-      'Most public universities charge no tuition, only a small semester contribution.',
-      'Generous post-study visa to find employment in Europe\'s largest economy.',
-      'Direct pathways to giants like VW, Siemens, and SAP.',
-      'Home to the Max Planck and Fraunhofer institutes.',
-      'Thousands of degrees fully taught in English.'
+      'Zero Tuition at Public Universities',
+      '18-Month Job Seeker Visa',
+      'Direct Pathways to Global Giants',
+      'World-Leading Research Institutes',
+      'Fully English-Taught Degrees'
     ],
-    themeColor: '#3b82f6',
-    glowColor: 'rgba(59, 130, 246, 0.15)'
+    themeColor: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.15)'
   },
   {
     id: 'france',
@@ -89,14 +124,14 @@ const countriesComparisonData = [
     univTuition: '€2,770 - €3,770 / yr',
     workRights: 'Up to 2 Years Stay-back',
     benefits: [
-      'Public universities have extremely low tuition fees subsidized by the state.',
-      'Access to elite, world-renowned Business and Engineering schools.',
-      'International students can apply for a state housing subsidy.',
-      'Up to 2-year job seeker visa for Master\'s graduates.',
-      'Live in a country famous for art, cuisine, and history.'
+      'Highly Subsidized Public Tuition',
+      'Elite Business & Engineering Schools',
+      'State-Funded Housing Subsidies',
+      '2-Year Job Seeker Visa (Masters)',
+      'Rich Art, Cuisine & History'
     ],
-    themeColor: '#a855f7',
-    glowColor: 'rgba(168, 85, 247, 0.15)'
+    themeColor: '#d97706',
+    glowColor: 'rgba(217, 119, 6, 0.15)'
   },
   {
     id: 'canada',
@@ -106,14 +141,14 @@ const countriesComparisonData = [
     univTuition: 'CAD 15,000 - 40,000 / yr',
     workRights: 'Up to 3 Years PGWP',
     benefits: [
-      'Clear points-based immigration system (Express Entry) favors international graduates.',
-      'Gain paid, professional work experience integrated into your degree.',
-      'Tuition is generally lower compared to the US and UK.',
-      'Consistently ranked as one of the safest countries globally.',
-      'Home to globally ranked institutions like UofT and UBC.'
+      'Clear Express Entry PR Pathways',
+      'Paid Co-op Work Experience',
+      'Affordable Tuition vs. US/UK',
+      'Ranked Among Safest Countries',
+      'Top Global Institutions (UofT, UBC)'
     ],
-    themeColor: '#ef4444',
-    glowColor: 'rgba(239, 68, 68, 0.15)'
+    themeColor: '#fbbf24',
+    glowColor: 'rgba(251, 191, 36, 0.15)'
   },
   {
     id: 'usa',
@@ -123,11 +158,11 @@ const countriesComparisonData = [
     univTuition: '$25,000 - $65,000 / yr',
     workRights: 'Up to 3 Years STEM OPT',
     benefits: [
-      'STEM graduates can work in the US for up to 3 years without an H1B visa.',
-      'Change majors and explore diverse subjects before declaring a focus.',
-      'Unmatched collegiate experience with sprawling campuses and sports.',
-      'Abundant RA/TA positions and merit scholarships available.',
-      'Build connections in the world\'s largest economy.'
+      'Up to 3-Year STEM OPT Work Visa',
+      'Flexible Majors & Curriculum',
+      'Unmatched Campus & Sports Life',
+      'High Availability of RA/TA Funding',
+      'Network in the World\'s Largest Economy'
     ],
     themeColor: '#f59e0b',
     glowColor: 'rgba(245, 158, 11, 0.15)'
@@ -140,14 +175,14 @@ const countriesComparisonData = [
     univTuition: '£15,000 - £35,000 / yr',
     workRights: '2 Years Graduate Route',
     benefits: [
-      'Save time and money with intensive one-year postgraduate degrees.',
-      'Stay in the UK for 2 years (3 for PhD) to work after graduating.',
-      'Access to 24 world-class, research-intensive universities.',
-      'Strict quality standards guarantee a premium education.',
-      'London and other cities are epicenters of finance, arts, and tech.'
+      'Intensive 1-Year Master\'s Degrees',
+      '2-Year Graduate Work Route',
+      '24 Russell Group Universities',
+      'Premium Academic Quality Standards',
+      'Epicenter of Finance & Tech'
     ],
-    themeColor: '#ec4899',
-    glowColor: 'rgba(236, 72, 153, 0.15)'
+    themeColor: '#d97706',
+    glowColor: 'rgba(217, 119, 6, 0.15)'
   },
   {
     id: 'australia',
@@ -157,14 +192,14 @@ const countriesComparisonData = [
     univTuition: 'AUD 30,000 - 50,000 / yr',
     workRights: 'Up to 4 Years Post-Study',
     benefits: [
-      'Work for up to 4 years post-graduation depending on your degree and location.',
-      'Access to world-renowned research-intensive universities.',
-      'Earn well while studying with part-time work rights.',
-      'Enjoy a safe, multicultural society with beautiful landscapes.',
-      'Degrees are recognized globally by top employers.'
+      'Up to 4-Year Post-Study Visa',
+      'World-Renowned Research Hubs',
+      'High Part-Time Wages for Students',
+      'Safe, Multicultural Environment',
+      'Globally Recognized Qualifications'
     ],
-    themeColor: '#06b6d4',
-    glowColor: 'rgba(6, 182, 212, 0.15)'
+    themeColor: '#fbbf24',
+    glowColor: 'rgba(251, 191, 36, 0.15)'
   },
   {
     id: 'ireland',
@@ -174,14 +209,14 @@ const countriesComparisonData = [
     univTuition: '€12,000 - €30,000 / yr',
     workRights: '2 Years Post-Study',
     benefits: [
-      'European headquarters for Google, Meta, Apple, and Pfizer.',
-      'Master\'s graduates can stay back for 2 years to find a job.',
-      'The only fully English-speaking country in the Eurozone.',
-      'Strong links between universities and industries.',
-      'Known for its welcoming people, safety, and rich heritage.'
+      'European HQ for Tech Giants',
+      '2-Year Stay-Back Visa for Masters',
+      '100% English-Speaking Eurozone',
+      'Strong Industry-University Links',
+      'Safe & Welcoming Environment'
     ],
-    themeColor: '#14b8a6',
-    glowColor: 'rgba(20, 184, 166, 0.15)'
+    themeColor: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.15)'
   }
 ];
 
@@ -315,10 +350,10 @@ const italyData = {
   ],
   tuitionCards: [
     {
-      university: "DSU State Scholarship (100% Subsidized)",
+      university: "DSU State Scholarship (Fully Subsidized)",
       description: "Most international students in public Italian universities qualify for the need-based DSU Scholarship, which completely waives university tuition and provides cost-of-living stipends.",
       rows: [
-        { year: "Tuition Fee Waiver", total: "100% FREE" },
+        { year: "Tuition Fee Waiver", total: "FUNDED" },
         { year: "Yearly Cash Stipend", total: "Up to €7,000 - €8,000 / yr" },
         { year: "Accommodation & Meals", total: "Free Dorms & Canteen" }
       ]
@@ -335,6 +370,7 @@ const italyData = {
 };
 
 const Subscriptions = ({ profile, refreshProfile }) => {
+  const layoutScale = useLocalLayoutScale(1536);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
@@ -376,21 +412,26 @@ const Subscriptions = ({ profile, refreshProfile }) => {
   const currentPhases = getPhases(countryId, 'Public', selectedProgram, activeCoupon);
   const discountedPrice = currentPhases[0];
 
-  // Calculate tax (18% GST for Italy/India academic processing)
-  const isItaly = countryId === 'italy';
-  const taxRate = isItaly ? 0.18 : 0;
+  // Calculate tax (18% GST for academic processing)
+  const taxRate = 0.18;
   const taxAmount = Math.round(discountedPrice * taxRate);
   const totalSecureCheckoutAmount = discountedPrice + taxAmount;
 
   const getProcessingFeeDetails = (cId) => {
-    const baseP = getPhases(cId, 'Public', selectedProgram, '')[0];
-    const discP = getPhases(cId, 'Public', selectedProgram, activeCoupon)[0];
-    const rate = cId === 'italy' ? 0.18 : 0;
+    const basePhases = getPhases(cId, 'Public', selectedProgram, '');
+    const discPhases = getPhases(cId, 'Public', selectedProgram, activeCoupon);
+    const baseP = basePhases.reduce((acc, curr) => acc + curr, 0);
+    const discP = discPhases.reduce((acc, curr) => acc + curr, 0);
+    const rate = 0.18;
 
     const baseT = Math.round(baseP * rate);
     const discT = Math.round(discP * rate);
 
     return {
+      baseP,
+      discP,
+      baseT,
+      discT,
       baseTotal: baseP + baseT,
       discTotal: discP + discT,
       hasDiscount: activeCoupon && discP < baseP
@@ -432,11 +473,18 @@ const Subscriptions = ({ profile, refreshProfile }) => {
       // Call backend to create Razorpay order securely
       const response = await fetch(`${API_BASE_URL}/payment/create-order`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
         body: JSON.stringify({
-          itemId: selectedProgram === 'MBBS' ? 'mbbs_fee' : 'bachelors_masters_fee',
-          userEmail: profile?.email || '',
-          couponCode: activeCoupon
+          itemId: 'dynamic_fee',
+          pricingParams: {
+            countryId: countryId,
+            uniType: 'Public',
+            selectedLevel: selectedProgram,
+            applied: !!activeCoupon,
+            couponCode: activeCoupon
+          },
+          userEmail: profile?.email || ''
         })
       });
 
@@ -511,11 +559,8 @@ const Subscriptions = ({ profile, refreshProfile }) => {
   ];
 
   return (
-    <div style={{ padding: '0px 0 40px 0', position: 'relative' }}>
+    <div style={{ padding: '0', position: 'relative', height: '100%', display: 'flex', flexDirection: 'column' }}>
       {showConfetti && <ConfettiBlast />}
-
-
-
 
       {/* Country Comparison Hub */}
       <div style={{
@@ -526,7 +571,12 @@ const Subscriptions = ({ profile, refreshProfile }) => {
         borderRadius: '32px',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        boxShadow: '0 20px 50px rgba(0,0,0,0.1)'
+        boxShadow: '0 20px 50px rgba(0,0,0,0.1)',
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        minHeight: 0,
+        zoom: Math.min(layoutScale, 1.2) * 0.9
       }}>
 
         {/* Hub Header */}
@@ -555,205 +605,225 @@ const Subscriptions = ({ profile, refreshProfile }) => {
           </p>
         </div>
 
-        {/* Comparison Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {countriesComparisonData.map((c) => {
-            const fee = getProcessingFeeDetails(c.id);
-            const isSelected = selectedCountry === c.id;
+        {/* Comparison Grid — flex layout to take remaining height */}
+        <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '16px',
+            height: '100%',
+            overflowY: 'auto',
+            overflowX: 'visible',
+            padding: '8px 4px 48px 4px',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'var(--accent-primary) transparent',
+          }}>
+            {countriesComparisonData.map((c) => {
+              const fee = getProcessingFeeDetails(c.id);
+              const isSelected = selectedCountry === c.id;
 
-            return (
-              <motion.div
-                key={c.id}
-                whileHover={{ y: -6, scale: 1.015 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                style={{
-                  background: isSelected ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.01)',
-                  border: isSelected ? `2px solid ${c.themeColor}` : '1px solid var(--glass-border)',
-                  boxShadow: isSelected ? `0 10px 30px ${c.glowColor}` : 'none',
-                  borderRadius: '24px',
-                  padding: '24px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                  transition: 'border-color 0.3s, box-shadow 0.3s',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-              >
-                {/* Active Glow Decorator */}
-                {isSelected && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '-40px',
-                    right: '-40px',
-                    width: '80px',
-                    height: '80px',
-                    borderRadius: '50%',
-                    background: c.themeColor,
-                    opacity: 0.15,
-                    filter: 'blur(20px)'
-                  }} />
-                )}
-
-                {/* Country Card Header */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                  <span style={{ fontSize: '2.5rem', lineHeight: 1 }}>{c.flag}</span>
-                  <div>
-                    <h3 style={{
-                      fontSize: '1.25rem',
-                      fontWeight: 800,
-                      color: 'var(--text-main)',
-                      margin: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}>
-                      {c.name}
-                    </h3>
-                    <span style={{
-                      fontSize: '0.75rem',
-                      color: c.themeColor,
-                      fontWeight: 700,
-                      display: 'block',
-                      marginTop: '2px'
-                    }}>
-                      {c.subtitle}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Micro Info Badges */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2.5 rounded-xl border border-white/10 bg-white/5">
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', tracking: '0.5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Landmark size={10} /> Tuition Cost
-                    </span>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)' }}>{c.univTuition}</span>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', tracking: '0.5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Briefcase size={10} /> Stay-back Visa
-                    </span>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)' }}>{c.workRights}</span>
-                  </div>
-                </div>
-
-                {/* Benefits Bullet Points */}
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px',
-                  flex: 1
-                }}>
-                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', tracking: '0.5px' }}>
-                    Key Study Advantages
-                  </span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {c.benefits.map((b, i) => (
-                      <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'start' }}>
-                        <Check size={12} color={c.themeColor} style={{ marginTop: '2px', flexShrink: 0, strokeWidth: 3 }} />
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{b}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div style={{ height: '1px', background: 'var(--glass-border)' }} />
-
-                {/* Elite Package Fee */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}>
-                  <div>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', tracking: '0.5px', display: 'block' }}>
-                      Elite Service Fee
-                    </span>
-                    <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>
-                      {c.id === 'italy' ? 'Inc. 18% Compliant GST' : 'Academic counseling fee'}
-                    </span>
-                  </div>
-
-                  <div style={{ textAlign: 'right' }}>
-                    {fee.hasDiscount ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                        <span style={{ fontSize: '0.7rem', textDecoration: 'line-through', opacity: 0.5, fontWeight: 700, color: 'var(--text-muted)' }}>
-                          ₹{fee.baseTotal.toLocaleString('en-IN')}
-                        </span>
-                        <span style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--accent-secondary)' }}>
-                          ₹{fee.discTotal.toLocaleString('en-IN')}
-                        </span>
-                      </div>
-                    ) : (
-                      <span style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--text-main)' }}>
-                        ₹{fee.baseTotal.toLocaleString('en-IN')}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Action button */}
-                <button
-                  onClick={async () => {
-                    setSelectedCountry(c.id);
-                    setPopupCountryId(c.id); // Open full fee structure popup!
-                    setPopupSelectedLevel(null); // Force user to choose level first
-
-                    // Blast confetti when target switched!
-                    setShowConfetti(true);
-                    setTimeout(() => setShowConfetti(false), 2000);
-
-                    // Save chosen country to database
-                    try {
-                      const res = await fetch(`${API_BASE_URL}/auth/update`, {
-                        method: 'PUT',
-                        credentials: 'include',
-                        headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
-                        body: JSON.stringify({ country: c.name })
-                      });
-                      if (res.ok && refreshProfile) {
-                        await refreshProfile();
-                      }
-                    } catch (err) {
-                      console.error("Failed to update profile country", err);
-                    }
-                  }}
+              return (
+                <motion.div
+                  key={c.id}
+                  whileHover={{ y: -5 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   style={{
-                    width: '100%',
-                    background: isSelected ? c.themeColor : 'transparent',
-                    color: isSelected ? '#000' : 'var(--text-main)',
-                    border: isSelected ? 'none' : '1px solid var(--glass-border)',
-                    borderRadius: '12px',
-                    padding: '10px 14px',
-                    fontSize: '0.75rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
+                    background: isSelected ? 'rgba(251, 191, 36, 0.06)' : 'rgba(255, 255, 255, 0.01)',
+                    border: isSelected ? `2px solid ${c.themeColor}` : '1px solid rgba(150, 150, 150, 0.3)',
+                    boxShadow: isSelected ? `0 12px 35px ${c.glowColor}` : 'none',
+                    borderRadius: '20px',
+                    padding: '22px 18px',
+                    minHeight: '420px',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    boxShadow: isSelected ? `0 4px 14px ${c.glowColor}` : 'none',
-                    transition: 'all 0.3s'
+                    flexDirection: 'column',
+                    gap: '14px',
+                    transition: 'all 0.3s ease',
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}
                 >
-                  {isSelected ? (
-                    <>
-                      <Award size={14} style={{ strokeWidth: 2.5 }} />
-                      <span>Target Active - View Fees</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Choose {c.name} & View Fees</span>
-                      <ArrowRight size={12} />
-                    </>
+                  {/* Active Glow Decorator */}
+                  {isSelected && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-40px',
+                      right: '-40px',
+                      width: '100px',
+                      height: '100px',
+                      borderRadius: '50%',
+                      background: c.themeColor,
+                      opacity: 0.15,
+                      filter: 'blur(25px)'
+                    }} />
                   )}
-                </button>
-              </motion.div>
-            );
-          })}
+
+                  {/* Country Card Header */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '2rem', lineHeight: 1 }}>{c.flag}</span>
+                    <div>
+                      <h3 style={{
+                        fontSize: '1.05rem',
+                        fontWeight: 800,
+                        color: 'var(--text-main)',
+                        margin: 0,
+                      }}>
+                        {c.name}
+                      </h3>
+                      <span className="country-theme-text" style={{
+                        fontSize: '0.7rem',
+                        color: c.themeColor,
+                        fontWeight: 700,
+                        display: 'block',
+                        marginTop: '2px'
+                      }}>
+                        {c.subtitle}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Micro Info Badges */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '8px 10px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.03)', background: 'rgba(255, 255, 255, 0.01)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Landmark size={10} /> Tuition
+                      </span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.univTuition}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Briefcase size={10} /> Visa
+                      </span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.workRights}</span>
+                    </div>
+                  </div>
+
+                  {/* Benefits Bullet Points */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1 }}>
+                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                      Key Advantages
+                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {c.benefits.slice(0, 3).map((b, i) => (
+                        <div key={i} style={{ display: 'flex', gap: '6px', alignItems: 'start' }}>
+                          <Check size={10} color={c.themeColor} className="country-theme-stroke" style={{ marginTop: '2.5px', flexShrink: 0, strokeWidth: 3 }} />
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>{b}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{ height: '1px', background: 'var(--glass-border)' }} />
+
+                  {/* Elite Package Fee */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, marginTop: 'auto' }}>
+                    <div>
+                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'block' }}>
+                        Elite Service
+                      </span>
+                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                        Processing fee
+                      </span>
+                    </div>
+
+                    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                      {fee.hasDiscount ? (
+                        <>
+                          <span style={{ fontSize: '0.65rem', textDecoration: 'line-through', opacity: 0.5, fontWeight: 700, color: 'var(--text-muted)' }}>
+                            ₹{fee.baseP.toLocaleString('en-IN')}
+                          </span>
+                          <span style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)' }}>
+                            ₹{fee.discP.toLocaleString('en-IN')}
+                          </span>
+                        </>
+                      ) : (
+                        <span style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)' }}>
+                          ₹{fee.baseP.toLocaleString('en-IN')}
+                        </span>
+                      )}
+                      
+                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                        + 18% GST (₹{(fee.hasDiscount ? fee.discT : fee.baseT).toLocaleString('en-IN')})
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Action button */}
+                  <button
+                    onClick={async () => {
+                      setSelectedCountry(c.id);
+                      setPopupCountryId(c.id);
+                      setPopupSelectedLevel(null);
+                      setShowConfetti(true);
+                      setTimeout(() => setShowConfetti(false), 2000);
+                      try {
+                        const res = await fetch(`${API_BASE_URL}/auth/update`, {
+                          method: 'PUT',
+                          credentials: 'include',
+                          headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
+                          body: JSON.stringify({ country: c.name })
+                        });
+                        if (res.ok && refreshProfile) {
+                          await refreshProfile();
+                        }
+                      } catch (err) {
+                        console.error("Failed to update profile country", err);
+                      }
+                    }}
+                    className={isSelected ? 'country-btn-active' : ''}
+                    style={{
+                      width: '100%',
+                      background: isSelected ? c.themeColor : 'transparent',
+                      color: isSelected ? '#0a0a0a' : 'var(--text-main)',
+                      border: isSelected ? 'none' : '1px solid var(--glass-border)',
+                      borderRadius: '10px',
+                      flexShrink: 0,
+                      padding: '9px 12px',
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '5px',
+                      boxShadow: isSelected ? `0 3px 10px ${c.glowColor}` : 'none',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    {isSelected ? (
+                      <>
+                        <Award size={13} style={{ strokeWidth: 2.5, color: '#0a0a0a' }} />
+                        <span style={{ color: '#0a0a0a' }}>Target Active - View Fees</span>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ color: 'var(--text-main)' }}>Choose {c.name} & View Fees</span>
+                        <ArrowRight size={10} />
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
+
+        <style>{`
+          [data-theme="light"] .country-theme-text[style*="color: #fbbf24"],
+          [data-theme="light"] .country-theme-text[style*="color: #f59e0b"],
+          [data-theme="light"] .country-theme-text[style*="color: #d97706"] {
+             color: #92400e !important;
+          }
+          [data-theme="light"] .country-theme-stroke[color="#fbbf24"],
+          [data-theme="light"] .country-theme-stroke[color="#f59e0b"],
+          [data-theme="light"] .country-theme-stroke[color="#d97706"] {
+             color: #92400e !important;
+          }
+          [data-theme="light"] .country-card-bg {
+             background: rgba(0, 0, 0, 0.02) !important;
+             border: 1px solid rgba(0, 0, 0, 0.15) !important;
+          }
+        `}</style>
       </div>
 
       {/* Premium Fee Structure Details Popup Modal */}
@@ -793,7 +863,8 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                 zIndex: 1,
                 width: '100%',
                 maxWidth: '1300px',
-                height: '96vh',
+                height: '88vh',
+                maxHeight: '900px',
                 background: 'var(--glass-bg)',
                 backdropFilter: 'blur(30px)',
                 WebkitBackdropFilter: 'blur(30px)',

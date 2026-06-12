@@ -66,6 +66,22 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
         fetchCourses();
     }, []);
 
+    // Prevent background scrolling when modal is open
+    useEffect(() => {
+        // Lock both body and any dashboard scrolling containers
+        const containers = ['.dash-main', '.main-canvas', '#root'].map(selector => document.querySelector(selector)).filter(Boolean);
+        const originalStyles = containers.map(el => el.style.overflow);
+        
+        containers.forEach(el => { el.style.overflow = 'hidden'; });
+        const originalBody = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = originalBody;
+            containers.forEach((el, i) => { el.style.overflow = originalStyles[i]; });
+        };
+    }, []);
+
     // Map internal level to possible Excel Program Levels
     const excelLevels = useMemo(() => {
         if (level === 'bachelors') return ['Bachelor', 'UG', 'Undergraduate'];
@@ -150,23 +166,23 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
     };
 
     const renderForm = () => (
-        <form onSubmit={checkEligibility} className="relative z-10 flex flex-col gap-8 text-left max-w-sm mx-auto">
-            <div className="text-center space-y-1.5">
-                <h2 className="text-4xl font-black text-white tracking-tight">
+        <form onSubmit={checkEligibility} className="relative z-10 flex flex-col gap-5 text-left max-w-sm mx-auto">
+            <div className="text-center space-y-1">
+                <h2 className="text-3xl font-black text-white tracking-tight">
                     Check <span className="text-blue-500">Eligibility</span>
                 </h2>
-                <p className="text-zinc-500 text-xs font-semibold uppercase tracking-[0.2em]">
+                <p className="text-zinc-500 text-[10px] font-semibold uppercase tracking-[0.2em]">
                     For {level} programs
                 </p>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-3">
                 <div className="space-y-2">
                     <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Your Academic Background</label>
                     <div className="relative group">
                         <select
                             required name="stream" value={formData.stream} onChange={handleInputChange}
-                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                            className="w-full px-4 py-2.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
                         >
                             <option value="" disabled className="bg-zinc-900 text-gray-500">Select your background</option>
                             {streams[level].map(s => (
@@ -186,7 +202,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                             <input
                                 required type="number" step="0.01" name="percent11"
                                 value={formData.percent11} onChange={handleInputChange}
-                                className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
+                                className="w-full px-4 py-2.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
                                 placeholder="00.00"
                             />
                         </div>
@@ -195,7 +211,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                             <input
                                 required type="number" step="0.01" name="percent12"
                                 value={formData.percent12} onChange={handleInputChange}
-                                className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
+                                className="w-full px-4 py-2.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
                                 placeholder="00.00"
                             />
                         </div>
@@ -208,7 +224,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                         <input
                             required type="number" step="0.01" name="percentGrad"
                             value={formData.percentGrad} onChange={handleInputChange}
-                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
+                            className="w-full px-4 py-2.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all placeholder-zinc-700 font-medium"
                             placeholder="e.g. 75.50"
                         />
                     </div>
@@ -219,7 +235,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                     <div className="relative group">
                         <select
                             required name="interestedField" value={formData.interestedField} onChange={handleInputChange}
-                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                            className="w-full px-4 py-2.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
                             disabled={loading}
                         >
                             <option value="" disabled className="bg-zinc-900 text-gray-500">
@@ -240,7 +256,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                     <div className="relative group">
                         <select
                             required name="program" value={formData.program} onChange={handleInputChange}
-                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                            className="w-full px-4 py-2.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
                             disabled={!formData.interestedField}
                         >
                             <option value="" disabled className="bg-zinc-900 text-gray-500">
@@ -261,7 +277,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                     <div className="relative group">
                         <select
                             required name="passingYear" value={formData.passingYear} onChange={handleInputChange}
-                            className="w-full px-4 py-3.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
+                            className="w-full px-4 py-2.5 bg-zinc-900/50 border border-white/5 rounded-2xl text-white outline-none focus:border-blue-500/50 focus:bg-zinc-800/50 transition-all appearance-none cursor-pointer font-medium"
                         >
                             <option value="" disabled className="bg-zinc-900 text-gray-500">Select year</option>
                             {years.map(y => (
@@ -284,7 +300,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
     );
 
     return (
-        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4" onWheel={(e) => e.stopPropagation()}>
             <style>
                 {`
                 @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(5deg); } }
@@ -302,6 +318,25 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                 .eligible-sparks-effect { animation: eligible-sparks-particle 3s ease-out infinite; }
                 .animation-delay-200 { animation-delay: 200ms; }
                 .animation-delay-500 { animation-delay: 500ms; }
+
+                /* Custom Scrollbar for Modal */
+                .custom-scrollbar {
+                    scrollbar-width: thin;
+                    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+                }
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background-color: rgba(255, 255, 255, 0.15);
+                    border-radius: 10px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                }
                 `}
             </style>
 
@@ -317,7 +352,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="relative w-full max-w-xl max-h-[90vh] bg-zinc-950 border border-white/[0.05] rounded-[40px] p-10 overflow-y-auto shadow-2xl"
+                className="relative w-full max-w-xl max-h-[85vh] bg-zinc-950 border border-white/[0.05] rounded-[40px] shadow-2xl overflow-hidden flex flex-col"
             >
                 {/* Premium Background Effects */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
@@ -325,10 +360,12 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
 
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 text-zinc-600 hover:text-white transition-colors z-50 p-2"
+                    className="absolute top-6 right-6 text-zinc-600 hover:text-white transition-colors z-50 p-2 bg-zinc-900/50 rounded-full"
                 >
                     <X className="w-5 h-5" />
                 </button>
+
+                <div className="custom-scrollbar flex-1 overflow-y-auto p-6 md:p-8" style={{ overscrollBehavior: 'contain' }}>
 
                 {/* ================= FORM STATE ================= */}
                 {step === 'form' && renderForm()}
@@ -426,6 +463,7 @@ const EligibilityModal = ({ level, onClose, onEligibleAction, onNotEligibleActio
                         </div>
                     </div>
                 )}
+                </div>
             </motion.div>
         </div>
     );

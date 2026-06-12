@@ -6,6 +6,14 @@ const Payment = require('../models/Payment');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 const checkRole = require('../middleware/rbac');
+const rateLimit = require('express-rate-limit');
+
+// Rate limiters for payment actions
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // limit each IP to 20 requests per windowMs
+  message: { error: 'Too many payment requests from this IP, please try again later.' }
+});
 
 const { COUPONS } = require('../config/coupons');
 const { getPhases } = require('../config/feesHelper');
@@ -22,18 +30,22 @@ const calculateDynamicFee = (countryId, uniType, selectedLevel, applied, couponC
     const currentPhases = getPhases(countryId, uniType || 'Public', selectedLevel, activeCouponName);
     const phase1Fee = currentPhases[0];
 
-    if (countryId === 'italy') {
+    if (['italy', 'germany', 'russia', 'georgia'].includes(countryId.toLowerCase())) {
         return Math.round(phase1Fee * 1.18);
     }
     return phase1Fee;
 };
 
 // 1. Create Order
-router.post('/create-order', async (req, res) => {
+router.post('/create-order', auth, paymentLimiter, async (req, res) => {
   try {
-    const { itemId, userEmail, pricingParams } = req.body;
+    const { itemId, pricingParams } = req.body;
     let finalAmount = 0;
     let finalItemName = 'Custom Payment';
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const userEmail = user.email;
 
     if (itemId === 'dynamic_fee' && pricingParams) {
       finalAmount = calculateDynamicFee(
@@ -45,7 +57,27 @@ router.post('/create-order', async (req, res) => {
       );
       finalItemName = `Phase 1 Fee - ${pricingParams.selectedLevel}`;
     } else if (itemId === 'phase_payment' && pricingParams) {
-      finalAmount = pricingParams.amount;
+      let level = user.highestLevelOfEducation;
+      if (!['Bachelors', 'Masters', 'MBBS'].includes(level)) {
+        level = 'Bachelors';
+      }
+      const countryId = pricingParams.countryName || user.country || 'italy';
+      const phases = getPhases(countryId, 'Public', level, '');
+      const phaseIndex = parseInt(pricingParams.phaseNumber, 10) - 1;
+      
+      let baseFee = 0;
+      if (phases && phaseIndex >= 0 && phaseIndex < phases.length) {
+          baseFee = phases[phaseIndex];
+      } else {
+          return res.status(400).json({ error: 'Invalid phase number' });
+      }
+
+      if (['italy', 'germany', 'russia', 'georgia'].includes(countryId.toLowerCase())) {
+          finalAmount = Math.round(baseFee * 1.18);
+      } else {
+          finalAmount = baseFee;
+      }
+      
       finalItemName = `${pricingParams.countryName ? pricingParams.countryName.toUpperCase() : 'Study Abroad'} - Phase ${pricingParams.phaseNumber} Payment`;
     } else if (itemId && itemDatabase[itemId]) {
       finalAmount = itemDatabase[itemId].price_inr;
@@ -69,7 +101,7 @@ router.post('/create-order', async (req, res) => {
     if (!order) return res.status(500).json({ error: 'Failed to create order' });
 
     await Payment.create({
-      userEmail: userEmail || 'unknown',
+      userEmail: userEmail,
       razorpayOrderId: order.id,
       amount: finalAmount,
       currency: 'INR',
@@ -86,7 +118,7 @@ router.post('/create-order', async (req, res) => {
 });
 
 // 2. Verify Payment + Auto-unlock user portal
-router.post('/verify-payment', async (req, res) => {
+router.post('/verify-payment', auth, paymentLimiter, async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -99,7 +131,10 @@ router.post('/verify-payment', async (req, res) => {
       .update(bodyText)
       .digest('hex');
 
-    if (expectedSignature === razorpay_signature) {
+    const expectedBuffer = Buffer.from(expectedSignature, 'hex');
+    const signatureBuffer = Buffer.from(razorpay_signature, 'hex');
+
+    if (expectedBuffer.length === signatureBuffer.length && crypto.timingSafeEqual(expectedBuffer, signatureBuffer)) {
       // Update payment record
       const payment = await Payment.findOneAndUpdate(
         { razorpayOrderId: razorpay_order_id },
@@ -271,15 +306,17 @@ router.post('/webhook', async (req, res) => {
 });
 
 // 7. Update simulated or real payment status (success or failure)
-router.post('/update-status', async (req, res) => {
+router.post('/update-status', auth, paymentLimiter, async (req, res) => {
   try {
     const { razorpayOrderId, razorpayPaymentId, status, failureReason } = req.body;
     if (!razorpayOrderId || !status) {
       return res.status(400).json({ error: 'razorpayOrderId and status are required' });
     }
 
-    if (status === 'captured') {
-      return res.status(403).json({ error: 'Forbidden. Captures must be verified with signature.' });
+    // Only allow updating to 'failed' or 'cancelled' from the client.
+    // 'captured' MUST be processed securely via webhook or signature verification.
+    if (status !== 'failed' && status !== 'cancelled') {
+      return res.status(403).json({ error: 'Forbidden. Status can only be updated to failed or cancelled from the client.' });
     }
 
     const payment = await Payment.findOneAndUpdate(
@@ -292,14 +329,7 @@ router.post('/update-status', async (req, res) => {
       return res.status(404).json({ error: 'Payment record not found' });
     }
 
-    // If status is captured, we unlock the user's portal
-    if (status === 'captured' && payment.userEmail) {
-      await User.findOneAndUpdate(
-        { email: payment.userEmail },
-        { portalUnlocked: true }
-      );
-      console.log(`[Payment Update] Portal unlocked for: ${payment.userEmail}`);
-    }
+    // Portal unlocking is strictly handled by /verify-payment or webhook.
 
     res.json({ success: true, payment });
   } catch (error) {

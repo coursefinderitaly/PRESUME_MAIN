@@ -11,7 +11,7 @@ const checkBlurry = async (file) => {
             try {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                
+
                 // Aggressively downscale to 400px for lightning-fast edge detection math
                 const maxDim = 400;
                 let width = img.width;
@@ -25,18 +25,18 @@ const checkBlurry = async (file) => {
                         height = maxDim;
                     }
                 }
-                
+
                 canvas.width = width;
                 canvas.height = height;
                 ctx.drawImage(img, 0, 0, width, height);
-                
+
                 const imageData = ctx.getImageData(0, 0, width, height);
                 const { data } = imageData;
                 const grayscale = new Float32Array(width * height);
                 for (let i = 0; i < data.length; i += 4) {
-                    grayscale[i/4] = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+                    grayscale[i / 4] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
                 }
-                
+
                 let sum = 0, sumSq = 0, count = 0;
                 const endY = height - 1;
                 const endX = width - 1;
@@ -50,16 +50,16 @@ const checkBlurry = async (file) => {
                         count++;
                     }
                 }
-                
+
                 URL.revokeObjectURL(img.src);
-                
+
                 if (count === 0) {
                     resolve(false);
                     return;
                 }
                 const mean = sum / count;
                 const variance = (sumSq / count) - (mean * mean);
-                
+
                 resolve(variance < 50); // <50 usually indicates a blurry document image
             } catch (err) {
                 console.error("Blur check logic error:", err);
@@ -72,7 +72,8 @@ const checkBlurry = async (file) => {
 };
 
 
-const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
+const DocumentUpload = forwardRef(({ profile, searchProgramLevel = '', setMessage }, ref) => {
+    const showDegreeAndTranscript = !searchProgramLevel.toLowerCase().includes('bachelor') && !searchProgramLevel.toLowerCase().includes('mbbs');
     const [isProcessing, setIsProcessing] = useState(false);
     const [attachedFiles, setAttachedFiles] = useState({});
 
@@ -91,7 +92,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
 
         for (let i = 0; i < files.length; i++) {
             let file = files[i];
-            
+
             if (file.type.startsWith('image/')) {
                 // 1. Check for blur
                 const isBlurry = await checkBlurry(file);
@@ -103,9 +104,9 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                     setAttachedFiles(prev => ({ ...prev, [id]: false }));
                     hasError = true;
                     setTimeout(() => { if (setMessage) setMessage(''); }, 6000);
-                    return; 
+                    return;
                 }
-                
+
                 // 2. Compress if > 1MB without noticeable quality degrade
                 if (file.size > 1024 * 1024) {
                     try {
@@ -125,7 +126,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
             }
             dt.items.add(file);
         }
-        
+
         if (!hasError) {
             inputElement.files = dt.files;
             if (setMessage) setMessage('');
@@ -169,7 +170,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                 { id: 'transcript', label: 'Transcript' },
                 { id: 'passport', label: 'Passport' },
                 { id: 'aadhar', label: 'Aadhar Card' },
-                { id: 'teams_id', label: 'Teams ID' },
+                { id: 'teams_id', label: 'Microsoft Teams ID' },
                 { id: 'photo', label: 'Photograph' },
                 { id: 'sop', label: 'SOP' },
                 { id: 'ielts', label: 'IELTS' },
@@ -181,9 +182,9 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                 { id: 'study_module', label: 'Study Module' },
                 { id: 'bonafide', label: 'Bonafide' }
             ];
-            ids.forEach(({id, label}) => {
+            ids.forEach(({ id, label }) => {
                 const el = document.getElementById(id);
-                if(el && el.files && el.files.length > 0) {
+                if (el && el.files && el.files.length > 0) {
                     documentInfos.push({ id, label, fileName: el.files[0].name });
                 }
             });
@@ -202,14 +203,14 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
         return (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <CheckCircle size={14} color="#22c55e" />
-                <button type="button" onClick={(e) => viewDocument(e, id)} 
-                  style={{ background: 'rgba(56, 189, 248, 0.1)', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: '4px', borderRadius: '4px', display: 'flex', alignItems: 'center' }} 
-                  title="View Document">
+                <button type="button" onClick={(e) => viewDocument(e, id)}
+                    style={{ background: 'rgba(56, 189, 248, 0.1)', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: '4px', borderRadius: '4px', display: 'flex', alignItems: 'center' }}
+                    title="View Document">
                     <Eye size={13} />
                 </button>
-                <button type="button" onClick={(e) => removeDocument(e, id)} 
-                  style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: '#f87171', cursor: 'pointer', padding: '4px', borderRadius: '4px', display: 'flex', alignItems: 'center' }} 
-                  title="Remove Document">
+                <button type="button" onClick={(e) => removeDocument(e, id)}
+                    style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: '#f87171', cursor: 'pointer', padding: '4px', borderRadius: '4px', display: 'flex', alignItems: 'center' }}
+                    title="Remove Document">
                     <Trash2 size={13} />
                 </button>
             </div>
@@ -390,7 +391,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
             const formData = new FormData();
             if (generatedFiles.length > 0) {
                 generatedFiles.forEach(file => {
-                   formData.append('documents', file, file.name);
+                    formData.append('documents', file, file.name);
                 });
             }
             formData.append('email', profile?.email || '');
@@ -402,7 +403,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
             setMessage('Generating ZIP and sending email...');
 
             const response = await fetch(`${API_BASE_URL}/upload/email-zip`, {
-      credentials: 'include',
+                credentials: 'include',
                 method: 'POST',
                 body: formData
             });
@@ -450,32 +451,36 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                         <div className="doc-category-body">
                             <div className={`file-box ${attachedFiles['tenth'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>10th Marksheet</label>
+                                    <label>10th Marksheet <span style={{ color: '#ef4444' }}>*</span></label>
                                     <StatusIndicator id="tenth" />
                                 </div>
                                 <input type="file" id="tenth" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'tenth')} />
                             </div>
                             <div className={`file-box ${attachedFiles['twelfth'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>12th Marksheet</label>
+                                    <label>12th Marksheet <span style={{ color: '#ef4444' }}>*</span></label>
                                     <StatusIndicator id="twelfth" />
                                 </div>
                                 <input type="file" id="twelfth" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'twelfth')} />
                             </div>
-                            <div className={`file-box ${attachedFiles['degree'] ? 'attached' : ''}`}>
-                                <div className="file-label-wrap">
-                                    <label>Degree</label>
-                                    <StatusIndicator id="degree" />
-                                </div>
-                                <input type="file" id="degree" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'degree')} />
-                            </div>
-                            <div className={`file-box ${attachedFiles['transcript'] ? 'attached' : ''}`}>
-                                <div className="file-label-wrap">
-                                    <label>Transcript</label>
-                                    <StatusIndicator id="transcript" />
-                                </div>
-                                <input type="file" id="transcript" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'transcript')} />
-                            </div>
+                            {showDegreeAndTranscript && (
+                                <>
+                                    <div className={`file-box ${attachedFiles['degree'] ? 'attached' : ''}`}>
+                                        <div className="file-label-wrap">
+                                            <label>Degree <span style={{ color: '#ef4444' }}>*</span></label>
+                                            <StatusIndicator id="degree" />
+                                        </div>
+                                        <input type="file" id="degree" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'degree')} />
+                                    </div>
+                                    <div className={`file-box ${attachedFiles['transcript'] ? 'attached' : ''}`}>
+                                        <div className="file-label-wrap">
+                                            <label>Transcript <span style={{ color: '#ef4444' }}>*</span></label>
+                                            <StatusIndicator id="transcript" />
+                                        </div>
+                                        <input type="file" id="transcript" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'transcript')} />
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -488,7 +493,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                         <div className="doc-category-body">
                             <div className={`file-box ${attachedFiles['passport'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>Passport</label>
+                                    <label>Passport <span style={{ color: '#ef4444' }}>*</span></label>
                                     <StatusIndicator id="passport" />
                                 </div>
                                 <input type="file" id="passport" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'passport')} />
@@ -502,14 +507,14 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                             </div>
                             <div className={`file-box ${attachedFiles['teams_id'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>Teams ID</label>
+                                    <label>Microsoft Teams ID</label>
                                     <StatusIndicator id="teams_id" />
                                 </div>
                                 <input type="file" id="teams_id" accept="image/*,application/pdf" multiple onChange={(e) => handleFileChange(e, 'teams_id')} />
                             </div>
                             <div className={`file-box ${attachedFiles['photo'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>Photograph</label>
+                                    <label>Photograph <span style={{ color: '#ef4444' }}>*</span></label>
                                     <StatusIndicator id="photo" />
                                 </div>
                                 <input type="file" id="photo" accept="image/*" multiple onChange={(e) => handleFileChange(e, 'photo')} />
@@ -526,7 +531,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                         <div className="doc-category-body">
                             <div className={`file-box ${attachedFiles['sop'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>SOP</label>
+                                    <label>SOP <span style={{ color: '#ef4444' }}>*</span></label>
                                     <StatusIndicator id="sop" />
                                 </div>
                                 <input type="file" id="sop" accept="application/pdf,.doc,.docx" multiple onChange={(e) => handleFileChange(e, 'sop')} />
@@ -540,7 +545,7 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                             </div>
                             <div className={`file-box ${attachedFiles['moi'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>MOI</label>
+                                    <label>MOI <span style={{ color: '#ef4444' }}>*</span></label>
                                     <StatusIndicator id="moi" />
                                 </div>
                                 <input type="file" id="moi" accept="image/*,application/pdf,.doc,.docx" multiple onChange={(e) => handleFileChange(e, 'moi')} />
@@ -561,14 +566,14 @@ const DocumentUpload = forwardRef(({ profile, setMessage }, ref) => {
                             </div>
                             <div className={`file-box ${attachedFiles['lor1'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>LOR 1</label>
+                                    <label>LOR 1 <span style={{ color: '#ef4444' }}>*</span></label>
                                     <StatusIndicator id="lor1" />
                                 </div>
                                 <input type="file" id="lor1" accept="image/*,application/pdf,.doc,.docx" multiple onChange={(e) => handleFileChange(e, 'lor1')} />
                             </div>
                             <div className={`file-box ${attachedFiles['lor2'] ? 'attached' : ''}`}>
                                 <div className="file-label-wrap">
-                                    <label>LOR 2</label>
+                                    <label>LOR 2 <span style={{ color: '#ef4444' }}>*</span></label>
                                     <StatusIndicator id="lor2" />
                                 </div>
                                 <input type="file" id="lor2" accept="image/*,application/pdf,.doc,.docx" multiple onChange={(e) => handleFileChange(e, 'lor2')} />

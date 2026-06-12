@@ -1,4 +1,6 @@
 import { lazy, Suspense, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 // ── Eager-load only the above-the-fold components ──────────────────────────
 import { Header } from './components/Header';

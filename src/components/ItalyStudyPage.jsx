@@ -225,7 +225,7 @@ const ItalyStudyPage = () => {
                             </h1>
 
                             <p className="text-sm md:text-lg lg:text-xl text-gray-300 font-medium leading-relaxed mb-8 max-w-xl border-l-2 border-white/20 pl-6 ">
-                                Secure <strong className="text-white">100% scholarships</strong> and <strong className="text-white">€8,000 annual grants</strong> in Europe's most historic public universities.
+                                Secure <strong className="text-white">top scholarships</strong> and <strong className="text-white">€8,000 annual grants</strong> in Europe's most historic public universities.
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto md:mt-0">

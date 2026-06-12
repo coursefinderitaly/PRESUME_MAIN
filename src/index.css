@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -57,12 +57,12 @@
 @layer base {
   :root {
     --section-header-offset: clamp(82px, 10svh, 104px);
-    --bg-body: #020617;
+    --bg-body: #171717;
     --text-body: #f9fafb;
   }
 
   :root[data-theme='light'] {
-    --bg-body: #cbd5e1;
+    --bg-body: #f1f5f9;
     --text-body: #0f172a;
   }
 
@@ -630,19 +630,20 @@
 
 /* --- PORTAL STYLES --- */
 :root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --glass-bg: rgba(15, 23, 42, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --accent-primary: #0ea5e9;
-  --accent-secondary: #38bdf8;
-  --accent-tertiary: #7dd3fc;
-  --input-bg: rgba(255, 255, 255, 0.05);
-  --input-border: rgba(255, 255, 255, 0.15);
-  --input-focus: #0ea5e9;
-  --table-border: rgba(255, 255, 255, 0.1);
-  --table-header-bg: rgba(255, 255, 255, 0.05);
+  --bg-primary: #171717;
+  --bg-secondary: #262626;
+  --bg-tertiary: #404040;
+  --glass-bg: rgba(23, 23, 23, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --accent-primary: #d97706;
+  --accent-secondary: #fbbf24;
+  --accent-tertiary: #fcd34d;
+  --accent-glow: rgba(217, 119, 6, 0.15);
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-focus: #fbbf24;
+  --table-border: rgba(255, 255, 255, 0.08);
+  --table-header-bg: rgba(255, 255, 255, 0.03);
   --filter-chip-bg: rgba(255, 255, 255, 0.04);
   --card-bg-solid: rgba(255, 255, 255, 0.04);
   --glass-popup: rgba(18, 18, 28, 0.85);
@@ -650,7 +651,7 @@
   --modal-card-bg: rgba(15, 15, 25, 0.9);
   --text-main: #f1f5f9 !important;
   --text-muted: #94a3b8 !important;
-  --scrollbar-track: #020617;
+  --scrollbar-track: #171717;
   --scrollbar-thumb: rgba(255, 255, 255, 0.1);
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
 }
@@ -673,32 +674,32 @@
 }
 
 :root[data-theme='light'] {
-  --bg-primary: #cbd5e1;
-  --bg-secondary: rgba(255, 255, 255, 0.95);
-  --bg-tertiary: rgba(255, 255, 255, 0.9);
-  --glass-bg: rgba(255, 255, 255, 0.8);
+  --bg-primary: #f8fafc;
+  --bg-secondary: rgba(255, 255, 255, 0.5);
+  --bg-tertiary: rgba(255, 255, 255, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.4);
   --glass-border: rgba(0, 0, 0, 0.08);
-  --accent-primary: #0284c7;
-  --accent-secondary: #0ea5e9;
-  --accent-tertiary: #38bdf8;
+  --accent-primary: #1e3a8a;
+  --accent-secondary: #2563eb;
+  --accent-tertiary: #60a5fa;
   --text-main: #0f172a !important;
   --text-muted: #475569 !important;
   --cyber-grid: transparent;
-  --bg-card: rgba(255, 255, 255, 0.65);
-  --accent-glow: rgba(79, 70, 229, 0.1);
-  --glow-color: rgba(99, 102, 241, 0.12);
+  --bg-card: rgba(255, 255, 255, 0.4);
+  --accent-glow: rgba(30, 58, 138, 0.1);
+  --glow-color: rgba(30, 58, 138, 0.12);
   --error-color: #ef4444;
   --heading-color: #0f172a;
-  --input-bg: rgba(255, 255, 255, 0.8);
+  --input-bg: rgba(255, 255, 255, 0.5);
   --input-border: rgba(0, 0, 0, 0.08);
-  --input-focus: #4f46e5;
+  --input-focus: #2563eb;
   --table-border: rgba(0, 0, 0, 0.06);
   --table-header-bg: rgba(0, 0, 0, 0.03);
   --filter-chip-bg: rgba(0, 0, 0, 0.03);
-  --card-bg-solid: rgba(255, 255, 255, 0.75);
-  --glass-popup: rgba(255, 255, 255, 0.9);
-  --glass-popup-inner: rgba(255, 255, 255, 0.5);
-  --modal-card-bg: rgba(255, 255, 255, 0.95);
+  --card-bg-solid: rgba(255, 255, 255, 0.4);
+  --glass-popup: rgba(255, 255, 255, 0.7);
+  --glass-popup-inner: rgba(255, 255, 255, 0.3);
+  --modal-card-bg: rgba(255, 255, 255, 0.7);
   --scrollbar-track: #f1f5f9;
   --scrollbar-thumb: rgba(0, 0, 0, 0.35);
   --scrollbar-thumb-hover: rgba(0, 0, 0, 0.5);

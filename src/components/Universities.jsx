@@ -174,7 +174,7 @@ export const Universities = () => {
             </span>
           </h2>
           <p className="text-white/65 text-sm sm:text-base md:text-lg font-semibold">
-            100% Scholarships · No Tuition Fees · World-class Education
+            Top Scholarships · No Tuition Fees · World-class Education
           </p>
         </motion.div>
       </div>
@@ -203,7 +203,7 @@ export const Universities = () => {
                     uni.name.includes('Bologna') ? 'Bologna, Italy' :
                     uni.name.includes('Padua') ? 'Padua, Italy' :
                     uni.name.includes('Florence') ? 'Florence, Italy' : 'Italy',
-              subtitle: 'World-class education with 100% scholarship opportunities.'
+              subtitle: 'World-class education with amazing scholarship opportunities.'
             }))}
           />
         </div>

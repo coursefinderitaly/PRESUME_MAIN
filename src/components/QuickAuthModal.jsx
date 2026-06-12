@@ -15,17 +15,17 @@ const ConfettiBlast = () => {
         const radius = Math.random() * 60 + 35;
         const xTarget = Math.cos(angle * Math.PI / 180) * radius;
         const yTarget = Math.sin(angle * Math.PI / 180) * radius - 20;
-        
+
         return (
           <motion.div
             key={i}
             initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
-            animate={{ 
-              x: xTarget, 
-              y: yTarget, 
+            animate={{
+              x: xTarget,
+              y: yTarget,
               scale: Math.random() * 1.2 + 0.4,
               rotate: Math.random() * 360,
-              opacity: 0 
+              opacity: 0
             }}
             transition={{ duration: 1.0, ease: "easeOut" }}
             className="absolute left-1/2 top-1/2 w-1.5 h-1.5 rounded-full"
@@ -53,8 +53,11 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
   const [couponInput, setCouponInput] = useState(initialCoupon || '');
   const [couponDiscount, setCouponDiscount] = useState(initialDiscount || 0);
   const [couponError, setCouponError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
   const [showPromoSuccess, setShowPromoSuccess] = useState(false);
-  
+
   React.useEffect(() => {
     setFormData(prev => ({ ...prev, program: initialProgram }));
   }, [initialProgram]);
@@ -88,7 +91,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     try {
       const res = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
@@ -105,7 +108,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
-      
+
       onSuccess(formData.email, formData.password, formData.program, couponDiscount > 0 ? couponInput : '', couponDiscount);
     } catch (err) {
       setError(err.message);
@@ -134,29 +137,39 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
     return `Phase ${idx + 1}`;
   };
 
+  const isCombined50 = countryId === 'italy' && (formData.program === 'Bachelors' || formData.program === 'Masters') && couponDiscount === 50;
+  const isCombinedPhase = isCombined50 || (formData.program === 'MBBS' && ['russia', 'georgia', 'italy'].includes(countryId));
+
   // Safe Phase List Construction
   const displayPhases = [];
-  if (currentPhases.length === 3 && basePhases.length === 4) {
+  if (isCombinedPhase && currentPhases.length >= 3) {
     displayPhases.push({
       idx: 0,
       name: "Phase 1: Admission Process",
       price: currentPhases[0],
       isDueNow: true
     });
-    displayPhases.push({
-      idx: 1,
-      name: "Phase 2: After Admission",
-      price: currentPhases[1],
-      isDueNow: false
-    });
+    // Only push phase 2 if it's > 0 or it's genuinely part of the structure
+    if (currentPhases[1] !== undefined) {
+      displayPhases.push({
+        idx: 1,
+        name: "Phase 2: After Admission",
+        price: currentPhases[1],
+        isDueNow: false
+      });
+    }
+    // Merge phase 3 and 4 visually into the final phase
+    const p3 = currentPhases[2] || 0;
+    const p4 = currentPhases[3] || 0;
     displayPhases.push({
       idx: 2,
-      name: "Phases 3 & 4: Visa & Accommodation Docs",
-      price: currentPhases[2],
+      name: isCombined50 ? "Phases 3 & 4: Visa & Accommodation Docs" : "Phase 3: Visa & Documentation",
+      price: p3 + p4,
       isDueNow: false
     });
   } else {
     for (let i = 0; i < currentPhases.length; i++) {
+      if (i > 0 && currentPhases[i] === 0) continue; // Skip zero-value phases gracefully
       displayPhases.push({
         idx: i,
         name: getPhaseNameShort(i, currentPhases.length),
@@ -199,7 +212,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
 
         {/* Layout Grid */}
         <div className={shouldHideRegistration ? "flex flex-col relative z-10" : "grid grid-cols-1 md:grid-cols-12 relative z-10 divide-y md:divide-y-0 md:divide-x divide-slate-800/80"}>
-          
+
           {/* LEFT: Registration Column */}
           {!shouldHideRegistration && (
             <div className="md:col-span-6 p-6 sm:p-7 flex flex-col justify-center">
@@ -225,13 +238,13 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                     <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">First Name</label>
                     <div className="relative">
                       <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" />
-                      <input 
-                        type="text" 
-                        required 
-                        value={formData.firstName} 
-                        onChange={e => handleInputChange('firstName', e.target.value)} 
-                        className="w-full pl-9 pr-3 py-2 bg-slate-950/40 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500 hover:border-slate-600 hover:bg-slate-950/60 transition-all duration-200 text-xs font-semibold" 
-                        placeholder="John" 
+                      <input
+                        type="text"
+                        required
+                        value={formData.firstName}
+                        onChange={e => handleInputChange('firstName', e.target.value)}
+                        className="w-full pl-9 pr-3 py-2 bg-slate-950/40 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500 hover:border-slate-600 hover:bg-slate-950/60 transition-all duration-200 text-xs font-semibold"
+                        placeholder="John"
                       />
                     </div>
                   </div>
@@ -257,13 +270,13 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                   <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Email Address</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" />
-                    <input 
-                      type="email" 
-                      required 
-                      value={formData.email} 
-                      onChange={e => handleInputChange('email', e.target.value)} 
-                      className="w-full pl-9 pr-3 py-2 bg-slate-950/40 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500 hover:border-slate-600 hover:bg-slate-950/60 transition-all duration-200 text-xs font-semibold" 
-                      placeholder="john@example.com" 
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={e => handleInputChange('email', e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 bg-slate-950/40 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500 hover:border-slate-600 hover:bg-slate-950/60 transition-all duration-200 text-xs font-semibold"
+                      placeholder="john@example.com"
                     />
                   </div>
                 </div>
@@ -288,7 +301,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                       required
                       value={formData.phone}
                       onChange={e => {
-                        const val = e.target.value.replace(/\D/g, ''); 
+                        const val = e.target.value.replace(/\D/g, '');
                         const maxLen = formData.phonePrefix === '+91' ? 10 : 15;
                         if (val.length <= maxLen) handleInputChange('phone', val);
                       }}
@@ -302,13 +315,13 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                   <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Create Password</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" />
-                    <input 
-                      type={showPassword ? 'text' : 'password'} 
-                      required 
-                      value={formData.password} 
-                      onChange={e => handleInputChange('password', e.target.value)} 
-                      className="w-full pl-9 pr-9 py-2 bg-slate-950/40 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500 hover:border-slate-600 hover:bg-slate-950/60 transition-all duration-200 text-xs font-semibold" 
-                      placeholder="••••••••" 
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      value={formData.password}
+                      onChange={e => handleInputChange('password', e.target.value)}
+                      className="w-full pl-9 pr-9 py-2 bg-slate-950/40 border border-slate-700/50 rounded-xl text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500 hover:border-slate-600 hover:bg-slate-950/60 transition-all duration-200 text-xs font-semibold"
+                      placeholder="••••••••"
                     />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
                       {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -338,7 +351,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
           <div className={`${shouldHideRegistration ? 'col-span-1 p-6' : 'md:col-span-6 p-6 sm:p-7'} bg-slate-950/20 flex flex-col justify-between`}>
             <div>
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4 pr-12">
                 <div className="flex items-center gap-2">
                   <CreditCard className="text-cyan-400 w-4 h-4" />
                   <span className="text-xs font-black text-slate-100 uppercase tracking-wider">Checkout Breakdown</span>
@@ -362,18 +375,16 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                   const isPhase1 = phaseItem.isDueNow;
 
                   return (
-                    <div 
-                      key={index} 
-                      className={`px-3 py-2 rounded-xl flex items-center justify-between border transition-all duration-300 ${
-                        isPhase1 
-                          ? 'bg-cyan-500/5 border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-500/40 hover:scale-[1.01]' 
+                    <div
+                      key={index}
+                      className={`px-3 py-2 rounded-xl flex items-center justify-between border transition-all duration-300 ${isPhase1
+                          ? 'bg-cyan-500/5 border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-500/40 hover:scale-[1.01]'
                           : 'bg-transparent border-transparent opacity-50 hover:opacity-85 hover:bg-slate-950/30'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className={`w-5 h-5 rounded flex items-center justify-center text-[10px] font-black transition-colors ${
-                          isPhase1 ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400'
-                        }`}>
+                        <span className={`w-5 h-5 rounded flex items-center justify-center text-[10px] font-black transition-colors ${isPhase1 ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400'
+                          }`}>
                           {phaseItem.idx + 1}
                         </span>
                         <span className={`text-[11px] font-bold text-slate-200 ${isPhase1 && isPhase1Paid ? 'line-through text-slate-500' : ''}`}>{phaseItem.name}</span>
@@ -444,11 +455,10 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                         setCouponError('Invalid');
                       }
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all border hover:scale-[1.02] active:scale-95 ${
-                      couponDiscount > 0
+                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all border hover:scale-[1.02] active:scale-95 ${couponDiscount > 0
                         ? 'bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20'
                         : 'bg-cyan-500/20 border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30'
-                    }`}
+                      }`}
                   >
                     {couponDiscount > 0 ? 'Remove' : 'Apply'}
                   </button>
@@ -501,10 +511,10 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                   {isPhase1Paid ? (
                     <button
                       disabled
-                      className="w-full py-2.5 bg-emerald-600/30 text-slate-300 border border-emerald-500/20 rounded-xl font-bold cursor-not-allowed flex justify-center items-center gap-1.5 text-xs uppercase tracking-wider shadow-lg"
+                      className={`w-full py-2.5 rounded-xl font-bold cursor-not-allowed flex justify-center items-center gap-1.5 text-xs uppercase tracking-wider shadow-lg ${isLight ? 'bg-emerald-600 text-white border-emerald-700' : 'bg-emerald-600/30 text-slate-300 border border-emerald-500/20'}`}
                     >
                       <span>First Installment Paid</span>
-                      <ShieldCheck size={14} className="text-emerald-400" />
+                      <ShieldCheck size={14} className={isLight ? "text-emerald-100" : "text-emerald-400"} />
                     </button>
                   ) : (
                     <button

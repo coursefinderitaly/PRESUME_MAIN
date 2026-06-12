@@ -65,7 +65,7 @@ export const AIPetMascot = ({ position = 'landing' }) => {
       return "Hello there! 👋 I am the Presume AI Assistant. How can I help you navigate the portal or answer questions about studying in Italy today?";
     }
     if (msg.includes('fee') || msg.includes('cost') || msg.includes('tuition')) {
-      return "Studying in Italy through Presume Overseas means ZERO tuition fees, 100% scholarships, and a €8,000 annual grant! 🎓✨";
+      return "Studying in Italy through Presume Overseas means ZERO tuition fees, incredible scholarships, and a €8,000 annual grant! 🎓✨";
     }
 
     return "I'm currently operating in Local Offline Mode! 🔋 But I can still help you navigate the portal. Ask me how to submit documents, change your profile, search, or check your application status!";
@@ -287,7 +287,7 @@ DYNAMIC TONE & VARIABILITY (MANDATORY):
 
 PORTAL KNOWLEDGE (Help the user using this data):
 - Company: Presume Overseas Education (Italy Study Experts).
-- Benefits: Zero Tuition, 100% Scholarships, €8,000 annual grants.
+- Benefits: Zero Tuition, incredible scholarships, €8,000 annual grants.
 - Portal Usage: Submit docs in "Vault/Documents", change name in "Settings/Profile", search in "Global Search Bar", track in "Timeline".
 
 THE ANIMATION ENGINE (CRITICAL):
