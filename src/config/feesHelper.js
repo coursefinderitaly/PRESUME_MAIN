@@ -30,9 +30,29 @@ export const getPhases = (countryId, uniType, level, couponCode) => {
     // 5. Fallback percentage application for arbitrary coupons
     else if (effectiveCouponCode && COUPONS[effectiveCouponCode]) {
         const discountPct = COUPONS[effectiveCouponCode];
-        phases = [...phases];
+        // Ensure phases is an array before spreading
+        if (!Array.isArray(phases)) {
+            phases = [
+                phases['Phase 1 (Admission)'] || 0,
+                phases['Phase 2 (After Admission)'] || 0,
+                phases['Phase 3 (Pre-enrollment)'] || 0,
+                phases['Phase 4 (Visa Support)'] || 0
+            ];
+        } else {
+            phases = [...phases];
+        }
         phases[0] = Math.round(phases[0] * (1 - discountPct / 100));
     }
+
+    if (!Array.isArray(phases)) {
+        phases = [
+            phases['Phase 1 (Admission)'] || 0,
+            phases['Phase 2 (After Admission)'] || 0,
+            phases['Phase 3 (Pre-enrollment)'] || 0,
+            phases['Phase 4 (Visa Support)'] || 0
+        ];
+    }
+
     return phases;
 };
 

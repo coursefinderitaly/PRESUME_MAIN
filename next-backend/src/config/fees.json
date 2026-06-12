@@ -2,125 +2,147 @@
   "italy": {
     "Public": {
       "base": {
-        "Bachelors": [
-          35000,
-          15000,
-          50000,
-          50000
-        ],
-        "Masters": [
-          35000,
-          15000,
-          50000,
-          50000
-        ],
-        "MBBS": [
-          70000,
-          40000,
-          40000,
-          0
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 35000,
+          "Phase 2 (After Admission)": 15000,
+          "Phase 3 (Pre-enrollment)": 50000,
+          "Phase 4 (Visa Support)": 50000,
+          "Total Fees (Reference)": 150000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 35000,
+          "Phase 2 (After Admission)": 15000,
+          "Phase 3 (Pre-enrollment)": 50000,
+          "Phase 4 (Visa Support)": 50000,
+          "Total Fees (Reference)": 150000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 70000,
+          "Phase 2 (After Admission)": 40000,
+          "Phase 3 (Pre-enrollment)": 40000,
+          "Phase 4 (Visa Support)": 0,
+          "Total Fees (Reference)": 150000
+        }
       },
       "coupons": {
         "PRESUME30": {
-          "Bachelors": [
-            35000,
-            15000,
-            30000,
-            25000
-          ],
-          "Masters": [
-            35000,
-            15000,
-            30000,
-            25000
-          ],
-          "MBBS": [
-            45000,
-            30000,
-            30000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 35000,
+            "Phase 2 (After Admission)": 15000,
+            "Phase 3 (Pre-enrollment)": 30000,
+            "Phase 4 (Visa Support)": 25000,
+            "Total Fees (Reference)": 105000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 35000,
+            "Phase 2 (After Admission)": 15000,
+            "Phase 3 (Pre-enrollment)": 30000,
+            "Phase 4 (Visa Support)": 25000,
+            "Total Fees (Reference)": 105000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 45000,
+            "Phase 2 (After Admission)": 30000,
+            "Phase 3 (Pre-enrollment)": 30000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 105000
+          }
         },
         "PRESUME50": {
-          "Bachelors": [
-            30000,
-            10000,
-            35000
-          ],
-          "Masters": [
-            30000,
-            10000,
-            35000
-          ],
-          "MBBS": [
-            35000,
-            20000,
-            20000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 30000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 35000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 75000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 30000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 35000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 75000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 35000,
+            "Phase 2 (After Admission)": 20000,
+            "Phase 3 (Pre-enrollment)": 20000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 75000
+          }
         }
       }
     },
     "Private": {
       "base": {
-        "Bachelors": [
-          35000,
-          15000,
-          50000,
-          50000
-        ],
-        "Masters": [
-          35000,
-          15000,
-          50000,
-          50000
-        ],
-        "MBBS": [
-          50000,
-          0,
-          50000,
-          50000
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 35000,
+          "Phase 2 (After Admission)": 15000,
+          "Phase 3 (Pre-enrollment)": 50000,
+          "Phase 4 (Visa Support)": 50000,
+          "Total Fees (Reference)": 150000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 35000,
+          "Phase 2 (After Admission)": 15000,
+          "Phase 3 (Pre-enrollment)": 50000,
+          "Phase 4 (Visa Support)": 50000,
+          "Total Fees (Reference)": 150000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 50000,
+          "Phase 2 (After Admission)": 0,
+          "Phase 3 (Pre-enrollment)": 50000,
+          "Phase 4 (Visa Support)": 50000,
+          "Total Fees (Reference)": 150000
+        }
       },
       "coupons": {
         "PRESUME30": {
-          "Bachelors": [
-            35000,
-            15000,
-            30000,
-            25000
-          ],
-          "Masters": [
-            35000,
-            15000,
-            30000,
-            25000
-          ],
-          "MBBS": [
-            30000,
-            0,
-            40000,
-            35000
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 35000,
+            "Phase 2 (After Admission)": 15000,
+            "Phase 3 (Pre-enrollment)": 30000,
+            "Phase 4 (Visa Support)": 25000,
+            "Total Fees (Reference)": 105000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 35000,
+            "Phase 2 (After Admission)": 15000,
+            "Phase 3 (Pre-enrollment)": 30000,
+            "Phase 4 (Visa Support)": 25000,
+            "Total Fees (Reference)": 105000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 30000,
+            "Phase 2 (After Admission)": 0,
+            "Phase 3 (Pre-enrollment)": 40000,
+            "Phase 4 (Visa Support)": 35000,
+            "Total Fees (Reference)": 105000
+          }
         },
         "PRESUME50": {
-          "Bachelors": [
-            30000,
-            10000,
-            35000
-          ],
-          "Masters": [
-            30000,
-            10000,
-            35000
-          ],
-          "MBBS": [
-            20000,
-            0,
-            35000,
-            20000
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 30000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 35000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 75000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 30000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 35000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 75000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 20000,
+            "Phase 2 (After Admission)": 0,
+            "Phase 3 (Pre-enrollment)": 35000,
+            "Phase 4 (Visa Support)": 20000,
+            "Total Fees (Reference)": 75000
+          }
         }
       }
     }
@@ -128,89 +150,101 @@
   "germany": {
     "Public": {
       "base": {
-        "Bachelors": [
-          50000,
-          40000,
-          30000,
-          30000
-        ],
-        "Masters": [
-          50000,
-          40000,
-          30000,
-          30000
-        ],
-        "MBBS": [
-          50000,
-          40000,
-          30000,
-          30000
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 50000,
+          "Phase 2 (After Admission)": 40000,
+          "Phase 3 (Pre-enrollment)": 30000,
+          "Phase 4 (Visa Support)": 30000,
+          "Total Fees (Reference)": 150000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 50000,
+          "Phase 2 (After Admission)": 40000,
+          "Phase 3 (Pre-enrollment)": 30000,
+          "Phase 4 (Visa Support)": 30000,
+          "Total Fees (Reference)": 150000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 50000,
+          "Phase 2 (After Admission)": 40000,
+          "Phase 3 (Pre-enrollment)": 30000,
+          "Phase 4 (Visa Support)": 30000,
+          "Total Fees (Reference)": 150000
+        }
       },
       "coupons": {
         "PRESUME50": {
-          "Bachelors": [
-            25000,
-            20000,
-            15000,
-            15000
-          ],
-          "Masters": [
-            25000,
-            20000,
-            15000,
-            15000
-          ],
-          "MBBS": [
-            25000,
-            20000,
-            15000,
-            15000
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 25000,
+            "Phase 2 (After Admission)": 20000,
+            "Phase 3 (Pre-enrollment)": 15000,
+            "Phase 4 (Visa Support)": 15000,
+            "Total Fees (Reference)": 75000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 25000,
+            "Phase 2 (After Admission)": 20000,
+            "Phase 3 (Pre-enrollment)": 15000,
+            "Phase 4 (Visa Support)": 15000,
+            "Total Fees (Reference)": 75000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 25000,
+            "Phase 2 (After Admission)": 20000,
+            "Phase 3 (Pre-enrollment)": 15000,
+            "Phase 4 (Visa Support)": 15000,
+            "Total Fees (Reference)": 75000
+          }
         }
       }
     },
     "Private": {
       "base": {
-        "Bachelors": [
-          5000,
-          5000,
-          5000,
-          5000
-        ],
-        "Masters": [
-          5000,
-          5000,
-          5000,
-          5000
-        ],
-        "MBBS": [
-          5000,
-          5000,
-          5000,
-          5000
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
       },
       "coupons": {
         "PRESUME50": {
-          "Bachelors": [
-            2500,
-            2500,
-            2500,
-            2500
-          ],
-          "Masters": [
-            2500,
-            2500,
-            2500,
-            2500
-          ],
-          "MBBS": [
-            2500,
-            2500,
-            2500,
-            2500
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
         }
       }
     }
@@ -218,129 +252,147 @@
   "georgia": {
     "Public": {
       "base": {
-        "Bachelors": [
-          20000,
-          20000,
-          20000,
-          20000
-        ],
-        "Masters": [
-          20000,
-          20000,
-          20000,
-          20000
-        ],
-        "MBBS": [
-          35000,
-          25000,
-          130000,
-          0
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 20000,
+          "Phase 2 (After Admission)": 20000,
+          "Phase 3 (Pre-enrollment)": 20000,
+          "Phase 4 (Visa Support)": 20000,
+          "Total Fees (Reference)": 80000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 20000,
+          "Phase 2 (After Admission)": 20000,
+          "Phase 3 (Pre-enrollment)": 20000,
+          "Phase 4 (Visa Support)": 20000,
+          "Total Fees (Reference)": 80000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 35000,
+          "Phase 2 (After Admission)": 25000,
+          "Phase 3 (Pre-enrollment)": 130000,
+          "Phase 4 (Visa Support)": 0,
+          "Total Fees (Reference)": 190000
+        }
       },
       "coupons": {
         "PRESUME30": {
-          "Bachelors": [
-            14000,
-            14000,
-            14000,
-            14000
-          ],
-          "Masters": [
-            14000,
-            14000,
-            14000,
-            14000
-          ],
-          "MBBS": [
-            25000,
-            20000,
-            88000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 14000,
+            "Phase 2 (After Admission)": 14000,
+            "Phase 3 (Pre-enrollment)": 14000,
+            "Phase 4 (Visa Support)": 14000,
+            "Total Fees (Reference)": 56000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 14000,
+            "Phase 2 (After Admission)": 14000,
+            "Phase 3 (Pre-enrollment)": 14000,
+            "Phase 4 (Visa Support)": 14000,
+            "Total Fees (Reference)": 56000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 25000,
+            "Phase 2 (After Admission)": 20000,
+            "Phase 3 (Pre-enrollment)": 88000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 133000
+          }
         },
         "PRESUME50": {
-          "Bachelors": [
-            10000,
-            10000,
-            10000,
-            10000
-          ],
-          "Masters": [
-            10000,
-            10000,
-            10000,
-            10000
-          ],
-          "MBBS": [
-            20000,
-            15000,
-            60000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 10000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 10000,
+            "Phase 4 (Visa Support)": 10000,
+            "Total Fees (Reference)": 40000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 10000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 10000,
+            "Phase 4 (Visa Support)": 10000,
+            "Total Fees (Reference)": 40000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 20000,
+            "Phase 2 (After Admission)": 15000,
+            "Phase 3 (Pre-enrollment)": 60000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 95000
+          }
         }
       }
     },
     "Private": {
       "base": {
-        "Bachelors": [
-          20000,
-          20000,
-          20000,
-          20000
-        ],
-        "Masters": [
-          20000,
-          20000,
-          20000,
-          20000
-        ],
-        "MBBS": [
-          35000,
-          25000,
-          130000,
-          0
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 20000,
+          "Phase 2 (After Admission)": 20000,
+          "Phase 3 (Pre-enrollment)": 20000,
+          "Phase 4 (Visa Support)": 20000,
+          "Total Fees (Reference)": 80000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 20000,
+          "Phase 2 (After Admission)": 20000,
+          "Phase 3 (Pre-enrollment)": 20000,
+          "Phase 4 (Visa Support)": 20000,
+          "Total Fees (Reference)": 80000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 35000,
+          "Phase 2 (After Admission)": 25000,
+          "Phase 3 (Pre-enrollment)": 130000,
+          "Phase 4 (Visa Support)": 0,
+          "Total Fees (Reference)": 190000
+        }
       },
       "coupons": {
         "PRESUME30": {
-          "Bachelors": [
-            14000,
-            14000,
-            14000,
-            14000
-          ],
-          "Masters": [
-            14000,
-            14000,
-            14000,
-            14000
-          ],
-          "MBBS": [
-            25000,
-            20000,
-            88000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 14000,
+            "Phase 2 (After Admission)": 14000,
+            "Phase 3 (Pre-enrollment)": 14000,
+            "Phase 4 (Visa Support)": 14000,
+            "Total Fees (Reference)": 56000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 14000,
+            "Phase 2 (After Admission)": 14000,
+            "Phase 3 (Pre-enrollment)": 14000,
+            "Phase 4 (Visa Support)": 14000,
+            "Total Fees (Reference)": 56000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 25000,
+            "Phase 2 (After Admission)": 20000,
+            "Phase 3 (Pre-enrollment)": 88000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 133000
+          }
         },
         "PRESUME50": {
-          "Bachelors": [
-            10000,
-            10000,
-            10000,
-            10000
-          ],
-          "Masters": [
-            10000,
-            10000,
-            10000,
-            10000
-          ],
-          "MBBS": [
-            20000,
-            15000,
-            60000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 10000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 10000,
+            "Phase 4 (Visa Support)": 10000,
+            "Total Fees (Reference)": 40000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 10000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 10000,
+            "Phase 4 (Visa Support)": 10000,
+            "Total Fees (Reference)": 40000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 20000,
+            "Phase 2 (After Admission)": 15000,
+            "Phase 3 (Pre-enrollment)": 60000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 95000
+          }
         }
       }
     }
@@ -348,129 +400,147 @@
   "russia": {
     "Public": {
       "base": {
-        "Bachelors": [
-          20000,
-          20000,
-          20000,
-          20000
-        ],
-        "Masters": [
-          20000,
-          20000,
-          20000,
-          20000
-        ],
-        "MBBS": [
-          35000,
-          25000,
-          130000,
-          0
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 20000,
+          "Phase 2 (After Admission)": 20000,
+          "Phase 3 (Pre-enrollment)": 20000,
+          "Phase 4 (Visa Support)": 20000,
+          "Total Fees (Reference)": 80000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 20000,
+          "Phase 2 (After Admission)": 20000,
+          "Phase 3 (Pre-enrollment)": 20000,
+          "Phase 4 (Visa Support)": 20000,
+          "Total Fees (Reference)": 80000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 35000,
+          "Phase 2 (After Admission)": 25000,
+          "Phase 3 (Pre-enrollment)": 130000,
+          "Phase 4 (Visa Support)": 0,
+          "Total Fees (Reference)": 190000
+        }
       },
       "coupons": {
         "PRESUME30": {
-          "Bachelors": [
-            14000,
-            14000,
-            14000,
-            14000
-          ],
-          "Masters": [
-            14000,
-            14000,
-            14000,
-            14000
-          ],
-          "MBBS": [
-            25000,
-            20000,
-            88000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 14000,
+            "Phase 2 (After Admission)": 14000,
+            "Phase 3 (Pre-enrollment)": 14000,
+            "Phase 4 (Visa Support)": 14000,
+            "Total Fees (Reference)": 56000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 14000,
+            "Phase 2 (After Admission)": 14000,
+            "Phase 3 (Pre-enrollment)": 14000,
+            "Phase 4 (Visa Support)": 14000,
+            "Total Fees (Reference)": 56000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 25000,
+            "Phase 2 (After Admission)": 20000,
+            "Phase 3 (Pre-enrollment)": 88000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 133000
+          }
         },
         "PRESUME50": {
-          "Bachelors": [
-            10000,
-            10000,
-            10000,
-            10000
-          ],
-          "Masters": [
-            10000,
-            10000,
-            10000,
-            10000
-          ],
-          "MBBS": [
-            20000,
-            15000,
-            60000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 10000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 10000,
+            "Phase 4 (Visa Support)": 10000,
+            "Total Fees (Reference)": 40000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 10000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 10000,
+            "Phase 4 (Visa Support)": 10000,
+            "Total Fees (Reference)": 40000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 20000,
+            "Phase 2 (After Admission)": 15000,
+            "Phase 3 (Pre-enrollment)": 60000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 95000
+          }
         }
       }
     },
     "Private": {
       "base": {
-        "Bachelors": [
-          20000,
-          20000,
-          20000,
-          20000
-        ],
-        "Masters": [
-          20000,
-          20000,
-          20000,
-          20000
-        ],
-        "MBBS": [
-          35000,
-          25000,
-          130000,
-          0
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 20000,
+          "Phase 2 (After Admission)": 20000,
+          "Phase 3 (Pre-enrollment)": 20000,
+          "Phase 4 (Visa Support)": 20000,
+          "Total Fees (Reference)": 80000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 20000,
+          "Phase 2 (After Admission)": 20000,
+          "Phase 3 (Pre-enrollment)": 20000,
+          "Phase 4 (Visa Support)": 20000,
+          "Total Fees (Reference)": 80000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 35000,
+          "Phase 2 (After Admission)": 25000,
+          "Phase 3 (Pre-enrollment)": 130000,
+          "Phase 4 (Visa Support)": 0,
+          "Total Fees (Reference)": 190000
+        }
       },
       "coupons": {
         "PRESUME30": {
-          "Bachelors": [
-            14000,
-            14000,
-            14000,
-            14000
-          ],
-          "Masters": [
-            14000,
-            14000,
-            14000,
-            14000
-          ],
-          "MBBS": [
-            25000,
-            20000,
-            88000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 14000,
+            "Phase 2 (After Admission)": 14000,
+            "Phase 3 (Pre-enrollment)": 14000,
+            "Phase 4 (Visa Support)": 14000,
+            "Total Fees (Reference)": 56000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 14000,
+            "Phase 2 (After Admission)": 14000,
+            "Phase 3 (Pre-enrollment)": 14000,
+            "Phase 4 (Visa Support)": 14000,
+            "Total Fees (Reference)": 56000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 25000,
+            "Phase 2 (After Admission)": 20000,
+            "Phase 3 (Pre-enrollment)": 88000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 133000
+          }
         },
         "PRESUME50": {
-          "Bachelors": [
-            10000,
-            10000,
-            10000,
-            10000
-          ],
-          "Masters": [
-            10000,
-            10000,
-            10000,
-            10000
-          ],
-          "MBBS": [
-            20000,
-            15000,
-            60000,
-            0
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 10000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 10000,
+            "Phase 4 (Visa Support)": 10000,
+            "Total Fees (Reference)": 40000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 10000,
+            "Phase 2 (After Admission)": 10000,
+            "Phase 3 (Pre-enrollment)": 10000,
+            "Phase 4 (Visa Support)": 10000,
+            "Total Fees (Reference)": 40000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 20000,
+            "Phase 2 (After Admission)": 15000,
+            "Phase 3 (Pre-enrollment)": 60000,
+            "Phase 4 (Visa Support)": 0,
+            "Total Fees (Reference)": 95000
+          }
         }
       }
     }
@@ -478,89 +548,713 @@
   "other": {
     "Public": {
       "base": {
-        "Bachelors": [
-          5000,
-          5000,
-          5000,
-          5000
-        ],
-        "Masters": [
-          5000,
-          5000,
-          5000,
-          5000
-        ],
-        "MBBS": [
-          5000,
-          5000,
-          5000,
-          5000
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
       },
       "coupons": {
         "PRESUME50": {
-          "Bachelors": [
-            2500,
-            2500,
-            2500,
-            2500
-          ],
-          "Masters": [
-            2500,
-            2500,
-            2500,
-            2500
-          ],
-          "MBBS": [
-            2500,
-            2500,
-            2500,
-            2500
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
         }
       }
     },
     "Private": {
       "base": {
-        "Bachelors": [
-          5000,
-          5000,
-          5000,
-          5000
-        ],
-        "Masters": [
-          5000,
-          5000,
-          5000,
-          5000
-        ],
-        "MBBS": [
-          5000,
-          5000,
-          5000,
-          5000
-        ]
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
       },
       "coupons": {
         "PRESUME50": {
-          "Bachelors": [
-            2500,
-            2500,
-            2500,
-            2500
-          ],
-          "Masters": [
-            2500,
-            2500,
-            2500,
-            2500
-          ],
-          "MBBS": [
-            2500,
-            2500,
-            2500,
-            2500
-          ]
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    }
+  },
+  "france": {
+    "Public": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    },
+    "Private": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    }
+  },
+  "canada": {
+    "Public": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    },
+    "Private": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    }
+  },
+  "usa": {
+    "Public": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    },
+    "Private": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    }
+  },
+  "uk": {
+    "Public": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    },
+    "Private": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    }
+  },
+  "australia": {
+    "Public": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    },
+    "Private": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    }
+  },
+  "ireland": {
+    "Public": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
+        }
+      }
+    },
+    "Private": {
+      "base": {
+        "Bachelors": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "Masters": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        },
+        "MBBS": {
+          "Phase 1 (Admission)": 5000,
+          "Phase 2 (After Admission)": 5000,
+          "Phase 3 (Pre-enrollment)": 5000,
+          "Phase 4 (Visa Support)": 5000,
+          "Total Fees (Reference)": 20000
+        }
+      },
+      "coupons": {
+        "PRESUME50": {
+          "Bachelors": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "Masters": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          },
+          "MBBS": {
+            "Phase 1 (Admission)": 2500,
+            "Phase 2 (After Admission)": 2500,
+            "Phase 3 (Pre-enrollment)": 2500,
+            "Phase 4 (Visa Support)": 2500,
+            "Total Fees (Reference)": 10000
+          }
         }
       }
     }
