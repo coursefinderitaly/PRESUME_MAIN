@@ -37,8 +37,8 @@ const ConfettiBlast = () => {
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="absolute left-1/2 top-1/2 w-2.5 h-2.5 rounded-full"
             style={{
-              backgroundColor: i % 3 === 0 ? '#818cf8' : i % 3 === 1 ? '#a78bfa' : '#c084fc',
-              boxShadow: '0 0 8px rgba(167, 139, 250, 0.8)'
+              backgroundColor: i % 3 === 0 ? '#fbbf24' : i % 3 === 1 ? '#f59e0b' : '#d97706',
+              boxShadow: '0 0 8px rgba(245, 158, 11, 0.8)'
             }}
           />
         );
@@ -198,8 +198,8 @@ const countriesComparisonData = [
       'High FMGE Passing Rate',
       'European Standard of Living'
     ],
-    themeColor: '#ef4444',
-    glowColor: 'rgba(239, 68, 68, 0.15)'
+    themeColor: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.15)'
   },
   {
     id: 'russia',
@@ -215,8 +215,8 @@ const countriesComparisonData = [
       'WHO, NMC, ECFMG Recognized',
       'Advanced Clinical Training'
     ],
-    themeColor: '#3b82f6',
-    glowColor: 'rgba(59, 130, 246, 0.15)'
+    themeColor: '#d97706',
+    glowColor: 'rgba(217, 119, 6, 0.15)'
   },
 
 ];
