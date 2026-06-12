@@ -55,7 +55,7 @@ router.post('/create-order', auth, paymentLimiter, async (req, res) => {
         pricingParams.applied,
         pricingParams.couponCode
       );
-      finalItemName = `Phase 1 Fee - ${pricingParams.selectedLevel}`;
+      finalItemName = `Phase 1 Fee - ${pricingParams.countryId.toUpperCase()} - ${pricingParams.selectedLevel}`;
     } else if (itemId === 'phase_payment' && pricingParams) {
       let level = user.highestLevelOfEducation;
       if (!['Bachelors', 'Masters', 'MBBS'].includes(level)) {
@@ -116,7 +116,8 @@ router.post('/create-order', auth, paymentLimiter, async (req, res) => {
       currency: 'INR',
       status: 'created',
       itemId: itemId || 'custom',
-      itemName: finalItemName
+      itemName: finalItemName,
+      pricingParams: pricingParams ? JSON.stringify(pricingParams) : null
     });
 
     res.json({ success: true, order, key_id: process.env.RAZORPAY_KEY_ID });

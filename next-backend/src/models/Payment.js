@@ -9,6 +9,7 @@ const paymentSchema = new mongoose.Schema({
   status: { type: String, enum: ['created', 'captured', 'failed'], default: 'created' },
   itemId: { type: String },
   itemName: { type: String },
+  pricingParams: { type: String },
   failureReason: { type: String },
   webhookEventsProcessed: [{ type: String }]
 }, { timestamps: true });
