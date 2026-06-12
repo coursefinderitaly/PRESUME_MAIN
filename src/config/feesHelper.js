@@ -33,8 +33,5 @@ export const getPhases = (countryId, uniType, level, couponCode) => {
         phases = [...phases];
         phases[0] = Math.round(phases[0] * (1 - discountPct / 100));
     }
-    // TEMPORARY TEST OVERRIDE: Set Phase 1 to 1 rupee
-    phases[0] = 1;
-    
     return phases;
 };
