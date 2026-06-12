@@ -125,10 +125,31 @@ const FeesTable = ({
         fetchPayments();
     }, [userEmail]);
 
-    const isPhase1Paid = userPayments.some(p =>
-        p.status === 'captured' &&
-        (p.itemId === 'dynamic_fee' || (p.itemName && p.itemName.toLowerCase().includes('phase 1')))
-    );
+    const parsePricingParams = (payment) => {
+        if (!payment) return {};
+        if (typeof payment.pricingParams === 'string') {
+            try { return JSON.parse(payment.pricingParams); } catch (e) { return {}; }
+        }
+        return payment.pricingParams || {};
+    };
+
+    const getPaymentCountry = (p) => {
+        const params = parsePricingParams(p);
+        if (params.countryId) return params.countryId.toLowerCase();
+        if (params.countryName) return params.countryName.toLowerCase();
+        const name = (p.itemName || '').toLowerCase();
+        if (name.includes('italy')) return 'italy';
+        if (name.includes('germany')) return 'germany';
+        return 'italy';
+    };
+
+    const isPhase1Paid = userPayments.some(p => {
+        if (p.status !== 'captured') return false;
+        const isPhase1 = p.itemId === 'dynamic_fee' || (p.itemName && p.itemName.toLowerCase().includes('phase 1'));
+        if (!isPhase1) return false;
+        const pCountry = getPaymentCountry(p);
+        return pCountry === (countryId || '').toLowerCase();
+    });
 
     const activeCouponName = applied ? coupon : '';
     const currentPhases = getPhases(countryId, uniType, selectedLevel, activeCouponName);
