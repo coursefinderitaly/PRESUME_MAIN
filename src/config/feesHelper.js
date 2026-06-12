@@ -1,4 +1,4 @@
-import feesData from './fees.json';
+import feesData from '../../next-backend/src/config/fees.json';
 import { COUPONS } from './coupons';
 
 export const getPhases = (countryId, uniType, level, couponCode) => {
