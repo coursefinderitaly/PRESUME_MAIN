@@ -127,10 +127,11 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
     
     // Set token as HTTPOnly Session Cookie (no maxAge = clears when browser closes)
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true, 
-      sameSite: 'None'
+      secure: isProduction, 
+      sameSite: isProduction ? 'None' : 'Lax'
     });
     
     res.json({ message: "Logged in successfully", user: { email: user.email, phone: user.phone, role: user.role } });
@@ -325,10 +326,11 @@ router.post('/send-payment-failed', async (req, res) => {
 
 // 8. LOGOUT ROUTE
 router.post('/logout', (req, res) => {
+  const isProduction = process.env.NODE_ENV === 'production';
   res.clearCookie('token', {
     httpOnly: true,
-    secure: true,
-    sameSite: 'None'
+    secure: isProduction,
+    sameSite: isProduction ? 'None' : 'Lax'
   });
   res.json({ message: "Logged out successfully" });
 });
