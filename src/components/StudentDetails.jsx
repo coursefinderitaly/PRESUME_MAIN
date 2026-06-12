@@ -245,6 +245,7 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
       
       const response = await fetch(`${API_BASE_URL}/payment/create-order`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
         body: JSON.stringify({
           itemId: 'application_fee',

@@ -21,6 +21,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
             // 1. Call backend to create order securely
             const response = await fetch(`${API_BASE_URL}/payment/create-order`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
                 body: JSON.stringify({ itemId, userEmail: userEmail || '' })
             });
@@ -71,6 +72,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                         try {
                             await fetch(`${API_BASE_URL}/payment/update-status`, {
                                 method: 'POST',
+                                credentials: 'include',
                                 headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
                                 body: JSON.stringify({
                                     razorpayOrderId: response.razorpay_order_id,
@@ -107,6 +109,7 @@ const PaymentTestingModal = ({ isOpen, onClose, onSuccess, userEmail }) => {
                 try {
                     await fetch(`${API_BASE_URL}/payment/update-status`, {
                         method: 'POST',
+                        credentials: 'include',
                         headers: { 'Content-Type': 'application/json', 'x-csrf-protected': '1' },
                         body: JSON.stringify({
                             razorpayOrderId: data.order.id,

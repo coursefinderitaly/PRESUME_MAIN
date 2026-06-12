@@ -42,6 +42,7 @@ const RazorpayGateway = ({ isOpen, onClose, itemId, pricingParams, razorpayOrder
             // 2. Create Order on Backend securely without passing flat amount
             const orderRes = await fetch(`${API_BASE_URL}/payment/create-order`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 
                     'Content-Type': 'application/json',
                     'x-csrf-protected': '1'
@@ -74,7 +75,11 @@ const RazorpayGateway = ({ isOpen, onClose, itemId, pricingParams, razorpayOrder
                         // 4. Verify Payment on Backend
                         const verifyRes = await fetch(`${API_BASE_URL}/payment/verify-payment`, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'x-csrf-protected': '1'
+                            },
                             body: JSON.stringify({
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
