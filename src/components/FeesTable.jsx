@@ -209,7 +209,7 @@ const FeesTable = ({
 
     const shouldHidePrice = false;
 
-    const isCombinedPhase = isCombined50 || (externalLevel === 'MBBS' && countryId === 'italy');
+    const isCombinedPhase = isCombined50;
 
     const feeStructure = [
         {
