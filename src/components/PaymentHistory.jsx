@@ -100,12 +100,32 @@ const COUNTRY_PHASE_INFOS = {
   ]
 };
 
+export const getPhaseNumberFromPayment = (payment) => {
+  const name = (payment.itemName || '').toUpperCase();
+  const itemId = payment.itemId || '';
+  if (itemId === 'dynamic_fee' || itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') return 1;
+  if (name.includes('PHASE 1') || name.includes('APPLICATION') || name.includes('REGISTRATION')) return 1;
+  if (name.includes('PHASE 2')) return 2;
+  if (name.includes('PHASE 3')) return 3;
+  if (name.includes('PHASE 4')) return 4;
+  return null;
+};
+
 const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [payingIndex, setPayingIndex] = useState(null);
   const [error, setError] = useState(null);
+  const capturedPayments = payments.filter(p => p.status === 'captured');
+
+  const lockedPayment = useMemo(() => {
+    return capturedPayments.find(p => getPhaseNumberFromPayment(p) === 1);
+  }, [capturedPayments]);
+
   const activeLevel = useMemo(() => {
+    if (lockedPayment && lockedPayment.pricingParams?.selectedLevel) {
+       return lockedPayment.pricingParams.selectedLevel;
+    }
     const currentEdu = profile?.highestLevelOfEducation;
     if (['Bachelors', 'Masters', 'MBBS'].includes(currentEdu)) {
       return currentEdu;
@@ -114,7 +134,17 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
       return 'Bachelors';
     }
     return 'Bachelors'; // Default fallback
-  }, [profile?.highestLevelOfEducation]);
+  }, [profile?.highestLevelOfEducation, lockedPayment]);
+
+  const countryId = useMemo(() => {
+    if (lockedPayment && lockedPayment.pricingParams?.countryId) {
+       return lockedPayment.pricingParams.countryId.toLowerCase();
+    }
+    if (lockedPayment && lockedPayment.pricingParams?.countryName) {
+       return lockedPayment.pricingParams.countryName.toLowerCase();
+    }
+    return profile?.country?.toLowerCase() || 'italy';
+  }, [profile?.country, lockedPayment]);
 
   useEffect(() => {
     fetchHistory();
@@ -365,20 +395,6 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
 
   // Phase Stepper Calculations
   const isStudent = profile?.role === 'student';
-  const countryId = profile?.country?.toLowerCase() || 'italy';
-
-  const capturedPayments = payments.filter(p => p.status === 'captured');
-
-  const getPhaseNumberFromPayment = (payment) => {
-    const name = (payment.itemName || '').toUpperCase();
-    const itemId = payment.itemId || '';
-    if (itemId === 'dynamic_fee' || itemId === 'application_fee' || itemId === 'bachelors_masters_fee' || itemId === 'mbbs_fee') return 1;
-    if (name.includes('PHASE 1') || name.includes('APPLICATION') || name.includes('REGISTRATION')) return 1;
-    if (name.includes('PHASE 2')) return 2;
-    if (name.includes('PHASE 3')) return 3;
-    if (name.includes('PHASE 4')) return 4;
-    return null;
-  };
 
   const handlePayPhase = async (phaseObj, countryKey) => {
     try {

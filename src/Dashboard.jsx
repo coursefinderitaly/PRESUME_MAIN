@@ -754,7 +754,7 @@ const Dashboard = () => {
                 </>
               )}
 
-              <NavButton id="payments" icon={CreditCard} label="Billing and Payments" />
+              <NavButton id="payments" icon={CreditCard} label="Payments" />
               <NavButton id="profile" icon={User} label="Account Profile" />
             </div>
 

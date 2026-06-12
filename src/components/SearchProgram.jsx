@@ -25,9 +25,7 @@ const CustomMultiValue = (props) => {
   if (props.index === 0) {
     return (
       <components.MultiValue {...props}>
-        <div style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {props.children}
-        </div>
+        {props.children}
       </components.MultiValue>
     );
   }
@@ -397,6 +395,10 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       color: '#fbbf24',
       fontSize: '0.75rem',
       padding: '2px 4px',
+      maxWidth: '80px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
     }),
     multiValueRemove: (base) => ({
       ...base,
