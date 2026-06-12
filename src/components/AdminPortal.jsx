@@ -45,6 +45,7 @@ const AdminPortal = () => {
   const [selectedApp, setSelectedApp] = useState(null);
   const [trashUsers, setTrashUsers] = useState([]);
   const [trashLoading, setTrashLoading] = useState(false);
+  const [selectedTrashUsers, setSelectedTrashUsers] = useState([]);
   
   const [documents, setDocuments] = useState([]);
   const [documentsLoading, setDocumentsLoading] = useState(false);
@@ -582,12 +583,30 @@ const AdminPortal = () => {
       if (res.ok) {
         setMessage({ text: 'Account permanently obliterated from database.', type: 'success' });
         fetchTrashUsers();
+        setSelectedTrashUsers(prev => prev.filter(uid => uid !== id));
       } else {
         setMessage({ text: 'Failed to permanently erase account', type: 'error' });
       }
     } catch (err) {
       console.error(err);
       setMessage({ text: 'Server error during permanent erasure', type: 'error' });
+    }
+  };
+
+  const handleBulkPermanentDelete = async () => {
+    if (selectedTrashUsers.length === 0) return;
+    if (!window.confirm(`CRITICAL WARNING: You are about to permanently erase ${selectedTrashUsers.length} accounts and all associated data. This CANNOT be undone. Proceed?`)) return;
+    try {
+      await Promise.all(selectedTrashUsers.map(id => fetch(`${API_BASE_URL}/admin/users/${id}/permanent`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })));
+      setMessage({ text: 'Selected accounts permanently obliterated.', type: 'success' });
+      setSelectedTrashUsers([]);
+      fetchTrashUsers();
+    } catch (err) {
+      console.error(err);
+      setMessage({ text: 'Server error during bulk erasure', type: 'error' });
     }
   };
 
@@ -1387,6 +1406,14 @@ const AdminPortal = () => {
                 <Trash2 size={18} color="#ef4444" />
                 Showing <span style={{ color: 'var(--text-main)', fontWeight: 800 }}>{trashUsers.length}</span> Soft-Deleted Accounts
               </div>
+              {selectedTrashUsers.length > 0 && (
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--input-bg)', padding: '6px 12px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginRight: '8px', fontWeight: 600 }}>
+                    {selectedTrashUsers.length} selected
+                  </span>
+                  <button onClick={handleBulkPermanentDelete} style={{ background: 'rgba(239,68,68,0.2)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.4)', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}><Trash2 size={14}/> Delete All</button>
+                </div>
+              )}
             </div>
 
             <div className="data-table-wrapper" style={{ background: 'var(--card-bg-solid)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflowX: 'auto', boxShadow: 'var(--shadow-lg)' }}>
@@ -1399,6 +1426,9 @@ const AdminPortal = () => {
                 <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
                   <thead style={{ background: 'var(--table-header-bg)', borderBottom: '1px solid var(--glass-border)' }}>
                     <tr>
+                      <th style={{ padding: '12px 16px', width: '40px', color: '#a1a1aa' }}>
+                        <input type="checkbox" checked={selectedTrashUsers.length === trashUsers.length && trashUsers.length > 0} onChange={(e) => setSelectedTrashUsers(e.target.checked ? trashUsers.map(u => u._id) : [])} style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--accent-primary)' }} />
+                      </th>
                       <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Entity Name</th>
                       <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Identifiers</th>
                       <th style={{ padding: '12px 16px', color: '#a1a1aa', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Role</th>
@@ -1408,7 +1438,16 @@ const AdminPortal = () => {
                   </thead>
                   <tbody>
                     {trashUsers.map(u => (
-                      <tr key={u._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'background 0.2s' }}>
+                      <tr key={u._id} style={{ borderBottom: '1px solid var(--table-border)', background: selectedTrashUsers.includes(u._id) ? 'rgba(255,255,255,0.03)' : 'transparent', transition: 'background 0.2s' }}>
+                        <td style={{ padding: '12px 16px' }}>
+                          <input type="checkbox" checked={selectedTrashUsers.includes(u._id)} onChange={() => {
+                            if (selectedTrashUsers.includes(u._id)) {
+                              setSelectedTrashUsers(selectedTrashUsers.filter(id => id !== u._id));
+                            } else {
+                              setSelectedTrashUsers([...selectedTrashUsers, u._id]);
+                            }
+                          }} style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--accent-primary)' }} />
+                        </td>
                         <td style={{ padding: '12px 16px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #71717a, #3f3f46)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#fff', fontSize: '0.9rem' }}>
@@ -1467,7 +1506,7 @@ const AdminPortal = () => {
                     ))}
                     {trashUsers.length === 0 && (
                       <tr>
-                        <td colSpan="5" style={{ padding: '50px 30px', textAlign: 'center', color: '#a1a1aa' }}>
+                        <td colSpan="6" style={{ padding: '50px 30px', textAlign: 'center', color: '#a1a1aa' }}>
                           <Trash2 size={40} style={{ margin: '0 auto 15px auto', opacity: 0.2 }} />
                           <div>No soft-deleted records found. Trash is empty.</div>
                         </td>

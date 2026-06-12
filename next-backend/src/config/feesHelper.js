@@ -2,7 +2,8 @@ const feesData = require('./fees.json');
 const { COUPONS } = require('./coupons');
 
 const getPhases = (countryId, uniType, level, couponCode) => {
-    const countryObj = feesData[countryId] || feesData['other'];
+    const normalizedCountry = (countryId || 'other').toLowerCase();
+    const countryObj = feesData[normalizedCountry] || feesData['other'];
     const typeObj = countryObj[uniType] || countryObj['Public'];
     
     let baseLevel = level;

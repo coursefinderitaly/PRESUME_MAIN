@@ -3,7 +3,8 @@ import { COUPONS } from './coupons';
 
 export const getPhases = (countryId, uniType, level, couponCode) => {
     // 1. Fallback to 'other' if country not found
-    const countryObj = feesData[countryId] || feesData['other'];
+    const normalizedCountry = (countryId || 'other').toLowerCase();
+    const countryObj = feesData[normalizedCountry] || feesData['other'];
     
     // 2. Fallback to 'Public' if uniType not found
     const typeObj = countryObj[uniType] || countryObj['Public'];

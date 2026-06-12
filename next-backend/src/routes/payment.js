@@ -62,7 +62,16 @@ router.post('/create-order', auth, paymentLimiter, async (req, res) => {
         level = 'Bachelors';
       }
       const countryId = pricingParams.countryName || user.country || 'italy';
-      const phases = getPhases(countryId, 'Public', level, '');
+      
+      const Coupon = require('../models/Coupon');
+      const activeCoupon = await Coupon.findOne({
+        userEmail: user.email.toLowerCase(),
+        isActive: true,
+        validUntil: { $gt: new Date() }
+      });
+      const couponCode = activeCoupon ? activeCoupon.code : '';
+      
+      const phases = getPhases(countryId, 'Public', level, couponCode);
       const phaseIndex = parseInt(pricingParams.phaseNumber, 10) - 1;
       
       let baseFee = 0;
