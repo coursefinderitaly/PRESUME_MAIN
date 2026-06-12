@@ -21,6 +21,39 @@ const CheckboxOption = (props) => {
   );
 };
 
+const CustomMultiValue = (props) => {
+  if (props.index === 0) {
+    return (
+      <components.MultiValue {...props}>
+        <div style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {props.children}
+        </div>
+      </components.MultiValue>
+    );
+  }
+  
+  if (props.index === 1) {
+    const totalSelected = props.getValue().length;
+    return (
+      <div style={{
+        backgroundColor: 'rgba(251, 191, 36, 0.15)',
+        borderRadius: '4px',
+        margin: '2px',
+        padding: '2px 6px',
+        color: '#fbbf24',
+        fontSize: '0.75rem',
+        fontWeight: '700',
+        display: 'flex',
+        alignItems: 'center'
+      }}>
+        +{totalSelected - 1}
+      </div>
+    );
+  }
+  
+  return null;
+};
+
 // Fallback sample data structured like what the Google Sheet would return
 const sampleSheetData = [
   {
@@ -817,7 +850,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
               isMulti
               closeMenuOnSelect={false}
               hideSelectedOptions={false}
-              components={{ Option: CheckboxOption }}
+              components={{ Option: CheckboxOption, MultiValue: CustomMultiValue }}
               name="interestedField"
               value={searchParams.interestedField}
               onChange={(val) => handleSelectChange("interestedField", val)}
@@ -834,7 +867,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
               isMulti
               closeMenuOnSelect={false}
               hideSelectedOptions={false}
-              components={{ Option: CheckboxOption }}
+              components={{ Option: CheckboxOption, MultiValue: CustomMultiValue }}
               name="subField"
               value={searchParams.subField}
               onChange={(val) => handleSelectChange("subField", val)}
@@ -851,7 +884,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
               isMulti
               closeMenuOnSelect={false}
               hideSelectedOptions={false}
-              components={{ Option: CheckboxOption }}
+              components={{ Option: CheckboxOption, MultiValue: CustomMultiValue }}
               name="programName"
               value={searchParams.programName}
               onChange={(val) => handleSelectChange("programName", val)}
