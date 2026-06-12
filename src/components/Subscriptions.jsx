@@ -664,7 +664,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                     <span style={{ fontSize: '2rem', lineHeight: 1 }}>{c.flag}</span>
                     <div>
                       <h3 style={{
-                        fontSize: '1.05rem',
+                        fontSize: '1.25rem',
                         fontWeight: 800,
                         color: 'var(--text-main)',
                         margin: 0,
@@ -672,7 +672,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                         {c.name}
                       </h3>
                       <span className="country-theme-text" style={{
-                        fontSize: '0.7rem',
+                        fontSize: '0.85rem',
                         color: c.themeColor,
                         fontWeight: 700,
                         display: 'block',
@@ -688,13 +688,13 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                       {countryData.germany.tuitionCards.map((tc, idx) => (
                         <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 12px', borderRadius: '12px', border: idx === 0 ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)', background: idx === 0 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(245, 158, 11, 0.05)' }}>
-                          <div style={{ fontSize: '0.7rem', color: idx === 0 ? '#10b981' : '#f59e0b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>{tc.university}</div>
+                          <div style={{ fontSize: '0.85rem', color: idx === 0 ? '#10b981' : '#f59e0b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>{tc.university}</div>
                           {tc.rows.slice(0, 2).map((row, rIdx) => (
                             <div key={rIdx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 {rIdx === 0 ? <Landmark size={10} /> : <Briefcase size={10} />} {row.year}
                               </span>
-                              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{row.total || row.tuition}</span>
+                              <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{row.total || row.tuition}</span>
                             </div>
                           ))}
                         </div>
@@ -703,23 +703,23 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '8px 10px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.03)', background: 'rgba(255, 255, 255, 0.01)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <Landmark size={10} /> Tuition
                         </span>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.univTuition}</span>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.univTuition}</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <Briefcase size={10} /> Visa
                         </span>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.workRights}</span>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.workRights}</span>
                       </div>
                     </div>
                   )}
 
                   {/* Benefits Bullet Points */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1 }}>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
                       Key Advantages
                     </span>
                     <div style={{ 
@@ -730,8 +730,8 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                     }}>
                       {c.benefits.slice(0, c.id === 'germany' ? 4 : 3).map((b, i) => (
                         <div key={i} style={{ display: 'flex', gap: '6px', alignItems: 'start' }}>
-                          <Check size={10} color={c.themeColor} className="country-theme-stroke" style={{ marginTop: '2.5px', flexShrink: 0, strokeWidth: 3 }} />
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>{b}</span>
+                          <Check size={12} color={c.themeColor} className="country-theme-stroke" style={{ marginTop: '2.5px', flexShrink: 0, strokeWidth: 3 }} />
+                          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>{b}</span>
                         </div>
                       ))}
                     </div>
@@ -743,10 +743,10 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                   {/* Elite Package Fee */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, marginTop: 'auto' }}>
                     <div>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'block' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'block' }}>
                         Elite Service
                       </span>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                         Processing fee
                       </span>
                     </div>
@@ -754,20 +754,20 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                     <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
                       {fee.hasDiscount ? (
                         <>
-                          <span style={{ fontSize: '0.65rem', textDecoration: 'line-through', opacity: 0.5, fontWeight: 700, color: 'var(--text-muted)' }}>
+                          <span style={{ fontSize: '0.8rem', textDecoration: 'line-through', opacity: 0.5, fontWeight: 700, color: 'var(--text-muted)' }}>
                             ₹{fee.baseP.toLocaleString('en-IN')}
                           </span>
-                          <span style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)' }}>
+                          <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-main)' }}>
                             ₹{fee.discP.toLocaleString('en-IN')}
                           </span>
                         </>
                       ) : (
-                        <span style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)' }}>
+                        <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-main)' }}>
                           ₹{fee.baseP.toLocaleString('en-IN')}
                         </span>
                       )}
                       
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
                         + 18% GST (₹{(fee.hasDiscount ? fee.discT : fee.baseT).toLocaleString('en-IN')})
                       </span>
                     </div>
@@ -804,7 +804,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                       borderRadius: '10px',
                       flexShrink: 0,
                       padding: '9px 12px',
-                      fontSize: '0.75rem',
+                      fontSize: '0.85rem',
                       fontWeight: 800,
                       cursor: 'pointer',
                       display: 'flex',
