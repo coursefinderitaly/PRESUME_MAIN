@@ -18,8 +18,8 @@ const FeeStructurePage = () => {
       <Header compact={false} />
 
       <main className="relative z-10 px-4 md:px-8 max-w-[1400px] mx-auto w-full pt-24 pb-20 flex-1 flex flex-col">
-        <div style={{ flex: 1, minHeight: '80vh' }}>
-          <Subscriptions />
+        <div style={{ flex: 1, minHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
+          <Subscriptions isStandalone={true} />
         </div>
       </main>
 

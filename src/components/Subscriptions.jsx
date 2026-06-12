@@ -370,7 +370,7 @@ const italyData = {
   ]
 };
 
-const Subscriptions = ({ profile, refreshProfile }) => {
+const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
   const layoutScale = useLocalLayoutScale(1536);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -560,7 +560,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
   ];
 
   return (
-    <div style={{ padding: '0', position: 'relative', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ padding: '0', position: 'relative', height: isStandalone ? 'auto' : '100%', display: 'flex', flexDirection: 'column' }}>
       {showConfetti && <ConfettiBlast />}
 
       {/* Country Comparison Hub */}
@@ -575,9 +575,9 @@ const Subscriptions = ({ profile, refreshProfile }) => {
         boxShadow: '0 20px 50px rgba(0,0,0,0.1)',
         display: 'flex',
         flexDirection: 'column',
-        flex: 1,
-        minHeight: 0,
-        zoom: Math.min(layoutScale, 1.2) * 0.9
+        flex: isStandalone ? 'none' : 1,
+        minHeight: isStandalone ? 'auto' : 0,
+        zoom: isStandalone ? 0.75 : Math.min(layoutScale, 1.2) * 0.9
       }}>
 
         {/* Hub Header */}
