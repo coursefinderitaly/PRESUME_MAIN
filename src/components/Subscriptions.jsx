@@ -684,28 +684,51 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                   </div>
 
                   {/* Micro Info Badges */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '8px 10px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.03)', background: 'rgba(255, 255, 255, 0.01)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Landmark size={10} /> Tuition
-                      </span>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.univTuition}</span>
+                  {c.id === 'germany' ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                      {countryData.germany.tuitionCards.map((tc, idx) => (
+                        <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 12px', borderRadius: '12px', border: idx === 0 ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)', background: idx === 0 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(245, 158, 11, 0.05)' }}>
+                          <div style={{ fontSize: '0.7rem', color: idx === 0 ? '#10b981' : '#f59e0b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' }}>{tc.university}</div>
+                          {tc.rows.slice(0, 2).map((row, rIdx) => (
+                            <div key={rIdx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+                              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                {rIdx === 0 ? <Landmark size={10} /> : <Briefcase size={10} />} {row.year}
+                              </span>
+                              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{row.total || row.tuition}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Briefcase size={10} /> Visa
-                      </span>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.workRights}</span>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '8px 10px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.03)', background: 'rgba(255, 255, 255, 0.01)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+                        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Landmark size={10} /> Tuition
+                        </span>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.univTuition}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+                        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Briefcase size={10} /> Visa
+                        </span>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-main)', textAlign: 'right' }}>{c.workRights}</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Benefits Bullet Points */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1 }}>
                     <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
                       Key Advantages
                     </span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                      {c.benefits.slice(0, 3).map((b, i) => (
+                    <div style={{ 
+                      display: c.id === 'germany' ? 'grid' : 'flex', 
+                      gridTemplateColumns: c.id === 'germany' ? '1fr 1fr' : 'none', 
+                      flexDirection: c.id === 'germany' ? 'row' : 'column', 
+                      gap: c.id === 'germany' ? '8px 16px' : '4px' 
+                    }}>
+                      {c.benefits.slice(0, c.id === 'germany' ? 4 : 3).map((b, i) => (
                         <div key={i} style={{ display: 'flex', gap: '6px', alignItems: 'start' }}>
                           <Check size={10} color={c.themeColor} className="country-theme-stroke" style={{ marginTop: '2.5px', flexShrink: 0, strokeWidth: 3 }} />
                           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>{b}</span>
