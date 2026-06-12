@@ -159,8 +159,8 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
               min-height: 100vh;
             }
             .glow { position: absolute; border-radius: 50%; pointer-events: none; z-index: -1; opacity: 0.15; }
-            .glow-1 { top: 5%; left: 10%; width: 250px; height: 250px; background: #6366f1; filter: blur(100px); }
-            .glow-2 { bottom: 10%; right: 10%; width: 300px; height: 300px; background: #10b981; filter: blur(120px); }
+            .glow-1 { top: 5%; left: 10%; width: 250px; height: 250px; background: #fbbf24; filter: blur(100px); }
+            .glow-2 { bottom: 10%; right: 5%; width: 300px; height: 300px; background: #f59e0b; filter: blur(120px); }
             
             .card { 
               background: rgba(255, 255, 255, 0.02); 
@@ -443,7 +443,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
           email: profile?.email || '',
         },
         theme: {
-          color: '#6366f1'
+          color: '#fbbf24'
         },
         modal: {
           ondismiss: function () {

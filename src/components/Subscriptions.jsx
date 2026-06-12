@@ -533,7 +533,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
           email: profile?.email || '',
         },
         theme: {
-          color: '#6366f1' // Indigo
+          color: '#fbbf24' // Amber/Gold
         },
         modal: {
           ondismiss: function () {
@@ -903,8 +903,8 @@ const Subscriptions = ({ profile, refreshProfile }) => {
             >
               {(() => {
                 const selectedCountryData = countriesComparisonData.find(c => c.id === popupCountryId);
-                const themeColor = selectedCountryData?.themeColor || '#6366f1';
-                const glowColor = selectedCountryData?.glowColor || 'rgba(99, 102, 241, 0.15)';
+                const themeColor = selectedCountryData?.themeColor || '#fbbf24';
+                const glowColor = selectedCountryData?.glowColor || 'rgba(251, 191, 36, 0.15)';
                 const countryDetails = popupCountryId === 'italy' ? italyData : countryData[popupCountryId?.toLowerCase()];
 
                 return (
@@ -1024,9 +1024,9 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                           pointerEvents: 'none'
                         }}>
                           <div style={{
-                            minWidth: c.id === 'germany' ? '360px' : '320px',
+                            minWidth: selectedCountryData?.id === 'germany' ? '360px' : '320px',
                             background: 'var(--card-bg)',
-                            border: `1px solid ${selectedCountry === c.id ? c.themeColor : 'var(--glass-border)'}`,
+                            border: `1px solid ${selectedCountry === selectedCountryData?.id ? themeColor : 'var(--glass-border)'}`,
                             padding: '20px 36px',
                             borderRadius: '24px',
                             boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
