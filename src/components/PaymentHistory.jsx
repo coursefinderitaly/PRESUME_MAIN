@@ -111,6 +111,18 @@ export const getPhaseNumberFromPayment = (payment) => {
   return null;
 };
 
+const parsePricingParams = (payment) => {
+  if (!payment) return {};
+  if (typeof payment.pricingParams === 'string') {
+    try {
+      return JSON.parse(payment.pricingParams);
+    } catch (e) {
+      return {};
+    }
+  }
+  return payment.pricingParams || {};
+};
+
 const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,9 +135,15 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
   }, [capturedPayments]);
 
   const activeLevel = useMemo(() => {
-    if (lockedPayment && lockedPayment.pricingParams?.selectedLevel) {
-       return lockedPayment.pricingParams.selectedLevel;
-    }
+    const params = parsePricingParams(lockedPayment);
+    if (params.selectedLevel) return params.selectedLevel;
+    
+    // Check item name fallback
+    const itemName = (lockedPayment?.itemName || '').toLowerCase();
+    if (itemName.includes('master')) return 'Masters';
+    if (itemName.includes('mbbs')) return 'MBBS';
+    if (itemName.includes('bachelor')) return 'Bachelors';
+
     const currentEdu = profile?.highestLevelOfEducation;
     if (['Bachelors', 'Masters', 'MBBS'].includes(currentEdu)) {
       return currentEdu;
@@ -137,19 +155,30 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
   }, [profile?.highestLevelOfEducation, lockedPayment]);
 
   const countryId = useMemo(() => {
-    if (lockedPayment && lockedPayment.pricingParams?.countryId) {
-       return lockedPayment.pricingParams.countryId.toLowerCase();
-    }
-    if (lockedPayment && lockedPayment.pricingParams?.countryName) {
-       return lockedPayment.pricingParams.countryName.toLowerCase();
-    }
+    const params = parsePricingParams(lockedPayment);
+    if (params.countryId) return params.countryId.toLowerCase();
+    if (params.countryName) return params.countryName.toLowerCase();
+    
+    // Check item name fallback
+    const itemName = (lockedPayment?.itemName || '').toLowerCase();
+    if (itemName.includes('italy')) return 'italy';
+    if (itemName.includes('germany')) return 'germany';
+    if (itemName.includes('france')) return 'france';
+
+    // IMPORTANT FALLBACK FIX: If locked payment exists but no country info, 
+    // we MUST NOT fall back to profile.country if we want to avoid it jumping.
+    // However, if we don't know the country, we have to default somewhere.
     return profile?.country?.toLowerCase() || 'italy';
   }, [profile?.country, lockedPayment]);
 
   const uniType = useMemo(() => {
-    if (lockedPayment && lockedPayment.pricingParams?.uniType) {
-       return lockedPayment.pricingParams.uniType;
-    }
+    const params = parsePricingParams(lockedPayment);
+    if (params.uniType) return params.uniType;
+    
+    // Check item name fallback
+    const itemName = (lockedPayment?.itemName || '').toLowerCase();
+    if (itemName.includes('private')) return 'Private';
+
     return 'Public';
   }, [lockedPayment]);
 
@@ -667,6 +696,16 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', margin: 0, letterSpacing: '-0.5px' }}>Payments</h2>
             <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Track academic processing phase milestones and pay your remains.</p>
           </div>
+          
+          {/* Purchased Package Label */}
+          {lockedPayment && (
+            <div style={{ marginLeft: 'auto', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '8px 16px', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+              <span style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: '#10b981', letterSpacing: '0.5px' }}>Active Purchased Package</span>
+              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                {countryId.charAt(0).toUpperCase() + countryId.slice(1)} • {uniType} • {activeLevel}
+              </span>
+            </div>
+          )}
         </div>
 
         {error && (
