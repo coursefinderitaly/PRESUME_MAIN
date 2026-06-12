@@ -489,9 +489,9 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                   <span className="text-slate-300 font-bold">₹ {phase1Discounted.toLocaleString('en-IN')}</span>
                 </div>
 
-                {hasItalyGST && (
+                {hasGST && (
                   <div className="flex justify-between items-center text-[11px] hover:text-slate-300 transition-colors">
-                    <span className="text-slate-400">GST (18%)</span>
+                    <span className="text-slate-400">GST ({gstRate * 100}%)</span>
                     <span className="text-slate-300 font-bold">₹ {Math.round(phase1Discounted * gstRate).toLocaleString('en-IN')}</span>
                   </div>
                 )}
@@ -500,11 +500,11 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                 <div className="flex justify-between items-center p-3 bg-cyan-500/5 border border-cyan-500/20 rounded-xl mt-3 hover:scale-[1.01] hover:border-cyan-500/30 hover:shadow-[0_0_12px_rgba(6,182,212,0.12)] transition-all duration-305 cursor-default">
                   <div>
                     <p className="text-[10px] text-cyan-400 font-black uppercase tracking-wider">Total Due Today</p>
-                    <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Phase 1 fee {hasItalyGST && "+ GST"}</p>
+                    <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Phase 1 fee {hasGST && "+ GST"}</p>
                   </div>
                   <div className="text-right">
                     <span className="text-xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                      ₹ {Math.round(phase1Discounted * (hasItalyGST ? 1 + gstRate : 1)).toLocaleString('en-IN')}
+                      ₹ {Math.round(phase1Discounted * (hasGST ? 1 + gstRate : 1)).toLocaleString('en-IN')}
                     </span>
                   </div>
                 </div>
