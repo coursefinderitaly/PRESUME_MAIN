@@ -357,6 +357,7 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
       ...base,
       backgroundColor: 'rgba(251, 191, 36, 0.15)',
       borderRadius: '4px',
+      margin: '2px',
     }),
     multiValueLabel: (base) => ({
       ...base,
