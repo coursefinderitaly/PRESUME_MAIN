@@ -48,14 +48,40 @@ router.post('/create-order', auth, paymentLimiter, async (req, res) => {
     const userEmail = user.email;
 
     if (itemId === 'dynamic_fee' && pricingParams) {
+      // SERVER-SIDE allowlist validation to prevent fee manipulation
+      const validCountries = ['italy', 'germany', 'france', 'uk', 'usa', 'canada', 'australia', 'ireland', 'georgia', 'russia', 'other'];
+      const validLevels = ['Bachelors', 'Masters', 'MBBS'];
+      const validUniTypes = ['Public', 'Private'];
+      const countryNorm = (pricingParams.countryId || '').toLowerCase();
+      if (!validCountries.includes(countryNorm)) return res.status(400).json({ error: 'Invalid country selection' });
+      if (!validLevels.includes(pricingParams.selectedLevel)) return res.status(400).json({ error: 'Invalid study level' });
+      if (pricingParams.uniType && !validUniTypes.includes(pricingParams.uniType)) return res.status(400).json({ error: 'Invalid university type' });
+
+      // Verify coupon belongs to this user if applied
+      if (pricingParams.applied && pricingParams.couponCode) {
+        const Coupon = require('../models/Coupon');
+        const validCoupon = await Coupon.findOne({
+          code: pricingParams.couponCode.toUpperCase(),
+          userEmail: user.email.toLowerCase(),
+          isActive: true,
+          validUntil: { $gt: new Date() }
+        });
+        if (!validCoupon) {
+          pricingParams.applied = false;
+          pricingParams.couponCode = '';
+        }
+      }
+
       finalAmount = calculateDynamicFee(
-        pricingParams.countryId,
+        countryNorm,
         pricingParams.uniType,
         pricingParams.selectedLevel,
         pricingParams.applied,
         pricingParams.couponCode
       );
       finalItemName = `Phase 1 Fee - ${pricingParams.selectedLevel}`;
+      // Enforce minimum fee guardrail (can never be less than ₹1)
+      if (!finalAmount || finalAmount < 1) return res.status(400).json({ error: 'Computed fee is invalid' });
     } else if (itemId === 'phase_payment' && pricingParams) {
       let level = user.highestLevelOfEducation;
       if (!['Bachelors', 'Masters', 'MBBS'].includes(level)) {
@@ -328,15 +354,21 @@ router.post('/update-status', auth, paymentLimiter, async (req, res) => {
       return res.status(403).json({ error: 'Forbidden. Status can only be updated to failed or cancelled from the client.' });
     }
 
+    // Fetch payment first to run ownership check BEFORE any mutation
+    const existingPayment = await Payment.findOne({ razorpayOrderId });
+    if (!existingPayment) return res.status(404).json({ error: 'Payment record not found' });
+
+    // Ownership check: non-admin users can only cancel/fail their own payments
+    const requestingUser = await User.findById(req.user.id);
+    if (requestingUser.role !== 'admin' && existingPayment.userEmail !== requestingUser.email) {
+      return res.status(403).json({ error: 'Unauthorized to modify this payment record' });
+    }
+
     const payment = await Payment.findOneAndUpdate(
       { razorpayOrderId },
       { status, razorpayPaymentId, failureReason },
       { new: true }
     );
-
-    if (!payment) {
-      return res.status(404).json({ error: 'Payment record not found' });
-    }
 
     // Portal unlocking is strictly handled by /verify-payment or webhook.
 

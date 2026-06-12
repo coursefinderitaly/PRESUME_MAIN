@@ -533,7 +533,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
           email: profile?.email || '',
         },
         theme: {
-          color: '#6366f1' // Indigo
+          color: '#f59e0b' // Amber - matches site theme
         },
         modal: {
           ondismiss: function () {
@@ -789,7 +789,7 @@ const Subscriptions = ({ profile, refreshProfile }) => {
                           body: JSON.stringify({ country: c.name })
                         });
                         if (res.ok && refreshProfile) {
-                          await refreshProfile();
+                          try { await refreshProfile(); } catch(e) { /* silent - public page */ }
                         }
                       } catch (err) {
                         console.error("Failed to update profile country", err);

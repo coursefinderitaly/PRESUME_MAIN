@@ -216,9 +216,9 @@ const FeesTable = ({
             title: "Admission Process",
             phaseIndex: 0,
             price: (shouldHidePrice || getPhasePrice(0) === undefined) ? null : `₹ ${getPhasePrice(0).toLocaleString('en-IN')}`,
-            icon: <FileText className="text-cyan-400" size={18} />,
-            color: "from-cyan-500/10 to-blue-500/10 hover:border-cyan-400/40",
-            glow: "bg-cyan-500/10",
+            icon: <FileText className="text-amber-400" size={18} />,
+            color: "from-amber-500/10 to-yellow-500/10 hover:border-amber-400/40",
+            glow: "bg-amber-500/10",
             items: [
                 "Assessment of profile",
                 "Full assistance for profile building",
@@ -230,9 +230,9 @@ const FeesTable = ({
             title: "After Admission",
             phaseIndex: 1,
             price: (shouldHidePrice || getPhasePrice(1) === undefined) ? null : `₹ ${getPhasePrice(1).toLocaleString('en-IN')}`,
-            icon: <CheckCircle2 className="text-indigo-400" size={18} />,
-            color: "from-indigo-500/10 to-purple-500/10 hover:border-indigo-400/40",
-            glow: "bg-indigo-500/10",
+            icon: <CheckCircle2 className="text-yellow-400" size={18} />,
+            color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
+            glow: "bg-yellow-500/10",
             items: [
                 "University Acceptance Letter",
                 "Interview Guidance",
@@ -323,7 +323,7 @@ const FeesTable = ({
         const title = 'var(--text-main)';
         const sub = 'var(--text-muted)';
         const muted = 'var(--text-muted)';
-        const accent = 'var(--accent-primary, #0ea5e9)';
+        const accent = 'var(--accent-primary, #f59e0b)';
         const accentBg = 'var(--filter-chip-bg)';
         const divider = 'var(--table-border)';
         const inputBg = 'var(--input-bg)';
@@ -344,18 +344,18 @@ const FeesTable = ({
                             let phaseBg = 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)';
                             let phaseBorder = border;
 
-                            if (idx === 0) { // Step 1: Admission (Cyan/Blue)
-                                phaseAccent = '#22d3ee';
-                                phaseBg = 'linear-gradient(135deg, rgba(34, 211, 238, 0.06) 0%, rgba(59, 130, 246, 0.03) 100%)';
-                                phaseBorder = 'rgba(34, 211, 238, 0.25)';
-                            } else if (idx === 1) { // Step 2: After Admission (Indigo/Purple)
-                                phaseAccent = '#818cf8';
-                                phaseBg = 'linear-gradient(135deg, rgba(129, 140, 248, 0.06) 0%, rgba(167, 139, 250, 0.03) 100%)';
-                                phaseBorder = 'rgba(129, 140, 248, 0.25)';
-                            } else if (idx === 2) { // Step 3: Pre-enrollment (Yellow/Amber)
+                            if (idx === 0) { // Step 1: Admission (Amber/Gold)
                                 phaseAccent = '#fbbf24';
-                                phaseBg = 'linear-gradient(135deg, rgba(251, 191, 36, 0.06) 0%, rgba(245, 158, 11, 0.03) 100%)';
-                                phaseBorder = 'rgba(251, 191, 36, 0.25)';
+                                phaseBg = 'linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(245, 158, 11, 0.04) 100%)';
+                                phaseBorder = 'rgba(251, 191, 36, 0.3)';
+                            } else if (idx === 1) { // Step 2: After Admission (Amber-Orange)
+                                phaseAccent = '#f59e0b';
+                                phaseBg = 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.04) 100%)';
+                                phaseBorder = 'rgba(245, 158, 11, 0.3)';
+                            } else if (idx === 2) { // Step 3: Pre-enrollment (Gold)
+                                phaseAccent = '#d97706';
+                                phaseBg = 'linear-gradient(135deg, rgba(217, 119, 6, 0.08) 0%, rgba(180, 83, 9, 0.04) 100%)';
+                                phaseBorder = 'rgba(217, 119, 6, 0.3)';
                             } else if (idx === 3) { // Step 4: Visa (Emerald/Teal)
                                 phaseAccent = '#34d399';
                                 phaseBg = 'linear-gradient(135deg, rgba(52, 211, 153, 0.06) 0%, rgba(20, 184, 166, 0.03) 100%)';
@@ -481,7 +481,7 @@ const FeesTable = ({
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '4px' }}>
                         <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-muted)' }}>Total Processing Fee:</span>
-                        <span style={{ fontSize: '20px', fontWeight: 900, color: 'var(--accent-primary, #0ea5e9)' }}>
+                        <span style={{ fontSize: '20px', fontWeight: 900, color: 'var(--accent-primary, #f59e0b)' }}>
                             {applied ? (
                                 <>
                                     <span style={{ textDecoration: 'line-through', opacity: 0.5, fontSize: '14px', marginRight: '8px' }}>₹ {totalFee.toLocaleString('en-IN')}</span>

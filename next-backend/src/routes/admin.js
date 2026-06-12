@@ -60,6 +60,11 @@ router.put('/users/:id', async (req, res) => {
     if (updates.createdByCounselor === "") updates.createdByCounselor = null;
     if (updates.registeredBy === "") updates.registeredBy = null;
 
+    // Prevent role escalation to 'admin' — only allowed roles via this endpoint are student/freelancer/partner
+    if (updates.role && updates.role === 'admin') {
+      delete updates.role;
+    }
+
     // If a password is provided, hash it before updating
     if (updates.password && updates.password.trim() !== "") {
        const bcrypt = require('bcryptjs');
