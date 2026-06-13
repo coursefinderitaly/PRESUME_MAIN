@@ -103,7 +103,7 @@ const CouponTicket = ({ name, destination, voucherCode, date }) => {
             )}
             {n(31, 57, 590, 80, 436,
               {
-                fontSize: '76px', fontWeight: 700, color: '#F2EDE3',
+                fontSize: '56px', fontWeight: 700, color: '#F2EDE3',
                 writingMode: 'vertical-rl',
                 transform: 'rotate(180deg)',
                 whiteSpace: 'nowrap',
@@ -196,11 +196,13 @@ const CouponTicket = ({ name, destination, voucherCode, date }) => {
 // ============================================================
 
 export default function CouponPage({ onClose, defaultName = '', defaultEmail = '', onGenerateSuccess }) {
+  console.log('Force Vite reload for printer mouth!');
   const [name, setName] = useState(defaultName);
   const [email, setEmail] = useState(defaultEmail);
   const [countryCode, setCountryCode] = useState('+91');
   const [phone, setPhone] = useState('');
   const [destination, setDestination] = useState('ITALY');
+  const [discountType, setDiscountType] = useState('50');
   const [animationState, setAnimationState] = useState('idle');
   const [voucherCode, setVoucherCode] = useState('ITA-PE----');
   const [validUntil, setValidUntil] = useState('17-05-26');
@@ -208,13 +210,23 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
+  // ==========================================
+  // VOUCHER TWEAK CONTROLS
+  // ==========================================
+  // Change these values to easily control the generated voucher's size and position!
+  const MANUAL_VOUCHER_SCALE_MAX = 0.17; // The maximum size/scale of the voucher
+  const MANUAL_VOUCHER_SCALE_MIN = 0.08; // The minimum size for mobile screens
+  const MANUAL_VOUCHER_OFFSET_X = 20;    // Move the voucher left/right after it prints
+  const MANUAL_VOUCHER_OFFSET_Y = -25;   // Move the voucher up/down
+  // ==========================================
+
   // Responsive Ticket Scale System
   const [scaleFactor, setScaleFactor] = useState(0.22);
   useEffect(() => {
     function handleResize() {
       const width = window.innerWidth;
       let newScale = 0.22;
-      
+
       // Calculate exactly how much space we have to the right of the printer
       if (width >= 900) {
         // card max width is 1440, padding is 80
@@ -227,10 +239,10 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
         const egress = width - 80 - 450; // mobile approximation
         newScale = egress / (2560 * 0.8);
       }
-      
-      if (newScale > 0.23) newScale = 0.23;
-      if (newScale < 0.11) newScale = 0.11;
-      
+
+      if (newScale > MANUAL_VOUCHER_SCALE_MAX) newScale = MANUAL_VOUCHER_SCALE_MAX;
+      if (newScale < MANUAL_VOUCHER_SCALE_MIN) newScale = MANUAL_VOUCHER_SCALE_MIN;
+
       setScaleFactor(newScale);
     }
     handleResize();
@@ -247,8 +259,8 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
   const TICKET_STAGE1_X = -ticketWidth * 0.7;
   const TICKET_STAGE2_X = -ticketWidth * 0.4;
   const TICKET_STAGE3_X = -ticketWidth * 0.15;
-  const TICKET_FINAL_X = -ticketWidth * 0.15; // Negative = ticket rests partially inside the printer, overlapping it
-  const TICKET_FINAL_Y = -35; // Adjust this to shift the voucher vertically
+  const TICKET_FINAL_X = MANUAL_VOUCHER_OFFSET_X; // Uses the manual offset X
+  const TICKET_FINAL_Y = MANUAL_VOUCHER_OFFSET_Y; // Uses the manual offset Y
 
   const handleCopy = () => {
     navigator.clipboard.writeText(voucherCode);
@@ -282,7 +294,7 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, destination, email, phone: `${countryCode}${phone}` })
+        body: JSON.stringify({ name, destination, email, phone: `${countryCode}${phone}`, discount: discountType })
       });
 
       const data = await response.json();
@@ -318,6 +330,28 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
     }
   };
 
+
+  const handleTestPrint = () => {
+    if (animationState !== 'idle' || isGenerating) return;
+
+    setErrorMsg('');
+    setIsGenerating(true);
+
+    // Set dummy data for testing the UI
+    if (!name) setName('TEST PASSENGER');
+    setVoucherCode('TST-DUMMY-1234');
+    setValidUntil('31-12-25');
+
+    setAnimationState('printing-1');
+    setTimeout(() => setAnimationState('printing-2'), 800);
+    setTimeout(() => setAnimationState('printing-3'), 1600);
+    setTimeout(() => setAnimationState('ejecting'), 2400);
+    setTimeout(() => {
+      setAnimationState('printed');
+      setIsGenerating(false);
+    }, 3500);
+  };
+
   const resetMachine = () => {
     setAnimationState('idle');
     setVoucherCode('ITA-PE----');
@@ -344,199 +378,235 @@ export default function CouponPage({ onClose, defaultName = '', defaultEmail = '
   const ticketY = TICKET_FINAL_Y + (animationState === 'printed' ? 3 : 0);
 
   return (
-    <div className="coupon-app-redesign">
+    <div className="cute-coupon-overlay">
       <motion.div
-        className="voucher-dashboard-card"
-        initial={{ opacity: 0, y: 40, scale: 0.96 }}
+        className="cute-voucher-card"
+        initial={{ opacity: 0, y: 50, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ type: "spring", bounce: 0.4, duration: 0.8 }}
       >
-        <button className="dashboard-close-btn" onClick={onClose}><X size={22} /></button>
+        <button className="cute-close-btn" onClick={onClose}><X size={20} strokeWidth={3} /></button>
 
-        {/* ── LEFT: Settings Panel ── */}
-        <div className="dashboard-settings-panel">
-          <div className="settings-header">
-            <h3>Digital Voucher Console</h3>
-            <p>Configure passenger details to authorize issuance.</p>
+        <div className="cute-card-layout">
+          {/* ── LEFT: Cute Form Panel ── */}
+          <div className="cute-form-section">
+            <div className="cute-header">
+              <div className="cute-icon-badge">✨</div>
+              <h2>Generate Voucher</h2>
+              <p>Fill in the details to print your special discount ticket.</p>
+            </div>
+
+            {errorMsg && (
+              <div className="cute-error">
+                <span className="error-icon">Oops!</span> {errorMsg}
+              </div>
+            )}
+
+            <div className="cute-input-grid">
+              <div className="c-input-group">
+                <label>Passenger Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Charlie Brown"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  disabled={animationState !== 'idle' || isGenerating}
+                />
+              </div>
+
+              <div className="c-input-group">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  placeholder="hello@example.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  disabled={animationState !== 'idle' || isGenerating || !!defaultEmail}
+                  style={{ opacity: defaultEmail ? 0.6 : 1 }}
+                />
+              </div>
+
+              <div className="c-input-row">
+                <div className="c-input-group c-country">
+                  <label>Code</label>
+                  <div className="select-wrapper">
+                    <select
+                      value={countryCode}
+                      onChange={e => setCountryCode(e.target.value)}
+                      disabled={animationState !== 'idle' || isGenerating}
+                    >
+                      <option value="+91">IN (+91)</option>
+                      <option value="+1">US (+1)</option>
+                      <option value="+44">UK (+44)</option>
+                      <option value="+61">AU (+61)</option>
+                      <option value="+971">AE (+971)</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="c-input-group c-phone">
+                  <label>Phone Number</label>
+                  <input
+                    type="tel"
+                    placeholder="000 000 0000"
+                    value={phone}
+                    onChange={e => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      if (val.length <= 10) setPhone(val);
+                    }}
+                    disabled={animationState !== 'idle' || isGenerating}
+                  />
+                </div>
+              </div>
+
+              <div className="c-input-group">
+                <label>Destination</label>
+                <div className="select-wrapper">
+                  <select
+                    value={destination}
+                    onChange={e => setDestination(e.target.value)}
+                    disabled={animationState !== 'idle' || isGenerating}
+                  >
+                    <option value="ITALY">🍕 Italy</option>
+                    <option value="AUSTRALIA">🦘 Australia</option>
+                    <option value="CANADA">🍁 Canada</option>
+                    <option value="FRANCE">🥐 France</option>
+                    <option value="GERMANY">🥨 Germany</option>
+                    <option value="IRELAND">☘️ Ireland</option>
+                    <option value="UK">☕ United Kingdom</option>
+                    <option value="USA">🗽 United States</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {errorMsg && (
-            <div className="error-banner">{errorMsg}</div>
-          )}
+          {/* ── RIGHT: Cute Printer Panel ── */}
+          <div className="cute-printer-section">
+            <div className="cute-bg-blobs">
+              <div className="blob blob-1"></div>
+              <div className="blob blob-2"></div>
+            </div>
 
-          <div className="input-group">
-            <input
-              type="text"
-              placeholder="Passenger Name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              disabled={animationState !== 'idle' || isGenerating}
-            />
-          </div>
-          <div className="input-group">
-            <input
-              type="email"
-              placeholder="Email Address"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              disabled={animationState !== 'idle' || isGenerating || !!defaultEmail}
-              style={{ opacity: defaultEmail ? 0.7 : 1 }}
-            />
-          </div>
-          <div className="input-group" style={{ display: 'flex', gap: '8px' }}>
-            <select
-              value={countryCode}
-              onChange={e => setCountryCode(e.target.value)}
-              disabled={animationState !== 'idle' || isGenerating}
-              style={{ width: '100px', flexShrink: 0, padding: '16px 12px' }}
-            >
-              <option value="+91">IN (+91)</option>
-              <option value="+1">US (+1)</option>
-              <option value="+44">UK (+44)</option>
-              <option value="+61">AU (+61)</option>
-              <option value="+971">AE (+971)</option>
-            </select>
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              value={phone}
-              onChange={e => {
-                const val = e.target.value.replace(/\D/g, '');
-                if (val.length <= 10) setPhone(val);
-              }}
-              disabled={animationState !== 'idle' || isGenerating}
-              style={{ flex: 1 }}
-            />
-          </div>
-          <div className="input-group">
-            <select
-              value={destination}
-              onChange={e => setDestination(e.target.value)}
-              disabled={animationState !== 'idle' || isGenerating}
-            >
-              <option value="ITALY">Italy</option>
-              <option value="AUSTRALIA">Australia</option>
-              <option value="CANADA">Canada</option>
-              <option value="FRANCE">France</option>
-              <option value="GERMANY">Germany</option>
-              <option value="IRELAND">Ireland</option>
-              <option value="UK">United Kingdom</option>
-              <option value="USA">United States</option>
-            </select>
-          </div>
-        </div>
+            <div className="cute-printer-scene">
+              {/* The Cute Printer */}
+              <div className={`cute-printer-machine state-${animationState}`}>
 
-        {/* ── RIGHT: Printer Panel ── */}
-        <div className="dashboard-printer-panel">
-          {/* Ambient glow rings */}
-          <div className="printer-env-ring ring-1"></div>
-          <div className="printer-env-ring ring-2"></div>
+                {/* Printer Face/Eyes */}
+                <div className="cp-face">
+                  <div className="cp-eye left"></div>
+                  <div className="cp-blush left"></div>
+                  <div className="cp-mouth"></div>
+                  <div className="cp-eye right"></div>
+                  <div className="cp-blush right"></div>
+                </div>
 
-          <div className="ultra-printer-scene">
-
-            {/* Redesigned Sleek Light-Themed Minimalist Printer */}
-            <div className="upm-outer-wrapper">
-              <div className={`minimal-printer-machine state-${animationState}`}>
-
-                {/* Status indicator */}
-                <div className="min-printer-status">
-                  <div className="min-printer-led"></div>
-                  <span className="min-printer-status-text">
-                    {animationState === 'idle' ? 'System Ready' :
-                      animationState === 'printed' ? 'Voucher Issued' :
-                        animationState === 'ejecting' ? 'Ejecting...' : 'Printing...'}
+                <div className="cp-status-bubble">
+                  <div className="cp-indicator"></div>
+                  <span>
+                    {animationState === 'idle' ? 'Ready!' :
+                      animationState === 'printed' ? 'Yay! Done!' :
+                        animationState === 'ejecting' ? 'Here it comes!' : 'Printing...'}
                   </span>
                 </div>
 
-                {/* Main Body */}
-                <div className="min-printer-body">
-                  <div className="min-printer-brand">PRESUME CLOUD PRINT</div>
+                <motion.button
+                  className="cp-print-btn"
+                  onClick={handleGenerate}
+                  disabled={animationState !== 'idle' || isGenerating}
+                  whileHover={{ scale: 1.05, rotate: -2 }}
+                  whileTap={{ scale: 0.95, rotate: 2 }}
+                >
+                  <span className="btn-icon">🖨️</span>
+                  <span>{animationState === 'idle' ? 'Print Ticket' : 'Working...'}</span>
+                </motion.button>
 
-                  {/* Clean Central Button */}
-                  <motion.button
-                    className="min-printer-print-btn"
-                    onClick={handleGenerate}
-                    disabled={animationState !== 'idle' || isGenerating}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Printer size={18} />
-                    <span>{animationState === 'idle' ? 'Print Premium Voucher' : 'Processing...'}</span>
-                  </motion.button>
-                </div>
-
-                {/* Output slot cover/guide to hide paper birth point */}
-                <div className="min-printer-side-slot">
+                <div className="cp-slot-cover">
                   {animationState.startsWith('printing') && (
-                    <div className="printer-smoke-container">
-                      <div className="smoke-particle p1"></div>
-                      <div className="smoke-particle p2"></div>
-                      <div className="smoke-particle p3"></div>
-                      <div className="smoke-particle p4"></div>
+                    <div className="cute-sparkles-container">
+                      <div className="c-sparkle sp1">✨</div>
+                      <div className="c-sparkle sp2">⭐</div>
+                      <div className="c-sparkle sp3">✨</div>
                     </div>
                   )}
                 </div>
               </div>
+
+              {/* Discount Toggles Below Printer */}
+              <div className="cute-discount-toggles">
+                <button
+                  className={`cp-discount-btn ${discountType === '50' ? 'active' : ''}`}
+                  onClick={() => setDiscountType('50')}
+                  disabled={animationState !== 'idle' || isGenerating}
+                >
+                  🌟 50% Discount
+                </button>
+                <button
+                  className={`cp-discount-btn ${discountType === '30' ? 'active' : ''}`}
+                  onClick={() => setDiscountType('30')}
+                  disabled={animationState !== 'idle' || isGenerating}
+                >
+                  ✨ 30% Discount
+                </button>
+              </div>
+
+              {/* Ticket Egress */}
+              <div className="cute-ticket-egress">
+                <motion.div
+                  className="cute-ticket-wrapper"
+                  initial={{ x: TICKET_HIDDEN_X, y: TICKET_FINAL_Y, scale: scaleFactor, opacity: 0 }}
+                  animate={{
+                    x: ticketX,
+                    y: ticketY,
+                    scale: ticketScale,
+                    opacity: animationState === 'idle' ? 0 : 1,
+                  }}
+                  transition={{
+                    x: animationState.startsWith('printing')
+                      ? { type: 'spring', stiffness: 60, damping: 10, mass: 0.5 } // More bouncy
+                      : { type: 'spring', stiffness: 50, damping: 16 },
+                    y: { duration: 0.5, ease: 'easeOut' },
+                    scale: { duration: 0.4 },
+                    opacity: { duration: 0.4 },
+                  }}
+                  whileHover={
+                    animationState === 'printed'
+                      ? { scale: TICKET_SCALE_FINAL * 1.05, x: TICKET_FINAL_X + 20, y: TICKET_FINAL_Y - 5, rotate: 2, zIndex: 100 }
+                      : {}
+                  }
+                >
+                  <div className={animationState.startsWith('printing') ? 'ticket-cute-vibrate' : ''} style={{ width: '100%', height: '100%' }}>
+                    <CouponTicket
+                      name={name ? name.toUpperCase() : ''}
+                      destination={destination.toUpperCase()}
+                      voucherCode={voucherCode}
+                      date={validUntil}
+                    />
+                  </div>
+                </motion.div>
+
+                {/* Copy Button */}
+                <AnimatePresence>
+                  {animationState === 'printed' && (
+                    <motion.div
+                      className="cute-copy-action"
+                      initial={{ opacity: 0, y: 20, scale: 0.8, x: '-50%' }}
+                      animate={{ opacity: 1, y: 0, scale: 1, x: '-50%' }}
+                      exit={{ opacity: 0, y: 20, scale: 0.8, x: '-50%' }}
+                      transition={{ type: "spring", bounce: 0.5, delay: 0.4 }}
+                      style={{
+                        left: `${Math.min(TICKET_FINAL_X + (2560 * scaleFactor) / 2, 400)}px`,
+                        bottom: '-45px'
+                      }}
+                    >
+                      <button className="cute-copy-btn" onClick={handleCopy}>
+                        {copied ? <Check size={20} strokeWidth={3} /> : <Copy size={20} strokeWidth={3} />}
+                        <span>{copied ? 'Copied!' : 'Copy Code'}</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
-
-            {/* Ticket egress zone — now on the RIGHT side */}
-            <div className="ultra-ticket-egress">
-              <motion.div
-                className="ultra-ticket-wrapper"
-                initial={{ x: TICKET_HIDDEN_X, y: TICKET_FINAL_Y, scale: scaleFactor, opacity: 0 }}
-                animate={{
-                  x: ticketX,
-                  y: ticketY,
-                  scale: ticketScale,
-                  opacity: animationState === 'idle' ? 0 : 1,
-                }}
-                transition={{
-                  x: animationState.startsWith('printing')
-                    ? { type: 'spring', stiffness: 45, damping: 14, mass: 0.8 }
-                    : { type: 'spring', stiffness: 50, damping: 16 },
-                  y: { duration: 0.5, ease: 'easeOut' },
-                  scale: { duration: 0.4 },
-                  opacity: { duration: 0.4 },
-                }}
-                whileHover={
-                  animationState === 'printed'
-                    ? { scale: TICKET_SCALE_FINAL * 1.04, x: TICKET_FINAL_X + 15, y: TICKET_FINAL_Y, rotate: 1.5, zIndex: 100 }
-                    : {}
-                }
-              >
-                <div className={animationState.startsWith('printing') ? 'ticket-print-vibrate' : ''} style={{ width: '100%', height: '100%' }}>
-                  <CouponTicket
-                    name={name ? name.toUpperCase() : ''}
-                    destination={destination.toUpperCase()}
-                    voucherCode={voucherCode}
-                    date={validUntil}
-                  />
-                </div>
-              </motion.div>
-
-              {/* Copy Code button is moved OUTSIDE of scaled wrapper so it stays native and large */}
-              <AnimatePresence>
-                {animationState === 'printed' && (
-                  <motion.div
-                    className="ticket-actions"
-                    initial={{ opacity: 0, y: 15, x: '-50%' }}
-                    animate={{ opacity: 1, y: 0, x: '-50%' }}
-                    exit={{ opacity: 0, y: 15, x: '-50%' }}
-                    transition={{ delay: 0.6, duration: 0.4 }}
-                    style={{
-                      left: `${TICKET_FINAL_X + (2560 * scaleFactor) / 2}px`,
-                      bottom: '16px'
-                    }}
-                  >
-                    <button className="copy-btn" onClick={handleCopy}>
-                      {copied ? <Check size={28} /> : <Copy size={28} />}
-                      <span>{copied ? 'Copied!' : 'Copy Code'}</span>
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
           </div>
         </div>
       </motion.div>

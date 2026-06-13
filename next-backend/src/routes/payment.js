@@ -25,13 +25,38 @@ const itemDatabase = {
   'bachelors_masters_fee': { name: 'Bachelors/Masters Phase 1 Fee', price_inr: 35000 },
 };
 
+// ============================================================================
+// MANUAL RAZORPAY FEE CONFIGURATION
+// ============================================================================
+// To change these amounts, edit: src/config/razorpayFees.json
+const RAZORPAY_FEES_INR = require('../config/razorpayFees.json');
+// ============================================================================
 const calculateDynamicFee = (countryId, uniType, selectedLevel, applied, couponCode) => {
-    const activeCouponName = (applied && couponCode) ? couponCode.toUpperCase() : '';
-    const currentPhases = getPhases(countryId, uniType || 'Public', selectedLevel, activeCouponName);
-    const phase1Fee = currentPhases[0];
-    const taxRate = getTaxRate(countryId);
+    const cId = (countryId || 'other').toLowerCase();
+    const sLevel = (selectedLevel || 'Bachelors').toLowerCase();
+    
+    const key = `${cId}_${(uniType || 'Public').toLowerCase()}_${sLevel}`;
+    const feeObj = RAZORPAY_FEES_INR[key];
 
-    return Math.round(phase1Fee * (1 + taxRate));
+    if (!feeObj || !feeObj.phase1) {
+        const currentPhases = getPhases(countryId, uniType || 'Public', selectedLevel, '');
+        let finalAmount = Math.round(currentPhases[0] * 1.18);
+        if (applied && couponCode) {
+            const code = couponCode.toUpperCase();
+            if (code.startsWith('PRESUME-') || code === 'PRESUME50') return Math.round(finalAmount * 0.5); 
+            if (COUPONS[code]) return Math.round(finalAmount * (1 - COUPONS[code] / 100));
+        }
+        return finalAmount;
+    }
+
+    if (applied && couponCode) {
+        const code = couponCode.toUpperCase();
+        if (code.startsWith('PRESUME-') || code === 'PRESUME50') return feeObj.phase1.discount_50;
+        if (code === 'PRESUME30') return feeObj.phase1.discount_30;
+        if (COUPONS[code]) return Math.round(feeObj.phase1.base * (1 - COUPONS[code] / 100));
+    }
+
+    return feeObj.phase1.base;
 };
 
 // 1. Create Order
@@ -60,6 +85,7 @@ router.post('/create-order', auth, paymentLimiter, async (req, res) => {
         level = 'Bachelors';
       }
       const countryId = pricingParams.countryName || user.country || 'italy';
+      const uniType = pricingParams.uniType || 'Public';
       
       const Coupon = require('../models/Coupon');
       const activeCoupon = await Coupon.findOne({
@@ -67,20 +93,50 @@ router.post('/create-order', auth, paymentLimiter, async (req, res) => {
         isActive: true,
         validUntil: { $gt: new Date() }
       });
-      const couponCode = activeCoupon ? activeCoupon.code : '';
+      const couponCode = activeCoupon ? activeCoupon.code.toUpperCase() : '';
       
-      const phases = getPhases(countryId, 'Public', level, couponCode);
-      const phaseIndex = parseInt(pricingParams.phaseNumber, 10) - 1;
       
-      let baseFee = 0;
-      if (phases && phaseIndex >= 0 && phaseIndex < phases.length) {
-          baseFee = phases[phaseIndex];
-      } else {
-          return res.status(400).json({ error: 'Invalid phase number' });
-      }
+      // MERGE HINT: If 50% discount (PRESUME50) is applied for Italy/Germany Public Bachelors/Masters,
+      // Phase 3 and Phase 4 are mathematically MERGED into Phase 3.
+      // Phase 3 asks for 41300 (35000 + GST) and Phase 4 asks for 0.
+const phaseIndex = parseInt(pricingParams.phaseNumber, 10);
+      
+      const cId = countryId.toLowerCase();
+      const uType = (uniType || 'Public').toLowerCase();
+      const sLevel = level.toLowerCase();
+      const key = `${cId}_${uType}_${sLevel}`;
+      const feeObj = RAZORPAY_FEES_INR[key];
 
-      const taxRate = getTaxRate(countryId);
-      finalAmount = Math.round(baseFee * (1 + taxRate));
+      if (feeObj && feeObj[`phase${phaseIndex}`]) {
+          const phaseConfig = feeObj[`phase${phaseIndex}`];
+          if (couponCode.startsWith('PRESUME-') || couponCode === 'PRESUME50') {
+              finalAmount = phaseConfig.discount_50;
+          } else if (couponCode === 'PRESUME30') {
+              finalAmount = phaseConfig.discount_30;
+          } else if (COUPONS[couponCode]) {
+              finalAmount = Math.round(phaseConfig.base * (1 - COUPONS[couponCode] / 100));
+          } else {
+              finalAmount = phaseConfig.base;
+          }
+      } else {
+          // Fallback to legacy calculation
+          const phases = getPhases(countryId, uniType, level, '');
+          let baseFee = 0;
+          if (phases && phaseIndex - 1 >= 0 && phaseIndex - 1 < phases.length) {
+              baseFee = phases[phaseIndex - 1];
+          } else {
+              return res.status(400).json({ error: 'Invalid phase number' });
+          }
+          const taxRate = getTaxRate(countryId);
+          let rawAmount = Math.round(baseFee * (1 + taxRate));
+          if (couponCode.startsWith('PRESUME-') || couponCode === 'PRESUME50') {
+              finalAmount = Math.round(rawAmount * 0.5);
+          } else if (COUPONS[couponCode]) {
+              finalAmount = Math.round(rawAmount * (1 - COUPONS[couponCode] / 100));
+          } else {
+              finalAmount = rawAmount;
+          }
+      }
       
       finalItemName = `${pricingParams.countryName ? pricingParams.countryName.toUpperCase() : 'Study Abroad'} - Phase ${pricingParams.phaseNumber} Payment`;
     } else if (itemId && itemDatabase[itemId]) {

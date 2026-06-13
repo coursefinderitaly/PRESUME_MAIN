@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FlagIcon from './FlagIcon';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Header } from './Header';

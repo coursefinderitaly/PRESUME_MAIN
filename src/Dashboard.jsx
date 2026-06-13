@@ -738,7 +738,7 @@ const Dashboard = () => {
                   <NavButton id="applications" icon={FileText} label="Applications" locked={!profile.portalUnlocked} />
                   <NavButton id="applied-universities" icon={CheckSquare} label="Track Status" locked={!profile.portalUnlocked} />
                   <NavButton id="learning" icon={MonitorPlay} label="Learning Hub" locked={!profile.portalUnlocked} />
-                  <NavButton id="notifications" icon={Bell} label="Notifications" locked={!profile.portalUnlocked} />
+                  <NavButton id="notifications" icon={MessageSquare} label="Direct Support" locked={!profile.portalUnlocked} />
                 </>
               )}
 
@@ -750,7 +750,7 @@ const Dashboard = () => {
                   <NavButton id="partner-applications" icon={FileText} label="Applications" />
                   <NavButton id="student-documents" icon={UploadCloud} label="Doc Vault" />
                   {isPartner && <NavButton id="counselors" icon={Briefcase} label="Manage Team" />}
-                  <NavButton id="notifications" icon={Bell} label="Notifications" locked={isStudent ? !profile.portalUnlocked : false} />
+                  <NavButton id="notifications" icon={MessageSquare} label="Direct Support" locked={isStudent ? !profile.portalUnlocked : false} />
                 </>
               )}
 

@@ -10,7 +10,7 @@ const { getVoucherEmailHTML } = require('../utils/emailTemplates');
 // Generate a new coupon (accessible without account)
 router.post('/generate', async (req, res) => {
   try {
-    const { name, destination, email, phone } = req.body;
+    const { name, destination, email, phone, discount } = req.body;
     
     if (!email) {
       return res.status(400).json({ error: 'Email address is required.' });
@@ -49,7 +49,7 @@ router.post('/generate', async (req, res) => {
       name,
       phone,
       destination,
-      discount: 50,
+      discount: discount ? Number(discount) : 50,
       validUntil
     });
 

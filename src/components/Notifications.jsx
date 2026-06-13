@@ -78,8 +78,8 @@ const Notifications = ({ profile }) => {
       <header className="dash-header" style={{ marginBottom: "20px" }}>
         <div>
           <h1 style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.1rem' }}>
-            <Bell size={18} style={{ color: 'var(--accent-secondary)' }} />
-            Notifications
+            <MessageSquare size={18} style={{ color: 'var(--accent-secondary)' }} />
+            Direct Support
           </h1>
           <p style={{ fontSize: '0.75rem', margin: 0 }}>Admin messages and system alerts.</p>
         </div>
@@ -176,10 +176,10 @@ const Notifications = ({ profile }) => {
             </div>
             <div style={{ padding: '10px', display: 'flex', flexDirection: 'column', gap: '7px' }}>
               {[
-                { icon: CheckCircle, title: 'Account Secured',       text: 'Never share your credentials.' },
-                { icon: Info,        title: 'Application Processing', text: 'Allow 48 hrs for status updates.' },
-                { icon: Info,        title: 'Document Submission',    text: 'Ensure uploads are valid and clear.' },
-                { icon: CheckCircle, title: 'Intake Deadlines',       text: 'Sep 2026 deadlines are approaching.' },
+                { icon: CheckCircle, title: 'Account Secured', text: 'Never share your credentials.' },
+                { icon: Info, title: 'Application Processing', text: 'Allow 48 hrs for status updates.' },
+                { icon: Info, title: 'Document Submission', text: 'Ensure uploads are valid and clear.' },
+                { icon: CheckCircle, title: 'Intake Deadlines', text: 'Sep 2026 deadlines are approaching.' },
               ].map((n, i) => (
                 <div key={i} style={{ display: 'flex', gap: '9px', padding: '9px', background: 'var(--glass-highlight)', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
                   <div style={{ padding: '5px', borderRadius: '7px', display: 'flex', alignItems: 'flex-start', flexShrink: 0, background: 'var(--accent-glow)' }}>

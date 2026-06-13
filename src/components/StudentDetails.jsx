@@ -425,36 +425,82 @@ const StudentDetails = ({ student, goBack, pendingApplications = [], setPendingA
     });
   };
 
-  const handleSaveProfile = async (e) => {
+  const handleSaveProfile = async (e, isAutoSave = false) => {
     if (e && e.preventDefault) e.preventDefault();
-    setMessage('Saving profile changes...');
+    if (!isAutoSave) setMessage('Saving profile changes...');
 
     try {
+      const sanitizedData = JSON.parse(JSON.stringify(formData));
+
+      if (sanitizedData.educationHistory) {
+        sanitizedData.educationHistory.forEach(edu => {
+          if (!edu.startDate) delete edu.startDate;
+          if (!edu.endDate) delete edu.endDate;
+        });
+      }
+
+      if (sanitizedData.workExperience) {
+        sanitizedData.workExperience.forEach(work => {
+          if (!work.startDate) delete work.startDate;
+          if (!work.endDate) delete work.endDate;
+        });
+      }
+
       const res = await fetch(`${API_BASE_URL}/erp/students/${student._id}`, {
         credentials: 'include',
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...formData, savedUniversitiesCart: selectedForApplication })
+        body: JSON.stringify({ ...sanitizedData, savedUniversitiesCart: selectedForApplication })
       });
 
       if (res.ok) {
-        setMessage('Profile updated successfully!');
-        setTimeout(() => setMessage(''), 4000);
+        if (!isAutoSave) {
+          setMessage('Profile updated successfully!');
+          setTimeout(() => setMessage(''), 4000);
+        }
+        if (refreshProfile) refreshProfile();
         return true;
       } else {
-        const data = await res.json();
-        setMessage(data.error || 'Failed to update profile.');
-        setTimeout(() => setMessage(''), 4000);
+        if (!isAutoSave) {
+          const data = await res.json();
+          setMessage(data.error || 'Failed to update profile.');
+          setTimeout(() => setMessage(''), 4000);
+        }
         return false;
       }
     } catch (err) {
-      setMessage('Server error during update.');
-      setTimeout(() => setMessage(''), 4000);
+      if (!isAutoSave) {
+        setMessage('Server error during update.');
+        setTimeout(() => setMessage(''), 4000);
+      }
       return false;
     }
   };
+
+  // Auto-Save Effect
+  const autoSaveTimerRef = useRef(null);
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    autoSaveTimerRef.current = setTimeout(() => {
+      handleSaveProfile(null, true);
+    }, 2000);
+
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [formData, selectedForApplication]);
 
   // Helper to get dropdown values from codes
   const getCountryLabel = (code) => countries.find(c => c.value === code);

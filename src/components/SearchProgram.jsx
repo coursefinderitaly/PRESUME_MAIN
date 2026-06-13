@@ -111,6 +111,7 @@ const getSelectedValues = (param) => {
 
 const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, proceedLabel = "Proceed to Apply", onSelectionChange, onFilterChange, gridCols = 0, compactOnScroll = false }) => {
   const [searchParams, setSearchParams] = useState({
+    country: null,
     programLevel: null,
     interestedField: null,
     subField: null,
@@ -334,6 +335,18 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
   const intakeOptions = [
     { value: '2026', label: '2026 (September Intake)' },
     { value: '2027', label: '2027 (September Intake)' }
+  ];
+
+  const countryOptions = [
+    { value: '', label: 'Any Country' },
+    { value: 'Italy', label: 'Italy' },
+    { value: 'Australia', label: 'Australia' },
+    { value: 'Canada', label: 'Canada' },
+    { value: 'France', label: 'France' },
+    { value: 'Germany', label: 'Germany' },
+    { value: 'Ireland', label: 'Ireland' },
+    { value: 'UK', label: 'UK' },
+    { value: 'US', label: 'US' }
   ];
 
   const hasActiveFilters = useMemo(() => {
@@ -820,6 +833,19 @@ const SearchProgram = ({ onProceed, preselectedUnis = [], hideFooter = false, pr
           alignItems: 'flex-end',
           transition: 'gap 0.3s ease, grid-template-columns 0.3s ease'
         }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, marginBottom: '4px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Country</label>
+            <Select classNamePrefix="react-select"
+              name="country"
+              value={searchParams.country}
+              onChange={(val) => handleSelectChange("country", val)}
+              options={countryOptions}
+              styles={customSelectStyles}
+              menuPortalTarget={document.body}
+              placeholder="All Countries"
+            />
+          </div>
+
           <div>
             <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, marginBottom: '4px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Target Intake</label>
             <Select classNamePrefix="react-select"

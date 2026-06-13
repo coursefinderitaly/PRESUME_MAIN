@@ -45,11 +45,57 @@ const ConfettiBlast = () => {
     );
 };
 
+const countryPhaseData = {
+    canada: {
+        phase1: { title: "Admission Process", items: ["Assessment of profile", "Program & university shortlisting", "Full assistance for profile building", "SOP & application guidance", "Application submission support", "Required document checklist provided"] },
+        phase2: { title: "Offer Letter & Enrollment Process", items: ["University acceptance letter", "Tuition fee payment guidance", "Enrollment assistance", "GIC process guidance", "Document verification", "Pre-arrival support"] },
+        phase3: { title: "GIC, Documentation & Study Permit Preparation", items: ["Financial document assistance", "GIC documentation support", "Medical examination guidance", "Biometrics assistance", "Study permit documentation", "File review & compliance check"] },
+        phase4: { title: "Study Permit & Pre-Departure Support", items: ["Study permit application assistance", "Accommodation support", "Visa documentation assistance", "Travel preparation guidance", "Mock interview support (if required)", "Pre-departure briefing"] }
+    },
+    australia: {
+        phase1: { title: "Admission Process", items: ["Profile assessment", "Course & institution selection", "University application assistance", "SOP guidance", "Full profile-building support", "Required document checklist provided"] },
+        phase2: { title: "Offer Letter & CoE Process", items: ["University acceptance letter", "Tuition fee guidance", "Confirmation of Enrolment (CoE) assistance", "OSHC guidance", "Enrollment support", "Document verification"] },
+        phase3: { title: "Genuine Student Requirement & Visa Documentation", items: ["Financial documentation support", "Genuine Student (GS) guidance", "Medical examination support", "Visa file preparation", "Documentation review", "Compliance assistance"] },
+        phase4: { title: "Student Visa Application & Pre-Departure Support", items: ["Student visa application assistance", "Accommodation support", "Visa documentation assistance", "Travel planning guidance", "Mock interview support", "Pre-departure orientation"] }
+    },
+    ireland: {
+        phase1: { title: "Admission Process", items: ["Profile assessment", "Program & university shortlisting", "Application support", "SOP guidance", "Full profile-building assistance", "Required document checklist provided"] },
+        phase2: { title: "Offer Letter & Fee Payment Process", items: ["University acceptance letter", "Tuition fee guidance", "Enrollment assistance", "Document verification", "Financial planning support", "University communication assistance"] },
+        phase3: { title: "Visa Documentation & Financial Preparation", items: ["Financial proof preparation", "Visa documentation support", "Medical insurance guidance", "Application file preparation", "Compliance review", "Documentation verification"] },
+        phase4: { title: "Study Visa Application & Pre-Departure Support", items: ["Study visa application assistance", "Accommodation support", "Visa documentation assistance", "Travel guidance", "Mock interview support", "Pre-departure orientation"] }
+    },
+    germany: {
+        phase1: { title: "Admission Process", items: ["Profile assessment", "Program & university shortlisting", "Application support", "APS guidance", "SOP & document assistance", "Required document checklist provided"] },
+        phase2: { title: "Admission & Enrollment Process", items: ["University admission letter", "Enrollment guidance", "Semester fee assistance", "Health insurance guidance", "Document verification", "University onboarding support"] },
+        phase3: { title: "APS, Blocked Account & Visa Documentation", items: ["APS documentation support", "Blocked account assistance", "Financial proof preparation", "Visa documentation support", "Translation & legalization guidance", "Embassy appointment assistance"] },
+        phase4: { title: "National Visa Application & Pre-Departure Support", items: ["German student visa assistance", "Accommodation support", "Visa application guidance", "Travel preparation support", "Mock interview assistance", "Pre-departure briefing"] }
+    },
+    uk: {
+        phase1: { title: "Admission Process", items: ["Assessment of profile", "University shortlisting", "Application assistance", "Personal statement guidance", "Full profile-building support", "Required document checklist provided"] },
+        phase2: { title: "Offer Letter & CAS Process", items: ["University acceptance letter", "Tuition deposit guidance", "CAS issuance support", "Enrollment assistance", "Document verification", "University communication support"] },
+        phase3: { title: "CAS, Financials & Visa Documentation", items: ["CAS verification", "Financial document preparation", "TB test guidance (if applicable)", "Visa documentation support", "Biometrics appointment assistance", "Application review"] },
+        phase4: { title: "Student Visa Application & Pre-Departure Support", items: ["UK student visa application", "Accommodation support", "Visa submission assistance", "Travel planning guidance", "Mock interview support", "Pre-departure orientation"] }
+    },
+    usa: {
+        phase1: { title: "Admission Process", items: ["Assessment of profile", "University shortlisting", "Application assistance", "SOP & essay guidance", "LOR support", "Required document checklist provided"] },
+        phase2: { title: "Admission, I-20 & SEVIS Process", items: ["University acceptance letter", "I-20 assistance", "SEVIS fee guidance", "Enrollment support", "Financial document review", "University communication support"] },
+        phase3: { title: "DS-160 & Visa Documentation Process", items: ["DS-160 application assistance", "Financial documentation support", "Visa file preparation", "Appointment scheduling guidance", "Mock visa interview preparation", "Documentation verification"] },
+        phase4: { title: "F-1 Visa Interview & Pre-Departure Support", items: ["F-1 visa application support", "Visa interview preparation", "Accommodation support", "Travel planning guidance", "Final documentation review", "Pre-departure orientation"] }
+    },
+    france: {
+        phase1: { title: "Admission Process", items: ["Profile assessment", "Program & university shortlisting", "Application assistance", "SOP guidance", "Campus France guidance", "Required document checklist provided"] },
+        phase2: { title: "Admission & Campus France Process", items: ["University acceptance letter", "Tuition fee guidance", "Campus France registration support", "Enrollment assistance", "Document verification", "University communication support"] },
+        phase3: { title: "Campus France Validation & Visa Documentation", items: ["Campus France interview guidance", "Financial documentation support", "Translation & legalization assistance", "Visa documentation preparation", "Accommodation proof guidance", "File review & compliance support"] },
+        phase4: { title: "Student Visa Application & Pre-Departure Support", items: ["France student visa application", "Accommodation support", "Visa submission assistance", "Travel planning guidance", "Mock interview support", "Pre-departure orientation"] }
+    }
+};
+
 const FeesTable = ({
     countryId,
     showUniversityFees = false,
     isDark = false,
     hideControls = false,
+    showPaymentButton = true,
     hideLevelSwitcher = false,
     externalLevel,
     onExternalLevelChange,
@@ -234,13 +280,13 @@ const FeesTable = ({
 
     const feeStructure = [
         {
-            title: "Admission Process",
+            title: countryPhaseData[countryId]?.phase1?.title || "Admission Process",
             phaseIndex: 0,
             price: (shouldHidePrice || getPhasePrice(0) === undefined) ? null : `₹ ${getPhasePrice(0).toLocaleString('en-IN')}`,
             icon: <FileText className="text-cyan-400" size={18} />,
             color: "from-cyan-500/10 to-blue-500/10 hover:border-cyan-400/40",
             glow: "bg-cyan-500/10",
-            items: [
+            items: countryPhaseData[countryId]?.phase1?.items || [
                 "Assessment of profile",
                 "Full assistance for profile building",
                 "Require Documents sample will be provided",
@@ -248,13 +294,13 @@ const FeesTable = ({
             ]
         },
         ...(currentPhases[1] > 0 ? [{
-            title: "After Admission",
+            title: countryPhaseData[countryId]?.phase2?.title || "After Admission",
             phaseIndex: 1,
             price: (shouldHidePrice || getPhasePrice(1) === undefined) ? null : `₹ ${getPhasePrice(1).toLocaleString('en-IN')}`,
             icon: <CheckCircle2 className="text-indigo-400" size={18} />,
             color: "from-indigo-500/10 to-purple-500/10 hover:border-indigo-400/40",
             glow: "bg-indigo-500/10",
-            items: [
+            items: countryPhaseData[countryId]?.phase2?.items || [
                 "University Acceptance Letter",
                 "Interview Guidance",
                 "Documents Verification"
@@ -289,13 +335,13 @@ const FeesTable = ({
             ]
         }] : [
             {
-                title: (countryId === 'georgia' || countryId === 'russia') ? "Pre-enrollment & Documentation" : "Pre-enrollment & Scholarship Docs",
+                title: countryPhaseData[countryId]?.phase3?.title || ((countryId === 'georgia' || countryId === 'russia') ? "Pre-enrollment & Documentation" : "Pre-enrollment & Scholarship Docs"),
                 phaseIndex: 2,
                 price: (shouldHidePrice || getPhasePrice(2) === undefined) ? null : `₹ ${getPhasePrice(2).toLocaleString('en-IN')}`,
                 icon: <Compass className="text-yellow-400" size={18} />,
                 color: "from-yellow-500/10 to-amber-500/10 hover:border-yellow-400/40",
                 glow: "bg-yellow-500/10",
-                items: (countryId === 'georgia' || countryId === 'russia') ? [
+                items: countryPhaseData[countryId]?.phase3?.items || ((countryId === 'georgia' || countryId === 'russia') ? [
                     "HRD attestation assistance",
                     "Apostille, translation & legalization",
                     "Courier charges",
@@ -308,16 +354,16 @@ const FeesTable = ({
                     "Pre-enrollment filing",
                     "DOV process assistance",
                     "Scholarship Documents Process"
-                ]
+                ])
             },
             ...(currentPhases[3] > 0 ? [{
-                title: (countryId === 'georgia' || countryId === 'russia') ? "Visa application & Pre-departure process" : "Scholarship application + Visa process",
+                title: countryPhaseData[countryId]?.phase4?.title || ((countryId === 'georgia' || countryId === 'russia') ? "Visa application & Pre-departure process" : "Scholarship application + Visa process"),
                 phaseIndex: 3,
                 price: (shouldHidePrice || getPhasePrice(3) === undefined) ? null : `₹ ${getPhasePrice(3).toLocaleString('en-IN')}`,
                 icon: <ShieldCheck className="text-emerald-400" size={18} />,
                 color: "from-emerald-500/10 to-teal-500/10 hover:border-emerald-400/40",
                 glow: "bg-emerald-500/10",
-                items: (countryId === 'georgia' || countryId === 'russia') ? [
+                items: countryPhaseData[countryId]?.phase4?.items || ((countryId === 'georgia' || countryId === 'russia') ? [
                     "Visa application assistance",
                     "Visa Documents Assistance",
                     "Accommodation proof assistance",
@@ -330,7 +376,7 @@ const FeesTable = ({
                     "Visa Documents Assistance",
                     "Accommodation proof assistance",
                     "Mock interview prep"
-                ]
+                ])
             }] : [])
         ])
     ];
@@ -353,7 +399,7 @@ const FeesTable = ({
             <div style={{ width: '100%', height: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', fontFamily: 'inherit', position: 'relative' }}>
 
                 {/* Grid Layout Container - Fit on screen completely */}
-                <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }} className="scrollbar-hide">
+                <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', overscrollBehavior: 'contain', display: 'flex', flexDirection: 'column', paddingRight: '8px' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: feeStructure.length === 3 ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)', gap: '12px', minHeight: 'min-content', paddingBottom: '4px', margin: 'auto 0' }}>
                         {feeStructure.map((item, idx) => {
                             const { originalPrice, discountedPrice } = getPhasePricingDetails(item.phaseIndex);
@@ -468,7 +514,7 @@ const FeesTable = ({
                                     </div>
 
                                     {/* Deliverables */}
-                                    <div style={{ padding: '16px 18px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px', alignContent: 'start', overflowY: 'auto', flex: 1 }} className="scrollbar-hide">
+                                    <div style={{ padding: '16px 18px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px', alignContent: 'start' }} className="scrollbar-hide">
                                         {item.items.map((lineItem, lIdx) => (
                                             <div key={lIdx} style={{
                                                 display: 'flex', alignItems: 'center', gap: '8px',
@@ -559,33 +605,37 @@ const FeesTable = ({
                             </span>
                         </motion.div>
                     )}
-                    <motion.button
-                        className={isPhase1Paid ? "success-btn" : ""}
-                        whileHover={isPhase1Paid ? {} : { scale: 1.02 }} whileTap={isPhase1Paid ? {} : { scale: 0.97 }}
-                        onClick={handlePayNowClick}
-                        style={{
-                            width: '100%', maxWidth: '400px', padding: '14px', borderRadius: '12px', cursor: isPhase1Paid ? 'default' : 'pointer',
-                            background: isPhase1Paid ? (isLight ? '#059669' : 'rgba(16, 185, 129, 0.2)') : '#16a34a',
-                            color: isPhase1Paid ? (isLight ? '#ffffff' : '#10b981') : '#fff',
-                            fontSize: '16px', fontWeight: 900,
-                            letterSpacing: '0.5px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                            boxShadow: isPhase1Paid ? 'none' : '0 4px 14px rgba(22,163,74,0.4)', boxSizing: 'border-box',
-                            border: isPhase1Paid ? (isLight ? '1px solid #047857' : '1px solid rgba(16, 185, 129, 0.4)') : 'none'
-                        }}
-                    >
-                        {isPhase1Paid ? (
-                            <>
-                                <CheckCircle2 size={18} /> First Installment Paid
-                            </>
-                        ) : (
-                            <>
-                                <CreditCard size={18} /> Proceed to Payment
-                            </>
-                        )}
-                    </motion.button>
-                    <p style={{ margin: 0, textAlign: 'center', fontSize: '11px', color: muted, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                        <ShieldCheck size={13} color="#16a34a" /> SSL Encrypted · Razorpay
-                    </p>
+                    {showPaymentButton && (
+                        <>
+                            <motion.button
+                                className={isPhase1Paid ? "success-btn" : ""}
+                                whileHover={isPhase1Paid ? {} : { scale: 1.02 }} whileTap={isPhase1Paid ? {} : { scale: 0.97 }}
+                                onClick={handlePayNowClick}
+                                style={{
+                                    width: '100%', maxWidth: '400px', padding: '14px', borderRadius: '12px', cursor: isPhase1Paid ? 'default' : 'pointer',
+                                    background: isPhase1Paid ? (isLight ? '#059669' : 'rgba(16, 185, 129, 0.2)') : 'linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)',
+                                    color: isPhase1Paid ? (isLight ? '#ffffff' : '#10b981') : '#000000',
+                                    fontSize: '15px', fontWeight: 900,
+                                    letterSpacing: '1.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                                    boxShadow: isPhase1Paid ? 'none' : '0 8px 24px -6px rgba(245, 158, 11, 0.6)', boxSizing: 'border-box',
+                                    border: isPhase1Paid ? (isLight ? '1px solid #047857' : '1px solid rgba(16, 185, 129, 0.4)') : 'none'
+                                }}
+                            >
+                                {isPhase1Paid ? (
+                                    <>
+                                        <CheckCircle2 size={18} /> FIRST INSTALLMENT PAID
+                                    </>
+                                ) : (
+                                    <>
+                                        <CreditCard size={18} /> PAY NOW
+                                    </>
+                                )}
+                            </motion.button>
+                            <p style={{ margin: 0, textAlign: 'center', fontSize: '11px', color: muted, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                <ShieldCheck size={13} color="#16a34a" /> SSL Encrypted · Razorpay
+                            </p>
+                        </>
+                    )}
                 </div>
 
                 {/* Modals */}
@@ -627,7 +677,7 @@ const FeesTable = ({
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/10 text-accent-gold text-[10px] font-black uppercase tracking-[0.2em] backdrop-blur-md mb-3">
                         <Wallet size={12} className="text-accent-gold" /> Fee Structure
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none mb-1">
+                    <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight mb-2">
                         Our Total Fee: {applied ? (
                             <><span className="line-through text-white/30 text-2xl md:text-4xl mr-3">₹ {currentPricing.total.toLocaleString('en-IN')}</span><span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">₹ {discountedTotal.toLocaleString('en-IN')}</span></>
                         ) : (
@@ -754,24 +804,41 @@ const FeesTable = ({
                     })}
 
                     {/* Pay Now Button (Moved to bottom of phases) */}
-                    <motion.button
-                        whileHover={isPhase1Paid ? {} : { scale: 1.02 }}
-                        whileTap={isPhase1Paid ? {} : { scale: 0.98 }}
-                        onClick={handlePayNowClick}
-                        className={`w-full mt-2 py-5 rounded-2xl font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all duration-300 text-sm ${isPhase1Paid ? (isLight ? 'bg-emerald-600 border border-emerald-700 text-white shadow-md' : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-none cursor-default') : 'bg-gradient-to-r from-accent-gold via-yellow-400 to-amber-500 text-black shadow-[0_15px_30px_-10px_rgba(245,158,11,0.5)] hover:shadow-[0_20px_40px_-10px_rgba(245,158,11,0.7)]'}`}
-                    >
-                        {isPhase1Paid ? (
-                            <>
-                                <CheckCircle2 className="w-5 h-5" />
-                                First Installment Paid
-                            </>
-                        ) : (
-                            <>
-                                <CreditCard className="w-5 h-5" />
-                                Pay Now
-                            </>
-                        )}
-                    </motion.button>
+                    {showPaymentButton && (
+                        <div className="mt-2 w-full flex flex-col items-center justify-center">
+                            {!isPhase1Paid && (
+                                <motion.div
+                                    animate={{ scale: [1, 1.03, 1] }}
+                                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                                    className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-[0_4px_12px_rgba(16,185,129,0.3)] px-5 py-2 rounded-full mb-3 cursor-default"
+                                >
+                                    <Sparkles size={16} className="text-white fill-white" />
+                                    <span className="text-[13px] text-white font-black uppercase tracking-wider">
+                                        Pay 1st Phase Fee Now To Open Portal
+                                    </span>
+                                </motion.div>
+                            )}
+                            <motion.button
+                                className={`w-full max-w-[400px] p-4 rounded-xl flex items-center justify-center gap-2 text-[15px] font-black tracking-[1.5px] uppercase transition-all duration-300 ${isPhase1Paid ? 'bg-emerald-600 border border-emerald-700 text-white cursor-default shadow-none' : 'bg-gradient-to-r from-yellow-400 to-amber-500 border-none text-black cursor-pointer shadow-[0_8px_24px_-6px_rgba(245,158,11,0.6)]'}`}
+                                whileHover={isPhase1Paid ? {} : { scale: 1.02 }}
+                                whileTap={isPhase1Paid ? {} : { scale: 0.98 }}
+                                onClick={handlePayNowClick}
+                            >
+                                {isPhase1Paid ? (
+                                    <>
+                                        <CheckCircle2 size={18} /> FIRST INSTALLMENT PAID
+                                    </>
+                                ) : (
+                                    <>
+                                        <CreditCard size={18} /> PAY NOW
+                                    </>
+                                )}
+                            </motion.button>
+                            <p className="m-0 mt-3 text-center text-[11px] text-gray-400 flex items-center justify-center gap-1.5 font-medium">
+                                <ShieldCheck size={13} className="text-green-600" /> SSL Encrypted · Razorpay
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Right Column (1/3 width): Total Fee Card & Coupon Apply Card */}

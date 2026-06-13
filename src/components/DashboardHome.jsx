@@ -934,8 +934,8 @@ const DashboardHome = ({ profile, handleAvatarUpload, avatarUploading, setShowCo
       {/* 2. METRICS ROW */}
       <motion.div variants={itemVariants} className="metrics-row">
         {[
-          { icon: <GraduationCap size={s.metrics.iconSize} color="#fbbf24" />, title: 'Target Universities', value: '4', sub: '2 Shortlisted' },
-          { icon: <FileText size={s.metrics.iconSize} color="#d97706" />, title: 'Documents Verified', value: '8/12', sub: 'In Progress' }
+          { icon: <GraduationCap size={s.metrics.iconSize} color="#fbbf24" />, title: 'Target Universities', value: String(profile?.savedUniversitiesCart?.length || profile?.appliedUniversities?.length || 0), sub: 'Shortlisted' },
+          { icon: <FileText size={s.metrics.iconSize} color="#d97706" />, title: 'Documents Verified', value: String(profile?.documents?.length || (profile?.documentZip ? 1 : 0)), sub: 'Uploaded' }
         ].map((metric, i) => (
           <div key={i} className="glass-panel" style={{ padding: s.metrics.cardPadding, display: 'flex', alignItems: 'center', gap: '12px', width: '100%', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ padding: s.metrics.iconPadding, background: 'rgba(251,191,36,0.1)', borderRadius: '10px', border: '1px solid rgba(251,191,36,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -987,7 +987,7 @@ const DashboardHome = ({ profile, handleAvatarUpload, avatarUploading, setShowCo
                 <Clock size={s.metrics.iconSize} color="#fbbf24" />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', minWidth: 0 }}>
-                <h3 style={{ fontSize: s.metrics.valueSize, lineHeight: '1.1', color: '#fbbf24', fontWeight: 800, margin: 0 }}>1</h3>
+                <h3 style={{ fontSize: s.metrics.valueSize, lineHeight: '1.1', color: '#fbbf24', fontWeight: 800, margin: 0 }}>0</h3>
                 <p style={{ fontWeight: 600, color: '#94A3B8', fontSize: s.metrics.titleSize, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Pending</p>
               </div>
             </div>

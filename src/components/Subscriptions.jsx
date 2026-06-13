@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import FlagIcon from './FlagIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Lock, ShieldCheck, Zap, ArrowRight, Loader2,
@@ -70,11 +72,11 @@ const countriesComparisonData = [
     uniType: 'Public',
     name: 'Germany (Public)',
     flag: '🇩🇪',
-    subtitle: 'Zero Tuition & Tech Hub',
-    univTuition: '€0 / yr',
+    subtitle: 'Low Tuition & Tech Hub',
+    univTuition: '€1,500 - €5,000 / sem',
     workRights: '18 Months Stay-back',
     benefits: [
-      'Zero Tuition at Public Universities',
+      'Low Tuition at Public Universities',
       '18-Month Job Seeker Visa',
       'Direct Pathways to Global Giants',
       'World-Leading Research Institutes',
@@ -89,7 +91,7 @@ const countriesComparisonData = [
     name: 'Germany (Private)',
     flag: '🇩🇪',
     subtitle: 'Flexible Admissions & Co-ops',
-    univTuition: '€10k - €20k / yr',
+    univTuition: '€10,000 - €30,000 / yr',
     workRights: '18 Months Stay-back',
     benefits: [
       'Flexible Admissions (Lower GPA)',
@@ -217,8 +219,8 @@ const countriesComparisonData = [
       'High FMGE Passing Rate',
       'European Standard of Living'
     ],
-    themeColor: '#ef4444',
-    glowColor: 'rgba(239, 68, 68, 0.15)'
+    themeColor: '#fbbf24',
+    glowColor: 'rgba(251, 191, 36, 0.15)'
   },
   {
     id: 'russia',
@@ -234,8 +236,8 @@ const countriesComparisonData = [
       'WHO, NMC, ECFMG Recognized',
       'Advanced Clinical Training'
     ],
-    themeColor: '#3b82f6',
-    glowColor: 'rgba(59, 130, 246, 0.15)'
+    themeColor: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.15)'
   },
 
 ];
@@ -245,17 +247,17 @@ const italyData = {
   subtitle: "DSU Scholarships & Subsidized Education",
   opportunities: [
     { title: "Regional Scholarships (DSU)", desc: "Need-based scholarships from regional governments covering tuition, accommodation, and offering a yearly €8,000 stipend.", icon: <Euro className="w-6 h-6 text-accent-gold" />, colSpan: "md:col-span-2 lg:col-span-2", bg: "bg-gradient-to-br from-accent-gold/10 to-transparent border-accent-gold/30" },
-    { title: "Post-Study Work Visa", desc: "Non-EU graduates can apply for a 12-month work visa.", icon: <Briefcase className="w-6 h-6 text-blue-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
-    { title: "Cultural Immersion", desc: "Live in an 'outdoor classroom' surrounded by thousands of years of history and art.", icon: <HeartHandshake className="w-6 h-6 text-rose-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
-    { title: "Top-Tier Universities", desc: "Access to prestigious, globally-ranked institutions with very low tuition fees.", icon: <Building2 className="w-6 h-6 text-indigo-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
-    { title: "English-Taught Programs", desc: "With/Without IELTS. Full degree programs taught entirely in English.", icon: <BookOpen className="w-6 h-6 text-emerald-400" />, colSpan: "md:col-span-2 lg:col-span-1", bg: "bg-white/5 border-white/10" }
+    { title: "Post-Study Work Visa", desc: "Non-EU graduates can apply for a 12-month work visa.", icon: <Briefcase className="w-6 h-6 text-amber-500" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
+    { title: "Cultural Immersion", desc: "Live in an 'outdoor classroom' surrounded by thousands of years of history and art.", icon: <HeartHandshake className="w-6 h-6 text-amber-400" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
+    { title: "Top-Tier Universities", desc: "Access to prestigious, globally-ranked institutions with very low tuition fees.", icon: <Building2 className="w-6 h-6 text-amber-600" />, colSpan: "md:col-span-1 lg:col-span-1", bg: "bg-white/5 border-white/10" },
+    { title: "English-Taught Programs", desc: "With/Without IELTS. Full degree programs taught entirely in English.", icon: <BookOpen className="w-6 h-6 text-amber-500" />, colSpan: "md:col-span-2 lg:col-span-1", bg: "bg-white/5 border-white/10" }
   ],
   popularCourses: [
     {
       category: "Engineering & Technology",
       programs: ["BSc/MSc Computer Science", "MSc Artificial Intelligence", "Mechanical & Aerospace"],
       institutions: "Politecnico di Milano, Politecnico di Torino",
-      icon: <PlaneTakeoff className="w-6 h-6 text-blue-400" />
+      icon: <PlaneTakeoff className="w-6 h-6 text-amber-500" />
     },
     {
       category: "Business & Economics",
@@ -267,7 +269,7 @@ const italyData = {
       category: "Architecture & Design",
       programs: ["BSc Architectural Design", "MSc Interior Design", "Fashion Studies"],
       institutions: "Politecnico di Milano, Florence Design Academy",
-      icon: <Sparkles className="w-6 h-6 text-purple-400" />
+      icon: <Sparkles className="w-6 h-6 text-amber-500" />
     }
   ],
   journeySteps: [
@@ -288,14 +290,14 @@ const italyData = {
     {
       id: "bachelors",
       title: "Bachelors",
-      icon: <GraduationCap className="w-8 h-8 text-blue-400" />,
-      themeColor: "text-blue-400",
-      bgGlow: "bg-blue-500/10",
-      bgBox: "bg-blue-500/5",
-      borderBox: "border-blue-500/20",
-      checkedBg: "bg-blue-500/10",
-      checkedBorder: "border-blue-500/40",
-      checkedInput: "checked:bg-blue-500 checked:border-blue-500",
+      icon: <GraduationCap className="w-8 h-8 text-amber-500" />,
+      themeColor: "text-amber-500",
+      bgGlow: "bg-amber-500/10",
+      bgBox: "bg-amber-500/5",
+      borderBox: "border-amber-500/20",
+      checkedBg: "bg-amber-500/10",
+      checkedBorder: "border-amber-500/40",
+      checkedInput: "checked:bg-amber-500 checked:border-amber-500",
       eligibility: [
         "12 years of formal education.",
         "Minimum 65% and above.",
@@ -315,14 +317,14 @@ const italyData = {
     {
       id: "masters",
       title: "Masters",
-      icon: <BookOpen className="w-8 h-8 text-emerald-400" />,
-      themeColor: "text-emerald-400",
-      bgGlow: "bg-emerald-500/10",
-      bgBox: "bg-emerald-500/5",
-      borderBox: "border-emerald-500/20",
-      checkedBg: "bg-emerald-500/10",
-      checkedBorder: "border-emerald-500/40",
-      checkedInput: "checked:bg-emerald-500 checked:border-emerald-500",
+      icon: <BookOpen className="w-8 h-8 text-amber-400" />,
+      themeColor: "text-amber-400",
+      bgGlow: "bg-amber-400/10",
+      bgBox: "bg-amber-400/5",
+      borderBox: "border-amber-400/20",
+      checkedBg: "bg-amber-400/10",
+      checkedBorder: "border-amber-400/40",
+      checkedInput: "checked:bg-amber-400 checked:border-amber-400",
       eligibility: [
         "Bachelor's degree (3 or 4 yrs).",
         "Minimum 70% and above.",
@@ -394,6 +396,8 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
+
+
   const [selectedProgram, setSelectedProgram] = useState('Bachelors');
   const [couponInput, setCouponInput] = useState('');
   const [activeCoupon, setActiveCoupon] = useState('');
@@ -579,6 +583,20 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
     { title: 'Application Milestones Tracking', desc: 'Unlock live updates, direct letters, and admission track history.' }
   ];
 
+  useEffect(() => {
+    if (popupCountryId) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [popupCountryId]);
+
   return (
     <div style={{ padding: '0', position: 'relative', height: isStandalone ? 'auto' : '100%', display: 'flex', flexDirection: 'column' }}>
       {showConfetti && <ConfettiBlast />}
@@ -677,7 +695,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
 
                   {/* Country Card Header */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={{ fontSize: '2rem', lineHeight: 1 }}>{c.flag}</span>
+                    <FlagIcon emoji={c.flag} className="w-8 h-8 rounded-sm object-cover shadow-sm" />
                     <div>
                       <h3 style={{
                         fontSize: '1.25rem',
@@ -851,14 +869,17 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
       </div>
 
       {/* Premium Fee Structure Details Popup Modal */}
-      <AnimatePresence>
+      {(() => {
+        const popupContent = (
+              <AnimatePresence>
+          
         {popupCountryId && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{
-              position: 'fixed',
+              position: isStandalone ? 'fixed' : 'absolute',
               inset: 0,
               zIndex: 99999,
               display: 'flex',
@@ -922,7 +943,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', zIndex: 1 }}>
                         <span style={{ fontSize: '2.5rem', lineHeight: 1 }}>
-                          {selectedCountryData?.flag || '🌐'}
+                          <FlagIcon emoji={selectedCountryData?.flag || '🌐'} className="w-10 h-10 rounded-md object-cover shadow-md" />
                         </span>
                         <div>
                           <p style={{ margin: 0, fontSize: '13px', fontWeight: 800, color: 'var(--accent-primary)', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Elite Services</p>
@@ -949,7 +970,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                           </div>
                         )}
                         <div style={{ display: 'flex', background: 'var(--input-bg)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '6px', gap: '6px' }}>
-                          {['Bachelors', 'Masters', 'MBBS'].map(level => (
+                          {(popupCountryId === 'germany' ? ['Bachelors', 'Masters'] : ['Bachelors', 'Masters', 'MBBS']).map(level => (
                             <button key={level} onClick={() => setPopupSelectedLevel(level)} style={{
                               padding: '10px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '15px', fontWeight: 800,
                               background: popupSelectedLevel === level ? 'var(--accent-primary)' : 'transparent',
@@ -977,7 +998,7 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                       </button>
                     </div>
 
-                    {/* Modal Body — no scroll, content must fit */}
+                    {/* Modal Body — remove overflowY to prevent nested scroll conflict */}
                     <div style={{
                       flex: 1,
                       minHeight: 0,
@@ -1002,6 +1023,9 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
                           showUniversityFees={false}
                           isDark={popupIsDark}
                           hideControls={true}
+                          showPaymentButton={!isStandalone}
+                          hideLevelSwitcher={true}
+                          hideHeader={true}
                           externalLevel={popupSelectedLevel || 'Bachelors'}
                           onExternalLevelChange={setPopupSelectedLevel}
                           externalUniType={popupUniType}
@@ -1053,7 +1077,12 @@ const Subscriptions = ({ profile, refreshProfile, isStandalone = false }) => {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      
+        </AnimatePresence>
+        );
+        return isStandalone ? createPortal(popupContent, document.body) : popupContent;
+      })()}
+
 
     </div>
   );

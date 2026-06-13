@@ -408,7 +408,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
   // Phase Stepper Calculations
   const isStudent = profile?.role === 'student';
 
-  const handlePayPhase = async (phaseObj, countryKey) => {
+  const handlePayPhase = async (phaseObj, countryKey, packageUniType) => {
     try {
       setPayingIndex(`${countryKey}_${phaseObj.index}`);
       setError(null);
@@ -425,7 +425,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
             phaseNumber: phaseObj.phaseNumber,
             countryName: countryKey,
             selectedLevel: activeLevel,
-            uniType: uniType
+            uniType: packageUniType || uniType
           }
         })
       });
@@ -492,21 +492,21 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
 
   // Active packages calculations
   const activePackages = [];
-  const availableCountries = ['italy', 'germany', 'other'];
-
-  const paymentsByCountry = { italy: [], germany: [], other: [] };
+  
+  const paymentsByCountry = {};
   capturedPayments.forEach(p => {
-    const pCountry = getPaymentCountry(p);
-    if (paymentsByCountry[pCountry]) {
-      paymentsByCountry[pCountry].push(p);
-    } else {
-      paymentsByCountry.other.push(p);
-    }
+    const pCountry = getPaymentCountry(p) || 'other';
+    if (!paymentsByCountry[pCountry]) paymentsByCountry[pCountry] = [];
+    paymentsByCountry[pCountry].push(p);
   });
 
   const hasAnyPayments = capturedPayments.length > 0;
+  
+  if (!hasAnyPayments && countryId) {
+    paymentsByCountry[countryId.toLowerCase()] = [];
+  }
 
-  availableCountries.forEach(cKey => {
+  Object.keys(paymentsByCountry).forEach(cKey => {
     const countryPayments = paymentsByCountry[cKey];
     const hasPayments = countryPayments.length > 0;
     
@@ -595,11 +595,8 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
       const remaining = Math.max(0, packageTotal - totalPaidForCountry);
       const percentPaid = packageTotal > 0 ? Math.min(100, Math.round((totalPaidForCountry / packageTotal) * 100)) : 0;
 
-      const packageName = cKey === 'italy'
-        ? 'Italy Study Visa Package'
-        : cKey === 'germany'
-          ? 'Germany Study Visa Package'
-          : 'Premium Global Study Visa Package';
+      const formattedCountry = cKey === 'other' || !cKey ? 'Premium Global' : (cKey.charAt(0).toUpperCase() + cKey.slice(1));
+      const packageName = `${formattedCountry} Study Visa Package`;
 
       const nextPendingPhase = countryPhaseDetails.find(p => !p.isPaid);
 
@@ -817,7 +814,7 @@ const PaymentHistory = ({ userEmail, profile, refreshProfile }) => {
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            onClick={() => handlePayPhase(pkg.nextPendingPhase, pkg.key)}
+                            onClick={() => handlePayPhase(pkg.nextPendingPhase, pkg.key, pkg.uniType)}
                             disabled={payingIndex === `${pkg.key}_${pkg.nextPendingPhase.index}`}
                             style={{
                               background: `linear-gradient(90deg, ${pkg.nextPendingPhase.color}, ${pkg.nextPendingPhase.color}dd)`,

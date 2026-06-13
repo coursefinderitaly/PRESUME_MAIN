@@ -1,0 +1,860 @@
+{
+  "italy_public_bachelors": {
+    "phase1": {
+      "base": 41300,
+      "discount_30": 28910,
+      "discount_50": 35400
+    },
+    "phase2": {
+      "base": 17700,
+      "discount_30": 12390,
+      "discount_50": 11800
+    },
+    "phase3": {
+      "base": 59000,
+      "discount_30": 41300,
+      "discount_50": 41300
+    },
+    "phase4": {
+      "base": 59000,
+      "discount_30": 41300,
+      "discount_50": 0
+    }
+  },
+  "italy_public_masters": {
+    "phase1": {
+      "base": 41300,
+      "discount_30": 28910,
+      "discount_50": 35400
+    },
+    "phase2": {
+      "base": 17700,
+      "discount_30": 12390,
+      "discount_50": 11800
+    },
+    "phase3": {
+      "base": 59000,
+      "discount_30": 41300,
+      "discount_50": 41300
+    },
+    "phase4": {
+      "base": 59000,
+      "discount_30": 41300,
+      "discount_50": 0
+    }
+  },
+  "italy_public_mbbs": {
+    "phase1": {
+      "base": 82600,
+      "discount_30": 57820,
+      "discount_50": 41300
+    },
+    "phase2": {
+      "base": 47200,
+      "discount_30": 33040,
+      "discount_50": 23600
+    },
+    "phase3": {
+      "base": 47200,
+      "discount_30": 33040,
+      "discount_50": 23600
+    },
+    "phase4": {
+      "base": 0,
+      "discount_30": 0,
+      "discount_50": 0
+    }
+  },
+  "germany_public_bachelors": {
+    "phase1": {
+      "base": 41300,
+      "discount_30": 28910,
+      "discount_50": 35400
+    },
+    "phase2": {
+      "base": 17700,
+      "discount_30": 12390,
+      "discount_50": 11800
+    },
+    "phase3": {
+      "base": 59000,
+      "discount_30": 41300,
+      "discount_50": 41300
+    },
+    "phase4": {
+      "base": 59000,
+      "discount_30": 41300,
+      "discount_50": 0
+    }
+  },
+  "germany_public_masters": {
+    "phase1": {
+      "base": 41300,
+      "discount_30": 28910,
+      "discount_50": 35400
+    },
+    "phase2": {
+      "base": 17700,
+      "discount_30": 12390,
+      "discount_50": 11800
+    },
+    "phase3": {
+      "base": 59000,
+      "discount_30": 41300,
+      "discount_50": 41300
+    },
+    "phase4": {
+      "base": 59000,
+      "discount_30": 41300,
+      "discount_50": 0
+    }
+  },
+  "germany_public_mbbs": {
+    "phase1": {
+      "base": 82600,
+      "discount_30": 57820,
+      "discount_50": 41300
+    },
+    "phase2": {
+      "base": 47200,
+      "discount_30": 33040,
+      "discount_50": 23600
+    },
+    "phase3": {
+      "base": 47200,
+      "discount_30": 33040,
+      "discount_50": 23600
+    },
+    "phase4": {
+      "base": 0,
+      "discount_30": 0,
+      "discount_50": 0
+    }
+  },
+  "georgia_public_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "georgia_public_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "georgia_public_mbbs": {
+    "phase1": {
+      "base": 82600,
+      "discount_30": 57820,
+      "discount_50": 41300
+    },
+    "phase2": {
+      "base": 47200,
+      "discount_30": 33040,
+      "discount_50": 23600
+    },
+    "phase3": {
+      "base": 47200,
+      "discount_30": 33040,
+      "discount_50": 23600
+    },
+    "phase4": {
+      "base": 0,
+      "discount_30": 0,
+      "discount_50": 0
+    }
+  },
+  "russia_public_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "russia_public_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "russia_public_mbbs": {
+    "phase1": {
+      "base": 82600,
+      "discount_30": 57820,
+      "discount_50": 41300
+    },
+    "phase2": {
+      "base": 47200,
+      "discount_30": 33040,
+      "discount_50": 23600
+    },
+    "phase3": {
+      "base": 47200,
+      "discount_30": 33040,
+      "discount_50": 23600
+    },
+    "phase4": {
+      "base": 0,
+      "discount_30": 0,
+      "discount_50": 0
+    }
+  },
+  "france_public_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "france_public_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "france_public_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "canada_public_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "canada_public_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "canada_public_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "canada_private_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "canada_private_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "canada_private_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "australia_public_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "australia_public_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "australia_public_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "australia_private_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "australia_private_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "australia_private_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "uk_public_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "uk_public_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "uk_public_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "us_public_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "us_public_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "us_public_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "ireland_public_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "ireland_public_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "ireland_public_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "ireland_private_bachelors": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "ireland_private_masters": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  },
+  "ireland_private_mbbs": {
+    "phase1": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase2": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase3": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    },
+    "phase4": {
+      "base": 5900,
+      "discount_30": 4130,
+      "discount_50": 2950
+    }
+  }
+}

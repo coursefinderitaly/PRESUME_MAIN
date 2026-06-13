@@ -63,6 +63,20 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
   }, [initialProgram]);
 
   React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  React.useEffect(() => {
     if (loggedInEmail) {
       setFormData(prev => ({ ...prev, email: loggedInEmail }));
     }
@@ -131,8 +145,8 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
 
   // Pricing calculations
   const activeCouponName = couponDiscount > 0 ? couponInput : '';
-  const basePhases = getPhases(countryId, 'Public', formData.program, '') || [];
-  const currentPhases = getPhases(countryId, 'Public', formData.program, activeCouponName) || [];
+  const basePhases = getPhases(countryId, uniType, formData.program, '') || [];
+  const currentPhases = getPhases(countryId, uniType, formData.program, activeCouponName) || [];
 
   const phase1Base = basePhases[0] || 0;
   const phase1Discounted = currentPhases[0] || 0;
@@ -205,7 +219,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
         animate={{ scale: 1, y: 0, opacity: 1 }}
         exit={{ scale: 0.97, y: 10, opacity: 0 }}
         transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        className={`relative w-full ${shouldHideRegistration ? 'max-w-md' : 'max-w-3xl'} bg-slate-900 border border-slate-700/50 rounded-3xl overflow-hidden shadow-2xl z-10 my-4`}
+        className={`relative w-full ${shouldHideRegistration ? 'max-w-[360px]' : 'max-w-3xl'} bg-slate-900 border border-slate-700/50 rounded-3xl overflow-hidden shadow-2xl z-10 my-4 max-h-[90vh] flex flex-col`}
         onClick={e => e.stopPropagation()}
       >
         {/* Glow rings */}
@@ -223,7 +237,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
         </button>
 
         {/* Layout Grid */}
-        <div className={shouldHideRegistration ? "flex flex-col relative z-10" : "grid grid-cols-1 md:grid-cols-12 relative z-10 divide-y md:divide-y-0 md:divide-x divide-slate-800/80"}>
+        <div className={shouldHideRegistration ? "flex flex-col relative z-10 flex-1 overflow-y-auto min-h-0" : "grid grid-cols-1 md:grid-cols-12 relative z-10 divide-y md:divide-y-0 md:divide-x divide-slate-800/80 flex-1 overflow-y-auto custom-scrollbar min-h-0"}>
 
           {/* LEFT: Registration Column */}
           {!shouldHideRegistration && (
@@ -360,52 +374,52 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
           )}
 
           {/* RIGHT: Compact Invoice breakdown */}
-          <div className={`${shouldHideRegistration ? 'col-span-1 p-6' : 'md:col-span-6 p-6 sm:p-7'} bg-slate-950/20 flex flex-col justify-between`}>
+          <div className={`${shouldHideRegistration ? 'col-span-1 p-6' : 'md:col-span-6 p-6 sm:p-7'} bg-slate-950/20 flex flex-col justify-start`}>
             <div>
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4 pr-12">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="text-cyan-400 w-4 h-4" />
-                  <span className="text-xs font-black text-slate-100 uppercase tracking-wider">Checkout Breakdown</span>
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2 mb-3 pr-12">
+                <div className="flex items-center gap-1.5">
+                  <CreditCard className="text-cyan-400 w-3.5 h-3.5" />
+                  <span className="text-[10.5px] font-black text-slate-100 uppercase tracking-wider">Checkout Breakdown</span>
                 </div>
-                <span className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                <span className="text-[8px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
                   {formData.program}
                 </span>
               </div>
 
               {/* Info banner (extremely compact) */}
               {!isPhase1Paid && (
-                <div className="mb-4 text-[10.5px] text-amber-400 bg-amber-500/5 border border-amber-500/10 px-3 py-1.5 rounded-xl flex items-center gap-2 font-medium hover:bg-amber-500/10 transition-colors duration-200">
-                  <Info size={13} className="shrink-0 text-amber-400" />
+                <div className="mb-3 text-[9.5px] text-amber-400 bg-amber-500/5 border border-amber-500/10 px-2.5 py-1 rounded-lg flex items-center gap-1.5 font-medium hover:bg-amber-500/10 transition-colors duration-200">
+                  <Info size={12} className="shrink-0 text-amber-400" />
                   <span>Pay only the <strong className="text-cyan-400">Phase 1 fee</strong> right now to unlock portal.</span>
                 </div>
               )}
 
               {/* Sleek inline phases lists */}
-              <div className="space-y-1.5 mb-4">
+              <div className="space-y-1 mb-3">
                 {displayPhases.map((phaseItem, index) => {
                   const isPhase1 = phaseItem.isDueNow;
 
                   return (
                     <div
                       key={index}
-                      className={`px-3 py-2 rounded-xl flex items-center justify-between border transition-all duration-300 ${isPhase1
+                      className={`px-2 py-1.5 rounded-lg flex items-center justify-between border transition-all duration-300 ${isPhase1
                           ? 'bg-cyan-500/5 border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-500/40 hover:scale-[1.01]'
                           : 'bg-transparent border-transparent opacity-50 hover:opacity-85 hover:bg-slate-950/30'
                         }`}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <span className={`w-5 h-5 rounded flex items-center justify-center text-[10px] font-black transition-colors ${isPhase1 ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400'
+                      <div className="flex items-center gap-2">
+                        <span className={`w-4 h-4 rounded flex items-center justify-center text-[9px] font-black transition-colors ${isPhase1 ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400'
                           }`}>
                           {phaseItem.idx + 1}
                         </span>
-                        <span className={`text-[11px] font-bold text-slate-200 ${isPhase1 && isPhase1Paid ? 'line-through text-slate-500' : ''}`}>{phaseItem.name}</span>
+                        <span className={`text-[10px] font-bold text-slate-200 ${isPhase1 && isPhase1Paid ? 'line-through text-slate-500' : ''}`}>{phaseItem.name}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-right">
-                        {!isPhase1 && <span className="text-[8px] bg-slate-800 text-slate-400 px-1 py-0.2 rounded font-black tracking-wide">LATER</span>}
-                        {isPhase1 && !isPhase1Paid && <span className="text-[8px] bg-cyan-500 text-slate-950 px-1 py-0.2 rounded font-black tracking-wide">DUE NOW</span>}
-                        {isPhase1 && isPhase1Paid && <span className="text-[8px] bg-emerald-500 text-slate-950 px-1 py-0.2 rounded font-black tracking-wide">PAID</span>}
-                        <span className={`text-[11px] font-black text-slate-300 ${isPhase1 && isPhase1Paid ? 'line-through text-slate-500' : ''}`}>
+                      <div className="flex items-center gap-1.5 text-right">
+                        {!isPhase1 && <span className="text-[7px] bg-slate-800 text-slate-400 px-1 py-0.2 rounded font-black tracking-wide">LATER</span>}
+                        {isPhase1 && !isPhase1Paid && <span className="text-[7px] bg-cyan-500 text-slate-950 px-1 py-0.2 rounded font-black tracking-wide">DUE NOW</span>}
+                        {isPhase1 && isPhase1Paid && <span className="text-[7px] bg-emerald-500 text-slate-950 px-1 py-0.2 rounded font-black tracking-wide">PAID</span>}
+                        <span className={`text-[10px] font-black text-slate-300 ${isPhase1 && isPhase1Paid ? 'line-through text-slate-500' : ''}`}>
                           ₹ {phaseItem.price?.toLocaleString('en-IN') || '0'}
                         </span>
                       </div>
@@ -415,7 +429,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
               </div>
 
               {/* Promo Code input field (compact) */}
-              <div className="p-2.5 bg-slate-950/40 border border-slate-800/80 rounded-xl relative mb-4 hover:border-slate-700/50 transition-all duration-200">
+              <div className="p-2 bg-slate-950/40 border border-slate-800/80 rounded-xl relative mb-3 hover:border-slate-700/50 transition-all duration-200">
                 <AnimatePresence>
                   {showPromoSuccess && (
                     <motion.div
@@ -430,7 +444,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                 </AnimatePresence>
                 {showPromoSuccess && <ConfettiBlast />}
 
-                <div className="flex gap-2">
+                <div className="flex gap-1.5">
                   <input
                     type="text"
                     value={couponInput}
@@ -440,7 +454,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                     }}
                     disabled={couponDiscount > 0}
                     placeholder="PROMO CODE"
-                    className="flex-1 px-2.5 py-1.5 bg-slate-900 border border-slate-850 rounded-lg text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500 hover:border-slate-700 transition-all text-[10px] font-bold uppercase tracking-wider disabled:opacity-50"
+                    className="flex-1 px-2 py-1 bg-slate-900 border border-slate-850 rounded-lg text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500 hover:border-slate-700 transition-all text-[9px] font-bold uppercase tracking-wider disabled:opacity-50"
                   />
                   <button
                     type="button"
@@ -467,7 +481,7 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                         setCouponError('Invalid');
                       }
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all border hover:scale-[1.02] active:scale-95 ${couponDiscount > 0
+                    className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all border hover:scale-[1.02] active:scale-95 ${couponDiscount > 0
                         ? 'bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20'
                         : 'bg-cyan-500/20 border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30'
                       }`}
@@ -476,34 +490,34 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                   </button>
                 </div>
                 {couponError && (
-                  <p className="text-[9px] text-red-400 font-semibold mt-1 px-0.5">{couponError}</p>
+                  <p className="text-[8.5px] text-red-400 font-semibold mt-1 px-0.5">{couponError}</p>
                 )}
               </div>
 
               {/* Price Breakdown Details */}
-              <div className="space-y-1.5 border-t border-slate-800/80 pt-3">
-                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 select-none">Invoice Totals</p>
+              <div className="space-y-1 border-t border-slate-800/80 pt-2.5">
+                <p className="text-[8.5px] text-slate-400 font-black uppercase tracking-widest mb-0.5 select-none">Invoice Totals</p>
 
-                <div className="flex justify-between items-center text-[11px] hover:text-slate-300 transition-colors">
+                <div className="flex justify-between items-center text-[10px] hover:text-slate-300 transition-colors">
                   <span className="text-slate-400 font-medium">Phase 1 Base</span>
                   <span className="text-slate-300 font-bold">₹ {phase1Discounted.toLocaleString('en-IN')}</span>
                 </div>
 
                 {hasGST && (
-                  <div className="flex justify-between items-center text-[11px] hover:text-slate-300 transition-colors">
+                  <div className="flex justify-between items-center text-[10px] hover:text-slate-300 transition-colors">
                     <span className="text-slate-400">GST ({gstRate * 100}%)</span>
                     <span className="text-slate-300 font-bold">₹ {Math.round(phase1Discounted * gstRate).toLocaleString('en-IN')}</span>
                   </div>
                 )}
 
                 {/* Final Total Due Today */}
-                <div className="flex justify-between items-center p-3 bg-cyan-500/5 border border-cyan-500/20 rounded-xl mt-3 hover:scale-[1.01] hover:border-cyan-500/30 hover:shadow-[0_0_12px_rgba(6,182,212,0.12)] transition-all duration-305 cursor-default">
+                <div className="flex justify-between items-center p-2.5 bg-cyan-500/5 border border-cyan-500/20 rounded-xl mt-2 hover:scale-[1.01] hover:border-cyan-500/30 hover:shadow-[0_0_12px_rgba(6,182,212,0.12)] transition-all duration-305 cursor-default">
                   <div>
-                    <p className="text-[10px] text-cyan-400 font-black uppercase tracking-wider">Total Due Today</p>
-                    <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Phase 1 fee {hasGST && "+ GST"}</p>
+                    <p className="text-[9px] text-cyan-400 font-black uppercase tracking-wider">Total Due Today</p>
+                    <p className="text-[7px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Phase 1 fee {hasGST && "+ GST"}</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                    <span className="text-[17px] font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
                       ₹ {Math.round(phase1Discounted * (hasGST ? 1 + gstRate : 1)).toLocaleString('en-IN')}
                     </span>
                   </div>
@@ -512,9 +526,9 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
             </div>
 
             {/* Pay Button / Footer (super compact) */}
-            <div className="mt-4 border-t border-slate-800/80 pt-4">
-              <div className="flex items-center gap-1.5 text-emerald-450 text-[10px] font-black uppercase tracking-wider mb-3 select-none">
-                <ShieldCheck size={14} className="text-emerald-400 shrink-0 animate-pulse" />
+            <div className="mt-4 border-t border-slate-800/80 pt-4 pb-4">
+              <div className="flex items-center gap-1.5 text-emerald-450 text-[9px] font-black uppercase tracking-wider mb-2.5 select-none">
+                <ShieldCheck size={13} className="text-emerald-400 shrink-0 animate-pulse" />
                 <span className="text-slate-300">Secure Activation Guarantee</span>
               </div>
 
@@ -526,12 +540,12 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                       className={`w-full py-2.5 rounded-xl font-bold cursor-not-allowed flex justify-center items-center gap-1.5 text-xs uppercase tracking-wider shadow-lg ${isLight ? 'bg-emerald-600 text-white border-emerald-700' : 'bg-emerald-600/30 text-slate-300 border border-emerald-500/20'}`}
                     >
                       <span>First Installment Paid</span>
-                      <ShieldCheck size={14} className={isLight ? "text-emerald-100" : "text-emerald-400"} />
+                      <ShieldCheck size={13} className={isLight ? "text-emerald-100" : "text-emerald-400"} />
                     </button>
                   ) : (
                     <button
                       onClick={() => onSuccess(formData.email || loggedInEmail || '', '', formData.program, couponDiscount > 0 ? couponInput : '', couponDiscount)}
-                      className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 rounded-xl text-white font-bold transition-all active:scale-[0.98] hover:scale-[1.01] hover:shadow-[0_4px_16px_rgba(6,182,212,0.4)] flex justify-center items-center gap-1.5 text-xs uppercase tracking-wider shadow-lg"
+                      className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 rounded-xl text-white font-black transition-all active:scale-[0.98] hover:scale-[1.02] hover:shadow-[0_5px_15px_rgba(6,182,212,0.4)] flex justify-center items-center gap-2 text-xs uppercase tracking-wider shadow-lg"
                     >
                       <span>Proceed to Secure Payment</span>
                       <ArrowRight size={14} />
@@ -539,15 +553,19 @@ const QuickAuthModal = ({ isOpen, onClose, onSuccess, initialProgram = 'Bachelor
                   )}
                 </div>
               ) : (
-                <div className="p-2 bg-slate-850/30 rounded-lg border border-slate-800 text-center">
+                <div className="p-3 bg-cyan-500/10 rounded-xl border border-cyan-500/30 shadow-md flex items-center justify-center">
                   {isPhase1Paid ? (
-                    <p className="text-[8.5px] text-emerald-400 font-bold uppercase tracking-wider">
-                      ✓ First Installment Already Paid
+                    <p className="text-[10.5px] text-emerald-400 font-black uppercase tracking-wider flex items-center justify-center gap-1.5">
+                      <ShieldCheck size={14} className="shrink-0" />
+                      <span>First Installment Paid</span>
                     </p>
                   ) : (
-                    <p className="text-[8.5px] text-slate-400 font-bold uppercase tracking-wider">
-                      Register on the left to activate checkout
-                    </p>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-cyan-400 animate-pulse text-center">
+                      <Lock size={14} className="shrink-0" />
+                      <p className="text-[10.5px] font-black uppercase tracking-wide leading-snug">
+                        Register on the left to activate checkout
+                      </p>
+                    </div>
                   )}
                 </div>
               )}

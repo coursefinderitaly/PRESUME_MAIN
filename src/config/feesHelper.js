@@ -1,36 +1,57 @@
+import razorpayFees from '../../next-backend/src/config/razorpayFees.json';
 import feesData from '../../next-backend/src/config/fees.json';
 import { COUPONS } from './coupons';
 
 export const getPhases = (countryId, uniType, level, couponCode) => {
-    // 1. Fallback to 'other' if country not found
-    const normalizedCountry = (countryId || 'other').toLowerCase();
-    const countryObj = feesData[normalizedCountry] || feesData['other'];
+    const cId = (countryId || 'other').toLowerCase();
+    const uType = (uniType || 'Public').toLowerCase();
+    const sLevel = (level || 'Bachelors').toLowerCase();
     
-    // 2. Fallback to 'Public' if uniType not found
-    const typeObj = countryObj[uniType] || countryObj['Public'];
+    const key = `${cId}_${uType}_${sLevel}`;
+    const feeObj = razorpayFees[key];
     
-    // 3. Fallback to 'Bachelors' if level not found in base
-    let baseLevel = level;
-    if (!typeObj.base[level]) {
-        baseLevel = 'Bachelors';
+    if (feeObj) {
+        // Return base amount (divided by 1.18 since frontend will visually add 18% GST back to reach final total)
+        const getPhaseValue = (phaseConfig) => {
+            let finalAmount = phaseConfig.base;
+            let effCoupon = couponCode ? couponCode.toUpperCase() : '';
+            if (effCoupon) {
+                if (effCoupon.startsWith('PRESUME-') || effCoupon === 'PRESUME50') {
+                    finalAmount = phaseConfig.discount_50;
+                } else if (effCoupon === 'PRESUME30') {
+                    finalAmount = phaseConfig.discount_30;
+                } else if (COUPONS[effCoupon]) {
+                    finalAmount = Math.round(phaseConfig.base * (1 - COUPONS[effCoupon] / 100));
+                }
+            }
+            return Math.round(finalAmount / 1.18);
+        };
+        
+        return [
+            getPhaseValue(feeObj.phase1),
+            getPhaseValue(feeObj.phase2),
+            getPhaseValue(feeObj.phase3),
+            getPhaseValue(feeObj.phase4)
+        ];
     }
     
+    // Legacy fallback
+    const countryObj = feesData[cId] || feesData['other'];
+    const typeObj = countryObj[uniType || 'Public'] || countryObj['Public'];
+    let baseLevel = level;
+    if (!typeObj.base[level]) baseLevel = 'Bachelors';
     let phases = typeObj.base[baseLevel];
     
-    // Treat dynamically generated PRESUME- coupons exactly like PRESUME50
     let effectiveCouponCode = couponCode;
     if (couponCode && couponCode.startsWith('PRESUME-')) {
         effectiveCouponCode = 'PRESUME50';
     }
     
-    // 4. Apply explicit coupon structure if defined in JSON
     if (effectiveCouponCode && typeObj.coupons && typeObj.coupons[effectiveCouponCode] && typeObj.coupons[effectiveCouponCode][baseLevel]) {
         phases = typeObj.coupons[effectiveCouponCode][baseLevel];
     } 
-    // 5. Fallback percentage application for arbitrary coupons
     else if (effectiveCouponCode && COUPONS[effectiveCouponCode]) {
         const discountPct = COUPONS[effectiveCouponCode];
-        // Ensure phases is an array before spreading
         if (!Array.isArray(phases)) {
             phases = [
                 phases['Phase 1 (Admission)'] || 0,
@@ -52,14 +73,9 @@ export const getPhases = (countryId, uniType, level, couponCode) => {
             phases['Phase 4 (Visa Support)'] || 0
         ];
     }
-
     return phases;
 };
 
 export const getTaxRate = (countryId) => {
-    const cId = (countryId || '').toLowerCase();
-    if (['italy', 'germany', 'russia', 'georgia'].includes(cId)) {
-        return 0.18;
-    }
-    return 0; // Default no tax for other countries
+    return 0.18; // 18% GST globally
 };
